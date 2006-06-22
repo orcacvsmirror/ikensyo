@@ -1,0 +1,78 @@
+<?xml version="1.0" encoding="Shift_JIS"?>
+<project basedir="." default="compile" name="コンパイル">
+	<property name="SourceDir" value="src" />
+	<property name="ClassDir" value="bin" />
+	<property name="JarNameOfMain" value="Ikensyo.jar" />
+	<property name="JarNameOfPDFCustom" value="PDF-Custom.jar" />
+	<property name="JarNameOfConvert" value="convert.jar" />
+	<!-- コンパイルに必要なクラスパス -->
+	<path id="BuildClasspath">
+		<pathelement path="lib/firebirdsql-full.jar" />
+		<pathelement path="lib/iText.jar" />
+		<pathelement path="lib/iTextAsian.jar" />
+		<pathelement path="lib/build.jar" />
+	</path>
+	<target name="compile">
+		<!-- コンパイル -->
+		<delete dir="${ClassDir}" />
+		<mkdir dir="${ClassDir}" />
+		<javac srcdir="src" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath">
+			<include name="jp/or/med/orca/ikensho/**/*" />
+			<exclude name="jp/or/med/orca/ikensho/affair/**/*" />
+		</javac>
+		<javac srcdir="src" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath">
+			<include name="jp/or/med/orca/ikensho/affair/**/*" />
+		</javac>
+		<!-- リソース複写 -->
+		<copy todir="${ClassDir}" >
+	      <fileset dir="${SourceDir}">
+	        <exclude name="**/*.java"/>
+	      </fileset>
+	    </copy>
+		<!-- Jar生成 -->
+		<delete file="${JarNameOfMain}" />
+		<jar jarfile="${JarNameOfMain}" basedir="${ClassDir}">
+			<include name="jp/or/**/*" />
+			<exclude name="**/*.java" />
+			<exclude name="jp/or/med/orca/ikensho/convert/**/*" />
+			<exclude name="jp/or/med/orca/ikensho/pdf/ip/ip001/**/*" />
+			<manifest>
+				<attribute name="Main-Class" value="jp.or.med.orca.ikensho.affair.IkenshoStarter" />
+				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
+			</manifest>
+		</jar>
+		<delete file="${JarNameOfConvert}" />
+		<jar jarfile="${JarNameOfConvert}" basedir="${ClassDir}">
+			<include name="jp/or/med/orca/ikensho/convert/**/*" />
+			<exclude name="jp/or/med/orca/ikensho/convert/**/*Patch*" />
+			<exclude name="**/*.java" />
+			<manifest>
+				<attribute name="Main-Class" value="jp.or.med.orca.ikensho.convert.IkenshoMacConvertStarter" />
+				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
+			</manifest>
+		</jar>
+		<delete file="${JarNameOfPDFCustom}" />
+		<jar jarfile="${JarNameOfPDFCustom}" basedir="${ClassDir}">
+			<include name="jp/or/med/orca/ikensho/pdf/**/*" />
+			<exclude name="**/*.java" />
+			<manifest>
+				<attribute name="Main-Class" value="jp.or.med.orca.ikensho.pdf.IkenshoPDFCustomStarter" />
+				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
+			</manifest>
+		</jar>
+		<delete dir="${ClassDir}" />
+	</target>
+
+	<target name="onlineUpdater">
+		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" includes="jp/nichicom/update/**/*" />
+		<delete file="update.jar" />
+		<jar jarfile="update.jar" basedir="${ClassDir}">
+			<include name="jp/nichicom/update/**/*" />
+			<exclude name="**/*.java" />
+			<manifest>
+				<attribute name="Main-Class" value="jp.nichicom.update.MainFrame" />
+				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
+			</manifest>
+		</jar>
+	</target>
+</project>
