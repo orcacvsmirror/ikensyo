@@ -7,15 +7,15 @@ import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.mainmenu.ACMainMenuButton;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.vr.layout.VRLayout;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoSubMenu extends JDialog {
+public class IkenshoSubMenu extends IkenshoDialog {
     private VRLayout menusLayout = new VRLayout();
     private JPanel contentPane;
     private ACMainMenuButton close;
@@ -240,7 +240,7 @@ public class IkenshoSubMenu extends JDialog {
         });
 
         //CSVファイル出力
-        csvOutput.setText("「主治医意見書」ＣＳＶファイル出力(C)");
+        csvOutput.setText("「主治医意見書・医師意見書」"+ACConstants.LINE_SEPARATOR+"　ＣＳＶファイル出力(C)");
         csvOutput.setMnemonic('c');
         csvOutput.setToolTipText("意見書データをCSVファイルに書き出します。");
 //        csvOutput.setBackground(new java.awt.Color(102, 102, 255));

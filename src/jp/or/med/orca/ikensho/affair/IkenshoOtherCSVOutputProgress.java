@@ -8,7 +8,6 @@ import java.io.FileOutputStream;
 import java.util.ArrayList;
 import java.util.Date;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
@@ -25,7 +24,7 @@ import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoOtherCSVOutputProgress extends JDialog {
+public class IkenshoOtherCSVOutputProgress extends IkenshoDialog {
     private JPanel contentPane = new JPanel();
     private VRPanel client = new VRPanel();
     private JLabel info = new JLabel();
@@ -39,7 +38,7 @@ public class IkenshoOtherCSVOutputProgress extends JDialog {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
 
             this.dataOrg = (VRArrayList) dataOrg.clone();
             this.file = file;
@@ -63,7 +62,7 @@ public class IkenshoOtherCSVOutputProgress extends JDialog {
         pbar.setMaximum(100);
     }
 
-    private void initComponent() {
+    private void init() {
         // ウィンドウのサイズ
         setSize(new Dimension(200, 70));
         // ウィンドウを中央に配置

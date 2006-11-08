@@ -84,12 +84,12 @@ public class IkenshoIkenshoInfoCare1H18
   public void initDBCopmponent(IkenshoFirebirdDBManager dbm) throws Exception {
     super.initDBCopmponent(dbm);
 
-    applyPoolTeikeibun(moveDown.getComboBox(), IkenshoCommon.TEIKEI_MOVILITY_DOWN_NAME);
-    applyPoolTeikeibun(tojikomori.getComboBox(), IkenshoCommon.TEIKEI_TOJIKOMORI_NAME);
-    applyPoolTeikeibun(iyokuDown.getComboBox(), IkenshoCommon.TEIKEI_IYOKU_DOWN_NAME);
-    applyPoolTeikeibun(lowEnergy.getComboBox(), IkenshoCommon.TEIKEI_LOW_ENERGY_NAME);
-    applyPoolTeikeibun(engeDown.getComboBox(), IkenshoCommon.TEIKEI_SESSHOKU_ENGE_DOWN_NAME);
-    applyPoolTeikeibun(toutsu.getComboBox(), IkenshoCommon.TEIKEI_GAN_TOTSU_NAME);
+    applyPoolTeikeibun(getMoveDown().getComboBox(), IkenshoCommon.TEIKEI_MOVILITY_DOWN_NAME);
+    applyPoolTeikeibun(getTojikomori().getComboBox(), IkenshoCommon.TEIKEI_TOJIKOMORI_NAME);
+    applyPoolTeikeibun(getIyokuDown().getComboBox(), IkenshoCommon.TEIKEI_IYOKU_DOWN_NAME);
+    applyPoolTeikeibun(getLowEnergy().getComboBox(), IkenshoCommon.TEIKEI_LOW_ENERGY_NAME);
+    applyPoolTeikeibun(getEngeDown().getComboBox(), IkenshoCommon.TEIKEI_SESSHOKU_ENGE_DOWN_NAME);
+    applyPoolTeikeibun(getToutsu().getComboBox(), IkenshoCommon.TEIKEI_GAN_TOTSU_NAME);
   }
 
   /**
@@ -120,25 +120,28 @@ public class IkenshoIkenshoInfoCare1H18
     getTitle().setText("４．生活機能とサービスに関する意見（続き１）");
     getAbstractionTail().setText("トータルでは45文字しか印刷されません。");
     getStateAndTaisyoGroup().setText("現在あるかまたは今後発生の可能性の高い状態とその対処方針");
-    moveDown.setValueBindPath("IDOUTEIKA_TAISHO_HOUSIN");
-    moveDown.setCheckBindPath("IDOUTEIKA");
+    // 2006/07/10
+    // 医師意見書対応
+    // Replace - begin [Masahiko Higuchi]
+    getMoveDown().setValueBindPath("IDOUTEIKA_TAISHO_HOUSIN");
+    getMoveDown().setCheckBindPath("IDOUTEIKA");
     getMoveDown().setCheckText("移動能力の低下");
-    tojikomori.setCheckBindPath("TOJIKOMORI");
+    getTojikomori().setCheckBindPath("TOJIKOMORI");
     getTojikomori().setCheckText("閉じこもり");
-    tojikomori.setValueBindPath("TOJIKOMORI_TAISHO_HOUSIN");
-    iyokuDown.setCheckBindPath("IYOKUTEIKA");
+    getTojikomori().setValueBindPath("TOJIKOMORI_TAISHO_HOUSIN");
+    getIyokuDown().setCheckBindPath("IYOKUTEIKA");
     getIyokuDown().setCheckText("意欲低下");
-    iyokuDown.setValueBindPath("IYOKUTEIKA_TAISHO_HOUSIN");
-    lowEnergy.setCheckBindPath("TEIEIYOU");
+    getIyokuDown().setValueBindPath("IYOKUTEIKA_TAISHO_HOUSIN");
+    getLowEnergy().setCheckBindPath("TEIEIYOU");
     getLowEnergy().setCheckText("低栄養");
-    lowEnergy.setValueBindPath("TEIEIYOU_TAISHO_HOUSIN");
-    engeDown.setCheckBindPath("SESSYOKUENGE");
+    getLowEnergy().setValueBindPath("TEIEIYOU_TAISHO_HOUSIN");
+    getEngeDown().setCheckBindPath("SESSYOKUENGE");
     getEngeDown().setCheckText("摂食・嚥下機能低下");
-    engeDown.setValueBindPath("SESSYOKUENGE_TAISHO_HOUSIN");
-    toutsu.setCheckBindPath("GAN_TOUTU");
+    getEngeDown().setValueBindPath("SESSYOKUENGE_TAISHO_HOUSIN");
+    getToutsu().setCheckBindPath("GAN_TOUTU");
     getToutsu().setCheckText("がん等による疼痛");
-    toutsu.setValueBindPath("GAN_TOUTU_TAISHO_HOUSIN");
-
+    getToutsu().setValueBindPath("GAN_TOUTU_TAISHO_HOUSIN");
+    // Replace - end
     getHaien().setVisible(false);
     getChouheisoku().setVisible(false);
     getPain().setVisible(false);

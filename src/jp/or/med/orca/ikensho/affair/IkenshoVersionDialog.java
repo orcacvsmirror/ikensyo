@@ -9,15 +9,12 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.FileReader;
-import java.net.URL;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-import javax.swing.JDialog;
 import javax.swing.JTabbedPane;
 
 import jp.nichicom.ac.ACConstants;
@@ -29,7 +26,7 @@ import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoVersionDialog extends JDialog {
+public class IkenshoVersionDialog extends IkenshoDialog {
     private VRPanel contents = new VRPanel();
     private VRPanel footer = new VRPanel();
     private VRPanel body = new VRPanel();
@@ -113,7 +110,7 @@ public class IkenshoVersionDialog extends JDialog {
             jbInit();
             pack();
 
-            initComponent();
+            init();
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -179,7 +176,7 @@ public class IkenshoVersionDialog extends JDialog {
         }
     }
 
-    private void initComponent() throws Exception {
+    private void init() throws Exception {
         setSize(new Dimension(500, 380));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();

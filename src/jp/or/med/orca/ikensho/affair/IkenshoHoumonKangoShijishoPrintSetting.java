@@ -11,7 +11,6 @@ import java.text.ParseException;
 import java.util.Arrays;
 import java.util.Date;
 
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
@@ -28,11 +27,10 @@ import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
-import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 
 /** <HEAD_IKENSYO> */
-public class IkenshoHoumonKangoShijishoPrintSetting extends JDialog {
+public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
     private JPanel contentPane = new JPanel();
     private VRPanel contents = new VRPanel();
     private ACGroupBox styleGroup = new ACGroupBox();
@@ -111,7 +109,7 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends JDialog {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
 
             this.source = (VRMap) contents.createSource();
             this.source.putAll(data);
@@ -726,7 +724,7 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends JDialog {
     /**
      * 位置を初期化します。
      */
-    private void initComponent() {
+    private void init() {
         // ウィンドウのサイズ
         setSize(new Dimension(600, 200));
         // ウィンドウを中央に配置

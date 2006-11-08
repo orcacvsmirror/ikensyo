@@ -4,7 +4,6 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 
@@ -12,7 +11,7 @@ import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
 
 /** <HEAD_IKENSYO> */
-public class IkenshoWaitingForm extends JDialog {
+public class IkenshoWaitingForm extends IkenshoDialog {
     private JPanel contentPane = new JPanel();
     private VRPanel contents = new VRPanel();
     private JProgressBar progressBar = null;
@@ -22,7 +21,7 @@ public class IkenshoWaitingForm extends JDialog {
         try {
             jbInit();
             pack();
-            initComponent();
+            init();
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -41,7 +40,7 @@ public class IkenshoWaitingForm extends JDialog {
 
     }
 
-    private void initComponent() {
+    private void init() {
         //ウィンドウのサイズ
         setSize(new Dimension(200, 70));
         //ウィンドウを中央に配置

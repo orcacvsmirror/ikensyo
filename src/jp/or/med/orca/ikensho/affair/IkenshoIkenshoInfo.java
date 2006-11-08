@@ -17,7 +17,6 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
-import jp.nichicom.vr.bind.VRBindSource;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.ikensho.IkenshoConstants;
@@ -59,6 +58,7 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
     protected IkenshoIkenshoInfoOrgan organ;
     protected IkenshoIkenshoInfoBill bill;
 
+    
     protected void reselectForPassiveCustom(IkenshoFirebirdDBManager dbm,
             VRMap data) throws Exception {
         StringBuffer sb;
@@ -120,7 +120,7 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         graphicsCommandArray = (VRArrayList) dbm.executeQuery(sb.toString());
 
     }
-
+    
     protected void doSelectCustomDocument(IkenshoFirebirdDBManager dbm)
             throws Exception {
         StringBuffer sb = new StringBuffer();
@@ -135,6 +135,7 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(" AND (IKN_ORIGIN.EDA_NO=");
         sb.append(getEdaNo());
         sb.append(")");
+        
         VRArrayList array = (VRArrayList) dbm.executeQuery(sb.toString());
         hasOriginalDocument = array.getDataSize() > 0;
         if (hasOriginalDocument) {
@@ -236,6 +237,46 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
 
         }
     }
+    
+    /**
+     * 意見書作成回数を返します。
+     * @param dbm
+     * @return int 作成回数
+     * @throws Exception
+     */
+    protected int getCreateCount(IkenshoFirebirdDBManager dbm) throws Exception{
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT");
+        sb.append(" MAX(");
+        sb.append(getCustomDocumentTableName());
+        sb.append(".EDA_NO) AS EDA_NO");
+        sb.append(" FROM ");
+        sb.append(getCustomDocumentTableName());
+        sb.append(" WHERE");
+        sb.append(" (");
+        sb.append(getCustomDocumentTableName());
+        sb.append(".PATIENT_NO=");
+        sb.append(getPatientNo());
+        sb.append(")");
+        sb.append(" AND ( ");
+        sb.append(getCustomDocumentTableName());
+        sb.append(".FORMAT_KBN =");
+        sb.append(getFormatKubun());
+        sb.append(")");
+        
+        VRArrayList array = (VRArrayList) dbm.executeQuery(sb.toString());
+        if (array.getDataSize() == 0) {
+            return 1;
+        }
+        Object obj = VRBindPathParser.get("EDA_NO", (VRMap) array.getData());
+        if (obj instanceof Integer) {
+          return 2;
+        }
+        else {
+          return 1;
+        }
+    }
+    
 
     protected void doSelectBeforeCustomDocument(IkenshoFirebirdDBManager dbm)
             throws Exception {
@@ -292,7 +333,14 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
                         VRBindPathParser.set("HASE_SCR_DT", originalData, "0000年00月00日");
                     }
                     // 2006/02/09[Tozo Tanaka] : add end
+                    
                 }
+                
+                // 2006/08/07
+                // 作成回数だけは取り直して調べる
+                // Addition - begin [Masahiko Higuchi] 
+                createCount = getCreateCount(dbm);
+                // Addition - end
 
                 // 記入日は本日
                 VRBindPathParser.set("KINYU_DT", originalData, new Date());
@@ -335,9 +383,28 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
                             ACMessageBox.BUTTON_OKCANCEL,
                             ACMessageBox.ICON_QUESTION,
                             ACMessageBox.FOCUS_CANCEL) == ACMessageBox.RESULT_OK) {
-                setBillFDOutputKubun(new Integer(0));
-                billFDOutputTime = null;
-                doUpdateBillPrintKubun();
+                // setBillFDOutputKubun(new Integer(0));
+                // billFDOutputTime = null;
+                
+                // 2006/08/07
+                // パッシブチェック開始
+                // Addition - begin [Masahiko Higuchi]
+                IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
+                clearPassiveTask();
+
+                addPassiveUpdateTask(PASSIVE_CHECK_KEY_PATIENT, 0);
+                addPassiveUpdateTask(PASSIVE_CHECK_KEY_COMMON, 0);
+                addPassiveUpdateTaskCustom();
+                dbm = getPassiveCheckedDBManager();
+                // パッシブエラー発生時保存しない
+                if (dbm != null) {
+                    setBillFDOutputKubun(new Integer(0));
+                    billFDOutputTime = null;
+                    doUpdateBillPrintKubun();
+                }
+                //パッシブチェック終了
+                // Addition - end
+
             } else {
                 return false;
             }
@@ -346,11 +413,26 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         return true;
     }
 
+    /**
+     * 最大枝番号取得のためのSQLサブクエリを追加します。
+     * @param sb
+     */
+    protected void appendSelectMaxEdaNoSubQuery(StringBuffer sb){
+        sb.append(" AND ( FORMAT_KBN = ");
+        sb.append(getFormatKubun());
+        sb.append(" )");
+        
+    }
+    
     protected boolean showPrintDialogCustom() throws Exception {
         IkenshoIkenshoInfoPrintParameter param = new IkenshoIkenshoInfoPrintParameter();
         param.setNowMode(getNowMode());
+        // 2006/06/22
+        // スナップショット
+        // Addition - begin [Masahiko Higuchi]
         param.setNeverSaved(IkenshoSnapshot.getInstance().isModified()
-                || IkenshoConstants.AFFAIR_MODE_INSERT.equals(getNowMode()));
+                || IkenshoConstants.AFFAIR_MODE_INSERT.equals(getNowMode())||simpleSnap.simpleIsModefield());
+        // Addition - end
         param.setCsvOutputType(billFDOutputKubun.intValue());
         param.setCsvOutputTime(billFDOutputTime);
         param
@@ -373,7 +455,12 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
             sb.append(" WHERE");
             sb.append(" (PATIENT_NO = ");
             sb.append(getPatientNo());
-            sb.append(" )");
+            sb.append(" )"); 
+            // 2006/08/02 - 医師意見書CSV対象対応 TODO
+            // Addition - begin [Masahiko Higuchi]
+            appendSelectMaxEdaNoSubQuery(sb);
+            // Addition - end
+           
             IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
             VRArrayList array = (VRArrayList) dbm.executeQuery(sb.toString());
             if (array.getDataSize() > 0) {
@@ -648,6 +735,7 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(",KIND");
         sb.append(",INSURER_NO");
         sb.append(",INSURER_NM");
+        sb.append(",INSURER_TYPE");
         sb.append(",CREATE_DT");
         sb.append(",KOUSIN_DT");
         sb.append(",LAST_TIME");
@@ -850,6 +938,8 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeString("INSURER_NO", originalData));
         sb.append(",");
         sb.append(getDBSafeString("INSURER_NM", originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumber("INSURER_TYPE", originalData));
         sb.append(",CURRENT_TIMESTAMP");
         sb.append(",CURRENT_TIMESTAMP");
         sb.append(",CURRENT_TIMESTAMP");
@@ -991,6 +1081,15 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         }
 
     }
+    
+    /**
+     * 更新時の専門医受診の有無に関するSQLを変更します。
+     */
+    protected void doUpdateDifferenceItemSenmoni(StringBuffer sb) throws Exception{
+        IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "SENMONI",
+                new String[] { "SENMONI_NM" }, true);
+    }
+    
 
     /**
      * 意見書情報を更新します。
@@ -1048,8 +1147,15 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         }
         IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "SEISIN",
                 new String[] { "SEISIN_NM" }, true);
-        IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "SENMONI",
-                new String[] { "SENMONI_NM" }, true);
+        
+        // 2006/08/09
+        // 医師意見書 - 専門医受診の有無連動に対応してSQL変更
+        // Replace - begin [Masahiko Higuchi]
+            // IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "SENMONI",
+            //   new String[] { "SENMONI_NM" }, true);
+        doUpdateDifferenceItemSenmoni(sb);
+        // Replace - end
+        
         sb.append(",KIKIUDE = ");
         sb.append(getDBSafeNumber("KIKIUDE", originalData));
         sb.append(",WEIGHT = ");
@@ -1071,12 +1177,17 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "HIFUSIKKAN",
                 new String[] { "HIFUSIKKAN_BUI" },
                 new String[] { "HIFUSIKKAN_TEIDO" }, true, true);
-        IkenshoCommon.addFollowCheckNumberUpdate(sb, originalData,
-                "KOUSHU_FLAG", new String[] { "KATA_KOUSHU_MIGI",
-                        "KATA_KOUSHU_HIDARI", "HIJI_KOUSHU_MIGI",
-                        "HIJI_KOUSHU_HIDARI", "MATA_KOUSHU_MIGI",
-                        "MATA_KOUSHU_HIDARI", "HIZA_KOUSHU_MIGI",
-                        "HIZA_KOUSHU_HIDARI" }, false);
+        // 2006/07/28 - 医師意見書
+        // Replace - begin [Masahiko Higuchi]
+        appendDifferenceUpdateItem(sb);
+                // IkenshoCommon.addFollowCheckNumberUpdate(sb, originalData,
+                //         "KOUSHU_FLAG", new String[] { "KATA_KOUSHU_MIGI",
+                //                 "KATA_KOUSHU_HIDARI", "HIJI_KOUSHU_MIGI",
+                //                 "HIJI_KOUSHU_HIDARI", "MATA_KOUSHU_MIGI",
+                //                 "MATA_KOUSHU_HIDARI", "HIZA_KOUSHU_MIGI",
+                //                 "HIZA_KOUSHU_HIDARI" }, false);
+        // Replace - end
+        
         IkenshoCommon.addFollowCheckNumberUpdate(sb, originalData,
                 "SICCHOU_FLAG", new String[] { "JOUSI_SICCHOU_MIGI",
                         "JOUSI_SICCHOU_HIDARI", "KASI_SICCHOU_MIGI",
@@ -1195,6 +1306,8 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeString("INSURER_NO", originalData));
         sb.append(",INSURER_NM = ");
         sb.append(getDBSafeString("INSURER_NM", originalData));
+        sb.append(",INSURER_TYPE = ");
+        sb.append(getDBSafeNumber("INSURER_TYPE", originalData));
         // sb.append(",CREATE_DT = ");
         // sb.append(String.valueOf(VRBindPathParser.get("CREATE_DT",
         // ikenshoData)));
@@ -1245,7 +1358,45 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
                 image.length);
     }
 
+    /**
+     * 請求テーブル更新処理に使用する項目を追加します。
+     * @param sb
+     */
+    protected void appendUpdateBillStatements(StringBuffer sb) throws Exception{
+        // 2006/08/02 - 電子化加算更新対応
+        // Addition - begin [Masahiko Higuchi]
+        sb.append(" ,DR_ADD_IT = ");
+        sb.append(getDBSafeNumberNullToZero("DR_ADD_IT",originalData));
+        sb.append(" ,SHOSIN_ADD_IT = ");
+        sb.append(getDBSafeNumberNullToZero("SHOSIN_ADD_IT",originalData));
+        // 医療機関コード追加
+        sb.append(" ,DR_CD = ");
+        sb.append(getDBSafeNumberNullToZero("DR_CD",originalData));
+        // Addition - end
+        
+        // 電子化加算（主治医意見書摘要可否判別）フラグ追加対応
+        // 2006/09/07
+        // Addition - begin [Masahiko Higuchi]
+        sb.append(" ,SHOSIN_ADD_IT_TYPE = ");
+        sb.append(getDBSafeNumberNullToZero("SHOSIN_ADD_IT_TYPE",originalData));
+        // Addition - end
+        
+    }
+    
+    
     protected void doUpdateBill(IkenshoFirebirdDBManager dbm) throws Exception {
+        // 2006/09/21[Tozo Tanaka] : add begin
+        // 念のため転記トラップ
+        Object obj = originalData.getData("KOUZA_KIND");
+        if (obj == null) {
+            originalData.setData("KOUZA_MEIGI", originalData
+                    .getData("FURIKOMI_MEIGI"));
+            originalData.setData("KOUZA_NO", originalData
+                    .getData("BANK_KOUZA_NO"));
+            originalData.setData("KOUZA_KIND", originalData
+                    .getData("BANK_KOUZA_KIND"));
+        }
+        // 2006/09/21[Tozo Tanaka] : add begin
 
         // 請求書
         StringBuffer sb = new StringBuffer();
@@ -1368,17 +1519,60 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
 
         sb.append(",LAST_TIME = CURRENT_TIMESTAMP");
 
+        // 2006/08/02 - 電子化加算更新対応
+        // Addition - begin [Masahiko Higuchi]
+        appendUpdateBillStatements(sb);
+        // Addition - end
+        
         sb.append(" WHERE");
         sb.append(" (IKN_BILL.PATIENT_NO = ");
         sb.append(getPatientNo());
         sb.append(")");
         sb.append("AND(IKN_BILL.EDA_NO = ");
         sb.append(getEdaNo());
+
         sb.append(")");
 
         dbm.executeUpdate(sb.toString());
 
     }
+    
+    /**
+     * 請求テーブルに追加するキーを追加します。
+     */
+    protected void appendInsertBillKeys(StringBuffer sb) throws Exception{
+        // 電子化加算対応
+        // Addition -begin [Masahiko Higuchi]
+        sb.append(" ,DR_ADD_IT");
+        sb.append(" ,SHOSIN_ADD_IT");
+        sb.append(" ,DR_CD");
+        // Addition - end
+        // 電子化加算（主治医意見書摘要可否判別）フラグ追加対応
+        // 2006/09/07
+        // Addition - begin [Masahiko Higuchi]
+        sb.append(" ,SHOSIN_ADD_IT_TYPE");
+        // Addition - end
+    }
+    
+    /**
+     * 請求テーブルに追加する値を設定します。
+     * @param sb
+     */
+    protected void appendInsertBillValues(StringBuffer sb) throws Exception{
+        sb.append(",");
+        sb.append(getDBSafeNumberNullToZero("DR_ADD_IT",originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumberNullToZero("SHOSIN_ADD_IT",originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumberNullToZero("DR_CD",originalData));
+        // 電子化加算（主治医意見書摘要可否判別）フラグ追加対応
+        // 2006/09/07
+        // Addition - begin [Masahiko Higuchi]
+        sb.append(",");
+        sb.append(getDBSafeNumberNullToZero("SHOSIN_ADD_IT_TYPE",originalData));
+        // Addition - end
+    }
+    
 
     protected void doInsertBill(IkenshoFirebirdDBManager dbm) throws Exception {
         // 念のため転記トラップ
@@ -1451,6 +1645,12 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(",HAKKOU_KBN");
         sb.append(",SINSEI_DT");
         sb.append(",LAST_TIME");
+        
+        // 2006/08/02 - 医師意見書 電子化加算保存対応
+        // Addition - begin [Masahiko Higuchi]
+        appendInsertBillKeys(sb);
+        // Addition - end
+        
         sb.append(" )");
         sb.append(" VALUES");
         sb.append(" (");
@@ -1572,6 +1772,12 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeDate("SINSEI_DT", originalData));
 
         sb.append(",CURRENT_TIMESTAMP");
+        
+        // 2006/08/02 - 電子化加算保存処理対応
+        // Addition - begin [Masahiko Higuchi]
+        appendInsertBillValues(sb);
+        // Addition - end
+        
         sb.append(" )");
 
         dbm.executeUpdate(sb.toString());
@@ -1631,9 +1837,11 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         setStatusText("主治医意見書");
         buttons.setTitle("主治医意見書");
 
-        mindBody1.setFollowDisabledComponents(new JComponent[] { tabs, update,
+        if(mindBody1!=null){
+            mindBody1.setFollowDisabledComponents(new JComponent[] { tabs, update,
                 print, buttons.getBackButton() });
-
+        }
+        
         applicant
                 .addWriteDateChangeListener(new IkenshoWriteDateChangeListener() {
                     public void writeDataChanged(EventObject e) {
@@ -1748,6 +1956,10 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
             className = IkenshoIkenshoInfoH18.class.getName();
             title = "主治医意見書";
             break;
+        case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
+            className = IkenshoIshiIkenshoInfo.class.getName();
+            title = "医師意見書";
+            break;
         default:
             return;
         }
@@ -1775,4 +1987,20 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         return billHakkouKubun;
     }
 
+    /**
+     * 医師意見書との変更点を定義します。 
+     */
+    protected void appendDifferenceUpdateItem(StringBuffer sb) throws Exception{
+        // 2006/07/28 - 医師意見書
+        // Addition - begin [Masahiko Higuchi]
+        IkenshoCommon.addFollowCheckNumberUpdate(sb, originalData,
+                "KOUSHU_FLAG", new String[] { "KATA_KOUSHU_MIGI",
+                        "KATA_KOUSHU_HIDARI", "HIJI_KOUSHU_MIGI",
+                        "HIJI_KOUSHU_HIDARI", "MATA_KOUSHU_MIGI",
+                        "MATA_KOUSHU_HIDARI", "HIZA_KOUSHU_MIGI",
+                        "HIZA_KOUSHU_HIDARI" }, false);
+        // Addition - end
+        
+    }
+    
 }

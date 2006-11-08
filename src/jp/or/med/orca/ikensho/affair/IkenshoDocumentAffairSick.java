@@ -74,23 +74,23 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   private VRLayout sickLayout = new VRLayout();
   private ACComboBox sickMedicineName5 = new ACComboBox();
   private VRLabel sickMedicineUsageHead3 = new VRLabel();
-  private ACParentHesesPanelContainer sickDates2 = new ACParentHesesPanelContainer();
+  private ACParentHesesPanelContainer sickDates2;
   private ACGroupBox sickOutlookGroup;
   private ACComboBox sickMedicineUsage2 = new ACComboBox();
   private ACTextField sickMedicineDosage4 = new ACTextField();
-  private IkenshoSpecialSickButton sickSpecial3 = new IkenshoSpecialSickButton();
+  private IkenshoSpecialSickButton sickSpecial3;
   private ACComboBox sickMedicineUsage1 = new ACComboBox();
   private ACComboBox sickMedicineName3 = new ACComboBox();
-  private ACParentHesesPanelContainer sickDates3 = new ACParentHesesPanelContainer();
+  private ACParentHesesPanelContainer sickDates3;
   private ACComboBox sickMedicineUsage3 = new ACComboBox();
   private IkenshoEraDateTextField sickDate2 = new IkenshoEraDateTextField();
   private VRLabel sickMedicineDosageHead6 = new VRLabel();
   private ACLabelContainer sickMedicines6 = new ACLabelContainer();
-  private IkenshoSpecialSickButton sickSpecial1 = new IkenshoSpecialSickButton();
+  private IkenshoSpecialSickButton sickSpecial1;
   private ACTextField sickMedicineDosage5 = new ACTextField();
   private ACLabelContainer sickMedicines3 = new ACLabelContainer();
   private ACComboBox sickMedicineUsage5 = new ACComboBox();
-  private ACParentHesesPanelContainer sickDates1 = new ACParentHesesPanelContainer();
+  private ACParentHesesPanelContainer sickDates1;
   private ACTextField sickMedicineDosage1 = new ACTextField();
   private ACComboBox sickName3 = new ACComboBox();
   private ACClearableRadioButtonGroup sickStable;
@@ -100,7 +100,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   private ACLabelContainer sickMedicines4 = new ACLabelContainer();
   private ACComboBox sickName2 = new ACComboBox();
   private ACComboBox sickMedicineUsage6 = new ACComboBox();
-  private IkenshoSpecialSickButton sickSpecial2 = new IkenshoSpecialSickButton();
+  private IkenshoSpecialSickButton sickSpecial2;
   private IkenshoEraDateTextField sickDate1 = new IkenshoEraDateTextField();
   private VRLabel sickMedicineUsageHead1 = new VRLabel();
   private ACComboBox sickMedicineUsage4 = new ACComboBox();
@@ -265,15 +265,15 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     applyPoolTeikeibun(sickName3, IkenshoCommon.TEIKEI_SICK_NAME);
 
     VRHashMapArrayToConstKeyArrayAdapter adapt;
-    sickSpecial1.setUnpressedModel(sickName1.getModel());
-    sickSpecial2.setUnpressedModel(sickName2.getModel());
-    sickSpecial3.setUnpressedModel(sickName3.getModel());
+    getSickSpecial1().setUnpressedModel(sickName1.getModel());
+    getSickSpecial2().setUnpressedModel(sickName2.getModel());
+    getSickSpecial3().setUnpressedModel(sickName3.getModel());
 
 
     adapt = IkenshoCommon.getMDisease(dbm, IkenshoCommon.DISEASE_SEPCIAL_SICK_NAME);
-    sickSpecial1.setPressedModel(IkenshoCommon.createComboAdapter(adapt));
-    sickSpecial2.setPressedModel(IkenshoCommon.createComboAdapter(adapt));
-    sickSpecial3.setPressedModel(IkenshoCommon.createComboAdapter(adapt));
+    getSickSpecial1().setPressedModel(IkenshoCommon.createComboAdapter(adapt));
+    getSickSpecial2().setPressedModel(IkenshoCommon.createComboAdapter(adapt));
+    getSickSpecial3().setPressedModel(IkenshoCommon.createComboAdapter(adapt));
 
 
     applyPoolTeikeibun(sickMedicineName1, IkenshoCommon.TEIKEI_MEDICINE_NAME);
@@ -296,6 +296,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     applyPoolTeikeibun(sickMedicineUsage6, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
 
   }
+  
   public boolean noControlError() {
 
     //エラーチェック
@@ -322,9 +323,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   protected void bindSourceInnerBindComponent() throws Exception {
     super.bindSourceInnerBindComponent();
 
-    checkSpecialSick(sickName1, sickSpecial1);
-    checkSpecialSick(sickName2, sickSpecial2);
-    checkSpecialSick(sickName3, sickSpecial3);
+    checkSpecialSick(sickName1, getSickSpecial1());
+    checkSpecialSick(sickName2, getSickSpecial2());
+    checkSpecialSick(sickName3, getSickSpecial3());
 
   }
   /**
@@ -498,8 +499,8 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineName5.setBindPath("MEDICINE5");
     sickMedicineName5.setIMEMode(InputSubset.KANJI);
     sickMedicineUsageHead3.setText("　　　");
-    sickDates2.setBeginText("発症年月日（");
-    sickDates2.setEndText("）");
+    getSickDates2().setBeginText("発症年月日（");
+    getSickDates2().setEndText("）");
     sickDate2.getDayUnit().setText("日頃");
     getOutlookGroup().setText("介護の必要の程度に関する予後の見通し");
     getOutlookGroup().setLayout(sickOutlookLayout);
@@ -524,9 +525,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineName3.setMaxLength(12);
     sickMedicineName3.setBindPath("MEDICINE3");
     sickMedicineName3.setIMEMode(InputSubset.KANJI);
-    sickDates3.setEndText("）");
+    getSickDates3().setEndText("）");
     sickDate3.getDayUnit().setText("日頃");
-    sickDates3.setBeginText("発症年月日（");
+    getSickDates3().setBeginText("発症年月日（");
     sickMedicineUsage3.setPreferredSize(new Dimension(180, 19));
     sickMedicineUsage3.setMaxLength(10);
     sickMedicineUsage3.setBindPath("USAGE3");
@@ -549,8 +550,8 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineUsage5.setMaxLength(10);
     sickMedicineUsage5.setBindPath("USAGE5");
     sickMedicineUsage5.setIMEMode(InputSubset.KANJI);
-    sickDates1.setBeginText("発症年月日（");
-    sickDates1.setEndText("）");
+    getSickDates1().setBeginText("発症年月日（");
+    getSickDates1().setEndText("）");
     sickDate1.getDayUnit().setText("日頃");
     sickMedicineDosage1.setColumns(4);
     sickMedicineDosage1.setHorizontalAlignment(SwingConstants.RIGHT);
@@ -596,9 +597,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineUsage4.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageHead2.setText("　　　");
     sickOutlook.setBindPath("YKG_YOGO");
-    sickSpecial1.setCombo(sickName1);
-    sickSpecial2.setCombo(sickName2);
-    sickSpecial3.setCombo(sickName3);
+    getSickSpecial1().setCombo(sickName1);
+    getSickSpecial2().setCombo(sickName2);
+    getSickSpecial3().setCombo(sickName3);
 
     sickStableLayout.setAutoWrap(false);
     sickStableLayout.setAlignment(VRLayout.LEFT);
@@ -659,24 +660,183 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickProgressGroup.add(getSickProgresss(), VRLayout.NORTH);
     getSickProgresss().setLayout(new VRLayout());
     getSickProgresss().add(sickProgress, VRLayout.LEFT);
+    // 2006/07/24 - 医師意見書
+    // Replace - begin [Masahiko Higuchi]
+        // sickNameGroup.add(sickNames1, VRLayout.FLOW_INSETLINE_RETURN);
+        // sickNameGroup.add(sickNames2, VRLayout.FLOW_INSETLINE_RETURN);
+        // sickNameGroup.add(sickNames3, VRLayout.FLOW_INSETLINE_RETURN);
+    addSickGroupComponent();
+    // Replace - end
     sickNames1.add(sickName1, VRLayout.CLIENT);
-    sickNames1.add(sickDates1, VRLayout.EAST);
-    sickNames1.add(sickSpecial1, VRLayout.EAST);
-    sickDates1.add(sickDate1, null);
-    sickNameGroup.add(sickNames1, VRLayout.FLOW_INSETLINE_RETURN);
-    sickNameGroup.add(sickNames2, VRLayout.FLOW_INSETLINE_RETURN);
-    sickNameGroup.add(sickNames3, VRLayout.FLOW_INSETLINE_RETURN);
+    sickNames1.add(getSickDates1(), VRLayout.EAST);
+    sickNames1.add(getSickSpecial1(), VRLayout.EAST);
+    getSickDates1().add(sickDate1, null);
     sickNames2.add(sickName2, VRLayout.CLIENT);
-    sickNames2.add(sickDates2, VRLayout.EAST);
-    sickNames2.add(sickSpecial2, VRLayout.EAST);
-    sickDates2.add(sickDate2, null);
+    sickNames2.add(getSickDates2(), VRLayout.EAST);
+    sickNames2.add(getSickSpecial2(), VRLayout.EAST);
+    getSickDates2().add(sickDate2, null);
     sickNames3.add(sickName3, VRLayout.CLIENT);
-    sickNames3.add(sickDates3, VRLayout.EAST);
-    sickNames3.add(sickSpecial3, VRLayout.EAST);
-    sickDates3.add(sickDate3, null);
-    this.add(sickTitle, VRLayout.NORTH);
-    this.add(sickNameGroup, VRLayout.NORTH);
-    this.add(sickStableAndOutlook, VRLayout.NORTH);
-    this.add(sickProgressGroup, VRLayout.NORTH);
+    sickNames3.add(getSickDates3(), VRLayout.EAST);
+    sickNames3.add(getSickSpecial3(), VRLayout.EAST);
+    getSickDates3().add(sickDate3, null);
+    // 2006/07/24 - 医師意見書
+    // Replace - begin [Masahiko Higuchi
+    addThisComponent();
+        // this.add(sickTitle, VRLayout.NORTH);
+        // this.add(sickNameGroup, VRLayout.NORTH);
+        // this.add(sickStableAndOutlook, VRLayout.NORTH);
+        // this.add(sickProgressGroup, VRLayout.NORTH);
+    // Replace - end
   }
+  
+  /**
+   * 入院歴グループに追加する項目を定義します。
+   */
+  protected void addSickGroupComponent(){
+      // 2006/07/24 - 医師意見書
+      // Addition - begin [Masahiko Higuchi]
+      sickNameGroup.add(sickNames1, VRLayout.FLOW_INSETLINE_RETURN);
+      sickNameGroup.add(sickNames2, VRLayout.FLOW_INSETLINE_RETURN);
+      sickNameGroup.add(sickNames3, VRLayout.FLOW_INSETLINE_RETURN);
+      // Addition - end
+  }
+  
+  /**
+   * タブに追加する順番・項目を定義します。
+   */
+  protected void addThisComponent(){
+      // 2006/07/24 - 医師意見書
+      // Addition - begin [Masahiko Higuchi]
+      this.add(sickTitle, VRLayout.NORTH);
+      this.add(sickNameGroup, VRLayout.NORTH);
+      this.add(sickStableAndOutlook, VRLayout.NORTH);
+      this.add(sickProgressGroup, VRLayout.NORTH);
+      // Addition - end
+  }
+      
+  /**
+   * 特定疾病ボタン３を返します。
+   * @return
+   */
+    protected IkenshoSpecialSickButton getSickSpecial3() {
+        if(sickSpecial3 == null){
+            sickSpecial3 = new IkenshoSpecialSickButton();
+        }
+        return sickSpecial3;
+    }
+    
+    /**
+     * 特定疾病ボタン１を返します。
+     * @return
+     */
+    protected IkenshoSpecialSickButton getSickSpecial1() {
+        if(sickSpecial1 == null){
+            sickSpecial1 = new IkenshoSpecialSickButton();
+        }
+        return sickSpecial1;
+    }
+    
+    /**
+     * 特定疾病ボタン２を返します。
+     * @return
+     */
+    protected IkenshoSpecialSickButton getSickSpecial2() {
+        if(sickSpecial2 == null){
+            sickSpecial2 = new IkenshoSpecialSickButton();
+        }
+        return sickSpecial2;
+    }
+    /**
+     * 傷病名1を返します。
+     * @return 傷病名1
+     */
+    protected ACComboBox getSickName1(){
+        return sickName1;
+    }
+    /**
+     * 傷病名2を返します。
+     * @return 傷病名2
+     */
+    protected ACComboBox getSickName2(){
+        return sickName2;
+    }
+    /**
+     * 傷病名3を返します。
+     * @return 傷病名3
+     */
+    protected ACComboBox getSickName3(){
+        return sickName3;
+    }
+
+    /**
+     * 指定番号の投薬名を返します。
+     * @param index 番号
+     * @return 投薬名
+     */
+    protected ACComboBox getSickMedicineName(int index){
+        return new ACComboBox[] { sickMedicineName1, sickMedicineName2,
+                  sickMedicineName3, sickMedicineName4, sickMedicineName5,
+                  sickMedicineName6 }[index];
+    }
+    /**
+     * 指定番号の投薬単位を返します。
+     * @param index 番号
+     * @return 投薬単位
+     */
+    protected ACComboBox getSickMedicineDosageUnit(int index){
+        return new ACComboBox[] { sickMedicineDosageUnit1, sickMedicineDosageUnit2,
+                  sickMedicineDosageUnit3, sickMedicineDosageUnit4, sickMedicineDosageUnit5,
+                  sickMedicineDosageUnit6 }[index];
+    }
+    /**
+     * 指定番号の投薬用法を返します。
+     * @param index 番号
+     * @return 投薬用法
+     */
+    protected ACComboBox getSickMedicineUsage(int index){
+        return new ACComboBox[] { sickMedicineUsage1, sickMedicineUsage2,
+                  sickMedicineUsage3, sickMedicineUsage4, sickMedicineUsage5,
+                  sickMedicineUsage6 }[index];
+    }
+    /**
+     * 発症年月日Hesesパネル1を返します。
+     * @return
+     */
+    protected ACParentHesesPanelContainer getSickDates1() {
+        // 2006/07/31 - 医師意見書
+        // override用にGetterに変更
+        /// Addition - begin [Masahiko Higuchi]
+        if(sickDates1 == null){
+            sickDates1 = new ACParentHesesPanelContainer();
+        }
+        return sickDates1;
+    }
+    
+    /**
+     * 発症年月日Hesesパネル2を返します。
+     * @return
+     */
+    protected ACParentHesesPanelContainer getSickDates2() {
+        // 2006/07/31 - 医師意見書
+        // override用にGetterに変更
+        /// Addition - begin [Masahiko Higuchi]
+        if(sickDates2 == null){
+            sickDates2 = new ACParentHesesPanelContainer();
+        }
+        return sickDates2;
+    }
+    
+    /**
+     * 発症年月日Hesesパネル3を返します。
+     * @return
+     */
+    protected ACParentHesesPanelContainer getSickDates3() {
+        // 2006/07/31 - 医師意見書
+        // override用にGetterに変更
+        /// Addition - begin [Masahiko Higuchi]
+        if(sickDates3 == null){
+            sickDates3 = new ACParentHesesPanelContainer();
+        }
+        return sickDates3;
+    }
 }

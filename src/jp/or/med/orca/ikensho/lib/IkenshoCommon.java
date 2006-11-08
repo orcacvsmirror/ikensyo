@@ -41,6 +41,7 @@ import java.sql.SQLException;
 import java.text.Format;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -60,7 +61,9 @@ import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACFrameEventProcesser;
 import jp.nichicom.ac.core.ACPDFCreatable;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -263,6 +266,82 @@ public class IkenshoCommon {
 	// /** ‰îŒì‚Ì•K—v«‚Ì’ö“x‚ÉŠÖ‚·‚é—\Œã‚ÌŒ©’Ê‚µ-‰ü‘P‚Ö‚ÌŠñ—^‚ªŠú‘Ò‚Å‚«‚éƒT[ƒrƒX */
 	// public static final int TEIKEI_OUTLOOK_SERVISE_NAME = 59;
 
+    // ˆÈ~AˆãŽtˆÓŒ©‘’Ç‰Á’èŒ^•¶
+    /** ˆãŽtˆÓŒ©‘-Ž¾•a */
+    public static final int TEIKEI_ISHI_SICK_NAME = 60;
+
+    /** ˆãŽtˆÓŒ©‘-–òÜ */
+    public static final int TEIKEI_ISHI_MEDICINE_NAME = 61;
+
+    /** ˆãŽtˆÓŒ©‘-—p—Ê’PˆÊ */
+    public static final int TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT = 62;
+
+    /** ˆãŽtˆÓŒ©‘-—p–@ */
+    public static final int TEIKEI_ISHI_MEDICINE_USAGE = 63;
+
+    /** ˆãŽtˆÓŒ©‘-Çó‚Æ‚µ‚Ä•sˆÀ’è‚É‚¨‚¯‚é‹ï‘Ì“Ió‹µ */
+    public static final int TEIKEI_ISHI_INSECURE_CONDITION_NAME = TEIKEI_INSECURE_CONDITION_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-¸_E_ŒoÇó */
+    public static final int TEIKEI_ISHI_MIND_SICK_NAME = TEIKEI_MIND_SICK_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-Ž¸‹Ö */
+    public static final int TEIKEI_ISHI_SICK_COPE_URINE_NAME = TEIKEI_SICK_COPE_URINE_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-“]“|EœÜ */
+    public static final int TEIKEI_ISHI_SICK_COPE_FACTURE_NAME = TEIKEI_SICK_COPE_FACTURE_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-œpœj */
+    public static final int TEIKEI_ISHI_SICK_COPE_PROWL_NAME = TEIKEI_SICK_COPE_PROWL_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-åñáŒ */
+    public static final int TEIKEI_ISHI_SICK_COPE_JYOKUSOU_NAME = TEIKEI_SICK_COPE_JYOKUSOU_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-š‹‰º«”x‰Š */
+    public static final int TEIKEI_ISHI_SICK_COPE_PNEUMONIA_NAME = 64;
+
+    /** ˆãŽtˆÓŒ©‘-’°•ÂÇ */
+    public static final int TEIKEI_ISHI_SICK_COPE_INTESTINES_NAME = 65;
+
+    /** ˆãŽtˆÓŒ©‘-ˆÕŠ´õ« */
+    public static final int TEIKEI_ISHI_SICK_COPE_INFECTION_NAME = TEIKEI_SICK_COPE_INFECTION_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-S”x‹@”\‚Ì’á‰º */
+    public static final int TEIKEI_ISHI_SICK_COPE_HEART_LUNG_NAME = TEIKEI_SICK_COPE_HEART_LUNG_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-’É‚Ý */
+    public static final int TEIKEI_ISHI_SICK_COPE_PAIN_NAME = 66;
+
+    /** ˆãŽtˆÓŒ©‘-’E… */
+    public static final int TEIKEI_ISHI_SICK_COPE_DEHYDRATION_NAME = TEIKEI_SICK_COPE_DEHYDRATION_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-‚»‚Ì‘¼ */
+    public static final int TEIKEI_ISHI_SICK_COPE_OTHER_NAME = TEIKEI_SICK_COPE_OTHER_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-‚»‚Ì‘¼ */
+    public static final int TEIKEI_ISHI_SICK_TYPE_OTHER_NAME = TEIKEI_SICK_TYPE_OTHER_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-ŒŒˆ³ */
+    public static final int TEIKEI_ISHI_CARE_SERVICE_BLOOD_PRESSURE_NAME = TEIKEI_CARE_SERVICE_BLOOD_PRESSURE_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-š‹‰º */
+    public static final int TEIKEI_ISHI_CARE_SERVICE_ENGE_NAME = TEIKEI_CARE_SERVICE_ENGE_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-ÛH */
+    public static final int TEIKEI_ISHI_CARE_SERVICE_EAT_NAME = TEIKEI_CARE_SERVICE_EAT_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-ˆÚ“® */
+    public static final int TEIKEI_ISHI_CARE_SERVICE_MOVE_NAME = TEIKEI_CARE_SERVICE_MOVE_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-‚»‚Ì‘¼ */
+    public static final int TEIKEI_ISHI_CARE_SERVICE_OTHER_NAME = TEIKEI_CARE_SERVICE_OTHER_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-Š´õÇ */
+    public static final int TEIKEI_ISHI_INFECTION_NAME = TEIKEI_INFECTION_NAME;
+
+    /** ˆãŽtˆÓŒ©‘-“Á‹LŽ–€ */
+    public static final int TEIKEI_ISHI_MENTION_NAME = 67;
+    
 	/**
 	 * ÅV•¶‘ŠY“–‚È‚µ
 	 */
@@ -426,13 +505,14 @@ public class IkenshoCommon {
 			sb.append(" )");
 			VRArrayList array = (VRArrayList) dbm.executeQuery(sb.toString());
 			if (array.getDataSize() > 0) {
-				String[] sep = String.valueOf(VRBindPathParser.get("TEIKEIBUN", (VRMap) array.getData())).split(IkenshoConstants.LINE_SEPARATOR, 2);
+                String[] sep = ACTextUtilities.separateLineWrapLimit(String.valueOf(VRBindPathParser.get("TEIKEIBUN", (VRMap) array.getData())),2);
+				// String[] sep = String.valueOf(VRBindPathParser.get("TEIKEIBUN", (VRMap) array.getData())).split(IkenshoConstants.LINE_SEPARATOR, 2);
 				if (sep.length < 2) {
 					buttons[i].setHintTitle("");
-					buttons[i].setHintText(sep[0]);
+                    buttons[i].setHintText(ACTextUtilities.toBlankIfNull(sep[0]));
 				} else {
 					buttons[i].setHintTitle(sep[0]);
-					buttons[i].setHintText(sep[1]);
+                    buttons[i].setHintText(ACTextUtilities.toBlankIfNull(sep[1]));
 				}
 			}
 		}
@@ -916,7 +996,7 @@ public class IkenshoCommon {
 		}
 		sb.append(", System:");
 		try {
-			sb.append(ACFrame.getInstance().getProperity("Version/no"));
+			sb.append(ACFrame.getInstance().getProperty("Version/no"));
 		} catch (Exception ex2) {
 			sb.append("unknown");
 		}
@@ -1226,8 +1306,8 @@ public class IkenshoCommon {
 		} else {
 			// 2006/03/02[Tozo Tanaka] : add begin
 			String acrobatPath = "";
-			if (ACFrame.getInstance().hasProperity("Acrobat/Path")) {
-				acrobatPath = ACFrame.getInstance().getProperity("Acrobat/Path");
+			if (ACFrame.getInstance().hasProperty("Acrobat/Path")) {
+				acrobatPath = ACFrame.getInstance().getProperty("Acrobat/Path");
 			}
 			// 2006/03/02[Tozo Tanaka] : add end
 			arg[0] = acrobatPath;
@@ -1250,7 +1330,7 @@ public class IkenshoCommon {
 	 * @return ƒL[‚É‘Î‰ž‚·‚é’l
 	 */
 	public static String getProperity(String path) throws Exception {
-		return ACFrame.getInstance().getProperity(path);
+		return ACFrame.getInstance().getProperty(path);
 	}
 
 	/**
@@ -2221,4 +2301,81 @@ public class IkenshoCommon {
 	}
 	// 2006/12/11[Tozo Tanaka] : add end
 
+
+    /**
+     * ƒ}ƒbƒv“à‚Ì•ÛŒ¯ŽÒ–¼‚Æ•ÛŒ¯ŽÒ‹æ•ª‚ðŒ‹‡‚µ‚½ƒtƒB[ƒ‹ƒh‚ð’Ç‰Á‚µ‚Ü‚·B
+     * @param insurerData •ÛŒ¯ŽÒˆê——
+     * @param nameTypeBindPath ’Ç‰ÁƒtƒB[ƒ‹ƒh–¼
+     */
+    public static void buildInsureNameType(VRList insurerData, String nameTypeBindPath) throws Exception{
+        Iterator it = insurerData.iterator();
+        while (it.hasNext()) {
+            VRMap row = (VRMap) it.next();
+            String insureName = ACCastUtilities.toString(VRBindPathParser.get(
+                    "INSURER_NM", row));
+            switch (ACCastUtilities.toInt(VRBindPathParser.get("INSURER_TYPE",
+                    row), 0)) {
+            case 1:
+                row.setData(nameTypeBindPath, insureName + "(ŽåŽ¡ˆãˆÓŒ©‘‚Ì‚Ý)");
+                break;
+            case 2:
+                row.setData(nameTypeBindPath, insureName + "(ˆãŽtˆÓŒ©‘‚Ì‚Ý)");
+                break;
+            default:
+                row.setData(nameTypeBindPath, insureName);
+                break;
+            }
+        }
+    }
+    
+    //2006/09/07 [Tozo Tanaka] : add begin
+    /**
+     * “dŽq‰»‰ÁŽZ‚ð‰ÁŽZ‚µ‚Ä‚æ‚¢‚©‚ð•Ô‚µ‚Ü‚·B
+     * @param formatKubun •¶‘‹æ•ª
+     * @param doctorAddIT ˆã—Ã‹@ŠÖ‚Ì“dŽq‰»‰ÁŽZ‹æ•ª
+     * @param insurer •ÛŒ¯ŽÒ
+     * @return “dŽq‰»‰ÁŽZ‚ð‰ÁŽZ‚µ‚Ä‚æ‚¢‚©
+     * @throws ParseException ˆ——áŠO
+     */
+    public static boolean canAddIT(int formatKubun, boolean isDoctorAddIT, VRMap insurer) throws ParseException{
+        return canAddIT(formatKubun, isDoctorAddIT, ACCastUtilities.toInt(VRBindPathParser.get(
+                        "SHOSIN_ADD_IT_TYPE", insurer), 1));
+//        if(isDoctorAddIT){
+//            //“dŽq‰»‰ÁŽZ‚ ‚è‚Ìˆã—Ã‹@ŠÖ
+//            switch(formatKubun){
+//            case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
+//                //ˆãŽtˆÓŒ©‘‚Ìê‡A•K‚¸“dŽq‰»‰ÁŽZ‘ÎÛ‚Æ‚·‚éB
+//                return true;
+//            default:
+//                //ŽåŽ¡ˆãˆÓŒ©‘‚Ìê‡A“dŽq‰»‰ÁŽZ‹æ•ª‚ª0‚Ì‚Æ‚«‚Ì‚ÝA“dŽq‰»‰ÁŽZ‘ÎÛ‚Æ‚·‚éB
+//                return ACCastUtilities.toInt(VRBindPathParser.get(
+//                        "SHOSIN_ADD_IT_TYPE", insurer), 1) == 0;
+//            }
+//        }
+//        return false;
+    }
+    /**
+     * “dŽq‰»‰ÁŽZ‚ð‰ÁŽZ‚µ‚Ä‚æ‚¢‚©‚ð•Ô‚µ‚Ü‚·B
+     * @param formatKubun •¶‘‹æ•ª
+     * @param doctorAddIT ˆã—Ã‹@ŠÖ‚Ì“dŽq‰»‰ÁŽZ‹æ•ª
+     * @param insurerAddITType •ÛŒ¯ŽÒ‚Ì“dŽq‰»‰ÁŽZ‹æ•ª
+     * @return “dŽq‰»‰ÁŽZ‚ð‰ÁŽZ‚µ‚Ä‚æ‚¢‚©
+     * @throws ParseException ˆ——áŠO
+     */
+    public static boolean canAddIT(int formatKubun, boolean isDoctorAddIT,
+            int insurerAddITType) throws ParseException {
+        if(isDoctorAddIT){
+            //“dŽq‰»‰ÁŽZ‚ ‚è‚Ìˆã—Ã‹@ŠÖ
+            switch(formatKubun){
+            case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
+                //ˆãŽtˆÓŒ©‘‚Ìê‡A•K‚¸“dŽq‰»‰ÁŽZ‘ÎÛ‚Æ‚·‚éB
+                return true;
+            default:
+                //ŽåŽ¡ˆãˆÓŒ©‘‚Ìê‡A“dŽq‰»‰ÁŽZ‹æ•ª‚ª0‚Ì‚Æ‚«‚Ì‚ÝA“dŽq‰»‰ÁŽZ‘ÎÛ‚Æ‚·‚éB
+                return insurerAddITType == 0;
+            }
+        }
+        return false;
+    }
+    //2006/09/07 [Tozo Tanaka] : add end
 }

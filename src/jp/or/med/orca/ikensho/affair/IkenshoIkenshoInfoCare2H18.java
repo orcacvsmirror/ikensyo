@@ -192,6 +192,14 @@ public class IkenshoIkenshoInfoCare2H18 extends IkenshoIkenshoInfoCare2 {
                 IkenshoCommon.TEIKEI_CARE_SERVICE_UNDOU_NAME);
         // applyPoolTeikeibun(outlookService,
         // IkenshoCommon.TEIKEI_OUTLOOK_SERVISE_NAME);
+        
+        // 2006/06/22
+        // スナップショット
+        // Addition - begin [Masahiko Higuchi]
+        if(getMasterAffair() instanceof IkenshoIkenshoInfo){
+            ((IkenshoIkenshoInfo)getMasterAffair()).simpleSnap.addComponent(sportsValue);
+        }
+        // Addition - end
 
     }
 
@@ -208,7 +216,7 @@ public class IkenshoIkenshoInfoCare2H18 extends IkenshoIkenshoInfoCare2 {
         getSports().addListSelectionListener(
                 new ACFollowDisableSelectionListener(new JComponent[] {
                         getSportsValue(), getSportstHeses() }, 1));
-
+        
     }
 
     protected void setCare2KanseEventListener() {

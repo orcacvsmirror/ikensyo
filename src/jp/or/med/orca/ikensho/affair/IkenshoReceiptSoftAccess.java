@@ -35,9 +35,9 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACFrameEventProcesser;
 import jp.nichicom.ac.text.ACKanaConvert;
 import jp.nichicom.ac.util.ACMessageBox;
-import jp.nichicom.ac.util.ACSplashable;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.ac.util.splash.ACSplash;
+import jp.nichicom.ac.util.splash.ACSplashable;
 import jp.nichicom.ac.util.splash.ACStopButtonSplash;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.component.table.VRTableColumnModel;
@@ -48,7 +48,6 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
-import jp.nichicom.vr.util.logging.VRLogger;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.table.IkenshoCheckBoxTableCellEditor;
 import jp.or.med.orca.ikensho.component.table.IkenshoCheckBoxTableCellRenderer;
@@ -124,26 +123,26 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
         
         try{
             //âﬂãéÇÃí êMê›íËÇì«Ç›çûÇﬁ
-            if(ACFrame.getInstance().hasProperity("ReceiptAccess/IP")){
-                ip = ACFrame.getInstance().getProperity("ReceiptAccess/IP");
+            if(ACFrame.getInstance().hasProperty("ReceiptAccess/IP")){
+                ip = ACFrame.getInstance().getProperty("ReceiptAccess/IP");
             }
-            if(ACFrame.getInstance().hasProperity("ReceiptAccess/DBSVersion")){
-                dbsVer = ACFrame.getInstance().getProperity("ReceiptAccess/DBSVersion");
+            if(ACFrame.getInstance().hasProperty("ReceiptAccess/DBSVersion")){
+                dbsVer = ACFrame.getInstance().getProperty("ReceiptAccess/DBSVersion");
             }
-            if(ACFrame.getInstance().hasProperity("ReceiptAccess/Port")){
-                port = ACFrame.getInstance().getProperity("ReceiptAccess/Port");
+            if(ACFrame.getInstance().hasProperty("ReceiptAccess/Port")){
+                port = ACFrame.getInstance().getProperty("ReceiptAccess/Port");
             }
-            if(ACFrame.getInstance().hasProperity("ReceiptAccess/UserName")){
-                user = ACFrame.getInstance().getProperity("ReceiptAccess/UserName");
+            if(ACFrame.getInstance().hasProperty("ReceiptAccess/UserName")){
+                user = ACFrame.getInstance().getProperty("ReceiptAccess/UserName");
             }
-            if(ACFrame.getInstance().hasProperity("ReceiptAccess/Password")){
-                pass = ACFrame.getInstance().getProperity("ReceiptAccess/Password");
+            if(ACFrame.getInstance().hasProperty("ReceiptAccess/Password")){
+                pass = ACFrame.getInstance().getProperty("ReceiptAccess/Password");
             }
-            if(ACFrame.getInstance().hasProperity("ReceiptAccess/HospitalID")){
-                hospitalID.setText(ACFrame.getInstance().getProperity("ReceiptAccess/HospitalID"));
+            if(ACFrame.getInstance().hasProperty("ReceiptAccess/HospitalID")){
+                hospitalID.setText(ACFrame.getInstance().getProperty("ReceiptAccess/HospitalID"));
             }
-            if(ACFrame.getInstance().hasProperity("ReceiptAccess/KanaConvert")){
-                useKanaConvert.setSelected("true".equals(ACFrame.getInstance().getProperity("ReceiptAccess/KanaConvert")));
+            if(ACFrame.getInstance().hasProperty("ReceiptAccess/KanaConvert")){
+                useKanaConvert.setSelected("true".equals(ACFrame.getInstance().getProperty("ReceiptAccess/KanaConvert")));
             }
         }catch(Exception ex){
             
@@ -681,29 +680,29 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
             String pass = password.getText();
             String dbsVer = dbsVersion.getText();
             String hospID = hospitalID.getText();
-            ACFrame.getInstance().getProperityXML().setForceValueAt(
+            ACFrame.getInstance().getPropertyXML().setForceValueAt(
                     "ReceiptAccess/IP", ip);
-            ACFrame.getInstance().getProperityXML().setForceValueAt(
+            ACFrame.getInstance().getPropertyXML().setForceValueAt(
                     "ReceiptAccess/DBSVersion", dbsVer);
-            ACFrame.getInstance().getProperityXML().setForceValueAt(
+            ACFrame.getInstance().getPropertyXML().setForceValueAt(
                     "ReceiptAccess/Port", port);
-            ACFrame.getInstance().getProperityXML().setForceValueAt(
+            ACFrame.getInstance().getPropertyXML().setForceValueAt(
                     "ReceiptAccess/UserName", user);
-            ACFrame.getInstance().getProperityXML().setForceValueAt(
+            ACFrame.getInstance().getPropertyXML().setForceValueAt(
                     "ReceiptAccess/Password", pass);
-            ACFrame.getInstance().getProperityXML().setForceValueAt(
+            ACFrame.getInstance().getPropertyXML().setForceValueAt(
                     "ReceiptAccess/HospitalID", hospID);
             if (useKanaConvert.isSelected()) {
-                ACFrame.getInstance().getProperityXML().setForceValueAt(
+                ACFrame.getInstance().getPropertyXML().setForceValueAt(
                         "ReceiptAccess/KanaConvert", "true");
             } else {
-                ACFrame.getInstance().getProperityXML().setForceValueAt(
+                ACFrame.getInstance().getPropertyXML().setForceValueAt(
                         "ReceiptAccess/KanaConvert", "false");
             }
             
             //2006/02/12[Tozo Tanaka] : replace begin
 //          ACFrame.getInstance().getProperityXML().write();
-          if(!ACFrame.getInstance().getProperityXML().writeWithCheck()){
+          if(!ACFrame.getInstance().getPropertyXML().writeWithCheck()){
               return;
           }
           //2006/02/12[Tozo Tanaka] : replace end

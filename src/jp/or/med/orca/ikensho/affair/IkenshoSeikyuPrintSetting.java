@@ -11,7 +11,6 @@ import java.awt.event.WindowEvent;
 import java.util.Arrays;
 import java.util.Date;
 
-import javax.swing.JDialog;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -38,7 +37,7 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** <HEAD_IKENSYO> */
 
-public class IkenshoSeikyuPrintSetting extends JDialog implements
+public class IkenshoSeikyuPrintSetting extends IkenshoDialog implements
         ActionListener, ListSelectionListener {
     /**
      * 印刷ボタン定数
@@ -158,7 +157,7 @@ public class IkenshoSeikyuPrintSetting extends JDialog implements
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
         } catch (Exception e) {
             e.printStackTrace();
         }
@@ -414,7 +413,7 @@ public class IkenshoSeikyuPrintSetting extends JDialog implements
     }
 
     // コンポーネントの初期化
-    private void initComponent() {
+    private void init() {
         // ウィンドウのサイズ
         setSize(new Dimension(730, 440));
         // ウィンドウを中央に配置
@@ -431,8 +430,8 @@ public class IkenshoSeikyuPrintSetting extends JDialog implements
 
     }
 
-    public int showDialog(String insurerNo) throws Exception {
-        doSelect(insurerNo);
+    public int showDialog(String insurerNo, String insurerType) throws Exception {
+        doSelect(insurerNo, insurerType);
         setTodayAll(true);
         super.setVisible(true);
         return buttonAction;
@@ -443,7 +442,7 @@ public class IkenshoSeikyuPrintSetting extends JDialog implements
      * 
      * @throws Exception
      */
-    private void doSelect(String insurerNo) throws Exception {
+    private void doSelect(String insurerNo, String insurerType) throws Exception {
 
         // キーを元に、DBからデータを取得
         IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
@@ -466,6 +465,7 @@ public class IkenshoSeikyuPrintSetting extends JDialog implements
         sb.append(" INSURER");
         sb.append(" WHERE");
         sb.append(" INSURER_NO='" + insurerNo + "'");
+        sb.append(" AND(INSURER_TYPE=" + insurerType+")");
         sb.append(" ORDER BY");
         sb.append(" INSURER_NO");
         VRArrayList insurerArray = (VRArrayList) dbm
@@ -481,20 +481,20 @@ public class IkenshoSeikyuPrintSetting extends JDialog implements
         contents.bindSource();
 
         // 請求パターンの表示
-        output_pattern = Integer.parseInt(VRBindPathParser.get(
-                "SEIKYUSHO_OUTPUT_PATTERN", map).toString());
+        output_pattern = Integer.parseInt(String.valueOf(VRBindPathParser.get(
+                "SEIKYUSHO_OUTPUT_PATTERN", map)));
         setOutputPattern(output_pattern);
-        toCreateCostCodeHeses.setVisible(!VRBindPathParser.get(
-                "ISS_INSURER_NO", map).toString().equals(""));
+        toCreateCostCodeHeses.setVisible(!"".equals(String.valueOf(VRBindPathParser.get(
+                "ISS_INSURER_NO", map))));
         // 意見書作成料・検査料(1枚)の時は、検査料請求対象に意見書作成料請求対象を表示する。
         if (output_pattern == 1) {
-            toCheckCost.setText(VRBindPathParser.get("ISS_INSURER_NM", map)
-                    .toString());
-            toCheckCostCode.setText(VRBindPathParser.get("ISS_INSURER_NO", map)
-                    .toString());
+            toCheckCost.setText(String.valueOf(VRBindPathParser.get(
+                    "ISS_INSURER_NM", map)));
+            toCheckCostCode.setText(String.valueOf(VRBindPathParser.get(
+                    "ISS_INSURER_NO", map)));
         } else {
-            toCheckCostCodeHeses.setVisible(!VRBindPathParser.get(
-                    "SKS_INSURER_NO", map).toString().equals(""));
+            toCheckCostCodeHeses.setVisible(!"".equals(String.valueOf(VRBindPathParser.get(
+                    "SKS_INSURER_NO", map))));
         }
     }
 
@@ -710,7 +710,27 @@ public class IkenshoSeikyuPrintSetting extends JDialog implements
      */
     protected void closeWindow() {
         // 自身を破棄する
+        //2006-09-20 begin-replace Tozo TANAKA
+        //画面破棄後に一覧からコンボの値が参照されてしまうため、破棄前に退避して差し戻す。
+        //this.dispose();
+        String from = billPrintDateRangeFrom.getEra();
+        String to = billPrintDateRangeTo.getEra();
+        String print = billPrintDate.getEra();
+        String detail = billDetailPrintDate.getEra();
         this.dispose();
+        try{
+            billPrintDateRangeFrom.reloadEras();
+            billPrintDateRangeTo.reloadEras();
+            billPrintDate.reloadEras();
+            billDetailPrintDate.reloadEras();
+        }catch(Exception ex){
+            
+        }
+        billPrintDateRangeFrom.setEra(from);
+        billPrintDateRangeTo.setEra(to);
+        billPrintDate.setEra(print);
+        billDetailPrintDate.setEra(detail);
+        //2006-09-20 end-replace Tozo TANAKA
     }
 
     public void actionPerformed(ActionEvent e) {
@@ -756,4 +776,5 @@ public class IkenshoSeikyuPrintSetting extends JDialog implements
         }
 
     }
+
 }

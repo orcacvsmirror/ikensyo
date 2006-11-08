@@ -80,7 +80,7 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
         //基本情報1
         kihonPnl1.setLayout(new BorderLayout());
         kihonPnl1.add(note1, BorderLayout.EAST);
-        note1.setText("↓「主治医意見書」「訪問看護指示書」に印刷される項目");
+        note1.setText("↓「主治医意見書」「医師医見書」「訪問看護指示書」に印刷される項目");
         note1.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
 
         //基本情報2
@@ -182,7 +182,7 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
         miDefault.setText("この医師・医療機関が主として使用します。");
         miDefault.setBindPath("MI_DEFAULT");
         miDefault.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
-        note3.setText("(チェックすると「主治医意見書」「訪問看護指示書」作成時に予め選択されます)");
+        note3.setText("(チェックすると「主治医意見書」「医師医見書」「訪問看護指示書」作成時に予め選択されます)");
         note3.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
     }
 

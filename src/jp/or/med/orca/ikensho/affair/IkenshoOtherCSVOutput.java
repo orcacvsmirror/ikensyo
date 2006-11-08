@@ -42,6 +42,7 @@ import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.filechooser.ACFileChooser;
 import jp.nichicom.ac.io.ACBmpWriter;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACPassiveKey;
@@ -60,6 +61,7 @@ import jp.nichicom.vr.text.VRDateFormat;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRHashMapArrayToConstKeyArrayAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
@@ -92,6 +94,10 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
     private ACComboBox doctor = new ACComboBox();
     private ACLabelContainer formatKbnContainer = new ACLabelContainer();
     private ACComboBox formatKbn = new ACComboBox();
+    // add begin 2006/08/03 kamitsukasa
+    private ACLabelContainer formatKbnIshiContainer = new ACLabelContainer();
+    private ACComboBox formatKbnIshi = new ACComboBox();
+    // add end 2006/08/03 kamitsukasa
     private ACLabelContainer taisyoContainer = new ACLabelContainer();
     private ACLabelContainer taisyoDayContainer = new ACLabelContainer();
     private ACComboBox taisyoDay = new ACComboBox();
@@ -122,6 +128,16 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 
     private final String h17 = "平成17年度";
     private final String h18 = "平成18年度";
+    // add begin 2006/08/03 kamitsukasa
+    private final String IKN_NEW = "主治医意見書";
+    private final String IKN_ISHI = "医師意見書";
+    // add end 2006/08/03 kamitsukasa
+    
+    // 2006/06/23
+    // CRLF - 置換対応
+    // Addition - begin [Masahiko Higuchi]
+    private static final String VT = String.valueOf('\u000b');
+    // Addition - end
 
     public IkenshoOtherCSVOutput() {
         try {
@@ -179,6 +195,9 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         searchGrp.setLayout(searchGrpLayout);
         searchGrp.add(insurerContainer, VRLayout.FLOW_INSETLINE);
         searchGrp.add(formatKbnContainer, VRLayout.FLOW);
+        // add begin 2006/08/04 kamitsukasa
+        searchGrp.add(formatKbnIshiContainer, VRLayout.FLOW);
+        // add end 2006/08/04 kamitsukasa
         searchGrp.add(doctorContainer, VRLayout.FLOW_RETURN);
         searchGrp.add(taisyoContainer, VRLayout.FLOW_INSETLINE_RETURN);
 
@@ -207,6 +226,17 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         formatKbn.addItem(h17);
         formatKbn.setBindPath("FORMAT_KBN");
         formatKbnContainer.setVisible(false);
+
+        // add begin 2006/08/03 kamitsukasa
+        // 検索条件・フォーマット区分(主治医意見書、医師医見書)
+        formatKbnIshiContainer.setText("意見書区分");
+        formatKbnIshiContainer.setLayout(new BorderLayout());
+        formatKbnIshiContainer.add(formatKbnIshi, null);
+        formatKbnIshi.setEditable(false);
+        formatKbnIshi.addItem(IKN_NEW);
+        formatKbnIshi.addItem(IKN_ISHI);
+        formatKbnIshiContainer.setVisible(true);
+        // add end 2006/08/03 kamitsukasa
 
         // 検索条件・対象期間
         VRLayout taisyoContainerLayout = new VRLayout();
@@ -310,7 +340,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         doSelect(true);
 
         // ステータスバー(初画面のみ)
-        setStatusText("「主治医意見書」CSVファイル出力");
+        setStatusText("「主治医意見書」「医師意見書」CSVファイル出力");
 
         // 期間(DatePanel)の初期化
         initTaisyoDatePanel();
@@ -560,6 +590,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         // 依頼元(保険者)
         StringBuffer sb = new StringBuffer();
         sb.append(" SELECT");
+        sb.append(" DISTINCT");
         sb.append(" INSURER_NM");
         sb.append(" FROM");
         sb.append(" INSURER");
@@ -847,6 +878,18 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         } else {
             formatKbnSql = "AND IKN_ORIGIN.FORMAT_KBN=0";
         }
+        
+        // add begin 2006/08/03 kamitsukasa
+        // 保険者区分
+        String insurerTypeSql;
+        if (IKN_NEW.equals(formatKbnIshi.getSelectedItem().toString())) {
+            formatKbnSql = "AND IKN_ORIGIN.FORMAT_KBN=1";
+            insurerTypeSql = "AND INSURER.INSURER_TYPE IN (0, 1)";
+        } else {
+            formatKbnSql = "AND IKN_ORIGIN.FORMAT_KBN=2";
+            insurerTypeSql = "AND INSURER.INSURER_TYPE IN (0, 2)";
+        }
+        // add end 2006/08/03 kamitsukasa
 
         // 検索条件・医師氏名
         String drNmSql;
@@ -933,6 +976,9 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(drNmSql);
         sb.append(sbKikanSql.toString());
         sb.append(formatKbnSql);
+        // add begin 2006/08/07 kamitsukasa
+        sb.append(insurerTypeSql);
+        // add end 2006/08/07 kamitsukasa
         sb.append(" ORDER BY INSURED_NO ASC");
         data = (VRArrayList) dbm.executeQuery(sb.toString());
 
@@ -1243,6 +1289,15 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         if (formatKbn.getSelectedItem().equals(h18)) {
             newFormat = true;
         }
+        
+        // add begin 2006/08/03 kamitsukasa
+        String iknFormat = "";
+        if (IKN_NEW.equals(formatKbnIshi.getSelectedItem())) {
+        	iknFormat = IKN_NEW;
+        }else{
+        	iknFormat = IKN_ISHI;
+        }
+		// add end 2006/08/03 kamitsukasa
 
         // 画像重複チェック
         if (!newFormat) {
@@ -1292,7 +1347,13 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         // CSVファイルの出力
         boolean writeSuccess;
         if (newFormat) {
-            writeSuccess = doOutputCSVNew((VRArrayList) data.clone(), CSVFile);
+        	// replace begin 2006/08/03 kamitsukasa
+        	if(IKN_NEW.equals(iknFormat)){
+        		writeSuccess = doOutputCSVNew((VRArrayList) data.clone(), CSVFile);
+        	}else{
+        		writeSuccess = doOutputCSVIshi((VRArrayList) data.clone(), CSVFile);
+        	}
+        	// replace end 2006/08/03 kamitsukasa
         } else {
             writeSuccess = doOutputCSVOld((VRArrayList) data.clone(), CSVFile);
         }
@@ -1611,9 +1672,13 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             // 043:傷病の経過・治療内容
             sbBuf = new StringBuffer();
             if (getDataString(map, "MT_STS").length() > 0) {
+                // 2006/06/22
+                // CRLF - 置換対応
+                // Replace - begin [Masahiko Higuchi]
                 sbBuf
-                        .append(getDataString(map, "MT_STS").replaceAll("\n",
-                                "")); // 0x0B
+                        .append((getDataString(map, "MT_STS").replaceAll("\r\n",VT)).replaceAll("\n",
+                                VT)); // 0x0B
+                // Replace - end
                 sbBuf.append("");
             }
             if ((getDataString(map, "MEDICINE1").length()
@@ -2004,9 +2069,13 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             if (pr.length() > 0) {
                 pr += "";
             }
+            // 2006/06/22 TODO
+            // CRLF - 置換対応
+            // Reeplace - begin [Masahiko Higuchi]
+            
             row.add(hase + pr
-                    + getDataString(map, "IKN_TOKKI").replaceAll("\n", ""));
-
+                    + (getDataString(map, "IKN_TOKKI").replaceAll("\r\n",VT)).replaceAll("\n", VT));
+            // Replace - end
             // 1レコード追加
             cvs.addRow(row);
 
@@ -2199,11 +2268,22 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             // 031:作成回数
             row.add(getDataString(map, "IKN_CREATE_CNT"));
             // 032:他科受診の有無
-            if (map.getData("TAKA").toString().equals("0")) {
-                row.add("2");
+            // replace begin 2006/08/04 kamitsukasa
+            if (ACCastUtilities.toInt(VRBindPathParser.get("TAKA", map)) == 0) {
+            	if((getDataString(map, "TAKA_OTHER")).length() <= 0){
+                    row.add("2");
+            	}else{
+            		row.add("1");
+            	}
             } else {
                 row.add("1");
             }
+//            if (map.getData("TAKA").toString().equals("0")) {
+//                row.add("2");
+//            } else {
+//                row.add("1");
+//            }
+            // replace end 2006/08/04 kamitsukasa
             // 033:他科受診・受診項目
             sbBuf = new StringBuffer();
             sbBuf.append(getBitFromRonriwa(getDataString(map, "TAKA"), 12));
@@ -2235,8 +2315,11 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             // 043:傷病の経過・治療内容
             sbBuf = new StringBuffer();
             if (getDataString(map, "MT_STS").length() > 0) {
-                sbBuf.append(getDataString(map, "MT_STS").replaceAll("\n",
-                                "")); // 0x0B
+                // 2006/06/23
+                // CRLF - 置換対応
+                // Replace - begin [Masahiko Higuchi]
+                sbBuf.append((getDataString(map, "MT_STS").replaceAll("\r\n",VT)).replaceAll("\n",VT)); // 0x0B
+                // Replace - end
                 sbBuf.append("");
             }
             if ((getDataString(map, "MEDICINE1").length()
@@ -2497,79 +2580,171 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             // 103:現在あるかまたは今後発生の可能性の高い状態とその対処方針（状態）
             row.add(getDataString(map, "BYOUTAITA_NM"));
             // 104:現在あるかまたは今後発生の可能性の高い状態とその対処方針（対処方針）
-            sbBuf = new StringBuffer();
-            if (getDataString(map, "NYOUSIKKIN_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "NYOUSIKKIN_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "TENTOU_KOSSETU_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map,
-                                "TENTOU_KOSSETU_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "IDOUTEIKA_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "IDOUTEIKA_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "JOKUSOU_KANOUSEI_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map,
-                        "JOKUSOU_KANOUSEI_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "SINPAIKINOUTEIKA_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map,
-                        "SINPAIKINOUTEIKA_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "TOJIKOMORI_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "TOJIKOMORI_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "IYOKUTEIKA_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "IYOKUTEIKA_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "HAIKAI_KANOUSEI_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map,
-                                "HAIKAI_KANOUSEI_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "TEIEIYOU_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "TEIEIYOU_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "SESSYOKUENGE_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "SESSYOKUENGE_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "DASSUI_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "DASSUI_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "EKIKANKANSEN_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "EKIKANKANSEN_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "GAN_TOUTU_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "GAN_TOUTU_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (getDataString(map, "BYOUTAITA_TAISHO_HOUSIN").length() > 0) {
-                sbBuf.append(getDataString(map, "BYOUTAITA_TAISHO_HOUSIN"));
-                sbBuf.append("、");
-            }
-            if (sbBuf.length() > 0) {
-                sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // 最後の"、"を削除
-                sbBuf.append("。"); // "。"を追加する
-                //add sta 140文字で切る
-                if (sbBuf.toString().length() > 140) {
-                	String tmpBuf = sbBuf.toString();
-                	sbBuf = new StringBuffer();
-                	sbBuf.append(tmpBuf.substring(0, 140));
-                }
-                //add end
-            }
-            row.add(sbBuf.toString());
+            // replace begin 2006/08/07 kamitsukasa
+//            sbBuf = new StringBuffer();
+//            if (getDataString(map, "NYOUSIKKIN_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "NYOUSIKKIN_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "TENTOU_KOSSETU_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map,
+//                                "TENTOU_KOSSETU_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "IDOUTEIKA_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "IDOUTEIKA_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "JOKUSOU_KANOUSEI_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map,
+//                        "JOKUSOU_KANOUSEI_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "SINPAIKINOUTEIKA_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map,
+//                        "SINPAIKINOUTEIKA_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "TOJIKOMORI_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "TOJIKOMORI_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "IYOKUTEIKA_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "IYOKUTEIKA_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "HAIKAI_KANOUSEI_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map,
+//                                "HAIKAI_KANOUSEI_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "TEIEIYOU_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "TEIEIYOU_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "SESSYOKUENGE_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "SESSYOKUENGE_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "DASSUI_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "DASSUI_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "EKIKANKANSEN_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "EKIKANKANSEN_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "GAN_TOUTU_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "GAN_TOUTU_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (getDataString(map, "BYOUTAITA_TAISHO_HOUSIN").length() > 0) {
+//                sbBuf.append(getDataString(map, "BYOUTAITA_TAISHO_HOUSIN"));
+//                sbBuf.append("、");
+//            }
+//            if (sbBuf.length() > 0) {
+//                sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // 最後の"、"を削除
+//                sbBuf.append("。"); // "。"を追加する
+//                //add sta 140文字で切る
+//                if (sbBuf.toString().length() > 140) {
+//                	String tmpBuf = sbBuf.toString();
+//                	sbBuf = new StringBuffer();
+//                	sbBuf.append(tmpBuf.substring(0, 140));
+//                }
+//                //add end
+//            }
+//            row.add(sbBuf.toString());
+            
+		    sbBuf = new StringBuffer();
+		    VRList words = new VRArrayList();
+		    poolString(map, words, new String[] { 
+		    		"NYOUSIKKIN_TAISHO_HOUSIN",
+					"TENTOU_KOSSETU_TAISHO_HOUSIN",
+					"IDOUTEIKA_TAISHO_HOUSIN",
+					"JOKUSOU_KANOUSEI_TAISHO_HOUSIN",
+					"SINPAIKINOUTEIKA_TAISHO_HOUSIN", 
+					"TOJIKOMORI_TAISHO_HOUSIN",
+					"IYOKUTEIKA_TAISHO_HOUSIN",
+					"HAIKAI_KANOUSEI_TAISHO_HOUSIN", 
+					"TEIEIYOU_TAISHO_HOUSIN",
+					"SESSYOKUENGE_TAISHO_HOUSIN",
+					"DASSUI_TAISHO_HOUSIN",
+					"EKIKANKANSEN_TAISHO_HOUSIN", 
+					"GAN_TOUTU_TAISHO_HOUSIN",
+					"BYOUTAITA_TAISHO_HOUSIN" });
+		    
+		    if (words.size() > 0) {
+				// 対処方針を文字単位で連結して表示可能なところまで。
+				final int MAX_LENGTH = 89;
+
+				int inlineSize = 0;
+				sbBuf = new StringBuffer();
+				int end = words.size() - 1;
+				for (int j = 0; j < end; j++) {
+					String text = ACCastUtilities.toString(words.get(j));
+
+					StringBuffer line = new StringBuffer();
+					line.append(text);
+
+					int wordSize = 0;
+					char c = text.charAt(text.length() - 1);
+					if ((c != '。') && (c != '、')) {
+						line.append("、");
+					}
+					wordSize += text.getBytes().length;
+
+					if (inlineSize + wordSize > MAX_LENGTH) {
+						// 出力可能なところまで追加
+						int jEnd = line.length();
+						for (int k = 0; k < jEnd; k++) {
+							String str = line.substring(k, k + 1);
+							sbBuf.append(str);
+							inlineSize += str.getBytes().length;
+							if (inlineSize > MAX_LENGTH) {
+								// 行終了チェック
+								break;
+							}
+						}
+						break;
+					}
+					inlineSize += wordSize;
+					sbBuf.append(line.toString());
+				}
+				if (inlineSize <= MAX_LENGTH) {
+					// 末尾追加
+					String text = ACCastUtilities.toString(words.get(end));
+
+					StringBuffer line = new StringBuffer();
+					line.append(text);
+
+					int wordSize = 0;
+					char c = text.charAt(text.length() - 1);
+					if ((c != '。') && (c != '、')) {
+						line.append("。");
+					}
+					wordSize += text.getBytes().length;
+
+					if (inlineSize + wordSize > MAX_LENGTH) {
+						// 出力可能なところまで追加
+						int jEnd = line.length();
+						for (int k = 0; k < jEnd; k++) {
+							String str = line.substring(k, k + 1);
+							sbBuf.append(str);
+							inlineSize += str.getBytes().length;
+							if (inlineSize > MAX_LENGTH) {
+								// 行終了チェック
+								break;
+							}
+						}
+					} else {
+						sbBuf.append(line.toString());
+					}
+				}
+			}
+			row.add(sbBuf.toString());
+            // replace end 2006/08/07 kamitsukasa
+            
+            
             // //102:介護の必要の程度に関する予後の見通し
             // row.add(getDataString(map, "YKG_YOGO"));
             // //103:介護の必要の程度に関する予後の見通し・改善への寄与が期待できるサービス
@@ -2672,9 +2847,14 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             if (pr.length() > 0) {
                 pr += "";
             }
+            
+            // 2006/06/22
+            // CRLF - 置換対応
+            // Replace - begin [Masahiko Higuchi]
             row.add(hase + pr
-                    + getDataString(map, "IKN_TOKKI").replaceAll("\n", ""));
-
+                    + (getDataString(map, "IKN_TOKKI").replaceAll("\r\n",VT)).replaceAll("\n", VT));
+            // Replace - end
+            
             // 1レコード追加
             cvs.addRow(row);
 
@@ -2695,10 +2875,805 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
     }
 
     /**
-     * CSV出力に必要なデータを取得するSQL文を取得します。
+     * CSV出力処理を行います。(医師医見書フォーマット：I1.0)
      *
-     * @return String
+     * @param data VRArrayList
+     * @param file File
+     * @throws Exception
+     * @return 成功したか
      */
+    public boolean doOutputCSVIshi(VRArrayList data, File file)
+			throws Exception {
+
+		// add begin 2006/08/03 kamitsukasa
+
+		// プログレス生成
+		IkenshoWaitingForm iwf = new IkenshoWaitingForm(ACFrame.getInstance(),
+				"CSVファイル出力中");
+
+		// 出力対象でないデータを間引く
+		for (int i = data.getDataSize() - 1; i >= 0; i--) {
+			VRMap map = (VRMap) data.getData(i);
+			if (String.valueOf(map.getData("OUTPUT_FLG")).equals("false")) {
+				data.remove(i);
+			}
+		}
+
+		 // CSV出力用のデータをDBから取得する
+		 IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
+		 VRArrayList dataDB = (VRArrayList) dbm.executeQuery(getSqlIshi());
+		 // CSV出力処理(下準備)
+		 int max = data.getDataSize();
+		 iwf.setMaxCount(max); // プログレスバー最大値
+		 StringBuffer sbBuf = new StringBuffer();
+		 String softName = IkenshoCommon.getProperity("Version/SoftName");
+		 VRCSVFile csv = new VRCSVFile(file.getPath()); // CSV生成
+		 iwf.setVisible(true); // プログレスバー表示
+
+//		// debug begin TODO 削除予定
+//		// CSV出力用のデータをDBから取得する
+//		VRArrayList dataDB = TestPrintClass.makeDataVR("");
+//		// CSV出力処理(下準備)
+//		int max = dataDB.getDataSize();
+//		iwf.setMaxCount(max); // プログレスバー最大値
+//		StringBuffer sbBuf = new StringBuffer();
+//		String softName = IkenshoCommon.getProperity("Version/SoftName");
+//		VRCSVFile csv = new VRCSVFile(file.getPath()); // CSV生成
+//		iwf.setVisible(true); // プログレスバー表示
+//		// debug end
+
+		// CSV出力処理
+		for (int i = 0; i < max; i++) {
+			 VRMap tmp = (VRMap) data.getData(i);
+			 String insuredNo =
+			 convertInsuredNo(ACCastUtilities.toString(tmp.getData("INSURED_NO")));
+			 String patientNo =
+			 ACCastUtilities.toString(tmp.getData("PATIENT_NO"));
+			 String edaNo = ACCastUtilities.toString(tmp.getData("EDA_NO"));
+			 int idx = matchingData(dataDB, patientNo, edaNo);
+			 if (idx < 0) {
+				 continue;
+			 }
+//			// debug begin TODO 削除予定
+//			VRMap tmp = (VRMap) dataDB.getData(i);
+//			String insuredNo = convertInsuredNo(ACCastUtilities.toString(tmp
+//					.getData("INSURED_NO")));
+//			int idx = i;
+//			// debug end
+			VRMap map = (VRMap) dataDB.getData(idx);
+
+			// 行生成
+			ArrayList row = new ArrayList();
+			// 001:FormatVersion
+			row.add("I1.0");
+			// 002:SoftName
+			row.add(softName);
+			// 003:タイムスタンプ
+			row.add(insuredNo + formatDDHHMMSS(map.getData("FD_TIMESTAMP")));
+			// 004:保険者番号
+			row.add(getDataString(map, "INSURER_NO"));
+			// 005:保険者名称
+			row.add(getDataString(map, "INSURER_NM"));
+			// 006:被保険者番号
+			row.add(insuredNo);
+			// 007:事業所番号
+			row.add(getDataString(map, "JIGYOUSHA_NO"));
+			// 008:申請日
+			row.add(formatYYYYMMDD(map.getData("SINSEI_DT")));
+			// 009:作成依頼日
+			row.add(formatYYYYMMDD(map.getData("REQ_DT")));
+			// 010:送付日
+			row.add(formatYYYYMMDD(map.getData("SEND_DT")));
+			// 011:依頼番号
+			row.add(getDataString(map, "REQ_NO"));
+			// 012:医師番号
+			row.add(getDataString(map, "DR_NO"));
+			// 013:種別
+			row.add(getDataString(map, "KIND"));
+			// 014:記入日
+			row.add(formatYYYYMMDD(map.getData("KINYU_DT")));
+
+			// 015:患者‐名かな
+			row.add(getDataString(map, "PATIENT_KN"));
+			// 016:患者‐名
+			row.add(getDataString(map, "PATIENT_NM"));
+			// 017:患者‐生年月日
+			row.add(formatYYYYMMDD(map.getData("BIRTHDAY")));
+			// 018:患者‐年齢
+			row.add(getDataString(map, "AGE"));
+			// 019:患者‐性別
+			row.add(getDataString(map, "SEX"));
+			// 020:患者‐郵便番号
+			row.add(getDataString(map, "POST_CD"));
+			// 021:患者‐住所
+			row.add(getDataString(map, "ADDRESS"));
+			// 022:患者‐連絡先電話番号
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "TEL1"));
+			if (getDataString(map, "TEL1").length() > 0) {
+				if (getDataString(map, "TEL2").length() > 0) {
+					sbBuf.append("-");
+				}
+			}
+			sbBuf.append(getDataString(map, "TEL2"));
+			row.add(sbBuf.toString());
+			// 023:医師氏名
+			row.add(getDataString(map, "DR_NM"));
+			// 024:医療機関名
+			row.add(getDataString(map, "MI_NM"));
+			// 025:医療機関‐郵便番号
+			row.add(getDataString(map, "MI_POST_CD"));
+			// 026:医療機関‐所在地
+			row.add(getDataString(map, "MI_ADDRESS"));
+			// 027:医療機関‐電話番号
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "MI_TEL1"));
+			if (getDataString(map, "MI_TEL1").length() > 0) {
+				if (getDataString(map, "MI_TEL2").length() > 0) {
+					sbBuf.append("-");
+				}
+			}
+			sbBuf.append(getDataString(map, "MI_TEL2"));
+			row.add(sbBuf.toString());
+			// 028:医療機関‐FAX番号
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "MI_FAX1"));
+			if (getDataString(map, "MI_FAX1").length() > 0) {
+				if (getDataString(map, "MI_FAX2").length() > 0) {
+					sbBuf.append("-");
+				}
+			}
+			sbBuf.append(getDataString(map, "MI_FAX2"));
+			row.add(sbBuf.toString());
+			// 029:医師の同意
+			row.add(getDataString(map, "DR_CONSENT"));
+			// 030:最終診察日
+			row.add(formatYYYYMMDD(map.getData("LASTDAY")));
+			// 031:意見書作成回数
+			row.add(getDataString(map, "IKN_CREATE_CNT"));
+			// 032:他科受診の有無
+			if (ACCastUtilities.toInt(VRBindPathParser.get("TAKA", map)) == 0) {
+				if ((getDataString(map, "TAKA_OTHER")).length() <= 0) {
+					row.add("2");
+				} else {
+					row.add("1");
+				}
+			} else {
+				row.add("1");
+			}
+			// 033:他科名
+			sbBuf = new StringBuffer();
+			sbBuf.append(getBitFromRonriwa(getDataString(map, "TAKA"), 12));
+			if (isNullText(getDataString(map, "TAKA_OTHER"))) {
+				sbBuf.append("0");
+			} else {
+				sbBuf.append("1");
+			}
+			row.add(sbBuf.toString());
+			// 034:その他の他科名
+			row.add(getDataString(map, "TAKA_OTHER"));
+
+			// 035:診断名1
+			row.add(getDataString(map, "SINDAN_NM1"));
+			// 036:発症年月日1
+			String temp = getDataString(map, "SHUSSEI1");
+			if ("1".equals(temp)) {
+				row.add("");
+			} else {
+				row.add(formatUnknownDateCustom(map.getData("HASHOU_DT1")));
+			}
+			// 037:出生時1
+			row.add(temp);
+			// 038:診断名2
+			row.add(getDataString(map, "SINDAN_NM2"));
+			// 039:発症年月日2
+			temp = getDataString(map, "SHUSSEI2");
+			if ("1".equals(temp)) {
+				row.add("");
+			} else {
+				row.add(formatUnknownDateCustom(map.getData("HASHOU_DT2")));
+			}
+			// 040:出生時2
+			row.add(temp);
+			// 041:診断名3
+			row.add(getDataString(map, "SINDAN_NM3"));
+			// 042:発症年月日3
+			temp = getDataString(map, "SHUSSEI3");
+			if ("1".equals(temp)) {
+				row.add("");
+			} else {
+				row.add(formatUnknownDateCustom(map.getData("HASHOU_DT3")));
+			}
+			// 043:出生時3
+			row.add(temp);
+			// 044:入院暦1開始
+			row.add(formatUnknownDateCustom(map.getData("NYUIN_DT_STA1")));
+			// 045:入院暦1終了
+			row.add(formatUnknownDateCustom(map.getData("NYUIN_DT_END1")));
+			// 046:入院暦1傷病名
+			row.add(getDataString(map, "NYUIN_NM1"));
+			// 047:入院暦2開始
+			row.add(formatUnknownDateCustom(map.getData("NYUIN_DT_STA2")));
+			// 048:入院暦2終了
+			row.add(formatUnknownDateCustom(map.getData("NYUIN_DT_END2")));
+			// 049:入院暦2傷病名
+			row.add(getDataString(map, "NYUIN_NM2"));
+			// 050:症状としての安定性
+			row.add(getDataString(map, "SHJ_ANT"));
+			// 051:症状不安定の具体的状況
+			row.add(getDataString(map, "INSECURE_CONDITION"));
+			// 052:疾病の経過‐治療内容‐治療状態
+			sbBuf = new StringBuffer();
+			if (getDataString(map, "MT_STS").length() > 0) {
+				sbBuf.append((getDataString(map, "MT_STS").replaceAll("\r\n",
+						VT)).replaceAll("\n", VT)); // 0x0B
+				sbBuf.append("");
+			}
+			if ((getDataString(map, "MEDICINE1").length()
+					+ getDataString(map, "DOSAGE1").length()
+					+ getDataString(map, "UNIT1").length()
+					+ getDataString(map, "USAGE1").length()
+					+ getDataString(map, "MEDICINE2").length()
+					+ getDataString(map, "DOSAGE2").length()
+					+ getDataString(map, "UNIT2").length() + getDataString(map,
+					"USAGE2").length()) > 0) {
+				sbBuf.append(getDataString(map, "MEDICINE1") + " ");
+				sbBuf.append(getDataString(map, "DOSAGE1"));
+				sbBuf.append(getDataString(map, "UNIT1") + " ");
+				sbBuf.append(getDataString(map, "USAGE1") + " / ");
+				sbBuf.append(getDataString(map, "MEDICINE2") + " ");
+				sbBuf.append(getDataString(map, "DOSAGE2"));
+				sbBuf.append(getDataString(map, "UNIT2") + " ");
+				sbBuf.append(getDataString(map, "USAGE2") + "");
+			}
+			if ((getDataString(map, "MEDICINE3").length()
+					+ getDataString(map, "DOSAGE3").length()
+					+ getDataString(map, "UNIT3").length()
+					+ getDataString(map, "USAGE3").length()
+					+ getDataString(map, "MEDICINE4").length()
+					+ getDataString(map, "DOSAGE4").length()
+					+ getDataString(map, "UNIT4").length() + getDataString(map,
+					"USAGE4").length()) > 0) {
+				sbBuf.append(getDataString(map, "MEDICINE3") + " ");
+				sbBuf.append(getDataString(map, "DOSAGE3"));
+				sbBuf.append(getDataString(map, "UNIT3") + " ");
+				sbBuf.append(getDataString(map, "USAGE3") + " / ");
+				sbBuf.append(getDataString(map, "MEDICINE4") + " ");
+				sbBuf.append(getDataString(map, "DOSAGE4"));
+				sbBuf.append(getDataString(map, "UNIT4") + " ");
+				sbBuf.append(getDataString(map, "USAGE4") + "");
+			}
+			if ((getDataString(map, "MEDICINE5").length()
+					+ getDataString(map, "DOSAGE5").length()
+					+ getDataString(map, "UNIT5").length()
+					+ getDataString(map, "USAGE5").length()
+					+ getDataString(map, "MEDICINE6").length()
+					+ getDataString(map, "DOSAGE6").length()
+					+ getDataString(map, "UNIT6").length() + getDataString(map,
+					"USAGE6").length()) > 0) {
+				sbBuf.append(getDataString(map, "MEDICINE5") + " ");
+				sbBuf.append(getDataString(map, "DOSAGE5"));
+				sbBuf.append(getDataString(map, "UNIT5") + " ");
+				sbBuf.append(getDataString(map, "USAGE5") + " / ");
+				sbBuf.append(getDataString(map, "MEDICINE6") + " ");
+				sbBuf.append(getDataString(map, "DOSAGE6"));
+				sbBuf.append(getDataString(map, "UNIT6") + " ");
+				sbBuf.append(getDataString(map, "USAGE6") + "");
+			}
+			if (sbBuf.length() > 0) {
+				sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // 最後の0x0Bを削除
+			}
+			row.add(sbBuf.toString());
+
+			// 053:処置内容
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "TNT_KNR"));
+			sbBuf.append(getDataString(map, "CHU_JOU_EIYOU"));
+			sbBuf.append(getDataString(map, "TOUSEKI"));
+			sbBuf.append(getDataString(map, "JINKOU_KOUMON"));
+			sbBuf.append(getDataString(map, "OX_RYO"));
+			sbBuf.append(getDataString(map, "JINKOU_KOKYU"));
+			sbBuf.append(getDataString(map, "KKN_SEK_SHOCHI"));
+			sbBuf.append(getDataString(map, "TOUTU"));
+			sbBuf.append(getDataString(map, "KEKN_EIYOU"));
+			sbBuf.append(getDataString(map, "KYUIN_SHOCHI"));
+			row.add(sbBuf.toString());
+			// 054:処置内容‐吸引処置回数
+			row.add(getDataString(map, "KYUIN_SHOCHI_CNT"));
+			// 055:処置内容‐吸引処置時期
+			row.add(getDataString(map, "KYUIN_SHOCHI_JIKI"));
+			// 056:特別な対応
+			row.add(getDataString(map, "MONITOR")
+					+ getDataString(map, "JOKUSOU_SHOCHI"));
+			// 057:失禁への対応
+			row.add(getDataString(map, "CATHETER"));
+
+			// 058:行動上の障害の有無‐有無
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "KS_CHUYA"));
+			sbBuf.append(getDataString(map, "KS_BOUGEN"));
+			sbBuf.append(getDataString(map, "KS_BOUKOU"));
+			sbBuf.append(getDataString(map, "KS_TEIKOU"));
+			sbBuf.append(getDataString(map, "KS_HAIKAI"));
+			sbBuf.append(getDataString(map, "KS_FUSIMATU"));
+			sbBuf.append(getDataString(map, "KS_FUKETU"));
+			sbBuf.append(getDataString(map, "KS_ISHOKU"));
+			sbBuf.append(getDataString(map, "KS_SEITEKI_MONDAI"));
+			sbBuf.append(getDataString(map, "KS_OTHER"));
+			if ("0000000000".equals(sbBuf.toString())) {
+				row.add("2");
+			} else {
+				row.add("1");
+			}
+			// 059:行動上の障害の有無‐詳細
+			row.add(sbBuf.toString());
+			// 060:行動上の障害の有無‐その他内容
+			row.add(getDataString(map, "KS_OTHER_NM"));
+			// 061:精神・神経症状の有無‐有無
+			row.add(getDataString(map, "SEISIN"));
+			// 062:精神・神経症状の有無‐症状名
+			row.add(getDataString(map, "SEISIN_NM"));
+			// 063:精神・神経症状の有無‐詳細
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "SS_SENMO"));
+			sbBuf.append(getDataString(map, "SS_KEMIN_KEIKO"));
+			sbBuf.append(getDataString(map, "SS_GNS_GNC"));
+			sbBuf.append(getDataString(map, "SS_MOUSOU"));
+			sbBuf.append(getDataString(map, "SS_SHIKKEN_TOSHIKI"));
+			sbBuf.append(getDataString(map, "SS_SHITUNIN"));
+			sbBuf.append(getDataString(map, "SS_SHIKKO"));
+			sbBuf.append(getDataString(map, "SS_NINCHI_SHOGAI"));
+			sbBuf.append(getDataString(map, "SS_KIOKU_SHOGAI"));
+			sbBuf.append(getDataString(map, "SS_CHUI_SHOGAI"));
+			sbBuf.append(getDataString(map, "SS_SUIKOU_KINO_SHOGAI"));
+			sbBuf.append(getDataString(map, "SS_SHAKAITEKI_KODO_SHOGAI"));
+			sbBuf.append(getDataString(map, "SS_OTHER"));
+			row.add(sbBuf.toString());
+			// 064:精神・神経症状の有無‐記憶障害（短期・長期）
+			row.add(getDataString(map, "SS_KIOKU_SHOGAI_TANKI")
+					+ getDataString(map, "SS_KIOKU_SHOGAI_CHOUKI"));
+			// 065:精神・神経症状の有無‐その他内容
+			row.add(getDataString(map, "SS_OTHER_NM"));
+			// 066:精神・神経症状の有無‐専門医受診有無
+			row.add(getDataString(map, "SENMONI"));
+			// 067:精神・神経症状の有無‐専門医受診科名
+			row.add(getDataString(map, "SENMONI_NM"));
+
+			// 068:てんかん‐有無
+			row.add(getDataString(map, "TENKAN"));
+			// 069:てんかん‐頻度
+			row.add(getDataString(map, "TENKAN_HINDO"));
+			// 070:利き腕
+			row.add(getDataString(map, "KIKIUDE"));
+			// 071:身長
+			row.add(getDataString(map, "HEIGHT"));
+			// 072:体重
+			row.add(getDataString(map, "WEIGHT"));
+			// 073:過去6ヶ月の体重の変化
+			row.add(getDataString(map, "WEIGHT_CHANGE"));
+			// 074:四肢欠損
+			row.add(getDataString(map, "SISIKESSON"));
+			// 075:四肢欠損部位
+			row.add(getDataString(map, "SISIKESSON_BUI"));
+			// 076:四肢欠損程度
+			row.add(getDataString(map, "SISIKESSON_TEIDO"));
+			// 077:麻痺
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "MAHI_LEFTARM"));
+			sbBuf.append(getDataString(map, "MAHI_LOWERLEFTLIMB"));
+			sbBuf.append(getDataString(map, "MAHI_RIGHTARM"));
+			sbBuf.append(getDataString(map, "MAHI_LOWERRIGHTLIMB"));
+			sbBuf.append(getDataString(map, "MAHI_ETC"));
+			if ("00000".equals(sbBuf.toString())) {
+				row.add("0");
+			} else {
+				row.add("1");
+			}
+			// 078:麻痺‐左上肢
+			row.add(getDataString(map, "MAHI_LEFTARM"));
+			// 079:麻痺‐左上肢‐程度
+			row.add(getDataString(map, "MAHI_LEFTARM_TEIDO"));
+			// 080:麻痺‐左下肢
+			row.add(getDataString(map, "MAHI_LOWERLEFTLIMB"));
+			// 081:麻痺‐左下肢‐程度
+			row.add(getDataString(map, "MAHI_LOWERLEFTLIMB_TEIDO"));
+			// 082:麻痺‐右上肢
+			row.add(getDataString(map, "MAHI_RIGHTARM"));
+			// 083:麻痺‐右上肢‐程度
+			row.add(getDataString(map, "MAHI_RIGHTARM_TEIDO"));
+			// 084:麻痺‐右下肢
+			row.add(getDataString(map, "MAHI_LOWERRIGHTLIMB"));
+			// 085:麻痺‐右下肢‐程度
+			row.add(getDataString(map, "MAHI_LOWERRIGHTLIMB_TEIDO"));
+			// 086:麻痺‐その他
+			row.add(getDataString(map, "MAHI_ETC"));
+			// 087:麻痺‐その他‐部位
+			row.add(getDataString(map, "MAHI_ETC_BUI"));
+			// 088:麻痺‐その他‐程度
+			row.add(getDataString(map, "MAHI_ETC_TEIDO"));
+			// 089:筋力の低下
+			row.add(getDataString(map, "KINRYOKU_TEIKA"));
+			// 090:筋力の低下‐部位
+			row.add(getDataString(map, "KINRYOKU_TEIKA_BUI"));
+			// 091:筋力の低下‐程度
+			row.add(getDataString(map, "KINRYOKU_TEIKA_TEIDO"));
+			// 092:関節の拘縮
+			String tempKata = getDataString(map, "KATA_KOUSHU_MIGI")
+					+ getDataString(map, "KATA_KOUSHU_HIDARI");
+			String tempMata = getDataString(map, "MATA_KOUSHU_MIGI")
+					+ getDataString(map, "MATA_KOUSHU_HIDARI");
+			String tempHiji = getDataString(map, "HIJI_KOUSHU_MIGI")
+					+ getDataString(map, "HIJI_KOUSHU_HIDARI");
+			String tempHiza = getDataString(map, "HIZA_KOUSHU_MIGI")
+					+ getDataString(map, "HIZA_KOUSHU_HIDARI");
+			if ("00".equals(tempKata) && "00".equals(tempMata)
+					&& "00".equals(tempHiji) && "00".equals(tempHiza)
+					&& "0".equals(getDataString(map, "KOUSHU_ETC"))) {
+				row.add("0");
+			} else {
+				row.add("1");
+			}
+			// 093:肩関節拘縮
+			if ("00".equals(tempKata)) {
+				row.add("0");
+			} else {
+				row.add("1");
+			}
+			// 094:肩関節拘縮右
+			row.add(getDataString(map, "KATA_KOUSHU_MIGI"));
+			// 095:肩関節拘縮右程度
+			row.add(getDataString(map, "KATA_KOUSHU_MIGI_TEIDO"));
+			// 096:肩関節拘縮左
+			row.add(getDataString(map, "KATA_KOUSHU_HIDARI"));
+			// 097:肩関節拘縮左程度
+			row.add(getDataString(map, "KATA_KOUSHU_HIDARI_TEIDO"));
+			// 098:股関節拘縮
+			if ("00".equals(tempMata)) {
+				row.add("0");
+			} else {
+				row.add("1");
+			}
+			// 099:股関節拘縮右
+			row.add(getDataString(map, "MATA_KOUSHU_MIGI"));
+			// 100:股関節拘縮右程度
+			row.add(getDataString(map, "MATA_KOUSHU_MIGI_TEIDO"));
+			// 101:股関節拘縮左
+			row.add(getDataString(map, "MATA_KOUSHU_HIDARI"));
+			// 102:股関節拘縮左程度
+			row.add(getDataString(map, "MATA_KOUSHU_HIDARI_TEIDO"));
+			// 103:肘関節拘縮
+			if ("00".equals(tempHiji)) {
+				row.add("0");
+			} else {
+				row.add("1");
+			}
+			// 104:肘関節拘縮右
+			row.add(getDataString(map, "HIJI_KOUSHU_MIGI"));
+			// 105:肘関節拘縮右程度
+			row.add(getDataString(map, "HIJI_KOUSHU_MIGI_TEIDO"));
+			// 106:肘関節拘縮左
+			row.add(getDataString(map, "HIJI_KOUSHU_HIDARI"));
+			// 107:肘関節拘縮左程度
+			row.add(getDataString(map, "HIJI_KOUSHU_HIDARI_TEIDO"));
+			// 108:膝関節拘縮
+			if ("00".equals(tempHiza)) {
+				row.add("0");
+			} else {
+				row.add("1");
+			}
+			// 109:膝関節拘縮右
+			row.add(getDataString(map, "HIZA_KOUSHU_MIGI"));
+			// 110:膝関節拘縮右程度
+			row.add(getDataString(map, "HIZA_KOUSHU_MIGI_TEIDO"));
+			// 111:膝関節拘縮左
+			row.add(getDataString(map, "HIZA_KOUSHU_HIDARI"));
+			// 112:膝関節拘縮左程度
+			row.add(getDataString(map, "HIZA_KOUSHU_HIDARI_TEIDO"));
+			// 113:関節の拘縮その他
+			row.add(getDataString(map, "KOUSHU_ETC"));
+			// 114:関節の拘縮その他部位
+			row.add(getDataString(map, "KOUSHU_ETC_BUI"));
+			// 115:関節の痛み
+			row.add(getDataString(map, "KANSETU_ITAMI"));
+			// 116:関節の痛み‐部位
+			row.add(getDataString(map, "KANSETU_ITAMI_BUI"));
+			// 117:関節の痛み‐程度
+			row.add(getDataString(map, "KANSETU_ITAMI_TEIDO"));
+			// 118:失調・不随意運動
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "JOUSI_SICCHOU_MIGI"));
+			sbBuf.append(getDataString(map, "JOUSI_SICCHOU_HIDARI"));
+			sbBuf.append(getDataString(map, "TAIKAN_SICCHOU_MIGI"));
+			sbBuf.append(getDataString(map, "TAIKAN_SICCHOU_HIDARI"));
+			sbBuf.append(getDataString(map, "KASI_SICCHOU_MIGI"));
+			sbBuf.append(getDataString(map, "KASI_SICCHOU_HIDARI"));
+			if ("000000".equals(sbBuf.toString())) {
+				row.add("0");
+			} else {
+				row.add("1");
+			}
+			// 119:失調・不随意運動・上肢・右
+			row.add(getDataString(map, "JOUSI_SICCHOU_MIGI"));
+			// 120:失調・不随意運動・上肢・右・程度
+			row.add(getDataString(map, "JOUSI_SICCHOU_MIGI_TEIDO"));
+			// 121:失調・不随意運動・上肢・左
+			row.add(getDataString(map, "JOUSI_SICCHOU_HIDARI"));
+			// 122:失調・不随意運動・上肢・左・程度
+			row.add(getDataString(map, "JOUSI_SICCHOU_HIDARI_TEIDO"));
+			// 123:失調・不随意運動・体幹・右
+			row.add(getDataString(map, "TAIKAN_SICCHOU_MIGI"));
+			// 124:失調・不随意運動・体幹・右・程度
+			row.add(getDataString(map, "TAIKAN_SICCHOU_MIGI_TEIDO"));
+			// 125:失調・不随意運動・体幹・左
+			row.add(getDataString(map, "TAIKAN_SICCHOU_HIDARI"));
+			// 126:失調・不随意運動・体幹・左・程度
+			row.add(getDataString(map, "TAIKAN_SICCHOU_HIDARI_TEIDO"));
+			// 127:失調・不随意運動・下肢・右
+			row.add(getDataString(map, "KASI_SICCHOU_MIGI"));
+			// 128:失調・不随意運動・下肢・右・程度
+			row.add(getDataString(map, "KASI_SICCHOU_MIGI_TEIDO"));
+			// 129:失調・不随意運動・下肢・左
+			row.add(getDataString(map, "KASI_SICCHOU_HIDARI"));
+			// 130:失調・不随意運動・下肢・左・程度
+			row.add(getDataString(map, "KASI_SICCHOU_HIDARI_TEIDO"));
+			// 131:褥瘡
+			row.add(getDataString(map, "JOKUSOU"));
+			// 132:褥瘡‐部位
+			row.add(getDataString(map, "JOKUSOU_BUI"));
+			// 133:褥瘡‐程度
+			row.add(getDataString(map, "JOKUSOU_TEIDO"));
+			// 134:その他の皮膚疾患
+			row.add(getDataString(map, "HIFUSIKKAN"));
+			// 135:その他の皮膚疾患‐部位
+			row.add(getDataString(map, "HIFUSIKKAN_BUI"));
+			// 136:その他の皮膚疾患‐程度
+			row.add(getDataString(map, "HIFUSIKKAN_TEIDO"));
+
+			// 137:現在あるかまたは今後発生の高い状態とその対処方針(状態)
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "NYOUSIKKIN"));
+			sbBuf.append(getDataString(map, "TENTOU_KOSSETU"));
+			sbBuf.append(getDataString(map, "HAIKAI_KANOUSEI"));
+			sbBuf.append(getDataString(map, "JOKUSOU_KANOUSEI"));
+			sbBuf.append(getDataString(map, "ENGESEIHAIEN"));
+			sbBuf.append(getDataString(map, "CHOUHEISOKU"));
+			sbBuf.append(getDataString(map, "EKIKANKANSEN"));
+			sbBuf.append(getDataString(map, "SINPAIKINOUTEIKA"));
+			sbBuf.append(getDataString(map, "ITAMI"));
+			sbBuf.append(getDataString(map, "DASSUI"));
+			sbBuf.append(getDataString(map, "BYOUTAITA"));
+			row.add(sbBuf.toString());
+			// 138:現在あるかまたは今後発生の高い状態とその対処方針(状態)・その他内容
+			row.add(getDataString(map, "BYOUTAITA_NM"));
+			// 139:現在あるかまたは今後発生の高い状態とその対処方針(対処方針)
+		    sbBuf = new StringBuffer();
+		    VRList words = new VRArrayList();
+		    poolString(map, words, new String[] { 
+		    		"NYOUSIKKIN_TAISHO_HOUSIN",
+					"TENTOU_KOSSETU_TAISHO_HOUSIN",
+					"HAIKAI_KANOUSEI_TAISHO_HOUSIN",
+					"JOKUSOU_KANOUSEI_TAISHO_HOUSIN",
+					"ENGESEIHAIEN_TAISHO_HOUSIN", 
+					"CHOUHEISOKU_TAISHO_HOUSIN",
+					"EKIKANKANSEN_TAISHO_HOUSIN",
+					"SINPAIKINOUTEIKA_TAISHO_HOUSIN", 
+					"ITAMI_TAISHO_HOUSIN",
+					"DASSUI_TAISHO_HOUSIN", 
+					"BYOUTAITA_TAISHO_HOUSIN" });
+		    
+		    if (words.size() > 0) {
+				// 対処方針を文字単位で連結して表示可能なところまで。
+				final int MAX_LENGTH = 89;
+
+				int inlineSize = 0;
+				sbBuf = new StringBuffer();
+				int end = words.size() - 1;
+				for (int j = 0; j < end; j++) {
+					String text = ACCastUtilities.toString(words.get(j));
+
+					StringBuffer line = new StringBuffer();
+					line.append(text);
+
+					int wordSize = 0;
+					char c = text.charAt(text.length() - 1);
+					if ((c != '。') && (c != '、')) {
+						line.append("、");
+					}
+					wordSize += text.getBytes().length;
+
+					if (inlineSize + wordSize > MAX_LENGTH) {
+						// 出力可能なところまで追加
+						int jEnd = line.length();
+						for (int k = 0; k < jEnd; k++) {
+							String str = line.substring(k, k + 1);
+							sbBuf.append(str);
+							inlineSize += str.getBytes().length;
+							if (inlineSize > MAX_LENGTH) {
+								// 行終了チェック
+								break;
+							}
+						}
+						break;
+					}
+					inlineSize += wordSize;
+					sbBuf.append(line.toString());
+				}
+				if (inlineSize <= MAX_LENGTH) {
+					// 末尾追加
+					String text = ACCastUtilities.toString(words.get(end));
+
+					StringBuffer line = new StringBuffer();
+					line.append(text);
+
+					int wordSize = 0;
+					char c = text.charAt(text.length() - 1);
+					if ((c != '。') && (c != '、')) {
+						line.append("。");
+					}
+					wordSize += text.getBytes().length;
+
+					if (inlineSize + wordSize > MAX_LENGTH) {
+						// 出力可能なところまで追加
+						int jEnd = line.length();
+						for (int k = 0; k < jEnd; k++) {
+							String str = line.substring(k, k + 1);
+							sbBuf.append(str);
+							inlineSize += str.getBytes().length;
+							if (inlineSize > MAX_LENGTH) {
+								// 行終了チェック
+								break;
+							}
+						}
+					} else {
+						sbBuf.append(line.toString());
+					}
+				}
+			}
+			row.add(sbBuf.toString());		    
+			
+			// 140:医学的観点からの留意事項・血圧
+			row.add(getDataString(map, "KETUATU"));
+			// 141:医学的観点からの留意事項・血圧・留意事項
+			row.add(getDataString(map, "KETUATU_RYUIJIKOU"));
+			// 142:医学的観点からの留意事項・嚥下
+			row.add(getDataString(map, "ENGE"));
+			// 143:医学的観点からの留意事項・嚥下・留意事項
+			row.add(getDataString(map, "ENGE_RYUIJIKOU"));
+			// 144:医学的観点からの留意事項・摂食
+			row.add(getDataString(map, "SESHOKU"));
+			// 145:医学的観点からの留意事項・摂食・留意事項
+			row.add(getDataString(map, "SESHOKU_RYUIJIKOU"));
+			// 146:医学的観点からの留意事項・移動
+			row.add(getDataString(map, "IDOU"));
+			// 147:医学的観点からの留意事項・移動・留意事項
+			row.add(getDataString(map, "IDOU_RYUIJIKOU"));
+			// 148:医学的観点からの留意事項・その他
+			row.add(getDataString(map, "KAIGO_OTHER"));
+			// 149:感染症の有無
+			row.add(getDataString(map, "KANSENSHOU"));
+			// 150:感染症の有無・詳細
+			row.add(getDataString(map, "KANSENSHOU_NM"));
+
+			// 151:特記事項
+			row.add((getDataString(map, "IKN_TOKKI").replaceAll("\r\n", VT))
+					.replaceAll("\n", VT));
+			// 152:二軸評価:精神症状
+			temp = getDataString(map, "SK_NIJIKU_SEISHIN");
+			if (!("0".equals(temp))) {
+				row.add(temp);
+			} else {
+				row.add("");
+			}
+			// 153:二軸評価:能力障害
+			temp = getDataString(map, "SK_NIJIKU_NORYOKU");
+			if (!("0".equals(temp))) {
+				row.add(temp);
+			} else {
+				row.add("");
+			}
+			// 154:二軸評価:判定時期
+			row.add(formatUnknownDateCustom(map.getData("SK_NIJIKU_DT")));
+			// 155:生活障害評価:食事
+			temp = getDataString(map, "SK_SEIKATSU_SHOKUJI");
+			if (!("0".equals(temp))) {
+				row.add(temp);
+			} else {
+				row.add("");
+			}
+			// 156:生活障害評価:生活リズム
+			temp = getDataString(map, "SK_SEIKATSU_RHYTHM");
+			if (!("0".equals(temp))) {
+				row.add(temp);
+			} else {
+				row.add("");
+			}
+			// 157:生活障害評価:保清
+			temp = getDataString(map, "SK_SEIKATSU_HOSEI");
+			if (!("0".equals(temp))) {
+				row.add(temp);
+			} else {
+				row.add("");
+			}
+			// 158:生活障害評価:金銭管理
+			temp = getDataString(map, "SK_SEIKATSU_KINSEN_KANRI");
+			if (!("0".equals(temp))) {
+				row.add(temp);
+			} else {
+				row.add("");
+			}
+			// 159:生活障害評価:服薬管理
+			temp = getDataString(map, "SK_SEIKATSU_HUKUYAKU_KANRI");
+			if (!("0".equals(temp))) {
+				row.add(temp);
+			} else {
+				row.add("");
+			}
+			// 160:生活障害評価:対人関係
+			temp = getDataString(map, "SK_SEIKATSU_TAIJIN_KANKEI");
+			if (!("0".equals(temp))) {
+				row.add(temp);
+			} else {
+				row.add("");
+			}
+			// 161:生活障害評価:社会的適応を妨げる行動
+			temp = getDataString(map, "SK_SEIKATSU_SHAKAI_TEKIOU");
+			if (!("0".equals(temp))) {
+				row.add(temp);
+			} else {
+				row.add("");
+			}
+			// 162:生活障害評価:判断時期
+			row.add(formatUnknownDateCustom(map.getData("SK_SEIKATSU_DT")));
+
+			// 1レコード追加
+			csv.addRow(row);
+
+			// プログレスバー進行処理
+			iwf.setProgressValue(i);
+
+		}
+
+		// CSV出力
+		try {
+			// 書き出し
+			csv.write(true, true);
+		} catch (Exception ex) {
+			return false;
+		}
+
+		iwf.setProgressValue(max);
+		return true;
+
+		// add end 2006/08/03 kamitsukasa
+
+	}
+    
+    /**
+     * 複数の文字列をmapから抜き出し、listに格納する関数。
+     * @param data データ
+     * @param target 格納先list
+     * @param keys 文字列のKEY
+     */
+    private void poolString(VRMap data, VRList target, String[] keys) throws Exception{
+    	
+    	if(keys == null){
+    		return;
+    	}
+    	
+    	for(int i = 0; i < keys.length; i++){
+    		String temp = ACCastUtilities.toString(VRBindPathParser.get(keys[i], data));
+    		if(temp.length() > 0){
+    			target.add(temp);
+    		}
+    	}
+    	
+    }
+    
+    /**
+	 * CSV出力に必要なデータを取得するSQL文を取得します。
+	 * 
+	 * @return String
+	 */
     private String getSqlOld() {
         StringBuffer sb = new StringBuffer();
         sb.append(" SELECT");
@@ -3167,6 +4142,278 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
     }
 
     /**
+     * CSV出力に必要なデータを取得するSQL文を取得します。
+     *
+     * @return String
+     */
+    private String getSqlIshi() {
+   	 
+    	// add begin 2006/08/03 kamitsukasa
+    
+        StringBuffer sb = new StringBuffer();
+        
+        sb.append(" SELECT");
+        sb.append(" IKN_ORIGIN.PATIENT_NO");
+        sb.append(", IKN_ORIGIN.EDA_NO");
+        sb.append(", IKN_ORIGIN.INSURED_NO");
+        sb.append(", IKN_BILL.FD_TIMESTAMP");
+        sb.append(", IKN_ORIGIN.INSURER_NO");
+        sb.append(", IKN_ORIGIN.INSURER_NM");
+        sb.append(", IKN_ORIGIN.INSURED_NO");
+        sb.append(", IKN_BILL.JIGYOUSHA_NO");
+        sb.append(", IKN_BILL.SINSEI_DT");
+        sb.append(", IKN_ORIGIN.REQ_DT");
+        sb.append(", IKN_ORIGIN.SEND_DT");
+        sb.append(", IKN_ORIGIN.REQ_NO");
+        sb.append(", IKN_BILL.DR_NO");
+        sb.append(", IKN_ORIGIN.KIND");
+        sb.append(", IKN_ORIGIN.KINYU_DT");
+        sb.append(", COMMON_IKN_SIS.PATIENT_KN");
+        sb.append(", COMMON_IKN_SIS.PATIENT_NM");
+        sb.append(", COMMON_IKN_SIS.BIRTHDAY");
+        sb.append(", COMMON_IKN_SIS.AGE");
+        sb.append(", COMMON_IKN_SIS.SEX");
+        sb.append(", COMMON_IKN_SIS.POST_CD");
+        sb.append(", COMMON_IKN_SIS.ADDRESS");
+        sb.append(", COMMON_IKN_SIS.TEL1");
+        sb.append(", COMMON_IKN_SIS.TEL2");
+        sb.append(", COMMON_IKN_SIS.DR_NM");
+        sb.append(", COMMON_IKN_SIS.MI_NM");
+        sb.append(", COMMON_IKN_SIS.MI_POST_CD");
+        sb.append(", COMMON_IKN_SIS.MI_ADDRESS");
+        sb.append(", COMMON_IKN_SIS.MI_TEL1");
+        sb.append(", COMMON_IKN_SIS.MI_TEL2");
+        sb.append(", COMMON_IKN_SIS.MI_FAX1");
+        sb.append(", COMMON_IKN_SIS.MI_FAX2");
+        sb.append(", IKN_ORIGIN.DR_CONSENT");
+        sb.append(", IKN_ORIGIN.LASTDAY");
+        sb.append(", IKN_ORIGIN.IKN_CREATE_CNT");
+        sb.append(", IKN_ORIGIN.TAKA");
+        sb.append(", IKN_ORIGIN.TAKA_OTHER");
+        sb.append(", COMMON_IKN_SIS.SINDAN_NM1");
+        sb.append(", COMMON_IKN_SIS.HASHOU_DT1");
+        sb.append(", IKN_ORIGIN.SHUSSEI1");
+        sb.append(", COMMON_IKN_SIS.SINDAN_NM2");
+        sb.append(", COMMON_IKN_SIS.HASHOU_DT2");
+        sb.append(", IKN_ORIGIN.SHUSSEI2");
+        sb.append(", COMMON_IKN_SIS.SINDAN_NM3");
+        sb.append(", COMMON_IKN_SIS.HASHOU_DT3");
+        sb.append(", IKN_ORIGIN.SHUSSEI3");
+        sb.append(", IKN_ORIGIN.NYUIN_DT_STA1");
+        sb.append(", IKN_ORIGIN.NYUIN_DT_END1");
+        sb.append(", IKN_ORIGIN.NYUIN_NM1");
+        sb.append(", IKN_ORIGIN.NYUIN_DT_STA2");
+        sb.append(", IKN_ORIGIN.NYUIN_DT_END2");
+        sb.append(", IKN_ORIGIN.NYUIN_NM2");
+        sb.append(", COMMON_IKN_SIS.SHJ_ANT");
+        sb.append(", IKN_ORIGIN.INSECURE_CONDITION");
+        sb.append(", COMMON_IKN_SIS.MT_STS");
+        sb.append(", COMMON_IKN_SIS.MEDICINE1");
+        sb.append(", COMMON_IKN_SIS.DOSAGE1");
+        sb.append(", COMMON_IKN_SIS.UNIT1");
+        sb.append(", COMMON_IKN_SIS.USAGE1");
+        sb.append(", COMMON_IKN_SIS.MEDICINE2");
+        sb.append(", COMMON_IKN_SIS.DOSAGE2");
+        sb.append(", COMMON_IKN_SIS.UNIT2");
+        sb.append(", COMMON_IKN_SIS.USAGE2");
+        sb.append(", COMMON_IKN_SIS.MEDICINE3");
+        sb.append(", COMMON_IKN_SIS.DOSAGE3");
+        sb.append(", COMMON_IKN_SIS.UNIT3");
+        sb.append(", COMMON_IKN_SIS.USAGE3");
+        sb.append(", COMMON_IKN_SIS.MEDICINE4");
+        sb.append(", COMMON_IKN_SIS.DOSAGE4");
+        sb.append(", COMMON_IKN_SIS.UNIT4");
+        sb.append(", COMMON_IKN_SIS.USAGE4");
+        sb.append(", COMMON_IKN_SIS.MEDICINE5");
+        sb.append(", COMMON_IKN_SIS.DOSAGE5");
+        sb.append(", COMMON_IKN_SIS.UNIT5");
+        sb.append(", COMMON_IKN_SIS.USAGE5");
+        sb.append(", COMMON_IKN_SIS.MEDICINE6");
+        sb.append(", COMMON_IKN_SIS.DOSAGE6");
+        sb.append(", COMMON_IKN_SIS.UNIT6");
+        sb.append(", COMMON_IKN_SIS.USAGE6");
+        sb.append(", COMMON_IKN_SIS.TNT_KNR");
+        sb.append(", COMMON_IKN_SIS.CHU_JOU_EIYOU");
+        sb.append(", COMMON_IKN_SIS.TOUSEKI");
+        sb.append(", COMMON_IKN_SIS.JINKOU_KOUMON");
+        sb.append(", COMMON_IKN_SIS.OX_RYO");
+        sb.append(", COMMON_IKN_SIS.JINKOU_KOKYU");
+        sb.append(", COMMON_IKN_SIS.KKN_SEK_SHOCHI");
+        sb.append(", COMMON_IKN_SIS.TOUTU");
+        sb.append(", COMMON_IKN_SIS.KEKN_EIYOU");
+        sb.append(", IKN_ORIGIN.KYUIN_SHOCHI");
+        sb.append(", IKN_ORIGIN.KYUIN_SHOCHI_CNT");
+        sb.append(", IKN_ORIGIN.KYUIN_SHOCHI_JIKI");
+        sb.append(", COMMON_IKN_SIS.MONITOR");
+        sb.append(", COMMON_IKN_SIS.JOKUSOU_SHOCHI");
+        sb.append(", COMMON_IKN_SIS.CATHETER");
+        sb.append(", IKN_ORIGIN.KS_CHUYA");
+        sb.append(", IKN_ORIGIN.KS_BOUGEN");
+        sb.append(", IKN_ORIGIN.KS_BOUKOU");
+        sb.append(", IKN_ORIGIN.KS_TEIKOU");
+        sb.append(", IKN_ORIGIN.KS_HAIKAI");
+        sb.append(", IKN_ORIGIN.KS_FUSIMATU");
+        sb.append(", IKN_ORIGIN.KS_FUKETU");
+        sb.append(", IKN_ORIGIN.KS_ISHOKU");
+        sb.append(", IKN_ORIGIN.KS_SEITEKI_MONDAI");
+        sb.append(", IKN_ORIGIN.KS_OTHER");
+        sb.append(", IKN_ORIGIN.KS_OTHER_NM");
+        sb.append(", IKN_ORIGIN.SEISIN");
+        sb.append(", IKN_ORIGIN.SEISIN_NM");
+        sb.append(", IKN_ORIGIN.SS_SENMO");
+        sb.append(", IKN_ORIGIN.SS_KEMIN_KEIKO");
+        sb.append(", IKN_ORIGIN.SS_GNS_GNC");
+        sb.append(", IKN_ORIGIN.SS_MOUSOU");
+        sb.append(", IKN_ORIGIN.SS_SHIKKEN_TOSHIKI");
+        sb.append(", IKN_ORIGIN.SS_SHITUNIN");
+        sb.append(", IKN_ORIGIN.SS_SHIKKO");
+        sb.append(", IKN_ORIGIN.SS_NINCHI_SHOGAI");
+        sb.append(", IKN_ORIGIN.SS_KIOKU_SHOGAI");
+        sb.append(", IKN_ORIGIN.SS_CHUI_SHOGAI");
+        sb.append(", IKN_ORIGIN.SS_SUIKOU_KINO_SHOGAI");
+        sb.append(", IKN_ORIGIN.SS_SHAKAITEKI_KODO_SHOGAI");
+        sb.append(", IKN_ORIGIN.SS_OTHER");
+        sb.append(", IKN_ORIGIN.SS_KIOKU_SHOGAI_TANKI");
+        sb.append(", IKN_ORIGIN.SS_KIOKU_SHOGAI_CHOUKI");
+        sb.append(", IKN_ORIGIN.SS_OTHER_NM");
+        sb.append(", IKN_ORIGIN.SENMONI");
+        sb.append(", IKN_ORIGIN.SENMONI_NM");
+        sb.append(", IKN_ORIGIN.TENKAN");
+        sb.append(", IKN_ORIGIN.TENKAN_HINDO");
+        sb.append(", IKN_ORIGIN.KIKIUDE");
+        sb.append(", IKN_ORIGIN.HEIGHT");
+        sb.append(", IKN_ORIGIN.WEIGHT");
+        sb.append(", IKN_ORIGIN.WEIGHT_CHANGE");
+        sb.append(", IKN_ORIGIN.SISIKESSON");
+        sb.append(", IKN_ORIGIN.SISIKESSON_BUI");
+        sb.append(", IKN_ORIGIN.SISIKESSON_TEIDO");
+        sb.append(", IKN_ORIGIN.MAHI_LEFTARM");
+        sb.append(", IKN_ORIGIN.MAHI_LEFTARM_TEIDO");
+        sb.append(", IKN_ORIGIN.MAHI_LOWERLEFTLIMB");
+        sb.append(", IKN_ORIGIN.MAHI_LOWERLEFTLIMB_TEIDO");
+        sb.append(", IKN_ORIGIN.MAHI_RIGHTARM");
+        sb.append(", IKN_ORIGIN.MAHI_RIGHTARM_TEIDO");
+        sb.append(", IKN_ORIGIN.MAHI_LOWERRIGHTLIMB");
+        sb.append(", IKN_ORIGIN.MAHI_LOWERRIGHTLIMB_TEIDO");
+        sb.append(", IKN_ORIGIN.MAHI_ETC");
+        sb.append(", IKN_ORIGIN.MAHI_ETC_BUI");
+        sb.append(", IKN_ORIGIN.MAHI_ETC_TEIDO");
+        sb.append(", IKN_ORIGIN.KINRYOKU_TEIKA");
+        sb.append(", IKN_ORIGIN.KINRYOKU_TEIKA_BUI");
+        sb.append(", IKN_ORIGIN.KINRYOKU_TEIKA_TEIDO");
+        sb.append(", IKN_ORIGIN.KOUSHU");
+        sb.append(", IKN_ORIGIN.KATA_KOUSHU");
+        sb.append(", IKN_ORIGIN.KATA_KOUSHU_MIGI");
+        sb.append(", IKN_ORIGIN.KATA_KOUSHU_MIGI_TEIDO");
+        sb.append(", IKN_ORIGIN.KATA_KOUSHU_HIDARI");
+        sb.append(", IKN_ORIGIN.KATA_KOUSHU_HIDARI_TEIDO");
+        sb.append(", IKN_ORIGIN.MATA_KOUSHU");
+        sb.append(", IKN_ORIGIN.MATA_KOUSHU_MIGI");
+        sb.append(", IKN_ORIGIN.MATA_KOUSHU_MIGI_TEIDO");
+        sb.append(", IKN_ORIGIN.MATA_KOUSHU_HIDARI");
+        sb.append(", IKN_ORIGIN.MATA_KOUSHU_HIDARI_TEIDO");
+        sb.append(", IKN_ORIGIN.HIJI_KOUSHU");
+        sb.append(", IKN_ORIGIN.HIJI_KOUSHU_MIGI");
+        sb.append(", IKN_ORIGIN.HIJI_KOUSHU_MIGI_TEIDO");
+        sb.append(", IKN_ORIGIN.HIJI_KOUSHU_HIDARI");
+        sb.append(", IKN_ORIGIN.HIJI_KOUSHU_HIDARI_TEIDO");
+        sb.append(", IKN_ORIGIN.HIZA_KOUSHU");
+        sb.append(", IKN_ORIGIN.HIZA_KOUSHU_MIGI");
+        sb.append(", IKN_ORIGIN.HIZA_KOUSHU_MIGI_TEIDO");
+        sb.append(", IKN_ORIGIN.HIZA_KOUSHU_HIDARI");
+        sb.append(", IKN_ORIGIN.HIZA_KOUSHU_HIDARI_TEIDO");
+        sb.append(", IKN_ORIGIN.KOUSHU_ETC");
+        sb.append(", IKN_ORIGIN.KOUSHU_ETC_BUI");
+        sb.append(", IKN_ORIGIN.KANSETU_ITAMI");
+        sb.append(", IKN_ORIGIN.KANSETU_ITAMI_BUI");
+        sb.append(", IKN_ORIGIN.KANSETU_ITAMI_TEIDO");
+        //sb.append(", IKN_ORIGIN.SHICCHO_FLAG");
+        sb.append(", IKN_ORIGIN.JOUSI_SICCHOU_MIGI");
+        sb.append(", IKN_ORIGIN.JOUSI_SICCHOU_MIGI_TEIDO");
+        sb.append(", IKN_ORIGIN.JOUSI_SICCHOU_HIDARI");
+        sb.append(", IKN_ORIGIN.JOUSI_SICCHOU_HIDARI_TEIDO");
+        sb.append(", IKN_ORIGIN.TAIKAN_SICCHOU_MIGI");
+        sb.append(", IKN_ORIGIN.TAIKAN_SICCHOU_MIGI_TEIDO");
+        sb.append(", IKN_ORIGIN.TAIKAN_SICCHOU_HIDARI");
+        sb.append(", IKN_ORIGIN.TAIKAN_SICCHOU_HIDARI_TEIDO");
+        sb.append(", IKN_ORIGIN.KASI_SICCHOU_MIGI");
+        sb.append(", IKN_ORIGIN.KASI_SICCHOU_MIGI_TEIDO");
+        sb.append(", IKN_ORIGIN.KASI_SICCHOU_HIDARI");
+        sb.append(", IKN_ORIGIN.KASI_SICCHOU_HIDARI_TEIDO");
+        sb.append(", IKN_ORIGIN.JOKUSOU");
+        sb.append(", IKN_ORIGIN.JOKUSOU_BUI");
+        sb.append(", IKN_ORIGIN.JOKUSOU_TEIDO");
+        sb.append(", IKN_ORIGIN.HIFUSIKKAN");
+        sb.append(", IKN_ORIGIN.HIFUSIKKAN_BUI");
+        sb.append(", IKN_ORIGIN.HIFUSIKKAN_TEIDO");
+        sb.append(", IKN_ORIGIN.NYOUSIKKIN");
+        sb.append(", IKN_ORIGIN.TENTOU_KOSSETU");
+        sb.append(", IKN_ORIGIN.HAIKAI_KANOUSEI");
+        sb.append(", IKN_ORIGIN.JOKUSOU_KANOUSEI");
+        sb.append(", IKN_ORIGIN.ENGESEIHAIEN");
+        sb.append(", IKN_ORIGIN.CHOUHEISOKU");
+        sb.append(", IKN_ORIGIN.EKIKANKANSEN");
+        sb.append(", IKN_ORIGIN.SINPAIKINOUTEIKA");
+        sb.append(", IKN_ORIGIN.ITAMI");
+        sb.append(", IKN_ORIGIN.DASSUI");
+        sb.append(", IKN_ORIGIN.BYOUTAITA");
+        sb.append(", IKN_ORIGIN.BYOUTAITA_NM");
+        sb.append(", IKN_ORIGIN.NYOUSIKKIN_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.TENTOU_KOSSETU_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.HAIKAI_KANOUSEI_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.JOKUSOU_KANOUSEI_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.ENGESEIHAIEN_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.CHOUHEISOKU_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.EKIKANKANSEN_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.SINPAIKINOUTEIKA_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.ITAMI_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.DASSUI_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.BYOUTAITA_TAISHO_HOUSIN");
+        sb.append(", IKN_ORIGIN.KETUATU");
+        sb.append(", IKN_ORIGIN.KETUATU_RYUIJIKOU");
+        sb.append(", IKN_ORIGIN.ENGE");
+        sb.append(", IKN_ORIGIN.ENGE_RYUIJIKOU");
+        sb.append(", IKN_ORIGIN.SESHOKU");
+        sb.append(", IKN_ORIGIN.SESHOKU_RYUIJIKOU");
+        sb.append(", IKN_ORIGIN.IDOU");
+        sb.append(", IKN_ORIGIN.IDOU_RYUIJIKOU");
+        sb.append(", IKN_ORIGIN.KAIGO_OTHER");
+        sb.append(", IKN_ORIGIN.KANSENSHOU");
+        sb.append(", IKN_ORIGIN.KANSENSHOU_NM");
+        sb.append(", IKN_ORIGIN.IKN_TOKKI");
+        sb.append(", IKN_ORIGIN.SK_NIJIKU_SEISHIN");
+        sb.append(", IKN_ORIGIN.SK_NIJIKU_NORYOKU");
+        sb.append(", IKN_ORIGIN.SK_NIJIKU_DT");
+        sb.append(", IKN_ORIGIN.SK_SEIKATSU_SHOKUJI");
+        sb.append(", IKN_ORIGIN.SK_SEIKATSU_RHYTHM");
+        sb.append(", IKN_ORIGIN.SK_SEIKATSU_HOSEI");
+        sb.append(", IKN_ORIGIN.SK_SEIKATSU_KINSEN_KANRI");
+        sb.append(", IKN_ORIGIN.SK_SEIKATSU_HUKUYAKU_KANRI");
+        sb.append(", IKN_ORIGIN.SK_SEIKATSU_TAIJIN_KANKEI");
+        sb.append(", IKN_ORIGIN.SK_SEIKATSU_SHAKAI_TEKIOU");
+        sb.append(", IKN_ORIGIN.SK_SEIKATSU_DT");        
+        sb.append(" FROM");
+        sb.append(" COMMON_IKN_SIS,IKN_ORIGIN,IKN_BILL");
+        sb.append(" WHERE");
+        sb.append(" COMMON_IKN_SIS.PATIENT_NO=IKN_ORIGIN.PATIENT_NO");
+        sb.append(" AND");
+        sb.append(" COMMON_IKN_SIS.PATIENT_NO=IKN_BILL.PATIENT_NO");
+        sb.append(" AND");
+        sb.append(" COMMON_IKN_SIS.EDA_NO=IKN_ORIGIN.EDA_NO");
+        sb.append(" AND");
+        sb.append(" COMMON_IKN_SIS.EDA_NO=IKN_BILL.EDA_NO");
+        sb.append(" AND");
+        sb.append(" IKN_ORIGIN.FORMAT_KBN=2");
+        sb.append(" AND");
+        sb.append(" IKN_BILL.FD_OUTPUT_KBN=1");
+        
+        return sb.toString();
+     
+    	// add end 2006/08/03 kamitsukasa
+    
+    }
+    
+    /**
      * dataDB中で、条件に合うレコードが何番目にあるのかを取得します。
      *
      * @param dataDB VRArrayList
@@ -3338,7 +4585,51 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         return date;
 //        return date + "頃";
     }
+    
+    /**
+     * 「不詳」付き不完全日付をCSV出力用形式に変換します。
+     *
+     * @param obj Object
+     * @return String
+     */
+    private String formatUnknownDateCustom(Object obj) throws Exception {
+    	// add begin 2006/08/03 kamitsukasa
+    	
+        // 文字列に変換
+    	if(obj == null || obj.equals("null")){
+    		return "";
+    	}
+        String date = ACCastUtilities.toString(obj);
 
+        // 判定
+        if(date.length() >= 2){
+	        if (date.substring(0, 2).equals("00")) { // 空
+	            return "";
+	        }
+	        if (date.substring(0, 2).equals("不詳")) { // 不詳
+	            return "不詳";
+	        }
+        }
+        if(date.length() >= 4){
+	        if (date.substring(0, 4).equals("0000")) { // 空
+	            return "";
+	        }
+        }
+        if(date.length() >= 7){
+	        if (date.substring(5, 7).equals("00")) { // 年まで
+	            return date.substring(0, 5);
+	        }
+        }
+        if(date.length() >= 10){
+	        if (date.substring(8, 10).equals("00")) { // 月まで
+	            return date.substring(0, 8);
+	        }
+        }
+        return date;
+        
+    	// add end 2006/08/03 kamitsukasa
+    }
+    
     /**
      * 全身図BMPを出力します。
      *
@@ -3425,13 +4716,13 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             }
             // フォーマット
             IkenshoCommon.addString(pd, "formatVersion", "("
-                    + formatKbn.getSelectedItem().toString() + "フォーマット)");
+                    +ACCastUtilities.toString( formatKbn.getSelectedItem()) + "フォーマット)");
 
             for (int j = 0; (j < 21) && (row < endRow + 1); j++, row++) {
                 VRMap map = (VRMap) data.getData(row - 1);
                 // 医師名
-                IkenshoCommon.addString(pd, getHeader(row) + ".DR_NM", map
-                        .getData("DR_NM").toString());
+                IkenshoCommon.addString(pd, getHeader(row) + ".DR_NM", 
+                        getString("DR_NM", map));
                 // 氏名
                 IkenshoCommon.addString(pd, getHeader(row) + ".PATIENT_NM",
                         getString("PATIENT_NM", map));

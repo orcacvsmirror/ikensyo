@@ -23,7 +23,6 @@ import javax.swing.BorderFactory;
 import javax.swing.ButtonGroup;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTabbedPane;
@@ -34,10 +33,11 @@ import jp.nichicom.vr.component.VRTextField;
 import jp.nichicom.vr.layout.VRBorderLayout;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.affair.IkenshoDialog;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoHumanPictureEditorDialog extends JDialog {
+public class IkenshoHumanPictureEditorDialog extends IkenshoDialog {
 
     private javax.swing.JPanel jContentPane = null;
 

@@ -26,6 +26,7 @@ import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACSingleSelectFormat;
 import jp.nichicom.ac.util.ACMessageBox;
@@ -46,6 +47,7 @@ import jp.or.med.orca.ikensho.component.IkenshoEraDateTextField;
 import jp.or.med.orca.ikensho.component.IkenshoTelTextField;
 import jp.or.med.orca.ikensho.component.IkenshoZipTextField;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
+import jp.or.med.orca.ikensho.lib.IkenshoFormatTypeFormat;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 import jp.or.med.orca.ikensho.util.IkenshoSnapshot;
 
@@ -724,14 +726,34 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
             }
 
         } else if (e.getSource() == ikenshoNew) {
+
+            //意見書区分を選択
+            int createDocType;
+            switch (ACMessageBox.showYesNoCancel("作成する意見書の種類を選択してください。",
+                    "主治医意見書(S)", 'S', "医師意見書(I)", 'I')) {
+            case ACMessageBox.RESULT_YES:
+                createDocType = IkenshoConstants.IKENSHO_LOW_H18;
+                break;
+            case ACMessageBox.RESULT_NO:
+                createDocType = IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO;
+                break;
+            default:
+                return;
+            }
+
+            
             int end = ikenshoArray.getDataSize();
             for (int i = 0; i < end; i++) {
-                Object obj = VRBindPathParser.get("FD_OUTPUT_KBN",
-                        ((VRMap) ikenshoArray.getData(i)));
+                VRMap row = (VRMap) ikenshoArray.getData(i);
+                Object obj = VRBindPathParser.get("FD_OUTPUT_KBN",row);
                 if (obj instanceof Integer) {
                     if (((Integer) obj).intValue() == 1) {
-                        ACMessageBox.show("CSV出力対象の意見書があるので新規作成できません。");
-                        return;
+                        if (ACCastUtilities.toInt(VRBindPathParser.get(
+                                "FORMAT_KBN", row), -1) == createDocType) {
+                            //同一の意見書区分でCSV出力対象が存在すれば新規作成禁止
+                            ACMessageBox.show("CSV出力対象の意見書があるので新規作成できません。");
+                            return;
+                        }
                     }
                 }
             }
@@ -799,8 +821,7 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
             // param);
             // break;
             // case NCMessageBox.RESULT_NO:
-            IkenshoIkenshoInfo.goIkensho(IkenshoConstants.IKENSHO_LOW_H18,
-                    param);
+            IkenshoIkenshoInfo.goIkensho(createDocType, param);
             // break;
             // default:
             // return;
@@ -919,6 +940,9 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
                     switch (((Integer) obj).intValue()) {
                     case 1:
                         lowVer = IkenshoConstants.IKENSHO_LOW_H18;
+                        break;
+                    case 2:
+                        lowVer = IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO;
                         break;
                     }
                 }
@@ -1070,7 +1094,9 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
                     (VRBindSource) ikenshoArray.getData()));
             sijishoNewFormat.setSelectedData(null);
 
-            setStatusText("書類新規作成には「主治医意見書（"
+            setStatusText("書類新規作成には「"+IkenshoFormatTypeFormat.getInstance().format(VRBindPathParser
+                            .get("FORMAT_KBN", (VRBindSource) ikenshoArray
+                                    .getData())) +"（"
                     + IkenshoConstants.FORMAT_ERA_YMD.format(VRBindPathParser
                             .get("KINYU_DT", (VRBindSource) ikenshoArray
                                     .getData())) + "記入）」のデータが反映されます。");
@@ -1106,11 +1132,12 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
                 new VRTableColumn(0, 30, "最新", SwingConstants.CENTER,
                         ikenshoNewFormat),
                 new VRTableColumn(1, 50, "作成No.", SwingConstants.RIGHT),
-                new VRTableColumn(2, 120, "記入日",
+                new VRTableColumn(2, 100, "区分", IkenshoFormatTypeFormat.getInstance()),
+                new VRTableColumn(3, 120, "記入日",
                         IkenshoConstants.FORMAT_ERA_YMD),
-                new VRTableColumn(3, 80, "請求", SwingConstants.CENTER,
+                new VRTableColumn(4, 70, "請求", SwingConstants.CENTER,
                         IkenshoConstants.FORMAT_HAKKOU),
-                new VRTableColumn(4, 80, "CSV出力", SwingConstants.CENTER,
+                new VRTableColumn(5, 70, "CSV出力", SwingConstants.CENTER,
                         IkenshoConstants.FORMAT_FD_OUTPUT), }));
 
         sijishoTable.setColumnModel(new VRTableColumnModel(new VRTableColumn[] {
@@ -1120,7 +1147,7 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
                         IkenshoConstants.FORMAT_ERA_YMD), }));
 
         ikenshoTableModel = new ACTableModelAdapter(new VRArrayList(),
-                new String[] { "EDA_NO", "EDA_NO", "KINYU_DT", "HAKKOU_KBN",
+                new String[] { "EDA_NO", "EDA_NO", "FORMAT_KBN", "KINYU_DT", "HAKKOU_KBN",
                         "FD_OUTPUT_KBN" });
         ikenshoTable.setModel(ikenshoTableModel);
 
@@ -1165,7 +1192,7 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
         ikenshoDelete.setMnemonic('D');
         ikenshoDelete.setText("削除(D)");
         sijishoDelete.setText("削除(E)");
-        sijishoDelete.setMnemonic('D');
+        sijishoDelete.setMnemonic('E');
         sex.setToolTipText("");
         sex.setBindPath("SEX");
         sex.setClearButtonToolTipText("「性別」の全項目の選択を解除します。");
@@ -1178,7 +1205,7 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
         address.setColumns(50);
         address.setBindPath("ADDRESS");
         address.setMaxLength(50);
-        idIndomation.setText("「主治医意見書」の必須項目ではありません。");
+        idIndomation.setText("帳票印刷時の必須項目ではありません。");
         zip.setAddressTextField(address);
         zip.setBindPath("POST_CD");
         birth.setBindPath("BIRTHDAY");
@@ -1192,7 +1219,7 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
         this.add(contents, VRLayout.CLIENT);
         contents.setLayout(new BorderLayout());
         contents.add(editor, BorderLayout.NORTH);
-        document.setLayout(new GridLayout());
+        document.setLayout(new VRLayout());
         editor.setLayout(editorLayout);
 
         editor.add(names, VRLayout.FLOW_INSETLINE_RETURN);
@@ -1206,14 +1233,14 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
         sexs.add(sex, null);
         names.add(name, null);
         contents.add(document, BorderLayout.CENTER);
-        document.add(ikensho, null);
+        document.add(ikensho, VRLayout.CLIENT);
         ikensho.setLayout(new BorderLayout());
         ikensho.add(ikenshoButtons, BorderLayout.NORTH);
         ikenshoButtons.add(ikenshoDetail, null);
         ikensho.add(ikenshoTable, BorderLayout.CENTER);
-        ikensho.setText("主治医意見書");
+        ikensho.setText("主治医意見書・医師意見書");
         ikensho.setForeground(IkenshoConstants.COLOR_BORDER_TEXT_FOREGROUND);
-        document.add(sijisho, null);
+        document.add(sijisho, VRLayout.EAST);
         sijisho.setLayout(new BorderLayout());
         sijisho.add(sijishoButtons, BorderLayout.NORTH);
         sijishoButtons.add(sijishoDetail, null);

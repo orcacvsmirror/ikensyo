@@ -2,7 +2,6 @@ package jp.or.med.orca.ikensho.affair;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -10,6 +9,7 @@ import java.awt.event.ItemListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.text.ParseException;
+import java.util.Map;
 
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
@@ -23,6 +23,7 @@ import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.text.ACTextFieldDocument;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
@@ -138,8 +139,15 @@ public class IkenshoDocumentAffairOrgan extends
         if (obj == null) {
             organDoctorName.getEditor().setItem(
                     VRBindPathParser.get("DR_NM", getMasterSource()));
+            // 2006/09/21[Tozo TANAKA] add begin
+        } else if ((getMasterAffair() != null)
+                && getMasterAffair().isNowSelectingByUpdate()) {
+            // 検索処理中でかつ更新モードのとき
+            organDoctorName.getEditor().setItem(
+                    VRBindPathParser.get("DR_NM", getMasterSource()));
+            // 2006/09/21[Tozo TANAKA] add end
         } else {
-            // 2006/12/11[Tozo Tanaka] : add begin
+            // 2005/12/11[Tozo Tanaka] : add begin
             VRBindSource source = getMasterSource();
             if (source != null) {
                 Object val = source.getData("DR_NO");
@@ -153,12 +161,12 @@ public class IkenshoDocumentAffairOrgan extends
                 }
 
             }
-            // 2006/12/11[Tozo Tanaka] : add end
+            // 2005/12/11[Tozo Tanaka] : add end
             
             organDoctorName.setSelectedItem(obj);
         }
     }
-
+    
     /** TODO <HEAD_IKENSYO> */
     protected class IkenshoReadOnlyCombo extends ACComboBox {
         public IkenshoReadOnlyCombo() {
@@ -356,28 +364,82 @@ public class IkenshoDocumentAffairOrgan extends
                 "明示的なOver rideが必要なcheckSelectedDoctorメソッドが呼ばれました");
     }
 
+    private Object lastSelectedDoctorNameCache;
+    
     /**
      * 医療機関の変更を処理します。
      * 
      * @param e イベント情報
+     * @return 変更が発生したか
      */
-    protected void changeDoctor(ItemEvent e) {
+    protected boolean changeDoctor(ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
+            // 2006/09/08[Tozo Tanaka] : add begin
+            //現在選択されている医療機関名を取得
+            Object selectedDoctorName = getDoctorName().getSelectedItem();
+            if(selectedDoctorName instanceof Map){
+                //取得したものがMapならば医療機関名フィールドのみ抜き出す
+                selectedDoctorName = ACCastUtilities.toString(((Map)selectedDoctorName).get("DR_NM"),"");
+            }else{
+                selectedDoctorName = ACCastUtilities.toString(selectedDoctorName, "");
+            }
+
+            if(selectedDoctorName.equals(lastSelectedDoctorNameCache)){
+                //前回選択されていたものと同じであれば以降の処理を行なわない。
+                // 2006/09/21[Tozo Tanaka] : replace begin
+                //return false;
+                if (!(organDoctorName.isFocusOwner() || organDoctorName
+                        .getEditor().getEditorComponent().isFocusOwner())) {
+                    //フォーカスを持っていない場合(bind等システムから設定)に限定する。
+                    //※フォーカスがある→ユーザ操作は強制設定とする。
+                    return false;
+                }
+                // 2006/09/21[Tozo Tanaka] : replace end
+            }
+            lastSelectedDoctorNameCache = selectedDoctorName;
+            // 2006/09/08[Tozo Tanaka] : add end
+            
+            
             if (!checkSelectedDoctor()) {
-                return;
+                return false;
             }
 
             if ((getMasterSource() instanceof VRMap) && (doctor != null)) {
                 VRMap map = (VRMap) getMasterSource();
-                map.putAll(doctor);
+                //2006/09/08[Tozo Tanaka] : replace begin
+                //map.putAll(doctor);
+                if ((getMasterAffair() != null)
+                        && getMasterAffair().isNowSelectingByUpdate()) {
+                    //検索処理中でかつ更新モードのとき
+                    // 医療機関の電子化加算区分で、同名の履歴として保持していた電子化加算区分を上書きしてしまうため、いったん退避する。
+                    Object addITCache = map.get("DR_ADD_IT");
+                    map.putAll(doctor);
+                    map.put("DR_ADD_IT", addITCache);
+                    
+                    // 2006/09/11[Tozo Tanaka] : add begin
+                    map.remove("MI_KBN");
+                    // 2006/09/11[Tozo Tanaka] : add end
+                }else{
+                    // 2006/09/20[Tozo Tanaka] : replace begin
+                    //map.putAll(doctor);
+                    Object bu = map.get("JIGYOUSHA_NO");
+                    map.putAll(doctor);
+                    if(!"".equals(doctor.get("JIGYOUSHA_NO"))){
+                        map.put("JIGYOUSHA_NO", bu);
+                    }
+                    // 2006/09/20[Tozo Tanaka] : replace end
+                }
+                //2006/09/08[Tozo Tanaka] : replace end
+                
                 try {
                     getFollowDoctorContainer().bindSource();
+                    return true;
                 } catch (ParseException ex) {
                     IkenshoCommon.showExceptionMessage(ex);
                 }
             }
         }
-
+        return false;
     }
 
     /**
@@ -505,6 +567,14 @@ public class IkenshoDocumentAffairOrgan extends
         this.add(organTitle, VRLayout.NORTH);
         this.add(organGroup, VRLayout.CLIENT);
         integerParameter.add(miDefault, null);
+    }
+    
+    /**
+     * 医療機関名を返します。
+     * @return 医療機関名
+     */
+    public ACTextField getOrganizationName(){
+        return organizationName;
     }
 
 }

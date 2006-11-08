@@ -30,6 +30,7 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
+import jp.or.med.orca.ikensho.lib.IkenshoInsurerTypeFormat;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 
@@ -46,8 +47,8 @@ public class IkenshoHokenshaIchiran extends IkenshoAffairContainer implements AC
     private VRArrayList data;
 
     private static final ACPassiveKey PASSIVE_CHECK_KEY = new
-        ACPassiveKey("INSURER", new String[] {"INSURER_NO"}
-                          , new Format[] {IkenshoConstants.FORMAT_PASSIVE_STRING}, "LAST_TIME", "LAST_TIME");
+        ACPassiveKey("INSURER", new String[] {"INSURER_NO", "INSURER_TYPE"}
+                          , new Format[] {IkenshoConstants.FORMAT_PASSIVE_STRING, null}, "LAST_TIME", "LAST_TIME");
 
     /**
      * コンストラクタです。
@@ -207,7 +208,8 @@ public class IkenshoHokenshaIchiran extends IkenshoAffairContainer implements AC
 
         //選択行の連携医コードを取得
         String insurerNo = String.valueOf(((VRMap)data.get(row)).getData("INSURER_NO"));
-
+        String insurerType = String.valueOf(((VRMap)data.get(row)).getData("INSURER_TYPE"));
+        
         //保険者番号が他のテーブルに登録されていないかチェック
         if (hasInsurerNoInOtherTable(insurerNo, "IKN_ORIGIN")) {
             ACMessageBox.show("意見書に使用されている保険者番号は削除できません。");
@@ -240,18 +242,19 @@ public class IkenshoHokenshaIchiran extends IkenshoAffairContainer implements AC
                 dbm = getPassiveCheckedDBManager();
                 if (dbm == null) {
                     ACMessageBox.show(IkenshoConstants.PASSIVE_CHECK_ERROR_MESSAGE);
-                    //再SELECT
-                    doSelect(null);
-                }
+//                    //再SELECT
+//                    doSelect(null);
 
+                }else{
                 //SQL文の生成
-                String sql = "DELETE FROM INSURER WHERE INSURER_NO='" + insurerNo + "'";
+                String sql = "DELETE FROM INSURER WHERE INSURER_NO='" + insurerNo + "' AND INSURER_TYPE=" +insurerType;
 
                 //SQLの実行
                 dbm.executeUpdate(sql);
 
                 //コミット
                 dbm.commitTransaction();
+                }
             }
             catch (Exception ex) {
                 //ロールバック
@@ -345,6 +348,7 @@ public class IkenshoHokenshaIchiran extends IkenshoAffairContainer implements AC
         sb.append( " SELECT " );
         sb.append( " INSURER_NO," );
         sb.append( " INSURER_NM," );
+        sb.append( " INSURER_TYPE," );
         sb.append( " FD_OUTPUT_UMU," );
         sb.append( " SEIKYUSHO_OUTPUT_PATTERN," );
         sb.append( " ISS_INSURER_NM," );
@@ -366,6 +370,7 @@ public class IkenshoHokenshaIchiran extends IkenshoAffairContainer implements AC
         table.setModel(new ACTableModelAdapter(data, new String[] {
                                                "INSURER_NO",
                                                "INSURER_NM",
+                                               "INSURER_TYPE",
                                                "ISS_INSURER_NM",
                                                "SKS_INSURER_NM",
                                                "FD_OUTPUT_UMU",
@@ -376,10 +381,11 @@ public class IkenshoHokenshaIchiran extends IkenshoAffairContainer implements AC
             new VRTableColumn[] {
             new VRTableColumn(0, 70, "保険者番号"),
             new VRTableColumn(1, 167, "保険者名称"),
-            new VRTableColumn(2, 167, "意見書作成料請求先"),
-            new VRTableColumn(3, 167, "診察・検査料請求先"),
-            new VRTableColumn(4, 50, "FD出力", SwingConstants.CENTER, IkenshoConstants.FORMAT_UMU),
-            new VRTableColumn(5, 150, "請求パターン", IkenshoConstants.FORMAT_SEIKYUSHO_OUTPUT_PATTERN)
+            new VRTableColumn(2, 50, "区分", SwingConstants.CENTER, IkenshoInsurerTypeFormat.getInstance()),
+            new VRTableColumn(3, 167, "意見書作成料請求先"),
+            new VRTableColumn(4, 167, "診察・検査料請求先"),
+            new VRTableColumn(5, 50, "FD出力", SwingConstants.CENTER, IkenshoConstants.FORMAT_UMU),
+            new VRTableColumn(6, 150, "請求パターン", IkenshoConstants.FORMAT_SEIKYUSHO_OUTPUT_PATTERN)
         })
             );
     }
@@ -400,14 +406,19 @@ public class IkenshoHokenshaIchiran extends IkenshoAffairContainer implements AC
                 if (params.size() > 0) {
                     String key = "INSURER_NO";
                     String value = String.valueOf(params.getData(key));
+                    String key2 = "INSURER_TYPE";
+                    String value2 = String.valueOf(params.getData(key));
                     if (value != null) {
                         //渡りデータの行を検索
                         for (int i = 0; i < data.size(); i++) {
                             VRMap row = (VRMap)data.getData(i);
                             String tmp = String.valueOf(row.getData(key));
                             if (tmp.equals(value)) {
-                                selectedRow = i;
-                                break;
+                                String tmp2 = String.valueOf(row.getData(key2));
+                                if (tmp2.equals(value2)) {
+                                    selectedRow = i;
+                                    break;
+                                }
                             }
                         }
                     }

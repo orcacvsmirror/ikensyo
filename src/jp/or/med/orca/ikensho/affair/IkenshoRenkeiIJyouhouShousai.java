@@ -102,8 +102,8 @@ public class IkenshoRenkeiIJyouhouShousai extends IkenshoAffairContainer
         ll.setFitHLast(true);
         ll.setFitVLast(true);
         client.setLayout(ll);
-        client.add(drNmContainer, VRLayout.FLOW_INSETLINE);
-        client.add(sinryoukaPanel, VRLayout.FLOW);
+        client.add(drNmContainer, VRLayout.FLOW_INSETLINE_RETURN);
+        client.add(sinryoukaPanel, VRLayout.FLOW_DOUBLEINSETLINE_RETURN);
         client.add(blank1, VRLayout.FLOW_RETURN);
         client.add(nmContainer, VRLayout.FLOW_INSETLINE_RETURN);
         client.add(postCdContainer, VRLayout.FLOW_INSETLINE);
@@ -148,7 +148,7 @@ public class IkenshoRenkeiIJyouhouShousai extends IkenshoAffairContainer
         sinryouka.setBindPath("SINRYOUKA");
         sinryouka.setIMEMode(InputSubset.KANJI);
 
-        sinryoukaNote.setText("「主治医意見書」に印刷される項目");
+        sinryoukaNote.setText("「主治医意見書」「医師医見書」に印刷される項目");
         sinryoukaNote.setForeground(new Color(0x003300));
 
         // 医療機関名

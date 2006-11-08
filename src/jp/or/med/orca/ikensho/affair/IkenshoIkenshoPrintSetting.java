@@ -14,10 +14,8 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 
-import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.container.ACGroupBox;
@@ -40,7 +38,7 @@ import jp.or.med.orca.ikensho.component.IkenshoEraDateTextField;
 import jp.or.med.orca.ikensho.component.picture.IkenshoHumanPicture;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 
-public class IkenshoIkenshoPrintSetting extends JDialog {
+public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
 
     private VRPanel contents = new VRPanel();
     private ACGroupBox printOptionGroup = new ACGroupBox();
@@ -185,10 +183,10 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
             final int INSURED_NO_UNINPUT = 2 << 6;
             // 最新の意見書ではない
             final int NOT_MOST_NEW_DOCUMENT = 2 << 7;
-            // 2006/12/11[Tozo Tanaka] : add begin
+            // 2005/12/11[Tozo Tanaka] : add begin
             // 請求データの無い移行直後のデータ
             final int NO_BILL_OF_OLD_VERSION_CONVERTED = 2 << 8;
-            // 2006/12/11[Tozo Tanaka] : add end
+            // 2005/12/11[Tozo Tanaka] : add end
             //2006/02/12[Tozo Tanaka] : add begin
             // CSV出力対象
             final int CSV_TARGET = 2 << 9;
@@ -199,15 +197,22 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
             final int CANNOT_OUTPUT_BILL = NEVER_SAVED | INSURER_UNSELECT
                     | KIND_UNSELECT | DOCTOR_UNSELECT | NO_BILL_OF_OLD_VERSION_CONVERTED;
             // CSV出力不可要件
-            //2006/02/12[Tozo Tanaka] : replace begin
+            //2006/09/09[Tozo Tanaka] : replace begin
+//            //2006/02/12[Tozo Tanaka] : replace begin
 //            final int CANNOT_OUTPUT_CSV = NEVER_SAVED
 //                    | CSV_CANNOT_OUTPUT_INSURER | INSURED_NO_UNINPUT
 //                    | CSV_OUTPUTED | NOT_MOST_NEW_DOCUMENT;
+//            final int CANNOT_OUTPUT_CSV = NEVER_SAVED
+//            | CSV_CANNOT_OUTPUT_INSURER | INSURED_NO_UNINPUT
+//            | CSV_OUTPUTED | NOT_MOST_NEW_DOCUMENT | CSV_TARGET;
+//            //2006/02/12[Tozo Tanaka] : replace end
             final int CANNOT_OUTPUT_CSV = NEVER_SAVED
-            | CSV_CANNOT_OUTPUT_INSURER | INSURED_NO_UNINPUT
-            | CSV_OUTPUTED | NOT_MOST_NEW_DOCUMENT | CSV_TARGET;
-            //2006/02/12[Tozo Tanaka] : replace end
+                    | CSV_CANNOT_OUTPUT_INSURER | INSURED_NO_UNINPUT
+                    | CSV_OUTPUTED | NOT_MOST_NEW_DOCUMENT | CSV_TARGET
+                    | NO_BILL_OF_OLD_VERSION_CONVERTED;
+            //2006/09/09[Tozo Tanaka] : replace end
 
+            
             int alertFlag = NO_ERROR;
 
             // 保存チェック
@@ -255,12 +260,12 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
             }
 
             
-            // 2006/12/11[Tozo Tanaka] : add begin
+            // 2005/12/11[Tozo Tanaka] : add begin
             if (IkenshoCommon.isConvertedNoBill(map)) {
                 // 保険者選択済みかつ請求書出力パターンが0＝以降直後で請求データが不正
                 alertFlag |= NO_BILL_OF_OLD_VERSION_CONVERTED;
             }
-            // 2006/12/11[Tozo Tanaka] : add end
+            // 2005/12/11[Tozo Tanaka] : add end
 
             
             // 保存チェック
@@ -275,16 +280,16 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                 csvSubmitHiHokensyaUnselectAlert.setVisible(false);
                 csvSubmitedAlert.setVisible(false);
                 notMostNewDocumentAlert.setVisible(false);
-                // 2006/12/11[Tozo Tanaka] : add begin
+                // 2005/12/11[Tozo Tanaka] : add begin
                 billConvertedNoBillAlert.setVisible(false);
-                // 2006/12/11[Tozo Tanaka] : add end
+                // 2005/12/11[Tozo Tanaka] : add end
                 // 2006/12/12[Tozo Tanaka] : add begin
                 csvTargetAlert.setVisible(false);
                 // 2006/12/12[Tozo Tanaka] : add end
             } else {
                 billPrintNoSaveAlert1.setVisible(false);
                 csvSubmitNoSaveAlert.setVisible(false);
-                // 2006/12/11[Tozo Tanaka] : add begin
+                // 2005/12/11[Tozo Tanaka] : add begin
                 // -------------------------------------------------
                 //移行データチェック
                 if ((alertFlag & NO_BILL_OF_OLD_VERSION_CONVERTED) > 0) {
@@ -293,21 +298,21 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                 // -------------------------------------------------
                     billKindUnselectAlert.setVisible(false);
                     billDoctorUnselectAlert.setVisible(false);
-                    // 2006/12/11[Tozo Tanaka] : add end
+                    // 2005/12/11[Tozo Tanaka] : add end
                 
                 // 保険者選択チェック
                 }else if ((alertFlag & INSURER_UNSELECT) > 0) {
-                    // 2006/12/11[Tozo Tanaka] : add begin
+                    // 2005/12/11[Tozo Tanaka] : add begin
                     billConvertedNoBillAlert.setVisible(false);
-                    // 2006/12/11[Tozo Tanaka] : add end
+                    // 2005/12/11[Tozo Tanaka] : add end
                     billHokensyaUnselectAlert.setVisible(true);
                     // -------------------------------------------------
                     billKindUnselectAlert.setVisible(false);
                     billDoctorUnselectAlert.setVisible(false);
                 } else {
-                    // 2006/12/11[Tozo Tanaka] : add begin
+                    // 2005/12/11[Tozo Tanaka] : add begin
                     billConvertedNoBillAlert.setVisible(false);
-                    // 2006/12/11[Tozo Tanaka] : add end
+                    // 2005/12/11[Tozo Tanaka] : add end
                     billHokensyaUnselectAlert.setVisible(false);
                     // -------------------------------------------------
                     // 保険者種別
@@ -327,16 +332,19 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                 }
 
                 // CSV出力可否
-                if ((alertFlag & CSV_CANNOT_OUTPUT_INSURER) > 0) {
+                // 2006/09/09[Tozo Tanaka] : replace begin
+                //if ((alertFlag & CSV_CANNOT_OUTPUT_INSURER) > 0) {
+                if ((alertFlag & (CSV_CANNOT_OUTPUT_INSURER | NO_BILL_OF_OLD_VERSION_CONVERTED)) > 0) {
+                    // 2006/09/09[Tozo Tanaka] : replace end
                     csvSubmitUnselectAlert.setVisible(true);
                     // -------------------------------------------------
                     csvSubmitHiHokensyaUnselectAlert.setVisible(false);
                     notMostNewDocumentAlert.setVisible(false);
                     csvSubmitedAlert.setVisible(false);
 
-                    // 2006/12/12[Tozo Tanaka] : add begin
+                    // 2005/12/12[Tozo Tanaka] : add begin
                     csvTargetAlert.setVisible(false);
-                    // 2006/12/12[Tozo Tanaka] : add end
+                    // 2005/12/12[Tozo Tanaka] : add end
                 } else {
                     csvSubmitUnselectAlert.setVisible(false);
                     // -------------------------------------------------
@@ -459,7 +467,7 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
 
             // 印刷画面の操作によって、元データが上書きされないようクローンを作成する
             this.source = (VRMap) contents.createSource();
@@ -1665,7 +1673,7 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                                     billDetailPrintM,
                                     billDetailPrintDate.getInputStatus() == IkenshoEraDateTextField.STATE_VALID,
                                     VRBindPathParser.get("INSURER_NO", source)
-                                            .toString());
+                                            .toString(),getFormatType());
                     break;
                 case 2: // 意見書作成料(1枚)・検査料(1枚)
                     IkenshoSeikyuIchiran
@@ -1684,7 +1692,7 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                                     billDetailPrintM,
                                     billDetailPrintDate.getInputStatus() == IkenshoEraDateTextField.STATE_VALID,
                                     VRBindPathParser.get("INSURER_NO", source)
-                                            .toString());
+                                            .toString(),getFormatType());
                     IkenshoSeikyuIchiran
                             .setSyosaiPrtData(
                                     pd,
@@ -1701,7 +1709,7 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                                     billDetailPrintM,
                                     billDetailPrintDate.getInputStatus() == IkenshoEraDateTextField.STATE_VALID,
                                     VRBindPathParser.get("INSURER_NO", source)
-                                            .toString());
+                                            .toString(),getFormatType());
                     break;
                 case 3: // 意見書作成料のみ
                     IkenshoSeikyuIchiran
@@ -1720,7 +1728,7 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                                     billDetailPrintM,
                                     billDetailPrintDate.getInputStatus() == IkenshoEraDateTextField.STATE_VALID,
                                     VRBindPathParser.get("INSURER_NO", source)
-                                            .toString());
+                                            .toString(),getFormatType());
                     break;
                 case 4: // 検査料のみ
                     IkenshoSeikyuIchiran
@@ -1739,7 +1747,7 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                                     billDetailPrintM,
                                     billDetailPrintDate.getInputStatus() == IkenshoEraDateTextField.STATE_VALID,
                                     VRBindPathParser.get("INSURER_NO", source)
-                                            .toString());
+                                            .toString(),getFormatType());
                     break;
                 }
             }
@@ -1762,7 +1770,7 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                             ACMessageBox.BUTTON_YES | ACMessageBox.BUTTON_NO,
                             ACMessageBox.ICON_QUESTION) == ACMessageBox.RESULT_YES) {
                         ACMessageBox
-                                .show("出力対象に設定します。\n\nCSVファイルの出力は[メインメニュー]-[その他の機能]-[「主治医意見書」CSVファイル出力]\nにて行ってください。");
+                                .show("出力対象に設定します。\n\nCSVファイルの出力は[メインメニュー]-[その他の機能]-[「主治医意見書」「医師意見書」CSVファイル出力]\nにて行ってください。");
                         printParameter
                                 .setCsvOutputType(IkenshoIkenshoInfoPrintParameter.CSV_OUTPUT_TYPE_TARGET);
                     } else {
@@ -1802,7 +1810,7 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
     /**
      * 位置を初期化します。
      */
-    private void initComponent() {
+    private void init() {
         // ウィンドウのサイズ
         setSize(new Dimension(700, 420));
         // ウィンドウを中央に配置
@@ -1818,7 +1826,7 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
                 (screenSize.height - frameSize.height) / 2);
     }
 
-    private void jbInit() throws Exception {
+    protected void jbInit() throws Exception {
         contentsLayout.setFitVLast(true);
         contentsLayout.setFitHLast(true);
         contents.setLayout(contentsLayout);
@@ -1929,10 +1937,10 @@ public class IkenshoIkenshoPrintSetting extends JDialog {
         toCheckCost.setBindPath("SKS_INSURER_NO");
         toCreateCostHead.setEnabled(false);
         toCreateCostHead.setBindPath("ISS_INSURER_NM");
-        // 2006/12/11[Tozo Tanaka] : add begin
+        // 2005/12/11[Tozo Tanaka] : add begin
 //        vRPanel1.setLayout(new BorderLayout());
         vRPanel1.setLayout(new VRLayout());
-        // 2006/12/11[Tozo Tanaka] : add end
+        // 2005/12/11[Tozo Tanaka] : add end
         billPrintNoSaveAlert1
                 .setForeground(IkenshoConstants.COLOR_MESSAGE_ALART_TEXT_FOREGROUND);
         billPrintNoSaveAlert1.setText("データが保存されていません。");
@@ -1996,7 +2004,7 @@ toCheckCosts.add(toCheckCostHead, null);
         billPrintPanel.add(billPrintGroup, VRLayout.CLIENT);
         billPrintGroup.add(billPrints, BorderLayout.NORTH);
         billPrintGroup.add(vRPanel1, BorderLayout.SOUTH);
-        // 2006/12/11[Tozo Tanaka] : replace begin
+        // 2005/12/11[Tozo Tanaka] : replace begin
 //        vRPanel1.add(billHokensyaUnselectAlert, VRLayout.SOUTH);
 //        vRPanel1.add(billPrintNoSaveAlert1, BorderLayout.CENTER);
 //        vRPanel1.add(billKindUnselectAlert, BorderLayout.WEST);
@@ -2006,7 +2014,7 @@ toCheckCosts.add(toCheckCostHead, null);
         vRPanel1.add(billKindUnselectAlert, VRLayout.CLIENT);
         vRPanel1.add(billDoctorUnselectAlert, VRLayout.CLIENT);
         vRPanel1.add(billConvertedNoBillAlert, VRLayout.CLIENT);
-        // 2006/12/11[Tozo Tanaka] : replace end
+        // 2005/12/11[Tozo Tanaka] : replace end
         billPrintPanel.add(csvGroup, VRLayout.CLIENT);
         csvGroup.add(csvSubmits, BorderLayout.NORTH);
         csvSubmits.add(csvSubmit, null);
@@ -2051,4 +2059,58 @@ toCheckCosts.add(toCheckCostHead, null);
 
     }
 
+    // 医師意見書対応
+    // 2006/07/19[kamitsukasa] add begin
+    /**
+     * GroupBox『「主治医意見書」印刷オプション』Setter 
+     */
+    protected void setPrintOptionGroup(ACGroupBox printOptionGroup){
+    	this.printOptionGroup = printOptionGroup;
+    }
+    
+    /**
+     * GroupBox『「主治医意見書」印刷オプション』Getter 
+     */
+    protected ACGroupBox getPrintOptionGroup(){
+    	return this.printOptionGroup;
+    }
+    
+    /**
+     * GroupBox『「主治医意見書」と同時に』Setter
+     */
+    protected void setBillPrintGroup(ACGroupBox billPrintGroup){
+    	this.billPrintGroup = billPrintGroup;
+    }
+
+    /**
+     * GroupBox『「主治医意見書」と同時に』Getter
+     */
+    protected ACGroupBox getBillPrintGroup(){
+    	return this.billPrintGroup;
+    }
+
+    /**
+     * GroupBox『CSVファイルでの「主治医意見書」の提出』Setter
+     */
+    protected void setCsvGroup(ACGroupBox csvGroup){
+    	this.csvGroup = csvGroup;
+    }
+
+    /**
+     * GroupBox『CSVファイルでの「主治医意見書」の提出』Getter
+     */
+    protected ACGroupBox getCsvGroup(){
+    	return this.csvGroup;
+    }
+    
+    // 2006/07/19[kamitsukasa] add end
+    
+    /**
+     * 対象とする意見書の様式区分を返します。
+     * @return 対象とする意見書の様式区分
+     */
+    protected int getFormatType(){
+        return IkenshoConstants.IKENSHO_LOW_DEFAULT;
+    }
+    
 }

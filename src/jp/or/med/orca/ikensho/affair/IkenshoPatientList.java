@@ -21,6 +21,7 @@ import jp.nichicom.ac.component.table.ACTableColumn;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACPassiveKey;
@@ -95,12 +96,16 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         }
 
         doSelect();
-
+        
+        // 2006/07/05
+        // 医師意見書対応
+        // 医師意見書最終記入年月日表示用のカラムを追加
+        // Addition - begin [Masahiko Higuchi]
         setTableModelAdapter(new ACTableModelAdapter(data, new String[] {
                 "CHART_NO", "PATIENT_NM", "PATIENT_KN", "SEX", "BIRTHDAY",
                 "IKN_ORIGIN_KINYU_DT", "SIS_ORIGIN_KINYU_DT", "KOUSIN_DT",
-                "DELETE_FLAG" }));
-
+                "DELETE_FLAG","IKN_ORIGIN_KINYU_DT_ISHI" }));
+        // Addition - end
         table.setModel(getTableModelAdapter());
 
         table.setColumnModel(new VRTableColumnModel(new ACTableColumn[] {
@@ -114,11 +119,18 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
                         IkenshoConstants.FORMAT_SEX),
                 new ACTableColumn(4, 32, "年齢", SwingConstants.RIGHT,
                         IkenshoConstants.FORMAT_NOW_AGE),
-                new ACTableColumn(5, 120, "最新意見書記入日",
+                        // 2006/07/05
+                        // 医師意見書対応
+                        // 医師意見書最終記入年月日表示用のカラムを追加
+                        // Addition - begin [Masahiko Higuchi]
+                new ACTableColumn(5, 150, "最新主治医意見書記入日",
                         IkenshoConstants.FORMAT_ERA_YMD),
+                new ACTableColumn(9, 150, "最新医師意見書記入日",
+                        IkenshoConstants.FORMAT_ERA_YMD),
+                        // Addition - end
                 new ACTableColumn(6, 120, "最新指示書記入日",
                         IkenshoConstants.FORMAT_ERA_YMD),
-                new ACTableColumn(7, 150, "最終更新日",
+                new ACTableColumn(7, 120, "最終更新日",
                         IkenshoConstants.FORMAT_ERA_HMS), }));
 
         if (table.getRowCount() > 0) {
@@ -192,6 +204,14 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         sb.append(" PATIENT.BIRTHDAY,");
         sb.append(" PATIENT.KOUSIN_DT,");
         sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_MAX_EDA,");
+        // 2006/07/05
+        // 医師意見書対応 TODO
+        // SQL変更に伴いストアドプロシージャも変更する必要がある
+        // Addition - begin [Masahiko Higuchi]
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_FORMAT_KBN,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_KINYU_DT_ISHI,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_MAX_EDA_ISHI,"); // Addition [Kazuyoshi Kamitsukasa]
+        // Addition - end
         sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_KINYU_DT,");
         sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_LASTDAY,");
         sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_CREATE_DT,");
@@ -477,7 +497,18 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
                     IkenshoCommon.addString(pd, "table.h" + index + ".w9",
                             IkenshoConstants.FORMAT_ERA_YMD.format(sijisho));
                 }
-
+                
+                // 2006/07/05
+                // 医師意見書対応
+                // Addition - begin [Masahiko Higuchi]
+                // 最新医師意見書記入日
+                Object isiIkensho = VRBindPathParser.get(
+                        "IKN_ORIGIN_KINYU_DT_ISHI", map);
+                if (isiIkensho != null) {
+                    IkenshoCommon.addString(pd, "table.h" + index + ".w10",
+                            IkenshoConstants.FORMAT_ERA_YMD.format(isiIkensho));
+                }
+                // Addition - end
             }
             pd.endPageEdit();
         }
@@ -526,38 +557,45 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 
             int patientNo = ((Integer) VRBindPathParser.get("PATIENT_NO",
                     rowData)).intValue();
-            Object maxEdaNo = VRBindPathParser.get("IKN_ORIGIN_MAX_EDA",
-                    rowData);
-            if (maxEdaNo instanceof Integer) {
-                StringBuffer sb = new StringBuffer();
-                sb.append("SELECT");
-                sb.append(" FD_OUTPUT_KBN");
-                sb.append(" FROM");
-                sb.append(" IKN_BILL");
-                sb.append(" WHERE");
-                sb.append(" (PATIENT_NO = ");
-                sb.append(patientNo);
-                sb.append(")");
-                sb.append(" AND (EDA_NO = ");
-                sb.append(((Integer) maxEdaNo).intValue());
-                sb.append(")");
+            
+            
+            // 2006/09/22
+            // remove - begin [Masahiko Higuchi] & [Kazuyoshi Kamitsukasa]
+            
+//            Object maxEdaNo = VRBindPathParser.get("IKN_ORIGIN_MAX_EDA",
+//                    rowData);
+//            if (maxEdaNo instanceof Integer) {
+//                StringBuffer sb = new StringBuffer();
+//                sb.append("SELECT");
+//                sb.append(" FD_OUTPUT_KBN");
+//                sb.append(" FROM");
+//                sb.append(" IKN_BILL");
+//                sb.append(" WHERE");
+//                sb.append(" (PATIENT_NO = ");
+//                sb.append(patientNo);
+//                sb.append(")");
+//                sb.append(" AND (EDA_NO = ");
+//                sb.append(((Integer) maxEdaNo).intValue());
+//                sb.append(")");
+//
+//                IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
+//                VRArrayList billArray = (VRArrayList) dbm.executeQuery(sb
+//                        .toString());
+//                dbm.finalize();
+//                if (billArray.getDataSize() > 0) {
+//                    Object obj = VRBindPathParser.get("FD_OUTPUT_KBN",
+//                            (VRMap) billArray.getData());
+//                    if (obj instanceof Integer) {
+//                        if (((Integer) obj).intValue() == 1) {
+//                            ACMessageBox.show("CSV出力対象の意見書があるので新規作成できません。");
+//                            return;
+//                        }
+//                    }
+//                }
+//            }
 
-                IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
-                VRArrayList billArray = (VRArrayList) dbm.executeQuery(sb
-                        .toString());
-                dbm.finalize();
-                if (billArray.getDataSize() > 0) {
-                    Object obj = VRBindPathParser.get("FD_OUTPUT_KBN",
-                            (VRMap) billArray.getData());
-                    if (obj instanceof Integer) {
-                        if (((Integer) obj).intValue() == 1) {
-                            ACMessageBox.show("CSV出力対象の意見書があるので新規作成できません。");
-                            return;
-                        }
-                    }
-                }
-            }
-
+            // remove - end [Masahiko Higuchi] & [Kazuyoshi Kamitsukasa]
+            
             int flag = IkenshoCommon.checkInsurerDoctorCheck();
             if ((flag & IkenshoCommon.CHECK_INSURER_NOTHING) > 0) {
                 if (ACMessageBox.show("保険者が登録されていません。今登録しますか？",
@@ -586,21 +624,48 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
             VRMap param = new VRHashMap();
             param.putAll(rowData);
             param.setData("AFFAIR_MODE", IkenshoConstants.AFFAIR_MODE_INSERT);
+            
+            // 2006/09/22
+            // CSV出力区分判別用
+            // Addition - begin [Masahiko Higuchi] & [Kazuyoshi Kamitsukasa]
+            int maxEdaNo = 0;
+            // Addition - end [Masahiko Higuchi] & [Kazuyoshi Kamitsukasa]
+            
+            // 2006/07/20 - 医師意見書対応 TODO
+            // Addition - begin [Masahiko Higuchi]
+             switch (ACMessageBox.showYesNoCancel("作成する意見書の種類を選択してください。",
+             "主治医意見書(S)", 'S', "医師意見書(I)",
+             'I')) {
+             case ACMessageBox.RESULT_YES:
+                 
+                 // 2006/09/22
+                 // CSV出力区分判別用
+                 // Addition - begin [Masahiko Higuchi] & [Kazuyoshi Kamitsukasa]
+               maxEdaNo = ACCastUtilities.toInt(VRBindPathParser.get("IKN_ORIGIN_MAX_EDA",rowData),0);
 
-            // switch (NCMessageBox.showYesNoCancel("作成する意見書の対応年度を選択してください。",
-            // "平成17年度(7)", '7', "平成18年度(8)",
-            // '8')) {
-            // case NCMessageBox.RESULT_YES:
-            // IkenshoIkenshoInfo.goIkensho(IkenshoConstants.IKENSHO_LOW_DEFAULT,
-            // param);
-            // break;
-            // case NCMessageBox.RESULT_NO:
-            IkenshoIkenshoInfo.goIkensho(IkenshoConstants.IKENSHO_LOW_H18,
-                    param);
-            // break;
-            // default:
-            // return;
-            // }
+               if (checkFDOutPutKubun(patientNo, maxEdaNo)) {
+                   IkenshoIkenshoInfo.goIkensho(IkenshoConstants.IKENSHO_LOW_H18,
+                           param);
+               }
+               // Addition - end [Masahiko Higuchi] & [Kazuyoshi Kamitsukasa]               
+                 break;
+             case ACMessageBox.RESULT_NO:
+                 
+                 // 2006/09/22
+                 // CSV出力区分判別用
+                 // Addition - begin [Masahiko Higuchi] & [Kazuyoshi Kamitsukasa]
+               maxEdaNo = ACCastUtilities.toInt(VRBindPathParser.get("IKN_ORIGIN_MAX_EDA_ISHI",rowData),0);
+
+               if (checkFDOutPutKubun(patientNo, maxEdaNo)) {
+                   IkenshoIkenshoInfo.goIkensho(IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO,
+                           param);
+              }
+               // Addition - end [Masahiko Higuchi] & [Kazuyoshi Kamitsukasa]
+                 break;
+             default:
+                 return;
+             }
+             // Addition -End
         }
         else if ((e.getSource() == sijisho)  || (e.getSource() == sijishoMenu) ) {
             int row = table.getSelectedModelRow();
@@ -637,6 +702,46 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         }
     }
 
+    /**
+     * FD出力区分を判別します。
+     * @param patientNo 利用者番号
+     * @param maxEdaNo 最大枝番号
+     * @return
+     * @throws Exception
+     */
+    protected boolean checkFDOutPutKubun(int patientNo,int maxEdaNo) throws Exception{
+      StringBuffer sb = new StringBuffer();
+      sb.append("SELECT");
+      sb.append(" FD_OUTPUT_KBN");
+      sb.append(" FROM");
+      sb.append(" IKN_BILL");
+      sb.append(" WHERE");
+      sb.append(" (PATIENT_NO = ");
+      sb.append(patientNo);
+      sb.append(")");
+      sb.append(" AND (EDA_NO = ");
+      sb.append(maxEdaNo);
+      sb.append(")");
+      
+      IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
+      VRArrayList billArray = (VRArrayList) dbm.executeQuery(sb
+              .toString());
+      dbm.finalize();
+      if (billArray.getDataSize() > 0) {
+          Object obj = VRBindPathParser.get("FD_OUTPUT_KBN",
+                  (VRMap) billArray.getData());
+          if (obj instanceof Integer) {
+              if (((Integer) obj).intValue() == 1) {
+                  ACMessageBox.show("CSV出力対象の意見書があるので新規作成できません。");
+                  return false;
+              }
+          }
+      }
+
+        return true;
+    }
+    
+    
     protected void detailActionPerformed(ActionEvent e) throws Exception {
         int row = table.getSelectedModelRow();
         if (row < 0) {

@@ -11,6 +11,8 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -22,6 +24,7 @@ import javax.swing.table.TableColumnModel;
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.component.ACButton;
+import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.component.table.ACTableColumn;
 import jp.nichicom.ac.container.ACGroupBox;
@@ -29,6 +32,7 @@ import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACPassiveKey;
@@ -52,6 +56,7 @@ import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoEraDateTextField;
 import jp.or.med.orca.ikensho.component.table.IkenshoSeikyushoHakkouKubunTableCellRenderer;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
+import jp.or.med.orca.ikensho.lib.IkenshoFormatTypeFormat;
 import jp.or.med.orca.ikensho.lib.IkenshoSeikyushoHakkouKubunReserveFormat;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 import jp.or.med.orca.ikensho.util.IkenshoSnapshot;
@@ -91,7 +96,6 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
     // 期間指定コンボボックス
     private VRComboBox taisyoDayCombo = new VRComboBox();
     private IkenshoEraDateTextField taisyoKikanFrom = new IkenshoEraDateTextField();
-    private JLabel taisyoKikanFromLabel = new JLabel();
     private IkenshoEraDateTextField taisyoKikanTo = new IkenshoEraDateTextField();
     private JLabel taisyoKikanToLabel = new JLabel();
     private ACLabelContainer taisyoDayContainer = new ACLabelContainer();
@@ -99,6 +103,10 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
     private ACButton clearDate = new ACButton();
     // 発行済みも含めるチェックボックス
     private VRCheckBox hakkozumiCheck = new VRCheckBox();
+    
+    //医見書区分
+    private ACComboBox formatType = new ACComboBox();
+    private ACLabelContainer formatTypeContainer = new ACLabelContainer();
 
     // 未発行ボタン
     private ACButton mihakko = new ACButton();
@@ -300,11 +308,20 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         hakkozumiCheck.setBindPath("hakkozumiCheck");
         ACLabelContainer panelCheck = new ACLabelContainer();
         panelCheck.add(hakkozumiCheck, null);
+        
+        //医見書区分
+        formatTypeContainer.setText("意見書区分");
+        formatType.setEditable(false);
+        formatType.setBlankable(true);
+        formatType.setModel(new String[]{"主治医意見書","医師意見書"});
+        formatTypeContainer.add(formatType);
+        
 
         searchGrp.add(hokenjyaContainer, VRLayout.FLOW_INSETLINE);
         searchGrp.add(doctorContainer, VRLayout.FLOW_RETURN);
         searchGrp.add(taisyoDayContainer, VRLayout.FLOW_INSETLINE_RETURN);
-        searchGrp.add(panelCheck, VRLayout.FLOW_INSETLINE_RETURN);
+        searchGrp.add(panelCheck, VRLayout.FLOW_INSETLINE);
+        searchGrp.add(formatTypeContainer, VRLayout.FLOW_INSETLINE_RETURN);
         // ---検索条件設定
 
         // ---発行状態変更ボタン
@@ -361,8 +378,10 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         // ---コンボボックス内データの初期化
         // 保険者コンボボックス
         hokenjyaList = (VRArrayList) dbm
-                .executeQuery("SELECT INSURER_NO,INSURER_NM FROM INSURER ORDER BY INSURER_NM");
-        setComboModel(hokenjyaCombo, hokenjyaList, "INSURER_NM");
+                .executeQuery("SELECT INSURER_NO,INSURER_NM,INSURER_TYPE FROM INSURER ORDER BY INSURER_NM");
+        IkenshoCommon.buildInsureNameType(hokenjyaList, "INSURER_NM_TYPE"); 
+
+        setComboModel(hokenjyaCombo, hokenjyaList, "INSURER_NM_TYPE");
         if (hokenjyaCombo.getItemCount() == 1) {
             hokenjyaCombo.setSelectedIndex(0);
         }
@@ -377,6 +396,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
 
         data = new VRArrayList();
         tableModel = new ACTableModelAdapter(data, new String[] { "HAKKOU_KBN",
+                "FORMAT_KBN",
                 "PATIENT_NM", "AGE", "INSURED_NO", "DR_NM", "REQ_DT",
                 "KINYU_DT", "SEND_DT" });
 
@@ -391,22 +411,23 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                                         SwingConstants.CENTER,
                                         IkenshoSeikyushoHakkouKubunReserveFormat
                                                 .getInstance()),
-                                new ACTableColumn(1, 180, "氏名",
+                                new ACTableColumn(1, 50, "区分", IkenshoFormatTypeFormat.getInstance()),
+                                new ACTableColumn(2, 180, "氏名",
                                         tableCellRenderer, null),
-                                new ACTableColumn(2, 50, "年齢",
+                                new ACTableColumn(3, 50, "年齢",
                                         SwingConstants.RIGHT,
                                         tableCellRenderer, null),
-                                new ACTableColumn(3, 120, "被保険者番号",
+                                new ACTableColumn(4, 90, "被保険者番号",
                                         tableCellRenderer, null),
-                                new ACTableColumn(4, 150, "医師氏名",
+                                new ACTableColumn(5, 150, "医師氏名",
                                         tableCellRenderer, null),
-                                new ACTableColumn(5, 120, "作成依頼日",
+                                new ACTableColumn(6, 110, "作成依頼日",
                                         IkenshoConstants.FORMAT_ERA_YMD,
                                         tableCellRenderer, null),
-                                new ACTableColumn(6, 120, "意見書記入日",
+                                new ACTableColumn(7, 110, "意見書記入日",
                                         IkenshoConstants.FORMAT_ERA_YMD,
                                         tableCellRenderer, null),
-                                new ACTableColumn(7, 120, "意見書送付日",
+                                new ACTableColumn(8, 110, "意見書送付日",
                                         IkenshoConstants.FORMAT_ERA_YMD,
                                         tableCellRenderer, null) }));
 
@@ -638,6 +659,19 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                             + ".HAKKOU_KBN", "-");
                     break;
                 }
+                //意見書区分
+                switch (Integer.parseInt(VRBindPathParser
+                        .get("FORMAT_KBN", map).toString())) {
+                case 2:
+                    IkenshoCommon.addString(pd, getHeader(j + 1)
+                            + ".FORMAT_KBN", "医師意");
+                    break;
+                default:
+                    IkenshoCommon.addString(pd, getHeader(j + 1)
+                            + ".FORMAT_KBN", "主治医");
+                    break;
+                }
+                
                 // 氏名
                 IkenshoCommon.addString(pd, getHeader(j + 1) + ".PATIENT_NM",
                         getString("PATIENT_NM", map));
@@ -712,8 +746,8 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
 
     private String getSelectedCboData(VRComboBox combo, VRArrayList ary,
             String key) {
-        return ((VRMap) ary.getData(combo.getSelectedIndex())).getData(key)
-                .toString();
+        return ACCastUtilities.toString(((VRMap) ary.getData(combo
+                .getSelectedIndex())).getData(key), "");
     }
 
     /**
@@ -748,7 +782,8 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         seikyuPrtSet.setResizable(false);
         // 印刷設定ダイアログを表示
         if (seikyuPrtSet.showDialog(getSelectedCboData(hokenjyaCombo,
-                hokenjyaList, "INSURER_NO")) == IkenshoSeikyuPrintSetting.BUTTON_CANCEL) {
+                hokenjyaList, "INSURER_NO"), getSelectedCboData(hokenjyaCombo,
+                        hokenjyaList, "INSURER_TYPE")) == IkenshoSeikyuPrintSetting.BUTTON_CANCEL) {
             // キャンセルが押下された場合は、処理を停止
             return;
         }
@@ -765,8 +800,169 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
 
     }
 
+//    /**
+//     * 請求書のの発行を行います。
+//     *
+//     * @param seikyuPrtSet IkenshoSeikyuPrintSetting
+//     * @return boolean
+//     * @exception Exception
+//     */
+//    private boolean doSeikyuPrint(IkenshoSeikyuPrintSetting seikyuPrtSet)
+//            throws Exception {
+//        // 印刷用データ保持オブジェクト
+//        ACChotarouXMLWriter pd = new ACChotarouXMLWriter();
+//        // 医療機関データ保持オブジェクト
+//        VRMap doctorData = null;
+//        // 請求データ
+//        VRArrayList seikyuData = new VRArrayList();
+//        // 金額データ
+//        HashMap costData = null;
+//        VRMap map = null;
+//        IkenshoFirebirdDBManager dbm = null;
+//
+//        int out_mode = 0;
+//        int sokatu_select = 0;
+//        boolean sokatu_check = false;
+//        int meisai_select = 0;
+//        boolean meisai_check = false;
+//
+//        try {
+//
+//            // 条件のアップデート
+//            dbm = doUpdateAll();
+//            if (dbm == null) {
+//                return false;
+//            }
+//            // PDFファイルの作成
+//            // 医療機関取得
+//            doctorData = getDefaultDoctor(dbm, getSelectedCboData(
+//                    hokenjyaCombo, hokenjyaList, "INSURER_NO"));
+//            if (doctorData == null) {
+//                dbm.rollbackTransaction();
+//                return false;
+//            }
+//
+//            // 請求書発行対象データを抽出
+//            for (int i = 0; i < data.getDataSize(); i++) {
+//                map = (VRMap) data.getData(i);
+//                if (map.getData("HAKKOU_KBN").toString().equals("1")) {
+//                    seikyuData.add(map);
+//                }
+//            }
+//
+//            // 合計金額などを取得
+//            costData = getCostData(seikyuData);
+//
+//            // 印刷開始宣言
+//            pd.beginPrintEdit();
+//
+//            // 各定義体を設定
+//            String dir = ACFrame.getInstance().getExeFolderPath() + separator
+//                    + "format" + separator;
+//            ACChotarouXMLUtilities.addFormat(pd, "seikyu", "Soukatusho.xml");
+//            ACChotarouXMLUtilities.addFormat(pd, "ichiran", "SeikyuIchiran.xml");
+//            ACChotarouXMLUtilities.addFormat(pd, "ichiranTotal", "SeikyuIchiranTotal.xml");
+//            ACChotarouXMLUtilities.addFormat(pd, "syosai", "IkenshoMeisai.xml");
+////            pd.addFormat("seikyu", dir + "Soukatusho.xml");
+////            pd.addFormat("ichiran", dir + "SeikyuIchiran.xml");
+////            pd.addFormat("ichiranTotal", dir + "SeikyuIchiranTotal.xml");
+////            pd.addFormat("syosai", dir + "IkenshoMeisai.xml");
+//
+//            out_mode = IKEN_PRINT;
+//            switch (seikyuPrtSet.getOutputPattern()) {
+//            case 1:
+//                out_mode = BOTH_PRINT;
+//            // no break;
+//            case 2:
+//            // no break;
+//            case 3:
+//                sokatu_select = seikyuPrtSet.createSummaryRadio
+//                        .getSelectedIndex();
+//                sokatu_check = seikyuPrtSet.createSummaryPrint.isSelected();
+//                meisai_select = seikyuPrtSet.createDetailsRadio
+//                        .getSelectedIndex();
+//                meisai_check = seikyuPrtSet.createDetailsPrint.isSelected();
+//                break;
+//            case 4:
+//                out_mode = KENSA_PRINT;
+//                sokatu_select = seikyuPrtSet.inspectionSummaryRadio
+//                        .getSelectedIndex();
+//                sokatu_check = seikyuPrtSet.inspectionSummaryPrint.isSelected();
+//                meisai_select = seikyuPrtSet.inspectionDetailsRadio
+//                        .getSelectedIndex();
+//                meisai_check = seikyuPrtSet.inspectionDetailsPrint.isSelected();
+//                break;
+//            }
+//            // 検査料出力設定で、検査の件数が0件であれば、処理を行わない。
+//            if ((seikyuPrtSet.getOutputPattern() != 4)
+//                    || (!costData.get("KENSA_COUNT").toString().equals("0"))) {
+//                // 総括
+//                if (sokatu_select == 1) {
+//                    setSokatuPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
+//                            costData, out_mode, sokatu_check);
+//                }
+//                // 一覧
+//                if ((meisai_select & 2) == 2) {
+//                    setIchiranPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
+//                            costData, out_mode, meisai_check);
+//                }
+//                // 明細
+//                if ((meisai_select & 1) == 1) {
+//                    setSyosaiPrtDataAll(pd, seikyuData, seikyuPrtSet, out_mode,
+//                            meisai_check);
+//                }
+//            }
+//            //
+//            if ((seikyuPrtSet.getOutputPattern() == 2)
+//                    && (!costData.get("KENSA_COUNT").toString().equals("0"))) {
+//                // 総括
+//                if (seikyuPrtSet.inspectionSummaryRadio.getSelectedIndex() == 1) {
+//                    setSokatuPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
+//                            costData, KENSA_PRINT,
+//                            seikyuPrtSet.inspectionSummaryPrint.isSelected());
+//                }
+//                // 一覧
+//                if ((seikyuPrtSet.inspectionDetailsRadio.getSelectedIndex() & 2) == 2) {
+//                    setIchiranPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
+//                            costData, KENSA_PRINT, meisai_check);
+//                }
+//                // 明細
+//                if ((seikyuPrtSet.inspectionDetailsRadio.getSelectedIndex() & 1) == 1) {
+//                    setSyosaiPrtDataAll(pd, seikyuData, seikyuPrtSet,
+//                            KENSA_PRINT, meisai_check);
+//                }
+//            }
+//
+//            pd.endPrintEdit();
+//
+//            if (!costData.get("KENSA_COUNT").toString().equals("0")
+//                    || (seikyuPrtSet.getOutputPattern() != 4)) {
+//                // writePDF(pd);
+//                // openPDF();
+//                openPDF(pd);
+//            }
+//
+//            dbm.commitTransaction();
+//        } catch (Exception e) {
+//            dbm.rollbackTransaction();
+//            throw e;
+//        }
+//
+//        if (costData.get("KENSA_COUNT").toString().equals("0")) {
+//            // 検査料のみの帳票が出力される可能性がある場合
+//            // 2:意見書(1枚) 検査料(1枚)
+//            // 4:検査料のみ
+//            if (seikyuPrtSet.getOutputPattern() == 2
+//                    || seikyuPrtSet.getOutputPattern() == 4) {
+//                ACMessageBox.show("診察・検査費用請求対象となる意見書がありませんでした。");
+//            }
+//        }
+//
+//        doSelect(false);
+//        return true;
+//    }
     /**
-     * 請求書のの発行を行います。
+     * 請求書の発行を行います。
      *
      * @param seikyuPrtSet IkenshoSeikyuPrintSetting
      * @return boolean
@@ -774,22 +970,10 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
      */
     private boolean doSeikyuPrint(IkenshoSeikyuPrintSetting seikyuPrtSet)
             throws Exception {
-        // 印刷用データ保持オブジェクト
-        ACChotarouXMLWriter pd = new ACChotarouXMLWriter();
-        // 医療機関データ保持オブジェクト
-        VRMap doctorData = null;
-        // 請求データ
-        VRArrayList seikyuData = new VRArrayList();
-        // 金額データ
-        HashMap costData = null;
-        VRMap map = null;
         IkenshoFirebirdDBManager dbm = null;
 
-        int out_mode = 0;
-        int sokatu_select = 0;
-        boolean sokatu_check = false;
-        int meisai_select = 0;
-        boolean meisai_check = false;
+        //診察・検査費用請求対象となる意見書がないか
+        boolean noKensa = false;
 
         try {
 
@@ -800,110 +984,62 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             }
             // PDFファイルの作成
             // 医療機関取得
-            doctorData = getDefaultDoctor(dbm, getSelectedCboData(
-                    hokenjyaCombo, hokenjyaList, "INSURER_NO"));
+            VRMap doctorData = getDefaultDoctor(dbm, getSelectedCboData(
+                    hokenjyaCombo, hokenjyaList, "INSURER_NO"), getSelectedCboData(
+                            hokenjyaCombo, hokenjyaList, "INSURER_TYPE"));
             if (doctorData == null) {
                 dbm.rollbackTransaction();
                 return false;
             }
 
+            // 請求データ
+            VRArrayList seikyuDataShujii = new VRArrayList();
+            VRArrayList seikyuDataIshi = new VRArrayList();
+
+            final String ISHI_IKENSHO_FLAG = ACCastUtilities.toString(IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO);
             // 請求書発行対象データを抽出
             for (int i = 0; i < data.getDataSize(); i++) {
-                map = (VRMap) data.getData(i);
-                if (map.getData("HAKKOU_KBN").toString().equals("1")) {
-                    seikyuData.add(map);
+                VRMap map = map = (VRMap) data.getData(i);
+                if ("1".equals(ACCastUtilities.toString(map.getData("HAKKOU_KBN")))) {
+                    if (ISHI_IKENSHO_FLAG.equals(ACCastUtilities.toString(map.getData("FORMAT_KBN")))) {
+                        //医師意見書の場合
+                        seikyuDataIshi.add(map);
+                    }else{
+                        //主治医意見書の場合
+                        seikyuDataShujii.add(map);
+                    }
                 }
             }
 
-            // 合計金額などを取得
-            costData = getCostData(seikyuData);
+            // 印刷用データ保持オブジェクト
+            ACChotarouXMLWriter pd = new ACChotarouXMLWriter();
 
             // 印刷開始宣言
             pd.beginPrintEdit();
 
-            // 各定義体を設定
-            String dir = ACFrame.getInstance().getExeFolderPath() + separator
-                    + "format" + separator;
-            ACChotarouXMLUtilities.addFormat(pd, "seikyu", "Soukatusho.xml");
-            ACChotarouXMLUtilities.addFormat(pd, "ichiran", "SeikyuIchiran.xml");
-            ACChotarouXMLUtilities.addFormat(pd, "ichiranTotal", "SeikyuIchiranTotal.xml");
-            ACChotarouXMLUtilities.addFormat(pd, "syosai", "IkenshoMeisai.xml");
-//            pd.addFormat("seikyu", dir + "Soukatusho.xml");
-//            pd.addFormat("ichiran", dir + "SeikyuIchiran.xml");
-//            pd.addFormat("ichiranTotal", dir + "SeikyuIchiranTotal.xml");
-//            pd.addFormat("syosai", dir + "IkenshoMeisai.xml");
-
-            out_mode = IKEN_PRINT;
-            switch (seikyuPrtSet.getOutputPattern()) {
-            case 1:
-                out_mode = BOTH_PRINT;
-            // no break;
-            case 2:
-            // no break;
-            case 3:
-                sokatu_select = seikyuPrtSet.createSummaryRadio
-                        .getSelectedIndex();
-                sokatu_check = seikyuPrtSet.createSummaryPrint.isSelected();
-                meisai_select = seikyuPrtSet.createDetailsRadio
-                        .getSelectedIndex();
-                meisai_check = seikyuPrtSet.createDetailsPrint.isSelected();
-                break;
-            case 4:
-                out_mode = KENSA_PRINT;
-                sokatu_select = seikyuPrtSet.inspectionSummaryRadio
-                        .getSelectedIndex();
-                sokatu_check = seikyuPrtSet.inspectionSummaryPrint.isSelected();
-                meisai_select = seikyuPrtSet.inspectionDetailsRadio
-                        .getSelectedIndex();
-                meisai_check = seikyuPrtSet.inspectionDetailsPrint.isSelected();
-                break;
+            //PDFを開いてよいか
+            boolean canOpen = false;
+            // 金額データ
+            HashMap costData;
+            
+            if (!seikyuDataShujii.isEmpty()) {
+                // 主治医意見書
+                costData = doSeikyuPrintImpl(seikyuPrtSet, pd,
+                        seikyuDataShujii, doctorData, IkenshoConstants.IKENSHO_LOW_H18);
+                noKensa |= isNoKensaData(seikyuPrtSet, costData);
+                canOpen |= canOpenData(seikyuPrtSet, costData);
             }
-            // 検査料出力設定で、検査の件数が0件であれば、処理を行わない。
-            if ((seikyuPrtSet.getOutputPattern() != 4)
-                    || (!costData.get("KENSA_COUNT").toString().equals("0"))) {
-                // 総括
-                if (sokatu_select == 1) {
-                    setSokatuPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
-                            costData, out_mode, sokatu_check);
-                }
-                // 一覧
-                if ((meisai_select & 2) == 2) {
-                    setIchiranPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
-                            costData, out_mode, meisai_check);
-                }
-                // 明細
-                if ((meisai_select & 1) == 1) {
-                    setSyosaiPrtDataAll(pd, seikyuData, seikyuPrtSet, out_mode,
-                            meisai_check);
-                }
+            if (!seikyuDataIshi.isEmpty()) {
+                // 医師意見書
+                costData = doSeikyuPrintImpl(seikyuPrtSet, pd, seikyuDataIshi,
+                        doctorData, IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO);
+                noKensa |= isNoKensaData(seikyuPrtSet, costData);
+                canOpen |= canOpenData(seikyuPrtSet, costData);
             }
-            //
-            if ((seikyuPrtSet.getOutputPattern() == 2)
-                    && (!costData.get("KENSA_COUNT").toString().equals("0"))) {
-                // 総括
-                if (seikyuPrtSet.inspectionSummaryRadio.getSelectedIndex() == 1) {
-                    setSokatuPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
-                            costData, KENSA_PRINT,
-                            seikyuPrtSet.inspectionSummaryPrint.isSelected());
-                }
-                // 一覧
-                if ((seikyuPrtSet.inspectionDetailsRadio.getSelectedIndex() & 2) == 2) {
-                    setIchiranPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
-                            costData, KENSA_PRINT, meisai_check);
-                }
-                // 明細
-                if ((seikyuPrtSet.inspectionDetailsRadio.getSelectedIndex() & 1) == 1) {
-                    setSyosaiPrtDataAll(pd, seikyuData, seikyuPrtSet,
-                            KENSA_PRINT, meisai_check);
-                }
-            }
-
+            
             pd.endPrintEdit();
 
-            if (!costData.get("KENSA_COUNT").toString().equals("0")
-                    || (seikyuPrtSet.getOutputPattern() != 4)) {
-                // writePDF(pd);
-                // openPDF();
+            if (canOpen) {
                 openPDF(pd);
             }
 
@@ -913,14 +1049,8 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             throw e;
         }
 
-        if (costData.get("KENSA_COUNT").toString().equals("0")) {
-            // 検査料のみの帳票が出力される可能性がある場合
-            // 2:意見書(1枚) 検査料(1枚)
-            // 4:検査料のみ
-            if (seikyuPrtSet.getOutputPattern() == 2
-                    || seikyuPrtSet.getOutputPattern() == 4) {
+        if (noKensa) {
                 ACMessageBox.show("診察・検査費用請求対象となる意見書がありませんでした。");
-            }
         }
 
         doSelect(false);
@@ -928,8 +1058,148 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
     }
 
     /**
-     * 意見書作成料総括の印刷データを作成します。 <BR>
+     * 検査費用を出力する設定で、検査費用点数が指定されていない意見書を印刷したかを返します。
+     * 
+     * @param seikyuPrtSet 印刷設定
+     * @param costData 金額データ
+     * @return 検査費用を出力する設定で、検査費用点数が指定されていない意見書を印刷したか
+     */
+    private boolean isNoKensaData(IkenshoSeikyuPrintSetting seikyuPrtSet,
+            HashMap costData) {
+        if ("0".equals(ACCastUtilities
+                .toString(costData.get("KENSA_COUNT"), ""))) {
+            // 検査料のみの帳票が出力される可能性がある場合
+            // 2:意見書(1枚) 検査料(1枚)
+            // 4:検査料のみ
+            if (seikyuPrtSet.getOutputPattern() == 2
+                    || seikyuPrtSet.getOutputPattern() == 4) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * PDFを開いてよいかを返します。
+     * 
+     * @param seikyuPrtSet 印刷設定
+     * @param costData 金額データ
+     * @return PDFを開いてよいか
+     */
+    private boolean canOpenData(IkenshoSeikyuPrintSetting seikyuPrtSet,
+            HashMap costData) {
+        if (!"0".equals(ACCastUtilities.toString(costData.get("KENSA_COUNT"),
+                ""))
+                || (seikyuPrtSet.getOutputPattern() != 4)) {
+            return true;
+        }
+        return false;
+    }    
+    
+    
+    /**
+     * 請求書の発行を行います。
      *
+     * @param seikyuPrtSet 印刷設定
+     * @param pd 印刷用データ保持オブジェクト
+     * @param seikyuData 請求データ
+     * @param doctorData 医療機関データ 
+     * @param formatType 請求書様式
+     * @return 金額データ
+     * @throws Exception 処理例外
+     */
+    private HashMap doSeikyuPrintImpl(IkenshoSeikyuPrintSetting seikyuPrtSet, ACChotarouXMLWriter pd, VRArrayList seikyuData, VRMap doctorData, int formatType)
+            throws Exception {
+        // 金額データ
+        HashMap costData = null;
+
+        int out_mode = 0;
+        int sokatu_select = 0;
+        boolean sokatu_check = false;
+        int meisai_select = 0;
+        boolean meisai_check = false;
+
+
+            // 合計金額などを取得
+        costData = getCostData(seikyuData);
+
+        // 各定義体を設定
+        ACChotarouXMLUtilities.addFormat(pd, "seikyu", "Soukatusho.xml");
+        ACChotarouXMLUtilities.addFormat(pd, "ichiran", "SeikyuIchiran.xml");
+        ACChotarouXMLUtilities.addFormat(pd, "ichiranTotal",
+                "SeikyuIchiranTotal.xml");
+        ACChotarouXMLUtilities.addFormat(pd, "syosai", "IkenshoMeisai.xml");
+
+        out_mode = IKEN_PRINT;
+        switch (seikyuPrtSet.getOutputPattern()) {
+        case 1:
+            out_mode = BOTH_PRINT;
+        // no break;
+        case 2:
+        // no break;
+        case 3:
+            sokatu_select = seikyuPrtSet.createSummaryRadio.getSelectedIndex();
+            sokatu_check = seikyuPrtSet.createSummaryPrint.isSelected();
+            meisai_select = seikyuPrtSet.createDetailsRadio.getSelectedIndex();
+            meisai_check = seikyuPrtSet.createDetailsPrint.isSelected();
+            break;
+        case 4:
+            out_mode = KENSA_PRINT;
+            sokatu_select = seikyuPrtSet.inspectionSummaryRadio
+                    .getSelectedIndex();
+            sokatu_check = seikyuPrtSet.inspectionSummaryPrint.isSelected();
+            meisai_select = seikyuPrtSet.inspectionDetailsRadio
+                    .getSelectedIndex();
+            meisai_check = seikyuPrtSet.inspectionDetailsPrint.isSelected();
+            break;
+        }
+        // 検査料出力設定で、検査の件数が0件であれば、処理を行わない。
+        if ((seikyuPrtSet.getOutputPattern() != 4)
+                || (!costData.get("KENSA_COUNT").toString().equals("0"))) {
+            // 総括
+            if (sokatu_select == 1) {
+                setSokatuPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
+                        costData, out_mode, sokatu_check, formatType);
+            }
+            // 一覧
+            if ((meisai_select & 2) == 2) {
+                setIchiranPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
+                        costData, out_mode, meisai_check, formatType);
+            }
+            // 明細
+            if ((meisai_select & 1) == 1) {
+                setSyosaiPrtDataAll(pd, seikyuData, seikyuPrtSet, out_mode,
+                        meisai_check, formatType);
+            }
+        }
+        //
+        if ((seikyuPrtSet.getOutputPattern() == 2)
+                && (!costData.get("KENSA_COUNT").toString().equals("0"))) {
+            // 総括
+            if (seikyuPrtSet.inspectionSummaryRadio.getSelectedIndex() == 1) {
+                setSokatuPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
+                        costData, KENSA_PRINT,
+                        seikyuPrtSet.inspectionSummaryPrint.isSelected(), formatType);
+            }
+            // 一覧
+            if ((seikyuPrtSet.inspectionDetailsRadio.getSelectedIndex() & 2) == 2) {
+                setIchiranPrtData(pd, seikyuData, seikyuPrtSet, doctorData,
+                        costData, KENSA_PRINT, meisai_check, formatType);
+            }
+            // 明細
+            if ((seikyuPrtSet.inspectionDetailsRadio.getSelectedIndex() & 1) == 1) {
+                setSyosaiPrtDataAll(pd, seikyuData, seikyuPrtSet, KENSA_PRINT,
+                        meisai_check, formatType);
+            }
+        }
+            
+        
+        return costData;
+    }
+
+    /**
+     * 意見書作成料総括の印刷データを作成します。 <BR>
+     * 
      * @param pd PrintData
      * @param seikyuData VRArrayList
      * @param seikyuPrtSet IkenshoSeikyuPrintSetting
@@ -937,13 +1207,14 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
      * @param costData HashMap
      * @param printMode int
      * @param bankCheck boolean
+     * @param formatType 請求書様式
      * @return boolean
      * @throws Exception
      */
     private boolean setSokatuPrtData(ACChotarouXMLWriter pd,
             VRArrayList seikyuData, IkenshoSeikyuPrintSetting seikyuPrtSet,
             VRMap doctorData, HashMap costData, int printMode,
-            boolean bankCheck) throws Exception {
+            boolean bankCheck, int formatType) throws Exception {
 
         // 印刷データ開始設定宣言
         pd.beginPageEdit("seikyu");
@@ -1086,6 +1357,14 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             // 名義人
             IkenshoCommon.addString(pd, "bank.h7.w1", "");
         }
+        
+        switch(formatType){
+        case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
+            //医師意見書の場合はタイトルを変更
+            IkenshoCommon.addString(pd, "lblTitle", "障害者自立支援法　医師意見書作成料・検査料請求（総括）書");
+            break;
+        }
+        
         pd.endPageEdit();
 
         return true;
@@ -1101,13 +1380,14 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
      * @param costData HashMap
      * @param printMode int
      * @param bankCheck boolean
+     * @param formatType 請求書様式
      * @return boolean
      * @throws Exception
      */
     private boolean setIchiranPrtData(ACChotarouXMLWriter pd,
             VRArrayList seikyuDataTemp, IkenshoSeikyuPrintSetting seikyuPrtSet,
             VRMap doctorData, HashMap costData, int printMode,
-            boolean bankCheck) throws Exception {
+            boolean bankCheck, int formatType) throws Exception {
 
         VRArrayList seikyuData = new VRArrayList();
         // 検査料のみ出力の場合
@@ -1256,6 +1536,15 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             }
             // ページ番号
             IkenshoCommon.addString(pd, "pageNo", Integer.toString(i + 1));
+
+            
+            switch(formatType){
+            case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
+                //医師意見書の場合はタイトルを変更
+                IkenshoCommon.addString(pd, "title", "医師意見書作成料・検査料請求書(一覧）");
+                break;
+            }
+            
             pd.endPageEdit();
         }
         // 印刷データ開始設定宣言
@@ -1375,6 +1664,15 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             IkenshoCommon.addString(pd, "bank.h6.w2", "");
         }
         IkenshoCommon.addString(pd, "pageNo", Integer.toString(page + 1));
+
+        
+        switch(formatType){
+        case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
+            //医師意見書の場合はタイトルを変更
+            IkenshoCommon.addString(pd, "title", "医師意見書作成料・検査料請求書(合計）");
+            break;
+        }
+
         pd.endPageEdit();
 
         return true;
@@ -1388,12 +1686,13 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
      * @param seikyuPrtSet IkenshoSeikyuPrintSetting
      * @param printMode int
      * @param bankCheck boolean
+     * @param formatType 請求書様式
      * @return boolean
      * @throws Exception
      */
     private boolean setSyosaiPrtDataAll(ACChotarouXMLWriter pd,
             VRArrayList seikyuData, IkenshoSeikyuPrintSetting seikyuPrtSet,
-            int printMode, boolean bankCheck) throws Exception {
+            int printMode, boolean bankCheck, int formatType) throws Exception {
 
         VRMap map = null;
         // 請求書出力日付が入力されているか
@@ -1446,7 +1745,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             setSyosaiPrtData(pd, map, printMode, bankCheck, outputEra,
                     outputYear, outputMonth, outputDay, outputFlg, targetEra,
                     targetYear, targetMonth, targetFlg, false, atena,
-                    hokensyaNo);
+                    hokensyaNo, formatType);
 
         }
         return true;
@@ -1470,6 +1769,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
      * @param targetMonth String 対象月
      * @param targetFlg boolean 対象日付の出力の有無
      * @param atena String 請求書の宛名
+     * @param formatType 請求書様式
      * @return boolean
      * @throws Exception
      */
@@ -1477,7 +1777,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             int printMode, boolean bankCheck, String outputEra,
             String outputYear, String outputMonth, String outputDay,
             boolean outputFlg, String targetEra, String targetYear,
-            String targetMonth, boolean targetFlg, String hokensyaNo)
+            String targetMonth, boolean targetFlg, String hokensyaNo, int formatType)
             throws Exception {
 
         String atena = "";
@@ -1491,7 +1791,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
 
         return setSyosaiPrtData(pd, map, printMode, bankCheck, outputEra,
                 outputYear, outputMonth, outputDay, outputFlg, targetEra,
-                targetYear, targetMonth, targetFlg, true, atena, hokensyaNo);
+                targetYear, targetMonth, targetFlg, true, atena, hokensyaNo, formatType);
 
     }
 
@@ -1513,6 +1813,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
      * @param targetMonth String 対象月
      * @param targetFlg boolean 対象日付の出力の有無
      * @param formatFlg String 保険者番号
+     * @param formatType 請求書様式
      * @return boolean
      * @throws Exception
      */
@@ -1521,12 +1822,12 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             String outputYear, String outputMonth, String outputDay,
             boolean outputFlg, String targetEra, String targetYear,
             String targetMonth, boolean targetFlg, boolean formatFlg,
-            String atena, String hokensyaNo) throws Exception {
+            String atena, String hokensyaNo, int formatType) throws Exception {
 
         if (formatFlg) {
             // 各定義体を設定
-            String dir = ACFrame.getInstance().getExeFolderPath() + separator
-                    + "format" + separator;
+//            String dir = ACFrame.getInstance().getExeFolderPath() + separator
+//                    + "format" + separator;
             ACChotarouXMLUtilities.addFormat(pd, "syosai", "IkenshoMeisai.xml");
 //            pd.addFormat("syosai", dir + "IkenshoMeisai.xml");
         }
@@ -1874,6 +2175,14 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             IkenshoCommon.addString(pd, "bank.h6.w1", "");
             IkenshoCommon.addString(pd, "bank.h7.w1", "");
         }
+        
+        switch(formatType){
+        case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
+            //医師意見書の場合はタイトルを変更
+            IkenshoCommon.addString(pd, "lblTitle", "医師意見書作成料請求(明細)書");
+            break;
+        }
+        
         pd.endPageEdit();
         return true;
     }
@@ -2220,6 +2529,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         sb.append(" ,IKN_ORIGIN.KINYU_DT");
         sb.append(" ,IKN_ORIGIN.SEND_DT");
         sb.append(" ,IKN_BILL.LAST_TIME");
+        sb.append(" ,IKN_ORIGIN.FORMAT_KBN");
         // 請求書発行に必要なデータ
         sb.append(" ,IKN_ORIGIN.IKN_CREATE_CNT");
 
@@ -2297,6 +2607,9 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                 + getSelectedCboData(hokenjyaCombo, hokenjyaList, "INSURER_NO")
                 + "')");
         //2005-12-24 edit end
+        sb.append(" AND (IKN_ORIGIN.INSURER_TYPE = "
+                + getSelectedCboData(hokenjyaCombo, hokenjyaList, "INSURER_TYPE")
+                + ")");
         //2006-2-10 edit sta fujihara shin 意見書作成料が必ず0円になる(データ移行直後のデータ)は除く
         sb.append(" AND ((IKN_BILL.ZAITAKU_SINKI_CHARGE + IKN_BILL.ZAITAKU_KEIZOKU_CHARGE + IKN_BILL.SISETU_SINKI_CHARGE + IKN_BILL.SISETU_KEIZOKU_CHARGE) <> 0)");
         //2006-2-10 edit end
@@ -2350,6 +2663,20 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         } else {
             sb.append(" AND (IKN_BILL.HAKKOU_KBN IN (1,3))");
         }
+        
+        //意見書区分
+        if(formatType.isSelected()){
+            switch(formatType.getSelectedIndex()){
+            case 1:
+                sb.append(" AND (IKN_ORIGIN.FORMAT_KBN IN (0,1))");
+                break;
+            case 2:
+                sb.append(" AND (IKN_ORIGIN.FORMAT_KBN = 2)");
+                break;
+            }
+        }
+        
+        
         sb.append(" ORDER BY");
         sb.append(" IKN_ORIGIN.INSURED_NO");
         // sb.append(" ,IKN_BILL.LAST_TIME");
@@ -2448,7 +2775,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
     }
 
     private VRMap getDefaultDoctor(IkenshoFirebirdDBManager dbm,
-            String insurer_no) throws Exception {
+            String insurer_no, String insurer_type) throws Exception {
         StringBuffer sb = new StringBuffer();
 
         // del mac 対応(unionを使用しないよう変更)
@@ -2516,6 +2843,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         sb.append(" JIGYOUSHA ");
         sb.append(" ON DOCTOR.DR_CD = JIGYOUSHA.DR_CD ");
         sb.append(" AND  JIGYOUSHA.INSURER_NO = '" + insurer_no + "'");
+        sb.append(" AND  JIGYOUSHA.INSURER_TYPE = " + insurer_type);
         sb.append(" ORDER BY");
         sb.append(" DOCTOR.MI_DEFAULT DESC,");
         sb.append(" DOCTOR.DR_CD");

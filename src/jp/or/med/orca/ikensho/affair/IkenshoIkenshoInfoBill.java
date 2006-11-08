@@ -3,6 +3,8 @@ package jp.or.med.orca.ikensho.affair;
 import jp.nichicom.ac.component.ACOneDecimalDoubleTextField;
 import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.container.ACGroupBox;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.text.ACOneDecimalDoubleFormat;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoInitialNegativeIntegerTextField;
 
@@ -37,12 +39,12 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
   private ACTextField s11110 = new ACTextField();
   private ACOneDecimalDoubleTextField s114 = new ACOneDecimalDoubleTextField();
   private ACOneDecimalDoubleTextField s118 = new ACOneDecimalDoubleTextField();
-  private ACOneDecimalDoubleTextField s1112 = new ACOneDecimalDoubleTextField();
+  private ACOneDecimalDoubleTextField shosinHospital = new ACOneDecimalDoubleTextField();
   private IkenshoInitialNegativeIntegerTextField s13 = new IkenshoInitialNegativeIntegerTextField();
   private IkenshoInitialNegativeIntegerTextField s8 = new IkenshoInitialNegativeIntegerTextField();
   private ACTextField s11111 = new ACTextField();
   private IkenshoInitialNegativeIntegerTextField s16 = new IkenshoInitialNegativeIntegerTextField();
-  private ACOneDecimalDoubleTextField s1111 = new ACOneDecimalDoubleTextField();
+  private ACOneDecimalDoubleTextField shosinSinryoujo = new ACOneDecimalDoubleTextField();
   private ACOneDecimalDoubleTextField s119 = new ACOneDecimalDoubleTextField();
   private IkenshoInitialNegativeIntegerTextField iknCharge = new IkenshoInitialNegativeIntegerTextField();
   private IkenshoInitialNegativeIntegerTextField s10 = new IkenshoInitialNegativeIntegerTextField();
@@ -58,6 +60,7 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
   private ACGroupBox pointGroup = new ACGroupBox();
   private ACGroupBox ikenshoGroupBox7 = new ACGroupBox();
   private ACGroupBox ikenshoGroupBox8 = new ACGroupBox();
+  private ACOneDecimalDoubleTextField shosinAddIT = new ACOneDecimalDoubleTextField();
 
   /**
    * 検査点数グループを返します。
@@ -113,6 +116,7 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
     s1114.setBindPath("SKS_INSURER_NM");
     s112.setBindPath("EXP_XRAY_FILM");
     s113.setBindPath("EXP_XRAY_SS");
+    shosinAddIT.setBindPath("SHOSIN_ADD_IT");
     s12.setBindPath("ZAITAKU_KEIZOKU_CHARGE");
     s4.setBindPath("XRAY_FILM");
     s3.setBindPath("XRAY_SHASIN_SINDAN");
@@ -129,12 +133,12 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
     s11110.setBindPath("BLD_IPPAN_TEKIYOU");
     s114.setBindPath("EXP_XRAY_TS");
     s118.setBindPath("EXP_KIK_MKI");
-    s1112.setBindPath("SHOSIN_HOSPITAL");
+    shosinHospital.setBindPath("SHOSIN_HOSPITAL");
     s13.setBindPath("FD_OUTPUT_KBN");
     s8.setBindPath("BLD_KAGAKU_KETUEKIKAGAKUKENSA");
     s11111.setBindPath("XRAY_TEKIYOU");
     s16.setBindPath("HAKKOU_KBN");
-    s1111.setBindPath("SHOSIN_SINRYOUJO");
+    shosinSinryoujo.setBindPath("SHOSIN_SINRYOUJO");
     s119.setBindPath("EXP_KS");
     iknCharge.setBindPath("IKN_CHARGE");
     s10.setBindPath("NYO_KENSA");
@@ -152,8 +156,8 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
     ikenshoGroupBox7.setText("String");
     ikenshoGroupBox8.setText("Integer");
     ikenshoGroupBox3.add(s1110, null);
-    ikenshoGroupBox3.add(s1111, null);
-    ikenshoGroupBox3.add(s1112, null);
+    ikenshoGroupBox3.add(shosinSinryoujo, null);
+    ikenshoGroupBox3.add(shosinHospital, null);
     ikenshoGroupBox3.add(s1113, null);
     ikenshoGroupBox3.add(s119, null);
     ikenshoGroupBox3.add(s118, null);
@@ -164,6 +168,7 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
     ikenshoGroupBox3.add(s113, null);
     ikenshoGroupBox3.add(s112, null);
     ikenshoGroupBox3.add(s111, null);
+    ikenshoGroupBox3.add(shosinAddIT, null);
     ikenshoGroupBox1.add(s11112, null);
     ikenshoGroupBox1.add(s11111, null);
     ikenshoGroupBox1.add(s11110, null);
@@ -202,5 +207,52 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
     ikenshoGroupBox2.add(s9, null);
     ikenshoGroupBox2.add(s10, null);
   }
+
+  /**
+   * 電子化加算点数を返します。
+   * @return 電子化加算点数
+   */
+  public double getShosinAddIT(){
+      return ACCastUtilities.toDouble(shosinAddIT.getText(), 0);
+  }
+  /**
+   * 電子化加算点数を設定します。
+   * @param 電子化加算点数
+   */
+  public void setShosinAddIT(double val){
+      shosinAddIT.setText(ACOneDecimalDoubleFormat.getInstance().format(new Double(val)));
+  }
+  
+  
+  /**
+   * 病院の初診点数を返します。
+   * @return 病院の初診点数
+   */
+  public double getShosinHospital(){ 
+      return  ACCastUtilities.toDouble(shosinHospital.getText(), 0);
+  }
+  /**
+   * 病院の初診点数を設定します。
+   * @param 病院の初診点数
+   */
+  public void setShosinHospital(double val){
+      shosinHospital.setText(ACOneDecimalDoubleFormat.getInstance().format(new Double(val)));
+  }
+  
+  /**
+   * 診療所の初診点数を返します。
+   * @return 診療所の初診点数
+   */
+  public double getShosinSinryoujo(){ 
+      return  ACCastUtilities.toDouble(shosinSinryoujo.getText(), 0);
+  }
+  /**
+   * 診療所の初診点数を設定します。
+   * @param 診療所の初診点数
+   */
+  public void setShosinSinryoujo(double val){
+      shosinSinryoujo.setText(ACOneDecimalDoubleFormat.getInstance().format(new Double(val)));
+  }
+
 
 }

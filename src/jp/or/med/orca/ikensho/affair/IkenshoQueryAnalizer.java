@@ -6,7 +6,6 @@ import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 import java.util.Iterator;
 
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 
@@ -24,7 +23,7 @@ import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoQueryAnalizer extends JDialog {
+public class IkenshoQueryAnalizer extends IkenshoDialog {
     private JPanel contentPane;
     private ACTable table = new ACTable();
     private ACRowMaximumableTextArea area = new ACRowMaximumableTextArea();
@@ -39,7 +38,7 @@ public class IkenshoQueryAnalizer extends JDialog {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
             event();
         } catch (Exception ex) {
             ex.printStackTrace();
@@ -66,7 +65,7 @@ public class IkenshoQueryAnalizer extends JDialog {
         throwQuery.setMnemonic('E');
     }
 
-    private void initComponent() throws Exception {
+    private void init() throws Exception {
         setSize(new Dimension(800, 640));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();

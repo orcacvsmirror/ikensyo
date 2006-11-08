@@ -198,6 +198,11 @@ public class IP001 extends IP001Event {
                 fileName = "登録患者一覧";
             } else if (fileName.endsWith("seikyuikenshoichiran.xml")) {
                 fileName = "請求対象意見書一覧";
+            } else if (fileName.endsWith("ikenshoshien1.xml")) {
+                fileName = "医師意見書1ページ目";
+            } else if (fileName.endsWith("ikenshoshien2.xml")) {
+                fileName = "医師意見書2ページ目";
+
             }
             // 変更の有無(modified)をfalseとする。
             setModified(false);

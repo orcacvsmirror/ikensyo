@@ -21,7 +21,9 @@ import jp.nichicom.ac.component.mainmenu.ACMainMenuButton;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.core.version.ACVersionAdjuster;
 import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.ac.util.splash.ACSplashChaine;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
@@ -29,6 +31,7 @@ import jp.nichicom.vr.text.VRCharType;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
+import jp.nichicom.vr.util.logging.VRLogger;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.event.IkenshoHiddenCommandKeyListener;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
@@ -61,7 +64,7 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
 
     private VRPanel menus = new VRPanel();
     private ACMainMenuButton ikenshoShijisho = new ACMainMenuButton(
-            "「主治医意見書・訪問看護指示書」作成／編集(K)");
+            "「主治医意見書・医師意見書・訪問看護指示書」"+ACConstants.LINE_SEPARATOR+"　作成／編集(K)");
     private ACMainMenuButton seikyuusho = new ACMainMenuButton("「請求書」発行(V)");
     private ACMainMenuButton basic = new ACMainMenuButton("基礎データ登録(B)");
     private ACMainMenuButton other = new ACMainMenuButton("その他の機能(O)");
@@ -155,7 +158,7 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
         menus.add(closeBtnPnl, VRLayout.SOUTH);
 
         // 意見書・指示書
-        ikenshoShijisho.setToolTipText("「主治医意見書・訪問看護指示書」の作成および編集を行います。");
+        ikenshoShijisho.setToolTipText("「主治医意見書・医師意見書・訪問看護指示書」の作成および編集を行います。");
         ikenshoShijisho.setMnemonic('K');
         // ikenshoShijisho.setBackground(new java.awt.Color(102, 102, 255));
         // ikenshoShijisho.setFont(new java.awt.Font("Dialog",
@@ -356,7 +359,7 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
                     // CSV出力
                     case IkenshoSubMenu.SUB_OTHER_CSV_OUTPUT:
                         affair = new ACAffairInfo(IkenshoOtherCSVOutput.class
-                                .getName(), null, "「主治医意見書」CSVファイル出力");
+                                .getName(), null, "「主治医意見書・医師意見書」CSVファイル出力");
                         break;
                     // 日医標準レセプトソフト連携
                     case IkenshoSubMenu.SUB_OTHER_RECEIPT_ACCESS:
@@ -565,12 +568,25 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
                 firebirfVersion.setText("Firebird : " + dbVersion.substring(0,10));
                 firebirfVersion2.setText(dbVersion.substring(10));
             }
+            
+            //モジュールの対象バージョンに合わせてデータベースを整形する。
+            try{
+                new ACVersionAdjuster().adjustment(dbm,
+                    "version/update.xml",
+                    new IkenshoVersionAdjustmentListener(dbm));
+            }catch(Exception ex){
+                VRLogger.info(ex);
+            }finally{
+                ACSplashChaine.getInstance().closeAll();
+            }            
+            
             // 2006/02/08[Shin Fujihara] : end begin
             VRList result = dbm.executeQuery("SELECT * FROM IKENSYO_VERSION");
             // 2006/02/06[Tozo Tanaka] : replace begin
             // if (result.size() > 0) {
             if ((result != null) && (result.size() > 0)) {
                 // 2006/02/06[Tozo Tanaka] : replace end
+                
                 VRMap ver = (VRMap) result.getData();
                 String data = String.valueOf(VRBindPathParser.get(
                         "DATA_VERSION", ver));
@@ -578,7 +594,7 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
                         "SCHEMA_VERSION", ver));
                 String sys;
                 try {
-                    sys = ACFrame.getInstance().getProperity("Version/no");
+                    sys = ACFrame.getInstance().getProperty("Version/no");
                 } catch (Exception ex) {
                     ACMessageBox
                             .showExclamation("システムバージョンの取得に失敗しました。環境設定ファイルを確認してください。");
@@ -628,7 +644,7 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
             // 接続テスト
 
             if (!VRCharType.ONLY_HALF_CHAR.isMatch(ACFrame.getInstance()
-                    .getProperity("DBConfig/Path"))) {
+                    .getProperty("DBConfig/Path"))) {
                 // 許可文字コード
                 ACMessageBox.showExclamation("データベースの保存場所には日本語を使用できません。"
                         + IkenshoConstants.LINE_SEPARATOR

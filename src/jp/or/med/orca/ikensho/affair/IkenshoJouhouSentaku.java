@@ -6,14 +6,13 @@ import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
 
 import javax.swing.ImageIcon;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import jp.nichicom.ac.component.mainmenu.ACMainMenuButton;
 import jp.nichicom.vr.layout.VRLayout;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoJouhouSentaku extends JDialog {
+public class IkenshoJouhouSentaku extends IkenshoDialog {
     private VRLayout menusLayout = new VRLayout();
     private JPanel contentPane;
     private ACMainMenuButton renkeii;
@@ -36,7 +35,7 @@ public class IkenshoJouhouSentaku extends JDialog {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
         }
         catch (Exception ex) {
             ex.printStackTrace();
@@ -104,7 +103,7 @@ public class IkenshoJouhouSentaku extends JDialog {
     /**
      * コンポーネントの初期化
      */
-    private void initComponent() {
+    private void init() {
         //ウィンドウのサイズ
         setSize(new Dimension(600, 300));
         //ウィンドウを中央に配置

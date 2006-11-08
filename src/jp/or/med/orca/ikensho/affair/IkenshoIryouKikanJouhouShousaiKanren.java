@@ -12,10 +12,12 @@ import java.util.Map;
 
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.component.VRCheckBox;
@@ -31,6 +33,7 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.lib.IkenshoInsurerTypeFormat;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 import jp.or.med.orca.ikensho.util.IkenshoSnapshot;
 
@@ -67,6 +70,8 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
     private ACButton jigyoushoUpdate = new ACButton();
     private ACButton jigyoushoDelete = new ACButton();
     private VRCheckBox jigyoushoTableChangeFlg = new VRCheckBox();
+    
+    private ACIntegerCheckBox addItCheck = new ACIntegerCheckBox();
 
     private VRArrayList jigyoushoData = new VRArrayList();
 
@@ -105,6 +110,7 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
         kanrenPnl2.add(bankKouzaKindContainer, VRLayout.FLOW_INSETLINE_RETURN);
         kanrenPnl2.add(furikomiMeigiContainer, VRLayout.FLOW_INSETLINE);
         kanrenPnl2.add(drNoPnl, VRLayout.FLOW_RETURN);
+        kanrenPnl2.add(addItCheck, VRLayout.FLOW_RETURN);
 
         VRLayout kanrenPnl3Layout = new VRLayout();
         kanrenPnl3Layout.setLabelMargin(122);
@@ -185,6 +191,9 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
         drNoCaption1.setText("(");
         drNoCaption2.setText(")");
 
+        addItCheck.setBindPath("DR_ADD_IT");
+        addItCheck.setText("この医療機関を電子化加算の対象にする。");
+
         // Grp
         jigyoushoGrp.setText("事業所番号");
         jigyoushoGrp
@@ -213,13 +222,14 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
     private void createTable() throws Exception {
         // テーブルの生成
         table.setModel(new ACTableModelAdapter(jigyoushoData, new String[] {
-                "INSURER_NO", "INSURER_NM", "JIGYOUSHA_NO" }));
+                "INSURER_NO", "INSURER_NM", "INSURER_TYPE", "JIGYOUSHA_NO" }));
 
         // ColumnModelの生成
         table.setColumnModel(new VRTableColumnModel(new VRTableColumn[] {
-                new VRTableColumn(0, 150, "保険者番号"),
-                new VRTableColumn(1, 330, "保険者名称"),
-                new VRTableColumn(2, 150, "事業所番号") }));
+                new VRTableColumn(0, 90, "保険者番号"),
+                new VRTableColumn(1, 300, "保険者名称"),
+                new VRTableColumn(2, 160, "保険者区分", IkenshoInsurerTypeFormat.getInstance()),
+                new VRTableColumn(3, 150, "事業所番号") }));
     }
 
     private void event() throws Exception {
@@ -301,13 +311,12 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
         if (result.equals("submit")) {
             // 行の追加(更新)処理を行う
             VRMap newRow = new VRHashMap();
-            String insurerNoNew = params.getData("INSURER_NO").toString();
-            newRow.setData("INSURER_NO", params.getData("INSURER_NO")
-                    .toString());
-            newRow.setData("INSURER_NM", params.getData("INSURER_NM")
-                    .toString());
-            newRow.setData("JIGYOUSHA_NO", params.getData("JIGYOUSHA_NO")
-                    .toString());
+            String insurerNoNew = ACCastUtilities.toString(params.getData("INSURER_NO"),"");
+            String insurerTypeNow = ACCastUtilities.toString(params.getData("INSURER_TYPE"),"");
+            newRow.setData("INSURER_NO", ACCastUtilities.toString(params.getData("INSURER_NO"),""));
+            newRow.setData("INSURER_NM", ACCastUtilities.toString(params.getData("INSURER_NM"),""));
+            newRow.setData("JIGYOUSHA_NO", ACCastUtilities.toString(params.getData("JIGYOUSHA_NO"),""));
+            newRow.setData("INSURER_TYPE", params.getData("INSURER_TYPE"));
             if (act == ACT_INSERT) {
                 jigyoushoData.addData(newRow);
             } else if (act == ACT_UPDATE) {
@@ -316,7 +325,7 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
 
             // 後処理
             table.revalidate();
-            table.sort("INSURER_NO ASC");
+            table.sort("INSURER_NO ASC, INSURER_TYPE ASC");
             // table.getTable().revalidate();
             // table.getTable().sort("INSURER_NO ASC");
             setButtonsEnabled();
@@ -325,8 +334,9 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
             // 行の再選択
             for (int i = 0; i < jigyoushoData.getDataSize(); i++) {
                 VRMap row = (VRMap) jigyoushoData.getData(i);
-                String insurerNoTmp = row.getData("INSURER_NO").toString();
-                if (insurerNoTmp.equals(insurerNoNew)) {
+                String insurerNoTmp = ACCastUtilities.toString(row.getData("INSURER_NO"),"");
+                String insurerTypeTmp = ACCastUtilities.toString(row.getData("INSURER_TYPE"),"");
+                if (insurerNoTmp.equals(insurerNoNew)&& insurerTypeTmp.equals(insurerTypeNow)) {
                     table.setSelectedModelRow(((VRSortableTableModelar) table
                             .getModel()).getReverseTranslateIndex(i));
                     break;
@@ -369,7 +379,7 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
         jigyoushoTableChangeFlg.setSelected(true);
     }
 
-    protected boolean noControlError() {
+    public boolean noControlError() {
         // 診療所・病院区分 / 未選択チェック
         if (miKbn.getSelectedIndex() <= 0) {
             ACMessageBox.show("診療所・病院区分を選択してください。", ACMessageBox.BUTTON_OK,
@@ -381,7 +391,7 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
         return true;
     }
 
-    protected boolean noControlWarning() {
+    public boolean noControlWarning() {
         // 事業所番号 / 未登録チェック
         if (table.getRowCount() <= 0) {
             int result = ACMessageBox.show("事業所番号が登録されていません。\nよろしいですか？",
@@ -428,9 +438,11 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
         IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
         StringBuffer sb = new StringBuffer();
         sb.append(" SELECT");
+        sb.append(" DISTINCT");
         sb.append(" JIGYOUSHA.DR_CD");
         sb.append(",JIGYOUSHA.INSURER_NO");
         sb.append(",INSURER.INSURER_NM");
+        sb.append(",JIGYOUSHA.INSURER_TYPE");
         sb.append(",JIGYOUSHA.JIGYOUSHA_NO");
         sb.append(",JIGYOUSHA.LAST_TIME");
         sb.append(" FROM");
@@ -438,9 +450,11 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
         sb.append(" WHERE");
         sb.append(" JIGYOUSHA.INSURER_NO = INSURER.INSURER_NO");
         sb.append(" AND");
+        sb.append(" JIGYOUSHA.INSURER_TYPE = INSURER.INSURER_TYPE");
+        sb.append(" AND");
         sb.append(" DR_CD=" + drCd);
         sb.append(" ORDER BY");
-        sb.append(" JIGYOUSHA.INSURER_NO ASC");
+        sb.append(" JIGYOUSHA.INSURER_NO ASC, JIGYOUSHA.INSURER_TYPE ASC");
         jigyoushoData = (VRArrayList) dbm.executeQuery(sb.toString());
 
         return jigyoushoData;

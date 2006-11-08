@@ -95,7 +95,7 @@ public class IkenshoFirebirdDBManager implements ACDBManager {
      * @throws Exception é¿çséûó·äO
      */
     private void createDBManager() throws Exception {
-        ACPropertyXML xml = ACFrame.getInstance().getProperityXML();
+        ACPropertyXML xml = ACFrame.getInstance().getPropertyXML();
         try {
             xml.read();
             String server = xml.getValueAt("DBConfig/Server");

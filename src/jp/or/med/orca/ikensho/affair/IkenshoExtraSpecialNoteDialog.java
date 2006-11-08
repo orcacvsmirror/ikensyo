@@ -11,7 +11,6 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowEvent;
 import java.awt.im.InputSubset;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
@@ -34,7 +33,7 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoExtraSpecialNoteDialog
-    extends JDialog {
+    extends IkenshoDialog {
   private JPanel contentPane = new JPanel();
   private VRPanel client = new VRPanel();
   private VRPanel headerPnl = new VRPanel();
@@ -108,7 +107,7 @@ public class IkenshoExtraSpecialNoteDialog
       setDefaultCloseOperation(DISPOSE_ON_CLOSE);
       jbInit();
       pack();
-      initComponent();
+      init();
     }
     catch (Exception exception) {
       exception.printStackTrace();
@@ -284,7 +283,7 @@ public class IkenshoExtraSpecialNoteDialog
   /**
   * 位置を初期化します。
   */
- private void initComponent() {
+ private void init() {
     //ウィンドウのサイズ
     setSize(new Dimension(700, 500));
     //ウィンドウを中央に配置

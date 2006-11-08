@@ -42,7 +42,7 @@ public class IkenshoTabbableChildAffairContainer extends VRPanel {
      * @throws Exception 処理例外
      * @return 警告処理を行ったか
      */
-    boolean noControlWarning() throws Exception {
+    public boolean noControlWarning() throws Exception {
         return true;
 
     }
@@ -54,7 +54,7 @@ public class IkenshoTabbableChildAffairContainer extends VRPanel {
      * @throws Exception 処理例外
      * @return 更新処理が可能か
      */
-    boolean noControlError() throws Exception {
+    public boolean noControlError() throws Exception {
         return true;
     }
 
@@ -65,7 +65,7 @@ public class IkenshoTabbableChildAffairContainer extends VRPanel {
      * @throws Exception 処理例外
      * @return 更新処理が可能か
      */
-    boolean canDataUpdate() throws Exception {
+    public boolean canDataUpdate() throws Exception {
         return true;
     }
 

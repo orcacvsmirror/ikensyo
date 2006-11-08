@@ -28,7 +28,7 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairContainer {
 
   protected VRLabel specialMessage1 = new VRLabel();
-  protected VRLabel specialMessage2 = new VRLabel();
+  protected VRLabel specialMessage2;
   protected VRLabel specialTitle = new VRLabel();
   private ACIntegerCheckBox specialTentekiKannri = new
       ACIntegerCheckBox();
@@ -40,7 +40,7 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
   private ACIntegerCheckBox specialKoumon = new ACIntegerCheckBox();
   private ACComboBox specialDorenPos = new ACComboBox();
   private ACComboBox specialRyuchiCatheterChange = new ACComboBox();
-  private ACIntegerCheckBox specialKeikanEiyou = new ACIntegerCheckBox();
+  private ACIntegerCheckBox specialKeikanEiyou;
   private VRLabel specialMonitorMessage2 = new VRLabel();
   private ACComboBox specialRyuchiCatheterSize = new ACComboBox();
   private VRLabel specialJinkouKokyuMiddle = new VRLabel();
@@ -128,6 +128,7 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
   private VRLayout sikkinLayout = new VRLayout();
   private VRLayout specialMonitorCaptionLayout = new VRLayout();
 
+  
   public void initDBCopmponent(IkenshoFirebirdDBManager dbm) throws Exception {
     applyPoolTeikeibun(specialJinkouKokyuHousiki, IkenshoCommon.TEIKEI_RESPIRATOR_TYPE);
     applyPoolTeikeibun(specialJinkouKokyuSettei, IkenshoCommon.TEIKEI_RESPIRATOR_SETTING);
@@ -168,7 +169,7 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
         JComponent[] {specialJinkouKokyus, specialJinkouKokyuHousiki,
         specialJinkouKokyuMiddle, specialJinkouKokyuSettei}));
 
-    specialKeikanEiyou.addItemListener(new ACFollowDisabledItemListener(new
+    getSpecialKeikanEiyou().addItemListener(new ACFollowDisabledItemListener(new
         JComponent[] {specialKeikanEiyouMethod, specialKeikanEiyouMiddle1,
         specialKeikanEiyouSize, specialKeikanEiyouMiddle2,
         specialKeikanEiyouChange, specialKeikanEiyous}));
@@ -251,7 +252,7 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     sikkins.setLabelColumns(7);
     specialCatheters.setLayout(new BorderLayout());
     specialMonitorPanel.setOpaque(false);
-    specialKeikanEiyou.setVerticalAlignment(javax.swing.SwingConstants.TOP);
+    getSpecialKeikanEiyou().setVerticalAlignment(javax.swing.SwingConstants.TOP);
     specialLayout.setAutoWrap(false);
     specialYuekiPump.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
     specialOxRyouhouRyoous.setEnabled(false);
@@ -293,7 +294,7 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialKeikanEiyous.add(specialKeikanEiyouSize, null);
     specialKeikanEiyous.add(specialKeikanEiyouMiddle2, null);
     specialKeikanEiyous.add(specialKeikanEiyouChange, null);
-    specialKeikanEiyouPanel.add(specialKeikanEiyou, BorderLayout.WEST);
+    specialKeikanEiyouPanel.add(getSpecialKeikanEiyou(), BorderLayout.WEST);
     specialKeikanEiyouPanel.add(specialKeikanEiyouSiji, BorderLayout.CENTER);
     specialDorenPoss.add(specialDorenPos, null);
     specialCannulaSizes.add(specialCannulaSize, null);
@@ -331,16 +332,22 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialJyoumyakuEiyous.add(specialJyoumyakuEiyou, BorderLayout.WEST);
     specialJyoumyakuEiyous.add(specialJyoumyakuEiyouSiji, BorderLayout.CENTER);
     specialMessages.add(specialMessage1, BorderLayout.NORTH);
-    specialMessages.add(specialMessage2, BorderLayout.CENTER);
-    processs.add(specialTentekiKannris, VRLayout.FLOW_RETURN);
-    processs.add(specialJyoumyakuEiyous, VRLayout.FLOW_RETURN);
-    processs.add(specialTousekis, VRLayout.FLOW_RETURN);
-    processs.add(specialKoumonPanel, VRLayout.FLOW_RETURN);
-    processs.add(specialOxRyouhouRyoouss, VRLayout.FLOW_RETURN);
-    processs.add(specialJinkouKokyuPanel, VRLayout.FLOW_RETURN);
-    processs.add(specialKikanSekkais, VRLayout.FLOW_RETURN);
-    processs.add(specialTousinKangos, VRLayout.FLOW_RETURN);
-    processs.add(specialKeikanEiyouPanel, VRLayout.FLOW_RETURN);
+    specialMessages.add(getSpecialMessage2(), BorderLayout.CENTER);
+    
+    // 2006/07/06
+    // 医師意見書 - 新規項目追加のため変更
+    // Replace - begin [Masahiko Higuchi]
+    addProcess();
+//    processs.add(specialTentekiKannris, VRLayout.FLOW_RETURN);
+//    processs.add(specialJyoumyakuEiyous, VRLayout.FLOW_RETURN);
+//    processs.add(specialTousekis, VRLayout.FLOW_RETURN);
+//    processs.add(specialKoumonPanel, VRLayout.FLOW_RETURN);
+//    processs.add(specialOxRyouhouRyoouss, VRLayout.FLOW_RETURN);
+//    processs.add(specialJinkouKokyuPanel, VRLayout.FLOW_RETURN);
+//    processs.add(specialKikanSekkais, VRLayout.FLOW_RETURN);
+//    processs.add(specialTousinKangos, VRLayout.FLOW_RETURN);
+//    processs.add(specialKeikanEiyouPanel, VRLayout.FLOW_RETURN);
+    // Replace - end
     specialTentekiKannriSiji.add(specialYuekiPump,  VRLayout.WEST);
     specialTentekiKannriSiji.add(specialMessages, VRLayout.EAST);
     specialTentekiKannris.add(specialTentekiKannri, BorderLayout.WEST);
@@ -386,9 +393,9 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialRyuchiCatheterChange.setBindPath("RYU_CAT_CHG");
     specialRyuchiCatheterChange.setMaxLength(5);
     specialRyuchiCatheterChange.setPreferredSize(new Dimension(80, 19));
-    specialKeikanEiyou.setPreferredSize(new Dimension(140, 20));
-    specialKeikanEiyou.setText("経管栄養");
-    specialKeikanEiyou.setBindPath("KEKN_EIYOU");
+    getSpecialKeikanEiyou().setPreferredSize(new Dimension(140, 20));
+    getSpecialKeikanEiyou().setText("経管栄養");
+    getSpecialKeikanEiyou().setBindPath("KEKN_EIYOU");
     specialMonitorMessage2.setText("　酸素飽和度等）");
     specialRyuchiCatheterSize.setIMEMode(InputSubset.KANJI);
     specialRyuchiCatheterSize.setBindPath("RYU_CAT_SIZE");
@@ -486,9 +493,9 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialCatheter.setPreferredSize(new Dimension(140, 20));
     specialCatheter.setText("カテーテル");
     specialCatheter.setBindPath("CATHETER");
-    specialMessage2.setForeground(Color.blue);
-    specialMessage2.setVerticalAlignment(javax.swing.SwingConstants.TOP);
-    specialMessage2.setText("「主治医意見書」では印刷されません。");
+    getSpecialMessage2().setForeground(Color.blue);
+    getSpecialMessage2().setVerticalAlignment(javax.swing.SwingConstants.TOP);
+    getSpecialMessage2().setText("「主治医意見書」では印刷されません。");
     specialKeikanEiyouMiddle1.setText("）l/min");
     specialKeikanEiyouMiddle1.setText("：チューブサイズ");
     specialMonitor.setText("モニター測定");
@@ -525,12 +532,133 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialRyuchiCatheters.add(specialRyuchiCatheterFoot, null);
     this.add(specialTitle, VRLayout.NORTH);
     this.add(specialGroup, VRLayout.CLIENT);
-    specialMessages.add(specialMessage1,  BorderLayout.NORTH);
-    specialMessages.add(specialMessage2, BorderLayout.SOUTH);
+//    specialMessages.add(specialMessage1,  BorderLayout.NORTH);
+//    specialMessages.add(getSpecialMessage2(), BorderLayout.SOUTH);
     specialJokusous.add(specialJokusouSiji,  BorderLayout.CENTER);
     sikkins.add(specialCatheters, null);
     specialCatheters.add(specialCatheter, BorderLayout.WEST);
     specialCatheters.add(specialCatheterSiji,  BorderLayout.CENTER);
     specialCatheterSiji.add(specialRyuchiCatheters, VRLayout.FLOW_RETURN);
   }
+  
+  /**
+   * overrideして処置内容の追加順序を定義します。
+   * 2006/07/06
+   * 医師意見書
+   */
+  protected void addProcess(){
+      processs.add(specialTentekiKannris, VRLayout.FLOW_RETURN);
+      processs.add(specialJyoumyakuEiyous, VRLayout.FLOW_RETURN);
+      processs.add(specialTousekis, VRLayout.FLOW_RETURN);
+      processs.add(specialKoumonPanel, VRLayout.FLOW_RETURN);
+      processs.add(specialOxRyouhouRyoouss, VRLayout.FLOW_RETURN);
+      processs.add(specialJinkouKokyuPanel, VRLayout.FLOW_RETURN);
+      processs.add(specialKikanSekkais, VRLayout.FLOW_RETURN);
+      processs.add(specialTousinKangos, VRLayout.FLOW_RETURN);
+      processs.add(specialKeikanEiyouPanel, VRLayout.FLOW_RETURN);
+  }
+  
+  /**
+     * 点滴の管理コンテナを返します。
+     * 
+     * @return
+     */
+    protected ACLabelContainer getSpecialTentekiKannris() {
+        return specialTentekiKannris;
+    }
+
+    /**
+     * 処置内容コンテナを返します。
+     * 
+     * @return
+     */
+    protected ACLabelContainer getProcesss() {
+        return processs;
+    }
+
+    /**
+     * 中心静脈栄養コンテナを返します。
+     * 
+     * @return
+     */
+    protected ACLabelContainer getSpecialJyoumyakuEiyous() {
+        return specialJyoumyakuEiyous;
+    }
+
+    /**
+     * 透析コンテナを返します。
+     * 
+     * @return
+     */
+    protected ACLabelContainer getSpecialTousekis() {
+        return specialTousekis;
+    }
+
+    /**
+     * @return
+     */
+    protected ACLabelContainer getSpecialKoumonPanel() {
+        return specialKoumonPanel;
+    }
+
+    /**
+     * @return
+     */
+    protected ACLabelContainer getSpecialOxRyouhouRyoouss() {
+        return specialOxRyouhouRyoouss;
+    }
+
+    /**
+     * 呼吸コンテナを返します。
+     * 
+     * @return
+     */
+    protected ACLabelContainer getSpecialJinkouKokyuPanel() {
+        return specialJinkouKokyuPanel;
+    }
+
+    /**
+     * 気管切開の処置コンテナを返します。
+     * 
+     * @return
+     */
+    protected ACLabelContainer getSpecialKikanSekkais() {
+        return specialKikanSekkais;
+    }
+
+    /**
+     * @return
+     */
+    protected ACLabelContainer getSpecialTousinKangos() {
+        return specialTousinKangos;
+    }
+
+    /**
+     * 経管栄養コンテナを返します。
+     * 
+     * @return
+     */
+    protected ACLabelContainer getSpecialKeikanEiyouPanel() {
+        return specialKeikanEiyouPanel;
+    }
+    /**
+     * 経管栄養を返します。
+     * @return 経管栄養
+     */
+    protected ACIntegerCheckBox getSpecialKeikanEiyou(){
+        if(specialKeikanEiyou==null){
+            specialKeikanEiyou = new  ACIntegerCheckBox();
+        }
+        return specialKeikanEiyou;
+    }
+    /**
+     * 注意書き2行目を返します。
+     * @return 注意書き2行目
+     */
+    protected VRLabel getSpecialMessage2(){
+        if(specialMessage2==null){
+            specialMessage2 =new VRLabel(); 
+        }
+        return specialMessage2;
+    }
 }

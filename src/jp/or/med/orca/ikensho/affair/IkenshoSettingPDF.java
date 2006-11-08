@@ -8,7 +8,6 @@ import java.awt.event.WindowEvent;
 import java.awt.im.InputSubset;
 import java.io.File;
 
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import jp.nichicom.ac.component.ACButton;
@@ -19,7 +18,6 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.filechooser.ACFileChooser;
 import jp.nichicom.ac.filechooser.ACFileFilter;
 import jp.nichicom.ac.util.ACMessageBox;
-import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.or.med.orca.ikensho.IkenshoConstants;
@@ -27,7 +25,7 @@ import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.util.IkenshoSnapshot;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoSettingPDF extends JDialog {
+public class IkenshoSettingPDF extends IkenshoDialog {
     private JPanel contentPane;
     private VRPanel client = new VRPanel();
     private ACLabel info = new ACLabel();
@@ -47,7 +45,7 @@ public class IkenshoSettingPDF extends JDialog {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
             event();
 
             //スナップショット撮影
@@ -103,7 +101,7 @@ public class IkenshoSettingPDF extends JDialog {
        fileChoose.setMnemonic('L');
     }
 
-    private void initComponent() throws Exception {
+    private void init() throws Exception {
         //ウィンドウサイズ
         setSize(new Dimension(480, 160));
         //ウィンドウを中央に配置
@@ -294,10 +292,10 @@ public class IkenshoSettingPDF extends JDialog {
      */
     private boolean writeSetting() {
         try {
-            ACFrame.getInstance().getProperityXML().setForceValueAt("Acrobat/Path", fileName.getText());
+            ACFrame.getInstance().getPropertyXML().setForceValueAt("Acrobat/Path", fileName.getText());
             //2006/02/12[Tozo Tanaka] : replace begin
 //          ACFrame.getInstance().getProperityXML().write();
-          if(!ACFrame.getInstance().getProperityXML().writeWithCheck()){
+          if(!ACFrame.getInstance().getPropertyXML().writeWithCheck()){
               return false;
           }
           //2006/02/12[Tozo Tanaka] : replace end

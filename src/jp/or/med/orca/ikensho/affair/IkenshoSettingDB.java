@@ -9,12 +9,10 @@ import java.awt.im.InputSubset;
 import java.io.File;
 import java.util.Arrays;
 
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
-import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACTextField;
@@ -23,7 +21,6 @@ import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.filechooser.ACFileChooser;
 import jp.nichicom.ac.filechooser.ACFileFilter;
 import jp.nichicom.ac.util.ACMessageBox;
-import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.component.VRRadioButtonGroup;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
@@ -36,7 +33,7 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 import jp.or.med.orca.ikensho.util.IkenshoSnapshot;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoSettingDB extends JDialog {
+public class IkenshoSettingDB extends IkenshoDialog {
     private JPanel contentPane;
     private VRPanel serverPnl = new VRPanel();
     private ACLabelContainer serverTypeContainer = new ACLabelContainer();
@@ -69,7 +66,7 @@ public class IkenshoSettingDB extends JDialog {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
             event();
 
             //スナップショット撮影
@@ -192,7 +189,7 @@ public class IkenshoSettingDB extends JDialog {
        cancel.setMnemonic('C');
     }
 
-    private void initComponent() throws Exception {
+    private void init() throws Exception {
         //ウィンドウサイズ
         setSize(new Dimension(680, 350));
         //ウィンドウを中央に配置
@@ -518,16 +515,16 @@ public class IkenshoSettingDB extends JDialog {
     private boolean writeDBSetting() throws Exception {
         try {
             if (serverType.getSelectedIndex() == 0) {
-                ACFrame.getInstance().getProperityXML().setForceValueAt("DBConfig/Server", "localhost");
+                ACFrame.getInstance().getPropertyXML().setForceValueAt("DBConfig/Server", "localhost");
             }
             else {
-                ACFrame.getInstance().getProperityXML().setForceValueAt("DBConfig/Server", serverName.getText());
+                ACFrame.getInstance().getPropertyXML().setForceValueAt("DBConfig/Server", serverName.getText());
             }
-            ACFrame.getInstance().getProperityXML().setForceValueAt("DBConfig/Path", DBFileName.getText());
+            ACFrame.getInstance().getPropertyXML().setForceValueAt("DBConfig/Path", DBFileName.getText());
             
             //2006/02/12[Tozo Tanaka] : replace begin
 //            ACFrame.getInstance().getProperityXML().write();
-            if(!ACFrame.getInstance().getProperityXML().writeWithCheck()){
+            if(!ACFrame.getInstance().getPropertyXML().writeWithCheck()){
                 return false;
             }
             //2006/02/12[Tozo Tanaka] : replace end

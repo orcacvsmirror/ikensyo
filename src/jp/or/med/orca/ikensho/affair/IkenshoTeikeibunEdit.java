@@ -11,7 +11,6 @@ import java.awt.event.WindowEvent;
 import java.awt.im.InputSubset;
 import java.text.ParseException;
 
-import javax.swing.JDialog;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
@@ -20,6 +19,7 @@ import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.component.table.ACTableColumn;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.text.ACSQLSafeStringFormat;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -29,12 +29,14 @@ import jp.nichicom.vr.component.table.VRTableColumnModel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoTeikeibunEdit extends JDialog {
+public class IkenshoTeikeibunEdit extends IkenshoDialog {
 
     private VRLabel header1 = new VRLabel();
     private VRLabel header2 = new VRLabel();
@@ -58,6 +60,7 @@ public class IkenshoTeikeibunEdit extends JDialog {
     private VRPanel editors = new VRPanel();
     private VRPanel mover = new VRPanel();
     private VRPanel buttons = new VRPanel();
+    private ACButton otherAdd = new ACButton();
 
     // properties
     public static final int DISEASE = 0;
@@ -89,6 +92,46 @@ public class IkenshoTeikeibunEdit extends JDialog {
     }
 
     /**
+     * 項目の追加処理を実行します。
+     * 
+     * @return 追加に成功したか
+     */
+    protected boolean doAdd() {
+        // 入力チェック
+        String text = input.getText();
+        if (IkenshoCommon.isNullText(text)) {
+            return false;
+        }
+
+        try {
+            if (indexOf(text) >= 0) {
+                ACMessageBox.show("名称が重複しています。", ACMessageBox.BUTTON_OK,
+                        ACMessageBox.ICON_EXCLAMATION);
+                return false;
+            }
+
+            // 追加
+            VRBindSource newRow = (VRBindSource) inputs.createSource();
+            input.setSource(newRow);
+            input.applySource();
+            newRow.setData(whereFieldName, new Integer(getKubun()));
+            rows.addData(newRow);
+
+            table.revalidate();
+            // table.getTable().revalidate();
+        } catch (ParseException ex) {
+            IkenshoCommon.showExceptionMessage(ex);
+            return false;
+        }
+
+        // 後処理
+        table.clearSelection();
+        modified = true;
+
+        return true;
+    }
+
+    /**
      * コンストラクタです。
      * 
      * @param title タイトル
@@ -106,7 +149,7 @@ public class IkenshoTeikeibunEdit extends JDialog {
             // setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -165,37 +208,13 @@ public class IkenshoTeikeibunEdit extends JDialog {
 
         add.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // 入力チェック
-                String text = input.getText();
-                if (IkenshoCommon.isNullText(text)) {
-                    return;
-                }
+                doAdd();
+            }
+        });
 
-                try {
-                    if (indexOf(text) >= 0) {
-                        ACMessageBox.show("名称が重複しています。",
-                                ACMessageBox.BUTTON_OK,
-                                ACMessageBox.ICON_EXCLAMATION);
-                        return;
-                    }
-
-                    // 追加
-                    VRBindSource newRow = (VRBindSource) inputs.createSource();
-                    input.setSource(newRow);
-                    input.applySource();
-                    newRow.setData(whereFieldName, new Integer(getKubun()));
-                    rows.addData(newRow);
-
-                    table.revalidate();
-                    // table.getTable().revalidate();
-                } catch (ParseException ex) {
-                    IkenshoCommon.showExceptionMessage(ex);
-                    return;
-                }
-
-                // 後処理
-                table.clearSelection();
-                modified = true;
+        otherAdd.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                doOtherAdd();
             }
         });
 
@@ -350,8 +369,11 @@ public class IkenshoTeikeibunEdit extends JDialog {
         delete.setToolTipText("選択されている項目を削除します。");
         comit.setToolTipText("変更内容を登録します。");
         close.setToolTipText("画面を閉じ、元の画面に戻ります。");
+        otherAdd.setToolTipText("にも新規に項目を追加します。");
+        otherAdd.setVisible(false);
         editors.add(inputs, BorderLayout.NORTH);
         editors.add(buttons, BorderLayout.SOUTH);
+        buttons.add(otherAdd, null);
         buttons.add(add, null);
         buttons.add(edit, null);
         buttons.add(delete, null);
@@ -407,6 +429,8 @@ public class IkenshoTeikeibunEdit extends JDialog {
         comit.setMnemonic('S');
         close.setText("閉じる(C)");
         close.setMnemonic('C');
+        otherAdd.setText("にも追加(O)");
+        otherAdd.setMnemonic('O');
 
         table.setColumnSort(false);
     }
@@ -414,9 +438,9 @@ public class IkenshoTeikeibunEdit extends JDialog {
     /**
      * 位置を初期化します。
      */
-    private void initComponent() {
+    private void init() {
         // ウィンドウのサイズ
-        setSize(new Dimension(600, 400));
+        setSize(new Dimension(660, 400));
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();
@@ -577,9 +601,9 @@ public class IkenshoTeikeibunEdit extends JDialog {
             sb.append(whereStatement);
             dbm.executeUpdate(sb.toString());
 
-            String head = "INSERT INTO " + tableName + "(";
-            String middle = ") VALUES (";
-            String foot = ")";
+            final String head = "INSERT INTO " + tableName + "(";
+            final String middle = ") VALUES (";
+            final String foot = ")";
 
             // INSERT
             switch (tableNo) {
@@ -605,18 +629,21 @@ public class IkenshoTeikeibunEdit extends JDialog {
             case TEIKEIBUN:
                 for (int i = 0; i < rows.getDataSize(); i++) {
                     VRMap row = (VRMap) rows.getData(i);
-                    sb = new StringBuffer();
-                    sb.append(head);
-                    sb.append(" TKB_KBN");
-                    sb.append(",TEIKEIBUN");
-                    sb.append(",LAST_TIME");
-                    sb.append(middle);
-                    sb.append(IkenshoCommon.getDBSafeNumber("TKB_KBN", row));
-                    sb.append(",");
-                    sb.append(IkenshoCommon.getDBSafeString("TEIKEIBUN", row));
-                    sb.append(",CURRENT_TIMESTAMP");
-                    sb.append(foot);
-                    dbm.executeUpdate(sb.toString());
+                    // sb = new StringBuffer();
+                    // sb.append(head);
+                    // sb.append(" TKB_KBN");
+                    // sb.append(",TEIKEIBUN");
+                    // sb.append(",LAST_TIME");
+                    // sb.append(middle);
+                    // sb.append(IkenshoCommon.getDBSafeNumber("TKB_KBN", row));
+                    // sb.append(",");
+                    // sb.append(IkenshoCommon.getDBSafeString("TEIKEIBUN",
+                    // row));
+                    // sb.append(",CURRENT_TIMESTAMP");
+                    // sb.append(foot);
+                    // dbm.executeUpdate(sb.toString());
+                    dbm.executeUpdate(createTeikeibunInsertSQL(row, head,
+                            middle, foot));
                 }
                 break;
             }
@@ -630,5 +657,120 @@ public class IkenshoTeikeibunEdit extends JDialog {
         }
         dbm.finalize();
 
+    }
+
+    /**
+     * 定型文テーブルへのINSERT用のSQL文を返します。
+     * 
+     * @param row 値
+     * @param head 前置SQL
+     * @param middle 中置SQL
+     * @param foot 後置SQL
+     * @return 定型文テーブルへのINSERT用のSQL文
+     * @throws ParseException 処理例外
+     */
+    protected String createTeikeibunInsertSQL(VRMap row, String head,
+            String middle, String foot) throws ParseException {
+        StringBuffer sb = new StringBuffer();
+        sb.append(head);
+        sb.append(" TKB_KBN");
+        sb.append(",TEIKEIBUN");
+        sb.append(",LAST_TIME");
+        sb.append(middle);
+        sb.append(IkenshoCommon.getDBSafeNumber("TKB_KBN", row));
+        sb.append(",");
+        sb.append(IkenshoCommon.getDBSafeString("TEIKEIBUN", row));
+        sb.append(",CURRENT_TIMESTAMP");
+        sb.append(foot);
+        return sb.toString();
+    }
+
+    //その他の文書の定型文区分
+    private int otherKubun;
+//  その他の文書の名称
+    private String otherDocumentName;
+    /**
+     * その他の文書にも定型分の同時追加を許容します。
+     * @param otherKubun その他の文書の定型文区分
+     * @param otherDocumentName その他の文書名
+     */
+    public void setAllowedAddOtherDocument(int otherKubun, String otherDocumentName){
+        this.otherKubun = otherKubun;
+        this.otherDocumentName = otherDocumentName;
+        otherAdd.setText(otherDocumentName+"にも追加(O)");
+                otherAdd.setToolTipText(otherDocumentName+"にも新規に項目を追加します。");
+        otherAdd.setVisible(true);
+    }
+    
+    /**
+     * 他の定型文にも項目の追加処理を実行します。
+     * 
+     * @return 追加に成功したか
+     */
+    protected boolean doOtherAdd() {
+        if (doAdd()) {
+            // この画面への追加は成功
+
+            IkenshoFirebirdDBManager dbm = null;
+            try {
+                dbm = new IkenshoFirebirdDBManager();
+                dbm.beginTransaction();
+
+                VRMap addRow = (VRMap)rows.get(rows.size()-1);
+                VRMap row = new VRHashMap(addRow);
+                VRBindPathParser.set("TKB_KBN", row, new Integer(otherKubun));
+                
+                
+                // DELETE
+                StringBuffer sb = new StringBuffer();
+                sb.append("SELECT");
+                sb.append(" * ");
+                sb.append(" FROM ");
+                sb.append(tableName);
+                sb.append(" WHERE");
+                sb.append(" (TKB_KBN=");
+                sb.append(otherKubun);
+                sb.append(" )AND(TEIKEIBUN=");
+                sb.append(IkenshoCommon.getDBSafeString("TEIKEIBUN", row) );
+                sb.append(")");
+
+                VRList otherNow = dbm.executeQuery(sb.toString());
+                if (!otherNow.isEmpty()) {
+                    // 同名称を登録済み
+                    ACMessageBox.show("「" +otherDocumentName+ "」には登録済みの項目です。");
+                    return false;
+                }
+
+                final String head = "INSERT INTO " + tableName + "(";
+                final String middle = ") VALUES (";
+                final String foot = ")";
+
+                // INSERT
+                switch (tableNo) {
+                case TEIKEIBUN:
+                        dbm.executeUpdate(createTeikeibunInsertSQL(row, head,
+                                middle, foot));
+                    break;
+                }
+                dbm.commitTransaction();
+
+            } catch (Exception ex) {
+                try {
+                    if (dbm != null) {
+                        dbm.rollbackTransaction();
+                    }
+                    IkenshoCommon.showExceptionMessage(ex);
+                } catch (Exception ex2) {
+                    IkenshoCommon.showExceptionMessage(ex2);
+                }
+            }
+            if (dbm != null) {
+                dbm.finalize();
+            }
+
+            return true;
+        }
+
+        return false;
     }
 }

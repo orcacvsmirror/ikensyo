@@ -181,7 +181,7 @@ public class IkenshoEraDateTextField extends JPanel implements
 
         era.addItemListener(new ItemListener() {
             public void itemStateChanged(ItemEvent e) {
-                era_itemStateChanged(e);
+                checkEraItemState();
             }
         });
         era.setEditable(false);
@@ -243,7 +243,10 @@ public class IkenshoEraDateTextField extends JPanel implements
      * @return 年号
      */
     public String getEra() {
-        return era.getSelectedItem().toString();
+        if(era.getSelectedItem()==null){
+            return "";
+        }
+        return String.valueOf(era.getSelectedItem());
     }
 
     /**
@@ -905,10 +908,8 @@ public class IkenshoEraDateTextField extends JPanel implements
 
     /**
      * 元号コンボ変更時のイベント
-     * 
-     * @param e ItemEvent
      */
-    public void era_itemStateChanged(ItemEvent e) {
+    public void checkEraItemState() {
         // "不詳"が選択されているかを判定
         boolean isUnknownDate;
         if (era.getSelectedItem().equals(ERA_UNKNOWN)) {
@@ -1085,7 +1086,8 @@ public class IkenshoEraDateTextField extends JPanel implements
         // 未来日付チェック用の本日日付+1
         Calendar nowCal = Calendar.getInstance();
         nowCal.set(nowCal.get(Calendar.YEAR), nowCal.get(Calendar.MONTH),
-                nowCal.get(Calendar.DAY_OF_MONTH) + 1, 0, 0, 0);
+                nowCal.get(Calendar.DAY_OF_MONTH) +1, 0, 0, 0);
+        nowCal.add(Calendar.SECOND, -1);
         Date now = nowCal.getTime();
 
         // 比較
@@ -1448,4 +1450,28 @@ public class IkenshoEraDateTextField extends JPanel implements
     public JLabel getDayUnit() {
         return dayUnit;
     }
+    
+    /**
+     * 不詳選択時の状態に設定します。
+     */
+    public void setEraUnknownState(){
+        year.setEnabled(false);
+        month.setEnabled(false);
+        day.setEnabled(false);
+        yearUnit.setEnabled(false);
+        monthUnit.setEnabled(false);
+        dayUnit.setEnabled(false);
+        age.setEnabled(false);
+    }
+    
+    /**
+     * コンポーネントの状態に応じてEnableを変更します。
+     */
+    public void checkState(){
+        // 状態判定
+        int state = checkDateValue();
+        // Enabled設定
+        setComponentEnabled(state);
+    }
+    
 }

@@ -9,7 +9,6 @@ import java.awt.event.ActionListener;
 import java.awt.im.InputSubset;
 import java.text.ParseException;
 
-import javax.swing.JDialog;
 import javax.swing.SwingConstants;
 
 import jp.nichicom.ac.ACCommon;
@@ -26,7 +25,7 @@ import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoBloodChemistry extends JDialog {
+public class IkenshoBloodChemistry extends IkenshoDialog {
     private VRPanel contents = new VRPanel();
     private VRPanel buttons = new VRPanel();
     private ACGroupBox pointGroup = new ACGroupBox();
@@ -61,7 +60,7 @@ public class IkenshoBloodChemistry extends JDialog {
     /**
      * 位置を初期化します。
      */
-    private void initComponent() {
+    private void init() {
         // ウィンドウのサイズ
         setSize(new Dimension(200, 130));
         // ウィンドウを中央に配置
@@ -90,7 +89,7 @@ public class IkenshoBloodChemistry extends JDialog {
         try {
             jbInit();
             pack();
-            initComponent();
+            init();
         } catch (Exception e) {
             e.printStackTrace();
         }

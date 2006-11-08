@@ -23,6 +23,7 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.IkenshoCareStatusContainer;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
 import jp.or.med.orca.ikensho.component.IkenshoUndelineIntegerCheckBox;
 import jp.or.med.orca.ikensho.component.IkenshoUnderlineFormatableLabel;
@@ -489,6 +490,19 @@ public class IkenshoIkenshoInfoCare2 extends
                 IkenshoCommon.TEIKEI_CARE_SERVICE_OTHER_NAME);
         applyPoolTeikeibun(getCare2KansenName(),
                 IkenshoCommon.TEIKEI_INFECTION_NAME);
+        
+        if(getMasterAffair() instanceof IkenshoIkenshoInfo){
+            // スナップショットについて
+            // 2006/06/21
+            // Addition - [Masahiko Higuchi]
+            ((IkenshoIkenshoInfo)getMasterAffair()).getSimpleSnap().addComponent(care2KetsuattsuValue);
+            ((IkenshoIkenshoInfo)getMasterAffair()).getSimpleSnap().addComponent(care2EngeValue);
+            ((IkenshoIkenshoInfo)getMasterAffair()).getSimpleSnap().addComponent(care2SesshokuValue);
+            ((IkenshoIkenshoInfo)getMasterAffair()).getSimpleSnap().addComponent(care2MoveValue);
+            ((IkenshoIkenshoInfo)getMasterAffair()).getSimpleSnap().addComponent(care2ServiceOtherValue);
+            ((IkenshoIkenshoInfo)getMasterAffair()).getSimpleSnap().simpleSnapshot();
+            
+        }
 
     }
 
@@ -706,5 +720,42 @@ public class IkenshoIkenshoInfoCare2 extends
         protected void addRadioButton(JRadioButton item) {
             add(item, VRLayout.WEST);
         }
+    }
+    
+
+    /**
+     * 血圧への留意事項を返します。
+     * @return 血圧への留意事項
+     */
+    protected ACComboBox getCare2KetsuattsuValue(){
+        return care2KetsuattsuValue;
+    }
+    /**
+     * 嚥下への留意事項を返します。
+     * @return 嚥下への留意事項
+     */
+    protected ACComboBox getCare2EngeValue(){
+        return care2EngeValue;
+    }
+    /**
+     * 摂食への留意事項を返します。
+     * @return 摂食への留意事項
+     */
+    protected ACComboBox getCare2SesshokuValue(){
+        return care2SesshokuValue;
+    }
+    /**
+     * 移動への留意事項を返します。
+     * @return 移動への留意事項
+     */
+    protected ACComboBox getCare2MoveValue(){
+        return care2MoveValue;
+    }
+    /**
+     * その他の留意事項を返します。
+     * @return その他の留意事項
+     */
+    protected ACComboBox getCare2ServiceOtherValue(){
+        return care2ServiceOtherValue;
     }
 }

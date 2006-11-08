@@ -15,6 +15,7 @@ import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -48,8 +49,8 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
         ACPassiveKey("DOCTOR", new String[] {"DR_CD"}
                           , new Format[] {null}, "LAST_TIME", "LAST_TIME");
     private static final ACPassiveKey PASSIVE_CHECK_KEY_JIGYOUSHA = new
-        ACPassiveKey("JIGYOUSHA", new String[] {"DR_CD", "INSURER_NO", "JIGYOUSHA_NO"}
-                          , new Format[] {null, IkenshoConstants.FORMAT_PASSIVE_STRING, IkenshoConstants.FORMAT_PASSIVE_STRING}
+        ACPassiveKey("JIGYOUSHA", new String[] {"DR_CD", "INSURER_NO", "JIGYOUSHA_NO", "INSURER_TYPE"}
+                          , new Format[] {null, IkenshoConstants.FORMAT_PASSIVE_STRING, IkenshoConstants.FORMAT_PASSIVE_STRING,null}
                           , "LAST_TIME", "LAST_TIME");
 
     public IkenshoIryouKikanJouhouShousai() {
@@ -285,6 +286,7 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
             sb.append( ",BANK_KOUZA_NO" );
             sb.append( ",BANK_KOUZA_KIND" );
             sb.append( ",FURIKOMI_MEIGI" );
+            sb.append( ",DR_ADD_IT" );
             sb.append( ",LAST_TIME" );
             sb.append( " FROM" );
             sb.append( " DOCTOR" );
@@ -442,6 +444,7 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
                 sbDoctor.append(",BANK_KOUZA_NO=" + getDBSafeString("BANK_KOUZA_NO", doctorData));
                 sbDoctor.append(",BANK_KOUZA_KIND=" + getBankKouzaKindDBValue(getDBSafeNumber("BANK_KOUZA_KIND", doctorData)));
                 sbDoctor.append(",FURIKOMI_MEIGI=" + getDBSafeString("FURIKOMI_MEIGI", doctorData));
+                sbDoctor.append(",DR_ADD_IT=" + getDBSafeNumber("DR_ADD_IT", doctorData));
                 sbDoctor.append(",LAST_TIME=CURRENT_TIMESTAMP");
                 sbDoctor.append(" WHERE");
                 sbDoctor.append(" DR_CD=" + drCd);
@@ -473,6 +476,7 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
                 sbDoctor.append(" BANK_KOUZA_NO,");
                 sbDoctor.append(" BANK_KOUZA_KIND,");
                 sbDoctor.append(" FURIKOMI_MEIGI,");
+                sbDoctor.append(" DR_ADD_IT,");
                 sbDoctor.append(" LAST_TIME");
                 sbDoctor.append(" )");
                 sbDoctor.append(" VALUES(");
@@ -498,6 +502,7 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
                 sbDoctor.append("," + getDBSafeString("BANK_KOUZA_NO", doctorData));
                 sbDoctor.append("," + getBankKouzaKindDBValue(getDBSafeNumber("BANK_KOUZA_KIND", doctorData)));
                 sbDoctor.append("," + getDBSafeString("FURIKOMI_MEIGI", doctorData));
+                sbDoctor.append("," + getDBSafeString("DR_ADD_IT", doctorData));
                 sbDoctor.append(",CURRENT_TIMESTAMP");
                 sbDoctor.append(" )");
             }
@@ -522,6 +527,7 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
                 VRMap jigyoushaRow = (VRMap)jigyoushoData.getData(i);
                 String INSURER_NO = jigyoushaRow.getData("INSURER_NO").toString();
                 String JIGYOUSHA_NO = jigyoushaRow.getData("JIGYOUSHA_NO").toString();
+                int INSURER_TYPE = ACCastUtilities.toInt(jigyoushaRow.getData("INSURER_TYPE"),0);
 
                 //事業者テーブル用SQL
                 StringBuffer sbJigyousha = new StringBuffer();
@@ -530,12 +536,14 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
                 sbJigyousha.append(" (");
                 sbJigyousha.append(" DR_CD");
                 sbJigyousha.append(",INSURER_NO");
+                sbJigyousha.append(",INSURER_TYPE");
                 sbJigyousha.append(",JIGYOUSHA_NO");
                 sbJigyousha.append(",LAST_TIME");
                 sbJigyousha.append(")");
                 sbJigyousha.append(" VALUES(");
                 sbJigyousha.append(" " + drCd);
                 sbJigyousha.append(",'" + INSURER_NO + "'");
+                sbJigyousha.append("," + INSURER_TYPE);
                 sbJigyousha.append(",'" + JIGYOUSHA_NO + "'");
                 sbJigyousha.append(",CURRENT_TIMESTAMP");
                 sbJigyousha.append(")");

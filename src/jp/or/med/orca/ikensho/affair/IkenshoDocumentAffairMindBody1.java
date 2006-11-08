@@ -17,6 +17,7 @@ import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACBindListCellRenderer;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
@@ -702,7 +703,10 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1Ninchi.setBindPath("NINCHI");
     mindBody1Ninchi.setNoSelectIndex(0);
     mindBody1Ninchi.setUseClearButton(false);
-    mindBody1NinchiPanel.setText("日常の意思決定を行うための\r\n認知能力");
+    // システム内の改行コードを使用
+    // 2006/06/21
+    // Replace - [Masahiko Higuchi]
+    mindBody1NinchiPanel.setText("日常の意思決定を行うための" + ACConstants.LINE_SEPARATOR + "認知能力");
     mindBody1NinchiPanel.setHorizontalAlignment(4);
     mindBody1RikaiKiokuLayout.setFitHLast(true);
     mindBody1RikaiKiokuLayout.setHgrid(200);

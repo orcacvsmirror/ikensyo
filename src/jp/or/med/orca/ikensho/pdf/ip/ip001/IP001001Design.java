@@ -18,7 +18,7 @@
  *****************************************************************
  * アプリ: QKANCHO
  * 開発者: 田中　統蔵
- * 作成日: 2006/04/27  日本コンピューター株式会社 田中　統蔵 新規作成
+ * 作成日: 2006/08/25  日本コンピューター株式会社 田中　統蔵 新規作成
  * 更新日: ----/--/--
  * システム 主治医意見書 (I)
  * サブシステム 帳票 (P)
@@ -111,6 +111,10 @@ public class IP001001Design extends ACAffairDialog {
   private ACListItem formatSeikyuIchiran;
 
   private ACListItem formatCSVFileOutputPatientList;
+
+  private ACListItem formatIkenshoShien1;
+
+  private ACListItem formatIkenshoShien2;
 
   private ACPanel buttons;
 
@@ -420,6 +424,48 @@ public class IP001001Design extends ACAffairDialog {
   }
 
   /**
+   * 医師意見書1ページ目を取得します。
+   * @return 医師意見書1ページ目
+   */
+  public ACListItem getFormatIkenshoShien1(){
+    if(formatIkenshoShien1==null){
+
+      formatIkenshoShien1 = new ACListItem();
+
+      formatIkenshoShien1.setText("医師意見書1ページ目");
+
+      formatIkenshoShien1.setSimpleValueMode(false);
+      formatIkenshoShien1.put(getFormats().getRenderBindPath(), "医師意見書1ページ目");
+      formatIkenshoShien1.put(getFormats().getBindPath(), new Integer(11));
+
+      addFormatIkenshoShien1();
+    }
+    return formatIkenshoShien1;
+
+  }
+
+  /**
+   * 医師意見書2ページ目を取得します。
+   * @return 医師意見書2ページ目
+   */
+  public ACListItem getFormatIkenshoShien2(){
+    if(formatIkenshoShien2==null){
+
+      formatIkenshoShien2 = new ACListItem();
+
+      formatIkenshoShien2.setText("医師意見書2ページ目");
+
+      formatIkenshoShien2.setSimpleValueMode(false);
+      formatIkenshoShien2.put(getFormats().getRenderBindPath(), "医師意見書2ページ目");
+      formatIkenshoShien2.put(getFormats().getBindPath(), new Integer(12));
+
+      addFormatIkenshoShien2();
+    }
+    return formatIkenshoShien2;
+
+  }
+
+  /**
    * ボタン領域を取得します。
    * @return ボタン領域
    */
@@ -576,6 +622,10 @@ public class IP001001Design extends ACAffairDialog {
 
     getFormatsModel().add(getFormatCSVFileOutputPatientList());
 
+    getFormatsModel().add(getFormatIkenshoShien1());
+
+    getFormatsModel().add(getFormatIkenshoShien2());
+
   }
 
   /**
@@ -652,6 +702,20 @@ public class IP001001Design extends ACAffairDialog {
    * ＣＳＶファイル提出患者一覧に内部項目を追加します。
    */
   protected void addFormatCSVFileOutputPatientList(){
+
+  }
+
+  /**
+   * 医師意見書1ページ目に内部項目を追加します。
+   */
+  protected void addFormatIkenshoShien1(){
+
+  }
+
+  /**
+   * 医師意見書2ページ目に内部項目を追加します。
+   */
+  protected void addFormatIkenshoShien2(){
 
   }
 

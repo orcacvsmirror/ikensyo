@@ -4,7 +4,6 @@ import java.awt.HeadlessException;
 import java.util.ArrayList;
 import java.util.Date;
 
-import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
@@ -1002,5 +1001,9 @@ public class IkenshoIkenshoPrintSettingH18
 
     pd.endPageEdit();
   }
-
+  
+  
+  protected int getFormatType(){
+      return IkenshoConstants.IKENSHO_LOW_H18;
+  }
 }

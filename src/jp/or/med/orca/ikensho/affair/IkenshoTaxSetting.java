@@ -8,7 +8,6 @@ import java.awt.event.WindowEvent;
 import java.awt.im.InputSubset;
 import java.text.Format;
 
-import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.SwingConstants;
@@ -32,7 +31,7 @@ import jp.or.med.orca.ikensho.sql.IkenshoPassiveCheck;
 import jp.or.med.orca.ikensho.util.IkenshoSnapshot;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoTaxSetting extends JDialog {
+public class IkenshoTaxSetting extends IkenshoDialog {
     private JPanel contentPane;
     private ACGroupBox taxGrp = new ACGroupBox();
     private ACLabelContainer taxContainer = new ACLabelContainer();
@@ -55,7 +54,7 @@ public class IkenshoTaxSetting extends JDialog {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
             pack();
-            initComponent();
+            init();
             event();
             doSelect();
         } catch (Exception ex) {
@@ -99,7 +98,7 @@ public class IkenshoTaxSetting extends JDialog {
         cancel.setMnemonic('C');
     }
 
-    public void initComponent() throws Exception {
+    public void init() throws Exception {
         // âÊñ ÉTÉCÉY
         setSize(new Dimension(260, 120));
 

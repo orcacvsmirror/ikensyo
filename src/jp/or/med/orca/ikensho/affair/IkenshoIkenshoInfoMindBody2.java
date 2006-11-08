@@ -59,7 +59,7 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
   private ACLabelContainer mindBody2DownJyoushi = new ACLabelContainer();
   private ACIntegerCheckBox mindBody2ConnectKoushuku = new
       ACIntegerCheckBox();
-  private ACGroupBox mindBody2Group = new ACGroupBox();
+  private ACGroupBox mindBody2Group;
   private IkenshoDocumentTabTitleLabel mindBody2Title = new IkenshoDocumentTabTitleLabel();
   private ACIntegerCheckBox mindBody2ConnectHijiLeft = new
       ACIntegerCheckBox();
@@ -219,6 +219,9 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
    * @return 基盤グループ
    */
   protected ACGroupBox getContaintsGroup(){
+      if(mindBody2Group == null){
+          mindBody2Group = new ACGroupBox();
+      }
     return mindBody2Group;
   }
   /**
@@ -251,11 +254,11 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
 
     getContaintsGroup().add(getMindBodyClientContainer(), BorderLayout.CENTER);
     getContaintsGroup().add(getMindBodyStatusContainer(), BorderLayout.NORTH);
-    getMindBodyConnectContainer().add(getConnectKoushukus(), null);
-    getMindBodyConnectContainer().add(getDownFuzuiis(), null);
-    getMindBodyConnectContainer().add(getDominantHand(), VRLayout.FLOW_INSETLINE_RETURN);
-    getMindBodyConnectContainer().add(getBodyWeightContainer(), VRLayout.FLOW_INSETLINE);
-    getMindBodyConnectContainer().add(getBodyHeightContainer(), VRLayout.FLOW_INSETLINE);
+     getMindBodyConnectContainer().add(getConnectKoushukus(), null);
+     getMindBodyConnectContainer().add(getDownFuzuiis(), null);
+     getMindBodyConnectContainer().add(getDominantHand(), VRLayout.FLOW_INSETLINE_RETURN);
+     getMindBodyConnectContainer().add(getBodyWeightContainer(), VRLayout.FLOW_INSETLINE);
+     getMindBodyConnectContainer().add(getBodyHeightContainer(), VRLayout.FLOW_INSETLINE);
     getMindBodyClientContainer().add(getHumanPicture(), BorderLayout.CENTER);
     getMindBodyClientContainer().add(getMindBodyConnectContainer(), BorderLayout.WEST);
     getMindBodyStatusContainer().add(getShishiKesson(), VRLayout.FLOW_INSETLINE_RETURN);
@@ -432,8 +435,8 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
     mindBody2ConnectKoushuku.setText("関節の拘縮");
     mindBody2ConnectKoushuku.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     mindBody2ConnectKoushuku.setBindPath("KOUSHU_FLAG");
-    mindBody2Group.setLayout(new BorderLayout());
-    mindBody2Group.setText("身体の状態");
+    getContaintsGroup().setLayout(new BorderLayout());
+    getContaintsGroup().setText("身体の状態");
     mindBody2Title.setText("３．心身の状態に関する意見（続き）");
     mindBody2ConnectHijiLeft.setEnabled(false);
     mindBody2ConnectHijiLeft.setText("左");
@@ -537,7 +540,18 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
 
     addContaints();
     this.add(mindBody2Title, VRLayout.NORTH);
-    this.add(mindBody2Group, VRLayout.CLIENT);
+    this.add(getContaintsGroup(), VRLayout.CLIENT);
   }
+  /**
+   * タイトルラベルを返します。
+   * @return
+   */
+    protected IkenshoDocumentTabTitleLabel getMindBody2Title() {
+        // 2006/07/10
+        // 医師意見書対応 - タイトルラベル文言変更のためGetter追加
+        // Addition - begin [Masahiko Higuchi]
+        return mindBody2Title;
+        // Addition - end
+    }
 
 }

@@ -21,6 +21,7 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
@@ -63,7 +64,7 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
   protected VRLayout editorInfoLayout = new VRLayout();
   protected VRPanel tabPanel = new VRPanel();
   protected JTabbedPane tabs = new JTabbedPane();
-
+  
   //Passiveキー
   protected static final ACPassiveKey PASSIVE_CHECK_KEY_PATIENT = new
       ACPassiveKey("PATIENT", new String[] {"PATIENT_NO"}
@@ -74,6 +75,13 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
                         "DOC_KBN"}
                         , new Format[] {null, null, null}
                         , "COMMON_LAST_TIME", "LAST_TIME");
+  
+
+  // 2006/06/22
+  // スナップショット
+  // Addition - begin [Masahiko Higuchi]
+  protected IkenshoIkenshoSimpleSnapshot simpleSnap = new IkenshoIkenshoSimpleSnapshot();
+  // Addition - end
   
   /**
    * overrideして固有のパッシブチェック予約を定義します。
@@ -309,6 +317,8 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
         IkenshoCommon.applyComboModel(combo,
                                       (VRHashMapArrayToConstKeyArrayAdapter)
                                       obj);
+      }else{
+          combo.setModel(new ACComboBoxModelAdapter());
       }
     }
   }
@@ -593,11 +603,47 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     }
   }
 
+  // 2006/09/08[Tozo Tanaka] : add begin
+    private boolean nowSelecting = false;
+
+    /**
+     * 検索処理中であるかを返します。
+     * 
+     * @return 検索処理中であるか
+     */
+    public boolean isNowSelecting() {
+        return nowSelecting;
+    }
+
+    /**
+     * 検索処理中であるかを設定します。
+     * 
+     * @param nowSelecting 検索処理中であるか
+     */
+    public void setNowSelecting(boolean nowSelecting) {
+        this.nowSelecting = nowSelecting;
+    }
+
+    /**
+     * 更新モードで検索処理中であるかを返します。
+     * 
+     * @return 更新モードで検索処理中であるか
+     */
+    public boolean isNowSelectingByUpdate() {
+        return isNowSelecting()
+                && IkenshoConstants.AFFAIR_MODE_UPDATE.equals(getNowMode());
+    }
+    //2006/09/08[Tozo Tanaka] : add end
+
   /**
    * 検索処理を行います。
    * @throws Exception 処理例外
    */
   protected void doSelect() throws Exception {
+      // 2006/09/08[Tozo Tanaka] : add begin
+        setNowSelecting(true);
+        try {
+            // 2006/09/08[Tozo Tanaka] : add end
 
     IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
     hasOriginalDocument = false;
@@ -605,6 +651,7 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     //初期値を収集して初期化
     if (IkenshoConstants.AFFAIR_MODE_UPDATE.equals(getNowMode())) {
       //更新モードの場合、患者番号と枝番をキーにデータを集める
+        
       doSelectPatient(dbm);
 
       //固有文書
@@ -612,6 +659,7 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
 
       //意見書・指示書共通
       doSelectCommonDocument(dbm);
+      
     }
     else if (IkenshoConstants.AFFAIR_MODE_INSERT.equals(getNowMode())) {
       //登録モードの場合、デフォルト値を収集する
@@ -659,6 +707,13 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
 
     //パッシブチェック予約
     doReservedPassive();
+    
+    // 2006/09/08[Tozo Tanaka] : add begin
+        } finally {
+            setNowSelecting(false);
+        }
+        // 2006/09/08[Tozo Tanaka] : add end
+
   }
 
   /**
@@ -675,12 +730,26 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
 
     IkenshoSnapshot.getInstance().setExclusions(getCustomSnapshotExclusions());
     IkenshoSnapshot.getInstance().snapshot();
+    
+    // 2006/06/22
+    // スナップショット
+    // Addition - begin [Masahiko Higuchi]
+    try{
+        simpleSnap.simpleSnapshot();
 //    NCSnapshot.getInstance().snapshot(getCustumSnapshotExclusions());
+    }catch(Exception e){ 
+        
+    }
+    // Addition - end
   }
 
   public boolean canBack(VRMap parameters) throws Exception {
     boolean result = true;
-    if (IkenshoSnapshot.getInstance().isModified()) {
+    // 2006/06/22
+    // スナップショット
+    // Replace - begin [Masahiko Higuchi]
+    if (IkenshoSnapshot.getInstance().isModified()||simpleSnap.simpleIsModefield()) {
+    // Replace - end        
       if (IkenshoConstants.AFFAIR_MODE_INSERT.equals(getNowMode())) {
         //追加モードの場合
         switch (ACMessageBox.showYesNoCancel("登録内容を保存しますか？", "登録して戻る(S)",
@@ -1861,6 +1930,18 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     while (it.hasNext()) {
       ( (IkenshoTabbableChildAffairContainer) it.next()).doBeforeBindOnSelected();
     }
+  }
+  
+
+  /**
+   * 簡易スナップショットクラスを返します。
+   */
+  public IkenshoIkenshoSimpleSnapshot getSimpleSnap() {
+      // 2006/06/22
+      // スナップショット
+      // Addition - begin [Masahiko Higuchi]
+      return simpleSnap;
+      // Addition - end
   }
 
 }

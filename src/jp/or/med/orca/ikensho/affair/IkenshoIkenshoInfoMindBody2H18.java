@@ -182,26 +182,30 @@ public class IkenshoIkenshoInfoMindBody2H18 extends IkenshoIkenshoInfoMindBody2 
         lay.setAutoWrap(false);
     mahis.setLayout(lay);
 
-
-    String osName = System.getProperty("os.name");
-    if ( (osName != null) && (osName.indexOf("Mac") >= 0)) {
-      //Macは右に並べる
-      mahiLegRightUp.getCheckBox().setPreferredSize(null);
-      mahiLegLeftUp.getCheckBox().setPreferredSize(null);
-      mahiLegRightDown.getCheckBox().setPreferredSize(null);
-      mahiLegLeftDown.getCheckBox().setPreferredSize(null);
-      mahis.add(mahiLegRightUp, VRLayout.FLOW);
-      mahis.add(mahiLegLeftUp, VRLayout.FLOW_RETURN);
-      mahis.add(mahiLegRightDown, VRLayout.FLOW);
-      mahis.add(mahiLegLeftDown, VRLayout.FLOW_RETURN);
-    }else{
-      mahis.add(mahiLegRightUp, VRLayout.FLOW_RETURN);
-      mahis.add(mahiLegLeftUp, VRLayout.FLOW_RETURN);
-      mahis.add(mahiLegRightDown, VRLayout.FLOW_RETURN);
-      mahis.add(mahiLegLeftDown, VRLayout.FLOW_RETURN);
-    }
-
-    mahis.add(mahiOther, VRLayout.FLOW_RETURN);
+    // 2006/07/10
+    // 医師意見書対応 - 麻痺コンテナ並び順変更のため
+    // Replece - begin [Masahiko Higuchi]
+    addMahiContainar();
+            //    String osName = System.getProperty("os.name");
+            //    if ( (osName != null) && (osName.indexOf("Mac") >= 0)) {
+            //      //Macは右に並べる
+            //      mahiLegRightUp.getCheckBox().setPreferredSize(null);
+            //      mahiLegLeftUp.getCheckBox().setPreferredSize(null);
+            //      mahiLegRightDown.getCheckBox().setPreferredSize(null);
+            //      mahiLegLeftDown.getCheckBox().setPreferredSize(null);
+            //      mahis.add(mahiLegRightUp, VRLayout.FLOW);
+            //      mahis.add(mahiLegLeftUp, VRLayout.FLOW_RETURN);
+            //      mahis.add(mahiLegRightDown, VRLayout.FLOW);
+            //      mahis.add(mahiLegLeftDown, VRLayout.FLOW_RETURN);
+            //    }else{
+            //      mahis.add(mahiLegRightUp, VRLayout.FLOW_RETURN);
+            //      mahis.add(mahiLegLeftUp, VRLayout.FLOW_RETURN);
+            //      mahis.add(mahiLegRightDown, VRLayout.FLOW_RETURN);
+            //      mahis.add(mahiLegLeftDown, VRLayout.FLOW_RETURN);
+            //    }
+    
+            //mahis.add(mahiOther, VRLayout.FLOW_RETURN);
+    // Replace - end
     mahiLegLeftUp.setCheckText("左上肢");
     mahiLegRightUp.setCheckText("右上肢");
     mahiLegLeftDown.setCheckText("左下肢");
@@ -261,4 +265,99 @@ public class IkenshoIkenshoInfoMindBody2H18 extends IkenshoIkenshoInfoMindBody2 
     getDownFuzuiis().add(getDownFuzuiiKashi(), VRLayout.FLOW);
     getDownFuzuiis().add(getDownFuzuiiTaikan(), VRLayout.FLOW);
   }
+  
+  /**
+     * overrideして麻痺コンテナの並び順を変更します。
+     */
+    protected void addMahiContainar() {
+        // 2006/07/10
+        // 医師意見書対応 - 麻痺コンテナ並び順変更のため
+        // Addition - begin [Masahiko Higuchi]
+        String osName = System.getProperty("os.name");
+        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
+            // Macは右に並べる
+            getMahiLegRightUp().getCheckBox().setPreferredSize(null);
+            getMahiLegLeftUp().getCheckBox().setPreferredSize(null);
+            getMahiLegRightDown().getCheckBox().setPreferredSize(null);
+            getMahiLegLeftDown().getCheckBox().setPreferredSize(null);
+            getMahis().add(getMahiLegRightUp(), VRLayout.FLOW);
+            getMahis().add(getMahiLegLeftUp(), VRLayout.FLOW_RETURN);
+            getMahis().add(getMahiLegRightDown(), VRLayout.FLOW);
+            getMahis().add(getMahiLegLeftDown(), VRLayout.FLOW_RETURN);
+        } else {
+            getMahis().add(getMahiLegRightUp(), VRLayout.FLOW_RETURN);
+            getMahis().add(getMahiLegLeftUp(), VRLayout.FLOW_RETURN);
+            getMahis().add(getMahiLegRightDown(), VRLayout.FLOW_RETURN);
+            getMahis().add(getMahiLegLeftDown(), VRLayout.FLOW_RETURN);
+        }
+        getMahis().add(getMahiOther(), VRLayout.FLOW_RETURN);
+
+        // Addition - end
+    }
+
+    /**
+     * 麻痺コンテナ左下肢を返します。
+     * @return
+     */
+    protected IkenshoBodyStatusContainer getMahiLegLeftDown() {
+        if(mahiLegLeftDown == null){
+            mahiLegLeftDown = new IkenshoBodyStatusContainer();
+        }
+        return mahiLegLeftDown;
+    }
+
+    /**
+     * 麻痺コンテナ左上肢を返します。
+     * @return
+     */
+    protected IkenshoBodyStatusContainer getMahiLegLeftUp() {
+        if(mahiLegLeftUp == null){
+            mahiLegLeftUp = new IkenshoBodyStatusContainer();
+        }
+        return mahiLegLeftUp;
+    }
+
+    /**
+     * 麻痺コンテナ右下肢を返します。
+     * @return
+     */
+    protected IkenshoBodyStatusContainer getMahiLegRightDown() {
+        if(mahiLegRightDown == null){
+            mahiLegRightDown = new IkenshoBodyStatusContainer();
+        }
+        return mahiLegRightDown;
+    }
+
+    /**
+     * 麻痺コンテナ右上肢を返します。
+     * @return
+     */
+    protected IkenshoBodyStatusContainer getMahiLegRightUp() {
+        if(mahiLegRightUp == null){
+            mahiLegRightUp = new IkenshoBodyStatusContainer();
+        }
+        return mahiLegRightUp;
+    }
+
+    /**
+     * 麻痺コンテナその他を返します。
+     * @return
+     */
+    protected IkenshoBodyStatusContainer getMahiOther() {
+        if(mahiOther == null){
+            mahiOther = new IkenshoBodyStatusContainer();
+        }
+        return mahiOther;
+    }
+
+    /**
+     * 麻痺コンテナラベルを返します。
+     * @return
+     */
+    protected ACLabelContainer getMahis() {
+        if (mahis == null){
+            mahis = new ACLabelContainer();
+        }
+        return mahis;
+    }
 }

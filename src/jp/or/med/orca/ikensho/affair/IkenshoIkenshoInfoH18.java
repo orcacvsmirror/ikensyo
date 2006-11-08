@@ -388,4 +388,5 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
 //
 //    }
     // 2006/12/09[Tozo Tanaka] : delete end
+    
 }

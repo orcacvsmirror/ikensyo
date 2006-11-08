@@ -2,6 +2,7 @@ package jp.or.med.orca.ikensho.affair;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.KeyboardFocusManager;
 import java.awt.event.ItemEvent;
 import java.text.ParseException;
 
@@ -10,12 +11,14 @@ import javax.swing.JTextField;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACIntegerTextField;
 import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.container.ACParentHesesPanelContainer;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
-import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
 import jp.nichicom.vr.component.VRLabel;
@@ -62,6 +65,9 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
     private VRLabel organJigyoushoNoRegistAbstraction1 = new VRLabel();
     private VRPanel organJigyoushoNoAbstractions = new VRPanel();
     private VRLabel organJigyoushoNoRegistAbstraction2 = new VRLabel();
+    
+    private ACIntegerCheckBox doctorAddIT = new ACIntegerCheckBox();
+    private ACIntegerTextField doctorCode = new ACIntegerTextField();
 
     public void initDBCopmponent(IkenshoFirebirdDBManager dbm) throws Exception {
         super.initDBCopmponent(dbm);
@@ -78,13 +84,15 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
         }
         
         
-        //2006/02/12[Tozo Tanaka] : add begin 
-        getMasterAffair().getTabs().addChangeListener(new ChangeListener(){
-            public void stateChanged(ChangeEvent e) {
-                getDoctorName().requestFocus();
-            }
-        });
-        //2006/02/12[Tozo Tanaka] : add end
+        //2006/09/08[Tozo Tanaka] : delete begin
+//        //2006/02/12[Tozo Tanaka] : add begin 
+//        getMasterAffair().getTabs().addChangeListener(new ChangeListener(){
+//            public void stateChanged(ChangeEvent e) {
+//              getDoctorName().requestFocus();
+//            }
+//        });
+//        //2006/02/12[Tozo Tanaka] : add end
+        //2006/09/08[Tozo Tanaka] : delete end
     }
 
     /**
@@ -102,43 +110,75 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
         organJigyoushoNoRegistAbstraction2.setVisible(false);
 
     }
+    
+    private boolean organUserChanging = false;
+    /**
+     * ユーザ操作による医療機関の変更中であるかを返します。
+     * @return ユーザ操作による医療機関の変更中であるか
+     */
+    protected boolean isOrganUserChanging(){
+        return organUserChanging ;
+    }
+    /**
+     * ユーザ操作による医療機関の変更中であるかを設定します。
+     * @param organUserChanging ユーザ操作による医療機関の変更中であるか
+     */
+    protected void setOrganUserChanging(boolean organUserChanging ){
+        this.organUserChanging  = organUserChanging;
+    }
 
     protected boolean checkSelectedDoctor() {
+        // 2006/09/21[Tozo Tanaka] : add begin
+        setOrganUserChanging(true);
+        // 2006/09/21[Tozo Tanaka] : add end
         
-        //2006/02/11[Tozo Tanaka] : replace begin
-//      return setJigyoushas();
-         boolean result = setJigyoushas();
-        VRBindSource source = getMasterSource();
-        if ((source != null) && (source instanceof VRMap)) {
-            // 口座の転記
-            VRMap map = (VRMap) source;
-            if (doctor != null) {
-                map.setData("KOUZA_MEIGI", doctor.getData("FURIKOMI_MEIGI"));
-                map.setData("KOUZA_NO", doctor.getData("BANK_KOUZA_NO"));
-                map.setData("KOUZA_KIND", doctor.getData("BANK_KOUZA_KIND"));
+        // 2006/02/11[Tozo Tanaka] : replace begin
+        // return setJigyoushas();
+        boolean result = setJigyoushas();
+        
+        // 2006/09/21[Tozo Tanaka] : add begin
+        setOrganUserChanging(false);
+        // 2006/09/21[Tozo Tanaka] : add end
 
-                //2006/02/11[Tozo Tanaka] : add begin
-                //TODO canChange?
-                //医療機関の施設区分(MI_KBN)を請求情報の初診対象(SHOSIN)に転記する
-                map.setData("SHOSIN", doctor.getData("MI_KBN"));
-                if(getMasterAffair() instanceof IkenshoIkenshoInfo){
-                    ((IkenshoIkenshoInfo)getMasterAffair()).getBill().setShoshin(doctor.getData("MI_KBN"));
+        
+        // 2006/09/11[Tozo Tanaka] : add begin
+        if ((getMasterAffair() != null)
+                && getMasterAffair().isNowSelectingByUpdate()) {
+            // 検索処理中でかつ更新モードのとき
+            //→上書き転記しない
+        }else{
+            // 2006/09/11[Tozo Tanaka] : add end
+
+            VRBindSource source = getMasterSource();
+            if ((source != null) && (source instanceof VRMap)) {
+                // 口座の転記
+                VRMap map = (VRMap) source;
+                if (doctor != null) {
+                    map
+                            .setData("KOUZA_MEIGI", doctor
+                                    .getData("FURIKOMI_MEIGI"));
+                    map.setData("KOUZA_NO", doctor.getData("BANK_KOUZA_NO"));
+                    map
+                            .setData("KOUZA_KIND", doctor
+                                    .getData("BANK_KOUZA_KIND"));
+
+                    // 2006/02/11[Tozo Tanaka] : add begin
+                    // 医療機関の施設区分(MI_KBN)を請求情報の初診対象(SHOSIN)に転記する
+                    map.setData("SHOSIN", doctor.getData("MI_KBN"));
+                    if (getMasterAffair() instanceof IkenshoIkenshoInfo) {
+                        ((IkenshoIkenshoInfo) getMasterAffair()).getBill()
+                                .setShoshin(doctor.getData("MI_KBN"));
+                    }
+                    // 2006/02/11[Tozo Tanaka] : add end
+
                 }
-                //2006/02/11[Tozo Tanaka] : add end
-                            
             }
+            //2006/09/11[Tozo Tanaka] : add begin
         }
+        //2006/09/11[Tozo Tanaka] : add end
         return result;
 
         //2006/02/11[Tozo Tanaka] : replace end
-    }
-
-    protected boolean setDefaultDoctorOnInsertInit() throws ParseException {
-        boolean ret = super.setDefaultDoctorOnInsertInit();
-        if (ret) {
-            checkSelectedDoctor();
-        }
-        return ret;
     }
 
     protected void applySourceInnerBindComponent() throws Exception {
@@ -193,9 +233,17 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
             getFollowDoctorContainer().bindSource();
         }
 
+        // 2006/09/21[Tozo Tanaka] : add begin
+        setJigyoushoNosOnSelectingByUpdate(jigyoushaNo);
+        // 2006/09/21[Tozo Tanaka] : add end
         if (jigyoushaNo != null) {
+            // 2006/09/20[Tozo Tanaka] : add begin
+            //選択させる。
+            organJigyoushoNo.setSelectedItem(jigyoushaNo);
+            // 2006/09/20[Tozo Tanaka] : add end
             organJigyoushoNo.getEditor().setItem(jigyoushaNo);
             VRBindPathParser.set("JIGYOUSHA_NO", source, jigyoushaNo);
+            
             checkOrganAbstractionVisible();
         }
 
@@ -215,6 +263,28 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
     }
 
     /**
+     * 履歴表示時に事業所番号の入力候補を復元します。
+     * 
+     * @param jigyoushaNo 履歴の事業所番号
+     */
+    protected void setJigyoushoNosOnSelectingByUpdate(Object jigyoushaNo) {
+        if ((getMasterAffair() != null)
+                && getMasterAffair().isNowSelectingByUpdate()) {
+            // 履歴表示時
+            if ((jigyoushaNo == null) || "".equals(jigyoushaNo)) {
+                // 事業所番号がない場合
+                // 事業所番号コンボの内容を空で生成する。
+                organJigyoushoNo.setModel(new DefaultComboBoxModel());
+            } else {
+                // 事業所番号を有する場合
+                // 事業所番号コンボの内容を履歴の事業所番号のみ追加して生成する。
+                organJigyoushoNo.setModel(new DefaultComboBoxModel(
+                        new Object[] { jigyoushaNo }));
+            }
+        }
+    }
+
+    /**
      * 事業者一覧を再構成します。
      * 
      * @return 再構成したか
@@ -224,10 +294,104 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
         try {
 
             Object selectItem = getDoctorName().getSelectedItem();
-            if ((selectItem instanceof String)
-                    || (selectItem instanceof Integer)) {
+            // 2006/09/21[Tozo Tanaka] : replace begin
+            //if ((selectItem instanceof String)|| (selectItem instanceof Integer)) {
+            if ((selectItem instanceof String)|| (selectItem instanceof Integer)||(selectItem==null)) {
+            // 2006/09/21[Tozo Tanaka] : replace end
                 // 医師氏名コンボのフォーカスロストによって強制的に文字列データを設定されてしまった場合
                 if (doctor == defaultDoctor) {
+                    
+                    // 2006/09/21[Tozo Tanaka] : add begin
+                    if (
+                            // 履歴表示によるbindは除外する。
+                    (getMasterAffair() instanceof IkenshoIkenshoInfo)
+                            && (!getMasterAffair().isNowSelectingByUpdate())
+                            // ユーザ操作による医師氏名変更は除外する。
+                            && (!isOrganUserChanging())
+                    ) {
+                        IkenshoIkenshoInfoMention mention = ((IkenshoIkenshoInfo) getMasterAffair())
+                                .getMention();
+                        if (mention != null) {
+                            // 保険者名にフォーカスがある→ユーザ操作
+                            VRMap hoken = mention.getSelectedInsurer();
+                            if (hoken != null) {
+                                // 保険者選択済み
+                                IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
+                                StringBuffer sb = new StringBuffer();
+                                String txt;
+                                sb.append("SELECT");
+                                sb.append(" *");
+                                sb.append(" FROM");
+                                sb.append(" JIGYOUSHA,DOCTOR,INSURER");
+                                sb.append(" WHERE");
+                                sb.append("(");
+                                sb.append("DOCTOR.DR_NM = ");
+                                txt = IkenshoConstants.FORMAT_PASSIVE_STRING
+                                        .format(getDoctorName().getEditor()
+                                                .getItem());
+                                if("NULL".equals(txt)){
+                                    txt = "''";
+                                }
+                                sb.append( txt);
+                                sb.append(")AND(");
+                                sb.append("DOCTOR.MI_NM = ");
+                                txt = IkenshoConstants.FORMAT_PASSIVE_STRING
+                                        .format(getOrganizationName().getText());
+                                if("NULL".equals(txt)){
+                                    txt = "''";
+                                }
+                                sb.append( txt);
+                                sb.append(")AND(");
+                                sb.append("INSURER.INSURER_NO = ");
+                                sb.append(IkenshoCommon.getDBSafeString(
+                                        "INSURER_NO", hoken));
+                                sb.append(")AND(");
+                                sb.append("INSURER.INSURER_TYPE = ");
+                                sb.append(IkenshoCommon.getDBSafeNumber(
+                                        "INSURER_TYPE", hoken));
+                                sb.append(")AND(");
+                                sb.append("JIGYOUSHA.DR_CD = DOCTOR.DR_CD");
+                                sb.append(")AND(");
+                                sb
+                                        .append("JIGYOUSHA.INSURER_NO = INSURER.INSURER_NO");
+                                sb.append(")");
+                                jigyoushas = (VRArrayList) dbm.executeQuery(sb
+                                        .toString());
+                                dbm.finalize();
+
+                                // 取得した事業所番号候補を設定する
+                                IkenshoCommon
+                                        .applyComboModel(
+                                                organJigyoushoNo,
+                                                new VRHashMapArrayToConstKeyArrayAdapter(
+                                                        jigyoushas,
+                                                        "JIGYOUSHA_NO"));
+
+                                if (organJigyoushoNo.getItemCount() > 0) {
+                                    Object val = organJigyoushoNo.getItemAt(0);
+                                    // doctor.setData("JIGYOUSHA_NO",
+                                    // String.valueOf(val));
+                                    organJigyoushoNo.setSelectedItem(val);
+                                    getMasterSource().setData("JIGYOUSHA_NO",
+                                            String.valueOf(val));
+//                                } else if (getDoctorName().isFocusOwner()
+//                                        || getDoctorName().getEditor()
+//                                                .getEditorComponent()
+//                                                .isFocusOwner()) {
+//                                    //事業所番号の候補が0件かつ、医師氏名のコンボにフォーカスが当たっている（ユーザ操作の場合）のみ、テキストもクリアする。
+//                                    getMasterSource().setData("JIGYOUSHA_NO", "");
+                                }
+
+                            }else{
+                                getMasterSource().setData("JIGYOUSHA_NO", "");
+                                organJigyoushoNo.setModel(new DefaultComboBoxModel());
+                            }
+                            checkOrganAbstractionVisible();
+                        }
+                    }
+                    // 2006/09/21[Tozo Tanaka] : add end
+                    
+                    
                     return false;
                 }
                 // 直前までに選択していた医師として解釈させる
@@ -262,6 +426,10 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
                     sb.append("INSURER_NO = ");
                     sb.append(IkenshoCommon
                             .getDBSafeString("INSURER_NO", hoken));
+                    sb.append(")AND(");
+                    sb.append("INSURER_TYPE = ");
+                    sb.append(IkenshoCommon
+                            .getDBSafeNumber("INSURER_TYPE", hoken));
                     sb.append(")");
                     jigyoushas = (VRArrayList) dbm.executeQuery(sb.toString());
                     dbm.finalize();
@@ -269,13 +437,30 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
                     IkenshoCommon.applyComboModel(organJigyoushoNo,
                             new VRHashMapArrayToConstKeyArrayAdapter(
                                     jigyoushas, "JIGYOUSHA_NO"));
-                    if ((organJigyoushoNo.getItemCount() > 0)
-                            && (organJigyoushoNo.getSelectedIndex() < 0)) {
+                    // 2006/09/20[Tozo Tanaka] : remove begin
+//                    if ((organJigyoushoNo.getItemCount() > 0)
+//                            && (organJigyoushoNo.getSelectedIndex() < 0)) {
+//                        Object val = organJigyoushoNo.getItemAt(0);
+//                        organJigyoushoNo.setSelectedItem(val);
+//
+//                        doctor.setData("JIGYOUSHA_NO", String.valueOf(val));
+//                    }
+                        // 2006/09/20[Tozo Tanaka] : remove end
+                    // 2006/09/20[Tozo Tanaka] : add begin
+                    if (organJigyoushoNo.getItemCount() > 0){
                         Object val = organJigyoushoNo.getItemAt(0);
-                        organJigyoushoNo.setSelectedItem(val);
                         doctor.setData("JIGYOUSHA_NO", String.valueOf(val));
+                        organJigyoushoNo.setSelectedItem(val);
+                        getMasterSource().setData("JIGYOUSHA_NO", String.valueOf(val));
+                    }else if(getDoctorName().isFocusOwner()|| getDoctorName().getEditor().getEditorComponent().isFocusOwner()){
+                        //事業所番号の候補が0件かつ、医師氏名のコンボにフォーカスが当たっている（ユーザ操作の場合）のみ、テキストもクリアする。
+                        getMasterSource().setData("JIGYOUSHA_NO", "");
                     }
+                    // 2006/09/20[Tozo Tanaka] : add end
                 } else {
+                    // 2006/09/20[Tozo Tanaka] : add begin
+                    getMasterSource().setData("JIGYOUSHA_NO", "");
+                    // 2006/09/20[Tozo Tanaka] : add end
                     organJigyoushoNo.setModel(new DefaultComboBoxModel());
                 }
             } else {
@@ -441,6 +626,104 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
                 VRLayout.FLOW_INSETLINE_RETURN);
         getFollowDoctorContainer().add(organBankGroup, VRLayout.FLOW_RETURN);
 
+        //電子化加算対象の事業所であるか
+        doctorAddIT.setVisible(false);
+        doctorAddIT.setBindPath("DR_ADD_IT");
+        getFollowDoctorContainer().add(doctorAddIT, VRLayout.FLOW);
+
+        //医療機関コード
+        doctorCode.setVisible(false);
+        doctorCode.setBindPath("DR_CD");
+        getFollowDoctorContainer().add(doctorCode, VRLayout.FLOW);
     }
+
+    protected boolean changeDoctor(ItemEvent e) {
+        try {
+            // これまで選択していた医療機関は電子化加算の対象であるか
+            
+            //2006/09/07 [Tozo Tanaka] : replace begin
+            //boolean oldDoctorIsAddIt = isDoctorAddIT();
+            IkenshoIkenshoInfo info = (IkenshoIkenshoInfo) getMasterAffair();
+            if (info.getMention() == null) {
+                return false;
+            }
+            int formatKubun = ACCastUtilities.toInt(info.getFormatKubun(), 0);
+
+            boolean oldDoctorIsAddIt = IkenshoCommon.canAddIT(formatKubun,
+                    isDoctorAddIT(), info.getMention().getAddITType());
+            //2006/09/07 [Tozo Tanaka] : replace end
+            
+            if (super.changeDoctor(e)) {
+                // 医療機関変更ありの場合
+                //2006/09/07 [Tozo Tanaka] : replace begin
+                //boolean nowDoctorIsAddIt = isDoctorAddIT();
+                boolean nowDoctorIsAddIt = IkenshoCommon.canAddIT(formatKubun,
+                        isDoctorAddIT(), info.getMention().getAddITType());
+                // 2006/09/07 [Tozo Tanaka] : replace end
+                if (oldDoctorIsAddIt != nowDoctorIsAddIt) {
+                    // 電子化加算対象に変更あり
+                    info = (IkenshoIkenshoInfo) getMasterAffair();
+                    if (info.getBill() != null) {
+                        // 請求タブが定義されている場合
+                        double addIT = info.getBill().getShosinAddIT();
+                        double shosinHos = info.getBill().getShosinHospital();
+                        double shosinSin = info.getBill().getShosinSinryoujo();
+                        if (oldDoctorIsAddIt) {
+                            // 元は電子化加算あり→電子化加算なし
+                            // 初診点数から選択している保険者の電子化加算点数を減算する
+                            shosinHos -= addIT;
+                            shosinSin -= addIT;
+                        } else {
+                            // 元は電子化加算なし→電子化加算あり
+                            // 初診点数に選択している保険者の電子化加算点数を減算する
+                            shosinHos += addIT;
+                            shosinSin += addIT;
+                        }
+                        info.getBill().setShosinHospital(shosinHos);
+                        info.getBill().setShosinSinryoujo(shosinSin);
+                    }
+                }
+                return true;
+            }
+        } catch (Exception ex) {
+            IkenshoCommon.showExceptionMessage(ex);
+        }
+        return false;
+    }
+    
+    /**
+     * 電子化加算の対象となる医療機関であるかを返します。
+     * @return 電子化加算の対象となる医療機関であるか
+     */
+    public boolean isDoctorAddIT(){
+        return doctorAddIT.isSelected();
+    }
+    /**
+     * 電子化加算の対象となる医療機関であるかを設定します。
+     * @param val 電子化加算の対象となる医療機関であるか
+     */
+    public void setDoctorAddIT(boolean val){
+        doctorAddIT.setSelected(val);
+    }
+    
+    /**
+     * 現在選択中の医療機関コードを返します。
+     * @return
+     * @throws Exception
+     */
+    public int getDoctorCode() throws Exception{
+        return ACCastUtilities.toInt(doctorCode.getText(),0);
+    }
+    
+    /**
+     * 現在選択中の医療機関コードを設定します。
+     * @param val
+     * @throws Exception
+     */
+    public void setDoctorCode(int val) throws Exception{
+        doctorCode.setText(ACCastUtilities.toString(val));
+    }
+    
+    
 
 }

@@ -19,20 +19,25 @@ import javax.swing.JTextField;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACIntegerTextField;
+import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACOneDecimalDoubleFormat;
 import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.ac.util.adapter.ACListModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
@@ -141,6 +146,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
     private ACTextField shosinHospital = new ACTextField();
     private JLabel shosinHospitalUnit = new JLabel();
 
+    private ACLabelContainer shosinAddItContainer = new ACLabelContainer();
+    private ACTextField shosinAddIt = new ACTextField();
+    private JLabel shosinAddItUnit = new JLabel();
+    private ACIntegerCheckBox addITType = new ACIntegerCheckBox();
+
+
     private ACGroupBox sinsatuPointsGrp = new ACGroupBox();
     private VRPanel sinsatuPointsLeftPnl = new VRPanel();
     private VRPanel sinsatuPointsRightPnl = new VRPanel();
@@ -172,19 +183,26 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
     private ACTextField expXrayFilm = new ACTextField();
     private JLabel expXrayFilmUnit = new JLabel();
 
+    
+    private ACLabelContainer insurertypeContainer = new ACLabelContainer();
+    private ACClearableRadioButtonGroup insurerTypes = new ACClearableRadioButtonGroup();
+    private ACLabel insurerInfo = new ACLabel();
+
+    
     private VRPanel rollBackPnl = new VRPanel();
     private ACButton rollBack = new ACButton();
 
     private VRMap insurerData; // 保険者データ
     private String insurerNo; // 保険者番号
+    private int insurerType; //保険者区分
     private String insurerNm; // 保険者名
     private boolean isUpdate; // true : 更新, false : 追加
     private boolean hasData; // true : 有, false : 無
     protected VRMap prevData; // 前画面キャッシュ
 
     private static final ACPassiveKey PASSIVE_CHECK_KEY = new ACPassiveKey(
-            "INSURER", new String[] { "INSURER_NO" },
-            new Format[] { IkenshoConstants.FORMAT_PASSIVE_STRING },
+            "INSURER", new String[] { "INSURER_NO","INSURER_TYPE" },
+            new Format[] { IkenshoConstants.FORMAT_PASSIVE_STRING, IkenshoConstants.FORMAT_PASSIVE_STRING },
             "LAST_TIME", "LAST_TIME");
 
     private static final String DOUBLE_INPUT_PERSER = "(\\d+)|((\\d+)(\\.\\d{0,1}))";
@@ -202,7 +220,6 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
     }
 
     private void jbInit() throws Exception {
-
         this.setBackground(IkenshoConstants.FRAME_BACKGROUND);
         this.add(buttons, VRLayout.NORTH);
         this.add(tabPnl, VRLayout.CLIENT);
@@ -228,7 +245,10 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
 
         tab1North.setLayout(new VRLayout());
         tab1North.add(insurerNmContainer, VRLayout.FLOW_INSETLINE_RETURN);
-        tab1North.add(insurerNoContainer, VRLayout.FLOW_INSETLINE_RETURN);
+        tab1North.add(insurerNoContainer, VRLayout.FLOW_INSETLINE);
+
+        tab1North.add(insurertypeContainer, VRLayout.FLOW_INSETLINE_RETURN);
+        tab1North.add(insurerInfo, VRLayout.FLOW_INSETLINE_RETURN);
 
         // 保険者名称
         insurerNmContainer.setText("保険者名称(依頼した自治体)");
@@ -249,6 +269,16 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         insurerNoField.setCharType(VRCharType.ONLY_DIGIT);
         insurerNoField.setBindPath("INSURER_NO");
 
+        //保険者区分
+        insurertypeContainer.setText("保険者区分");
+        insurerTypes.setBindPath("INSURER_TYPE");
+        insurerTypes.setModel(new ACListModelAdapter(new VRArrayList(Arrays
+                .asList(new String[] { "主治医意見書のみ", "医師医見書のみ" }))));
+        insurerInfo.setIconPath(ACConstants.ICON_PATH_INFORMATION_16);
+        insurerInfo.setText("“主治医”“医師”の提出方法が異なる場合は、保険者区分にチェックをつけ、提出情報を登録してください。");
+//        insurerInfo.setText("「主治医意見書」「医師意見書」両方を提出可能な保険者は「クリア」で未選択にします。");
+        insurertypeContainer.add(insurerTypes, VRLayout.FLOW);
+        
         // 請求パターン
         seikyuPatternGrp.setLayout(new VRLayout());
         seikyuPatternGrp.setText("請求パターン");
@@ -407,14 +437,14 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         seikyushoCsvPnl.add(seikyushoPrintGrp, VRLayout.CLIENT);
         seikyushoCsvPnl.add(csvGrp, VRLayout.CLIENT);
         // 請求書印刷
-        seikyushoPrintGrp.setText("請求書印刷(「主治医意見書」印刷時)");
+        seikyushoPrintGrp.setText("請求書印刷(「主治医意見書」「医師意見書」印刷時)");
         seikyushoPrintGrp.setForeground(Color.BLUE);
         seikyushoPrintGrp.setLayout(new BorderLayout());
         seikyushoPrintGrp.add(seikyushoPrint);
         seikyushoPrint.setText("印刷する");
         seikyushoPrint.setBindPath("SEIKYUSHO_HAKKOU_PATTERN");
         // CSVファイルでの提出
-        csvGrp.setText("CSVファイルでの「主治医意見書」の提出");
+        csvGrp.setText("CSVファイルでの「主治医意見書」「医師意見書」の提出");
         csvGrp.setForeground(Color.BLUE);
         csvGrp.setLayout(new BorderLayout());
         csvGrp.add(csv);
@@ -422,7 +452,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         csv.setBindPath("FD_OUTPUT_UMU");
 
         // 主治医意見書」印刷オプション
-        printOptionGrp.setText("「主治医意見書」印刷オプション");
+        printOptionGrp.setText("「主治医意見書」「医師意見書」印刷オプション");
         printOptionGrp.setForeground(Color.BLUE);
         printOptionGrp.setLayout(new VRLayout());
         printOptionGrp.add(drNameGrp, VRLayout.CLIENT);
@@ -549,10 +579,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         shosinPnl.add(shosin);
         shosin.setText("初診料");
         shosin.setVerticalAlignment(JTextField.NORTH);
-        shosinTextPnl.setLayout(new VRLayout());
+        shosinTextPnl.setLayout(new VRLayout(VRLayout.LEFT, 4, 2));
         shosinTextPnl.add(shosinSinryoujoContainer,
                 VRLayout.FLOW_INSETLINE_RETURN);
         shosinTextPnl.add(shosinHospitalContainer,
+                VRLayout.FLOW_INSETLINE_RETURN);
+        shosinTextPnl.add(shosinAddItContainer,
                 VRLayout.FLOW_INSETLINE_RETURN);
         shosinSinryoujoContainer.setText("診療所");
         shosinSinryoujoContainer.setLayout(new BorderLayout());
@@ -581,6 +613,30 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         shosinHospital.setBindPath("SHOSIN_HOSPITAL");
         shosinHospitalUnit.setText("点");
 
+        shosinAddItContainer.setText("電子化加算");
+        shosinAddItContainer.setLayout(new BorderLayout());
+        shosinAddItContainer.add(shosinAddIt, BorderLayout.CENTER);
+        shosinAddItContainer.add(shosinAddItUnit, BorderLayout.EAST);
+        shosinAddIt.setIMEMode(InputSubset.LATIN_DIGITS);
+        shosinAddIt.setFormat(new ACOneDecimalDoubleFormat());
+        shosinAddIt.setCharType(new VRCharType("SHOUSUU1",
+                DOUBLE_INPUT_PERSER));
+        shosinAddIt.setColumns(6);
+        shosinAddIt.setMaxLength(6);
+        shosinAddIt.setHorizontalAlignment(JTextField.RIGHT);
+        shosinAddIt.setBindPath("SHOSIN_ADD_IT");
+        shosinAddItUnit.setText("点");
+        
+
+        // 2006/02/07[Tozo Tanaka] : add begin
+        addITType.setBindPath("SHOSIN_ADD_IT_TYPE");
+        addITType.setText("電子化加算は医師意見書でのみ算定する");
+        addITType.setSelected(true);
+        shosinTextPnl.add(addITType,VRLayout.FLOW_RETURN);
+        //shosinGrp.add(addITType, BorderLayout.SOUTH);
+        // 2006/09/07[Tozo Tanaka] : add end
+
+        
         // 診察・検査費用点数
         sinsatuPointsGrp.setText("診察・検査費用点数 - 小数点第一位まで");
         sinsatuPointsGrp.setLayout(new VRLayout());
@@ -726,7 +782,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         rollBackPnl.setLayout(new VRLayout());
         rollBackPnl.add(rollBack, VRLayout.EAST);
         insurerNmContainer.add(insurerNmField, java.awt.BorderLayout.CENTER);
-        rollBack.setText("厚労省提示額に戻す(D)");
+        rollBack.setText("H18年診療報酬単価(D)");
         rollBack.setMnemonic('D');
     }
 
@@ -774,6 +830,8 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 // 渡り時の情報郡からINSURER_NOを取得
                 insurerNo = String.valueOf(VRBindPathParser.get("INSURER_NO",
                         params));
+                insurerType = ACCastUtilities.toInt(VRBindPathParser.get("INSURER_TYPE",
+                        params), 0); 
 
                 // 入力欄にデータを設定
                 doSelect();
@@ -813,11 +871,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
     }
 
     private void event() throws Exception {
-        // 厚労省提示額に戻す
+        // 初期診療報酬単価に戻す
         rollBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 int result = ACMessageBox.show(
-                        "意見書作成料／診察・検査費用点数に\n厚労省提示額を設定します。よろしいですか？",
+                        "意見書作成料／診察・検査費用点数に\nH18年診療報酬単価を設定します。よろしいですか？",
                         ACMessageBox.BUTTON_OKCANCEL,
                         ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
                 if (result == ACMessageBox.RESULT_OK) {
@@ -879,6 +937,8 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
     public boolean canBack(VRMap parameters) throws Exception {
         String key = "INSURER_NO";
         String value = insurerNo;
+        String key2 = "INSURER_TYPE";
+        Integer value2 = ACCastUtilities.toInteger(insurerType);
 
         // 前画面キャッシュを再設定
         if (prevData != null) {
@@ -903,10 +963,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             if (result == ACMessageBox.RESULT_YES) { // 保存して戻る
                 boolean updateFlg = doUpdate(); // DB更新成功:true, 失敗:false
                 parameters.put(key, insurerNo);
+                parameters.put(key2, ACCastUtilities.toInteger(insurerType));
                 return updateFlg;
             } else if (result == ACMessageBox.RESULT_NO) { // 保存しないで戻る
                 if (!isNullText(value)) {
                     parameters.put(key, value);
+                    parameters.put(key2, value2);
                 }
                 return true;
             } else { // 戻らない
@@ -915,6 +977,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         } else { // 戻る
             if (!isNullText(value)) {
                 parameters.put(key, value);
+                parameters.put(key2, value2);
             }
             return true;
         }
@@ -974,6 +1037,22 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         VRMap kingakuTensuData;
         if (kingakuTensuArray.getDataSize() > 0) { // DB上にデータ有
             kingakuTensuData = (VRMap) kingakuTensuArray.getData();
+            // 平成18年度検査費用点数 
+            // 2006/06/20
+            // Addition - [Masahiko Higuchi]
+            kingakuTensuData.put("EXP_KS",new Double(12.0)); // 血液採取(静脈)
+            kingakuTensuData.put("EXP_KIK_MKI",new Double(23.0)); // 末梢血液一般検査
+            kingakuTensuData.put("EXP_KIK_KEKK",new Double(135.0)); // 血液学的検査判断料
+            kingakuTensuData.put("EXP_KKK_KKK",new Double(130.0)); // 血液化学検査(10項目以上)
+            kingakuTensuData.put("EXP_KKK_SKK",new Double(155.0)); // 生化学的検査(I)判断料
+            kingakuTensuData.put("EXP_NITK",new Double(28.0)); // 尿中一般物質定性判定量検査
+            kingakuTensuData.put("EXP_XRAY_TS",new Double(65.0)); // 単純撮影
+            kingakuTensuData.put("EXP_XRAY_SS",new Double(85.0)); // 写真診断(胸部)
+            kingakuTensuData.put("EXP_XRAY_FILM",new Double(13.0));// フィルム(大角)
+            kingakuTensuData.put("SHOSIN_SINRYOUJO", new Double(270.0)); // 初診料(診療所)
+            kingakuTensuData.put("SHOSIN_HOSPITAL", new Double(270.0)); // 初診料(病院)
+
+            kingakuTensuData.put("SHOSIN_ADD_IT", new Double(3.0)); // 電子化加算
         } else {
             kingakuTensuData = (VRMap) pointsGrp.createSource(); // DB上にデータ無
         }
@@ -996,6 +1075,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sb.append(" SELECT");
         sb.append(" INSURER_NO,");
         sb.append(" INSURER_NM,");
+        sb.append(" INSURER_TYPE,");
         sb.append(" FD_OUTPUT_UMU,");
         sb.append(" SEIKYUSHO_HAKKOU_PATTERN,");
         sb.append(" SEIKYUSHO_OUTPUT_PATTERN,");
@@ -1012,6 +1092,10 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sb.append(" SISETU_KEIZOKU_CHARGE,");
         sb.append(" SHOSIN_SINRYOUJO,");
         sb.append(" SHOSIN_HOSPITAL,");
+        sb.append(" SHOSIN_ADD_IT,");
+        // 2006/02/07[Tozo Tanaka] : add begin
+        sb.append(" SHOSIN_ADD_IT_TYPE,");
+        // 2006/09/07[Tozo Tanaka] : add end
         sb.append(" EXP_KS,");
         sb.append(" EXP_KIK_MKI,");
         sb.append(" EXP_KIK_KEKK,");
@@ -1034,6 +1118,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sb.append(" INSURER");
         sb.append(" WHERE");
         sb.append(" INSURER_NO='" + insurerNo + "'");
+        sb.append(" AND INSURER_TYPE=" + insurerType);
         sb.append(" ORDER BY");
         sb.append(" INSURER_NO");
         insurerArray = (VRArrayList) dbm.executeQuery(sb.toString());
@@ -1047,6 +1132,10 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         } else {
             insurerData = (VRMap) tabPnl.createSource(); // DB上にデータ無
             hasData = false;
+            // 2006/02/07[Tozo Tanaka] : add begin
+            //電子化加算区分の初期値は1
+            VRBindPathParser.set("SHOSIN_ADD_IT_TYPE", insurerData, new Integer(1));
+            // 2006/09/07[Tozo Tanaka] : add end
         }
 
         tabPnl.setSource(insurerData);
@@ -1071,6 +1160,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 tabPnl.applySource();
                 String INSURER_NO = getDBSafeString("INSURER_NO", insurerData);
                 String INSURER_NM = getDBSafeString("INSURER_NM", insurerData);
+                String INSURER_TYPE = getDBSafeNumber("INSURER_TYPE", insurerData);
                 String FD_OUTPUT_UMU = getDBSafeNumber("FD_OUTPUT_UMU",
                         insurerData);
                 String SEIKYUSHO_HAKKOU_PATTERN = getDBSafeNumber(
@@ -1149,6 +1239,13 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                         insurerData);
                 String SHOSIN_HOSPITAL = getDBSafeNumber("SHOSIN_HOSPITAL",
                         insurerData);
+                String SHOSIN_ADD_IT = getDBSafeNumber("SHOSIN_ADD_IT",
+                        insurerData); 
+                // 2006/02/07[Tozo Tanaka] : add begin
+                String SHOSIN_ADD_IT_TYPE = getDBSafeNumber("SHOSIN_ADD_IT_TYPE",
+                        insurerData); 
+                // 2006/09/07[Tozo Tanaka] : add end
+
                 String EXP_KS = getDBSafeNumber("EXP_KS", insurerData);
                 String EXP_KIK_MKI = getDBSafeNumber("EXP_KIK_MKI", insurerData);
                 String EXP_KIK_KEKK = getDBSafeNumber("EXP_KIK_KEKK",
@@ -1187,6 +1284,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(" SET");
                     sb.append(" INSURER_NO=" + INSURER_NO);
                     sb.append(",INSURER_NM=" + INSURER_NM);
+                    sb.append(",INSURER_TYPE=" + INSURER_TYPE);
                     sb.append(",FD_OUTPUT_UMU=" + FD_OUTPUT_UMU);
                     sb.append(",SEIKYUSHO_HAKKOU_PATTERN="
                             + SEIKYUSHO_HAKKOU_PATTERN);
@@ -1208,6 +1306,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                                     + SISETU_KEIZOKU_CHARGE);
                     sb.append(",SHOSIN_SINRYOUJO=" + SHOSIN_SINRYOUJO);
                     sb.append(",SHOSIN_HOSPITAL=" + SHOSIN_HOSPITAL);
+                    sb.append(",SHOSIN_ADD_IT=" + SHOSIN_ADD_IT);
+                    // 2006/02/07[Tozo Tanaka] : add begin
+                    sb.append(",SHOSIN_ADD_IT_TYPE=" + SHOSIN_ADD_IT_TYPE);
+                    // 2006/09/07[Tozo Tanaka] : add end
+                    
                     sb.append(",EXP_KS=" + EXP_KS);
                     sb.append(",EXP_KIK_MKI=" + EXP_KIK_MKI);
                     sb.append(",EXP_KIK_KEKK=" + EXP_KIK_KEKK);
@@ -1230,6 +1333,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(",LAST_TIME=CURRENT_TIMESTAMP");
                     sb.append(" WHERE");
                     sb.append(" INSURER_NO='" + insurerNo + "'");
+                    sb.append(" AND INSURER_TYPE=" + insurerType);
                 } else {
                     // 追加時
                     msg = "登録されました。";
@@ -1238,6 +1342,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(" (");
                     sb.append(" INSURER_NO,");
                     sb.append(" INSURER_NM,");
+                    sb.append(" INSURER_TYPE,");
                     sb.append(" FD_OUTPUT_UMU,");
                     sb.append(" SEIKYUSHO_HAKKOU_PATTERN,");
                     sb.append(" SEIKYUSHO_OUTPUT_PATTERN,");
@@ -1254,6 +1359,10 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(" SISETU_KEIZOKU_CHARGE,");
                     sb.append(" SHOSIN_SINRYOUJO,");
                     sb.append(" SHOSIN_HOSPITAL,");
+                    sb.append(" SHOSIN_ADD_IT,");
+                    // 2006/02/07[Tozo Tanaka] : add begin
+                    sb.append(" SHOSIN_ADD_IT_TYPE,");
+                    // 2006/09/07[Tozo Tanaka] : add end
                     sb.append(" EXP_KS,");
                     sb.append(" EXP_KIK_MKI,");
                     sb.append(" EXP_KIK_KEKK,");
@@ -1276,6 +1385,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(" VALUES(");
                     sb.append(" " + INSURER_NO);
                     sb.append("," + INSURER_NM);
+                    sb.append("," + INSURER_TYPE);
                     sb.append("," + FD_OUTPUT_UMU);
                     sb.append("," + SEIKYUSHO_HAKKOU_PATTERN);
                     sb.append("," + SEIKYUSHO_OUTPUT_PATTERN);
@@ -1292,6 +1402,10 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append("," + SISETU_KEIZOKU_CHARGE);
                     sb.append("," + SHOSIN_SINRYOUJO);
                     sb.append("," + SHOSIN_HOSPITAL);
+                    sb.append("," + SHOSIN_ADD_IT);
+                    // 2006/02/07[Tozo Tanaka] : add begin
+                    sb.append("," + SHOSIN_ADD_IT_TYPE);
+                    // 2006/09/07[Tozo Tanaka] : add end
                     sb.append("," + EXP_KS);
                     sb.append("," + EXP_KIK_MKI);
                     sb.append("," + EXP_KIK_KEKK);
@@ -1329,6 +1443,8 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
 
                 // insurerNoを更新
                 insurerNo = INSURER_NO.replaceAll("'", "");
+                // insurerTypeを更新
+                insurerType = ACCastUtilities.toInt(INSURER_TYPE,0);
             } catch (Exception ex) {
                 // ロールバック
                 dbm.rollbackTransaction();
@@ -1506,6 +1622,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             sb.append(" INSURER");
             sb.append(" WHERE");
             sb.append(" INSURER_NM = '" + insurerNmField.getText() + "'");
+            sb.append(getInsurerTypeCheckSQL());
             tmpArray = (VRArrayList) dbm.executeQuery(sb.toString());
             tmpHashMap = (VRMap) tmpArray.getData();
             cntInsurerNo = Integer.parseInt(String.valueOf(tmpHashMap
@@ -1527,13 +1644,13 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         if (doCheckFlg) {
             IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
             StringBuffer sb = new StringBuffer();
-            sb = new StringBuffer();
             sb.append(" SELECT");
             sb.append(" COUNT(INSURER_NO) AS CNT_INSURER_NO");
             sb.append(" FROM");
             sb.append(" INSURER");
             sb.append(" WHERE");
             sb.append(" INSURER_NO = '" + insurerNoField.getText() + "'");
+            sb.append(getInsurerTypeCheckSQL());
             VRArrayList tmpArray = (VRArrayList) dbm
                     .executeQuery(sb.toString());
             VRMap tmpHashMap = (VRMap) tmpArray.getData();
@@ -1550,6 +1667,46 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             showErrMessageBox(0, insurerNoField, "保険者番号を入力してください。");
             return false;
         }
+        
+
+        // 次のチェックは、「更新」「保険者区分変更なし」以外のケースで行う
+        doCheckFlg = true;
+        if (isUpdate) {
+            if (insurerTypes.getSelectedIndex()==insurerType) {
+                doCheckFlg = false; // 更新・変更なしの場合は重複チェックは行わない
+            }
+        }
+        // 保険者区分重複チェック
+        if (doCheckFlg) {
+            IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
+            StringBuffer sb = new StringBuffer();
+            sb.append(" SELECT");
+            sb.append(" COUNT(INSURER_NO) AS CNT_INSURER_TYPE");
+            sb.append(" FROM");
+            sb.append(" INSURER");
+            sb.append(" WHERE");
+            
+            sb.append("(");
+            sb.append(" (INSURER_NO = '" + insurerNoField.getText() + "'");
+            sb.append(getInsurerTypeCheckSQL());
+            sb.append(")OR");
+            sb.append(" (INSURER_NM = '" + insurerNmField.getText() + "'");
+            sb.append(getInsurerTypeCheckSQL());
+            sb.append(")");
+            sb.append(")AND INSURER_TYPE!=" + insurerType);
+
+            VRArrayList tmpArray = (VRArrayList) dbm
+                    .executeQuery(sb.toString());
+            VRMap tmpHashMap = (VRMap) tmpArray.getData();
+            int cntInsurerNo = Integer.parseInt(String.valueOf(tmpHashMap
+                    .get("CNT_INSURER_TYPE")));
+            if (cntInsurerNo > 0) {
+                showErrMessageBox(0,  insurerTypes, "保険者区分が重複しています。");
+                return false;
+            }
+        }
+
+        
         // 保険者番号正規入力チェック(整数チェック)
         /*
          * Pattern pattern = Pattern.compile("[0-9]*"); Matcher matcher =
@@ -1641,6 +1798,10 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         if (!isValidPattern(pat, 1, shosinHospital, msg)) {
             return false;
         }
+        // 電子化加算入力チェック
+        if (!isValidPattern(pat, 1, shosinAddIt, msg)) {
+            return false;
+        }
         // 血液採取(静脈)入力チェック
         if (!isValidPattern(pat, 1, expKs, msg)) {
             return false;
@@ -1679,6 +1840,23 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         }
 
         return true;
+    }
+
+    /**
+     * 保険者区分の重複チェックを行うSQL文(WHERE句)を返します。
+     * @return 保険者区分の重複チェックを行うSQL文(WHERE句)
+     */
+    private String getInsurerTypeCheckSQL(){
+        StringBuffer sb = new StringBuffer();
+        switch(insurerTypes.getSelectedIndex()){
+        case 1:
+            sb.append(" AND(INSURER_TYPE=0 OR INSURER_TYPE=1)");
+            break;
+        case 2:
+            sb.append(" AND(INSURER_TYPE=0 OR INSURER_TYPE=2)");
+            break;
+        }
+        return sb.toString();
     }
 
     /**

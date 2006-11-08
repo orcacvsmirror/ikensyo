@@ -20,6 +20,7 @@ import jp.nichicom.ac.component.ACBindListCellRenderer;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
 import jp.nichicom.ac.component.ACComboBox;
+import jp.nichicom.ac.component.ACIntegerTextField;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACTextArea;
 import jp.nichicom.ac.component.ACTextField;
@@ -28,6 +29,10 @@ import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.container.ACParentHesesPanelContainer;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.text.ACOneDecimalDoubleFormat;
+import jp.nichicom.ac.text.ACSQLSafeNullToZeroIntegerFormat;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -60,12 +65,12 @@ public class IkenshoIkenshoInfoMention extends
     private VRLayout mentionSeikyushoGroupLayout = new VRLayout();
     // private JScrollPane mentionTokkiScroll = new JScrollPane();
     private IkenshoEraDateTextField mentionHasegawaDay2 = new IkenshoEraDateTextField();
-    private VRPanel mentionTokkiMoreAbstractions = new VRPanel();
+    private VRPanel mentionTokkiMoreAbstractions;
     private ACTextField mentionHiHokenNo = new ACTextField();
-    private ACLabelContainer mentionHasegawas = new ACLabelContainer();
-    private ACGroupBox mentionSeikyushoGroup = new ACGroupBox();
+    private ACLabelContainer mentionHasegawas;
+    private ACGroupBox mentionSeikyushoGroup;
     private ACComboBox mentionShisetsu2 = new ACComboBox();
-    private ACLabelContainer mentionShisetsus = new ACLabelContainer();
+    private ACLabelContainer mentionShisetsus;
     private VRLabel mentionShisetsu2Head = new VRLabel();
     // private VRLabel mentionTokkiAbstraction2 = new VRLabel();
     private ACComboBox mentionHokenName = new ACComboBox();
@@ -73,7 +78,7 @@ public class IkenshoIkenshoInfoMention extends
     // IkenshoDeselectableComboBox();
     private ACTextField mentionOrderNo = new ACTextField();
     private ACComboBox mentionShisetsu1 = new ACComboBox();
-    private ACGroupBox mentionTokkiGroup = new ACGroupBox();
+    private ACGroupBox mentionTokkiGroup;
     private ACTextField mentionHasegawa2 = new ACTextField();
     private ACLabelContainer mentionSendDates = new ACLabelContainer();
     private VRLabel mentionHasegawa1Tail = new VRLabel();
@@ -83,9 +88,9 @@ public class IkenshoIkenshoInfoMention extends
     private VRLabel mentionHasegawa2Tail = new VRLabel();
     private ACLabelContainer mentionShinseiDates = new ACLabelContainer();
     private ACButton mentionShowTokkiMoreAbstractionChooser = new ACButton();
-    private VRLabel mentionTokkiMoreAbstraction = new VRLabel();
+    private VRLabel mentionTokkiMoreAbstraction;
     private VRLabel mentionShisetsu1Head = new VRLabel();
-    private ACLabelContainer mentionTokkis = new ACLabelContainer();
+    private ACLabelContainer mentionTokkis;
     private ACClearableRadioButtonGroup mentionCareType = new ACClearableRadioButtonGroup();
     private ACLabelContainer mentionOrderNos = new ACLabelContainer();
     private IkenshoEraDateTextField mentionSendDate = new IkenshoEraDateTextField();
@@ -97,7 +102,7 @@ public class IkenshoIkenshoInfoMention extends
     private ACLabelContainer mentionCareTypes = new ACLabelContainer();
     private ACParentHesesPanelContainer mentionHokenNoHeses = new ACParentHesesPanelContainer();
     private VRLayout mentionShisetsusLayout = new VRLayout();
-    private VRPanel mentionTokkiAbstractions = new VRPanel();
+    private VRPanel mentionTokkiAbstractions;
     private ACLabel mentionTokkiAbstraction1 = new ACLabel();
     private VRLabel mentionTokkiAbstraction3 = new VRLabel();
     private VRPanel mentionDates = new VRPanel();
@@ -131,9 +136,31 @@ public class IkenshoIkenshoInfoMention extends
     private IkenshoInitialNegativeIntegerTextField s1114 = new IkenshoInitialNegativeIntegerTextField();
     private ACGroupBox ikenshoGroupBox1 = new ACGroupBox();
     private ACTextField insurerName = new ACTextField();
+    
+    private ACIntegerTextField mentionHokenType = new ACIntegerTextField();
+    private ACIntegerTextField addITType = new ACIntegerTextField();
 
     protected boolean binding = false;
 
+
+    // 2006/09/12[Tozo Tanaka] : add begin
+    /**
+     * 電子化加算区分(保険者)を返します。
+     * @return 電子化加算区分(保険者)
+     */
+    public int getAddITType(){
+        return ACCastUtilities.toInt(addITType.getText(), 1);
+    }
+    /**
+     * 電子化加算区分(保険者)を設定します。
+     * @param 電子化加算区分(保険者)
+     */
+    public void setAddITType(int val){
+        addITType.setText(ACCastUtilities.toString(val,"1"));
+    }
+    // 2006/09/12[Tozo Tanaka] : add end
+    
+    
     /**
      * タイトル表示ラベルを返します。
      * 
@@ -170,6 +197,12 @@ public class IkenshoIkenshoInfoMention extends
         sb.append(" *");
         sb.append(" FROM");
         sb.append(" INSURER");
+        
+        sb.append(" WHERE");
+        sb.append(" INSURER.INSURER_TYPE IN (0,");
+        sb.append(getAllowedInsurerType());
+        sb.append(")");
+        
         sb.append(" ORDER BY");
         sb.append(" INSURER_NM");
         insurers = (VRArrayList) dbm.executeQuery(sb.toString());
@@ -179,9 +212,18 @@ public class IkenshoIkenshoInfoMention extends
             blank.putAll((Map) insurers.get(0));
             blank.setData("INSURER_NO", "");
             blank.setData("INSURER_NM", "");
+            blank.setData("INSURER_TYPE", new Integer(0));
             insurers.add(0, blank);
             IkenshoCommon.applyComboModel(mentionHokenName, insurers);
         }
+    }
+    /**
+     * 一覧に表示可能な保険者区分を返します。
+     * @return 一覧に表示可能な保険者区分
+     */
+    protected int getAllowedInsurerType(){
+        //1:主治医意見書のみの保険者は許可する
+        return 1;
     }
 
     protected void bindSourceInnerBindComponent() throws Exception {
@@ -398,10 +440,7 @@ public class IkenshoIkenshoInfoMention extends
         mentionShowTokkiMoreAbstractionChooser
                 .addActionListener(new ActionListener() {
                     public void actionPerformed(ActionEvent e) {
-                        IkenshoExtraSpecialNoteDialog form = new IkenshoExtraSpecialNoteDialog(
-                                "その他特記すべき事項",
-                                IkenshoCommon.TEIKEI_MENTION_NAME, 400, 100, 8,
-                                50);
+                        IkenshoExtraSpecialNoteDialog form = createMentionTeikeibunKubun();
                         mentionTokki.setText(form.showModal(mentionTokki
                                 .getText()));
                         mentionTokki.requestFocus();
@@ -425,6 +464,16 @@ public class IkenshoIkenshoInfoMention extends
                 changeInsurerName(e);
             }
         });
+    }
+    /**
+     * 特記事項用の定型文ダイアログを返します。
+     * @return 特記事項用の定型文ダイアログ
+     */
+    protected IkenshoExtraSpecialNoteDialog createMentionTeikeibunKubun(){
+        return new IkenshoExtraSpecialNoteDialog(
+                "その他特記すべき事項",
+                IkenshoCommon.TEIKEI_MENTION_NAME, 400, 100, 8,
+                50);
     }
 
     /**
@@ -534,6 +583,13 @@ public class IkenshoIkenshoInfoMention extends
 
                 mentionHokenNo.setText("");
                 mentionHokenNo.applySource();
+                
+                mentionHokenType.setText("0");
+                mentionHokenType.applySource();
+                // 2006/02/07[Tozo Tanaka] : add begin
+                addITType.setText("1");
+                addITType.applySource();
+                // 2006/09/07[Tozo Tanaka] : add end
 
                 // 点数初期化
                 // 2006/02/06[Tozo Tanaka] : replace begin
@@ -569,9 +625,29 @@ public class IkenshoIkenshoInfoMention extends
                 insureParameters.setSource(oldSource);
                 insureParameters.applySource();
 
-                mentionHokenNo.setText(String.valueOf(VRBindPathParser.get(
-                        mentionHokenNo.getBindPath(), insurer)));
-                mentionHokenNo.applySource();
+                // 2006/09/12
+                // Addition - begin [Masahiko Higuchi]
+                // InnerBindComponentで処理が呼ばれた際に保険者の処理で
+                // 一律新規保険者情報で情報を上書いてしまうので
+                // 検索中で尚且つ更新モード以外の場合のみバインドする
+                if (!((getMasterAffair() != null) && getMasterAffair()
+                        .isNowSelectingByUpdate())) {
+                    mentionHokenNo.setText(String.valueOf(VRBindPathParser.get(
+                            mentionHokenNo.getBindPath(), insurer)));
+                    mentionHokenNo.applySource();
+
+                    mentionHokenType.setText(String.valueOf(VRBindPathParser
+                            .get(mentionHokenType.getBindPath(), insurer)));
+                    mentionHokenType.applySource();
+
+                    // 2006/02/07[Tozo Tanaka] : add begin
+                    addITType.setText(String.valueOf(VRBindPathParser.get(
+                            addITType.getBindPath(), insurer)));
+                    addITType.applySource();
+                    // 2006/09/07[Tozo Tanaka] : add end
+                }
+                // Addition - end [Masahiko Higuchi]
+
 
                 insurerName.setText(String.valueOf(VRBindPathParser.get(
                         insurerName.getBindPath(), insurer)));
@@ -605,6 +681,22 @@ public class IkenshoIkenshoInfoMention extends
                         pointGroup.bindSource();
                         pointGroup.setSource(oldSource);
                         pointGroup.applySource();
+
+                        // 2006/02/07[Tozo Tanaka] : replace begin
+//                        if(info.getOrgan().isDoctorAddIT()){
+                        if (IkenshoCommon.canAddIT(ACCastUtilities.toInt(
+                                ((IkenshoIkenshoInfo) getMasterAffair())
+                                        .getFormatKubun(), 0), info.getOrgan()
+                                .isDoctorAddIT(), insurer)){
+                            // 2006/02/07[Tozo Tanaka] : replace begin
+                            
+                            // 電子化加算対象の医療機関を選択していた場合
+                            //新たな初診点数に電子化加算分を加算する
+                            double addIt = info.getBill().getShosinAddIT();
+                            info.getBill().setShosinHospital(info.getBill().getShosinHospital()+addIt);
+                            info.getBill().setShosinSinryoujo(info.getBill().getShosinSinryoujo()+addIt);
+                        }
+                        
                     }
                 }
 
@@ -616,7 +708,20 @@ public class IkenshoIkenshoInfoMention extends
             IkenshoCommon.showExceptionMessage(ex);
         }
     }
-
+//  2006/02/07[Tozo Tanaka] : add begin
+    /**
+     * 電子化加算対象とするかを返します。
+     * @param addIt 電子化加算対象区分
+     * @return 電子化加算対象とするか
+     */
+    protected boolean canAddIt(int addItType){
+        //(主治医意見書の場合、)電子化加算区分が0のときのみ、電子化加算対象とする。
+        //※他の医見書で条件分岐を変更する場合は、overrideで対応すること。
+        return addItType==0;
+    }
+    // 2006/02/07[Tozo Tanaka] : end begin
+    
+    
     protected void applySourceInnerBindComponent() throws Exception {
         super.applySourceInnerBindComponent();
 
@@ -801,10 +906,37 @@ public class IkenshoIkenshoInfoMention extends
                 }
                 // 2006/12/11[Tozo Tanaka] : add end
                 
+                // 2006/08/02 - 医師意見書 電子化加算有無判断のためメソッド追加
+                //2006/09/09 [Tozo Tanaka] : replace begin
+//                // Addition - begin [Masahiko Higuchi]
+//                addConsulationSource(map);
+//                // Addition - end [Masahiko Higuchi]
+                //2006/09/09 [Tozo Tanaka] : replace begin
+                map.setData("DR_ADD_IT", new Integer(info.getOrgan()
+                        .isDoctorAddIT() ? 1 : 0));
+                //2006/09/09 [Tozo Tanaka] : replace end
                 
-                if (new IkenshoConsultationInfo(map, flag).showModal()) {
+                
+                if (new IkenshoConsultationInfo(map, flag, 
+                        //2006/09/07 [Tozo Tanaka] : add begin
+                        ACCastUtilities.toInt(((IkenshoIkenshoInfo)getMasterAffair()).getFormatKubun(), 0)
+                        //2006/09/07 [Tozo Tanaka] : add end
+                ).showModal()) {
                     // 更新した
                     info.getBill().bindSource();
+                    
+                    //2006/09/09 [Tozo Tanaka] : remove begin
+//                    //最新を取得しかつ更新したときのみ、医療機関の電子化加算区分を最新にする。
+//                    Object obj = map.getData("NEW_DR_ADD_IT");
+//                    if (obj != null) {
+//                        if (new Integer(1).equals(map.getData("NEW_DR_ADD_IT"))) {
+//                            info.getOrgan().setDoctorAddIT(true);
+//                        } else {
+//                            info.getOrgan().setDoctorAddIT(false);
+//                        }
+//                    }
+                    //2006/09/09 [Tozo Tanaka] : remove end
+
                 }
             } catch (Exception ex) {
                 IkenshoCommon.showExceptionMessage(ex);
@@ -812,6 +944,44 @@ public class IkenshoIkenshoInfoMention extends
         }
     }
 
+    //2006/09/09 [Tozo Tanaka] : remove begin
+//    /**
+//     * 検査費用設定クラスに渡す値を追加します。
+//     */
+//    protected void addConsulationSource(VRMap src) throws Exception{
+//        IkenshoIkenshoInfo info = (IkenshoIkenshoInfo)getMasterAffair();
+//        IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
+//        StringBuffer sb = new StringBuffer();
+//        VRArrayList doctorList = new VRArrayList();
+//        
+//        // 現在選択している医療機関情報を渡しておく
+//        if(info.getOrgan() != null){
+//            sb.append("SELECT");
+//            sb.append(" DR_ADD_IT");
+//            sb.append(" FROM");
+//            sb.append(" DOCTOR");
+//            sb.append(" WHERE");
+//            sb.append("(");
+//            sb.append("DR_CD = ");
+//            sb.append(info.getOrgan().getDoctorCode());
+//            sb.append(")");
+//            doctorList = (VRArrayList) dbm.executeQuery(sb.toString());
+//            dbm.finalize();
+//            
+//            if(!doctorList.isEmpty()){
+//                VRMap map = (VRMap)doctorList.getData(0);
+//                if(VRBindPathParser.has("DR_ADD_IT",map)){
+//                    src.setData("DR_ADD_IT",map.getData("DR_ADD_IT"));
+//                }
+//            }else{
+//                // 何も行わない
+//            }
+//            
+//        }
+//    }
+    //2006/09/09 [Tozo Tanaka] : remove end
+
+    
     /**
      * 医療機関登録画面を表示します。
      */
@@ -838,9 +1008,9 @@ public class IkenshoIkenshoInfoMention extends
 
         setLayout(mentionLayout);
         mentionShisetsusLayout.setAutoWrap(false);
-        mentionShisetsus.setLayout(mentionShisetsusLayout);
+        getMentionShisetsus().setLayout(mentionShisetsusLayout);
 
-        mentionTokkiAbstractions.setLayout(new VRLayout());
+        getMentionTokkiAbstractions().setLayout(new VRLayout());
         VRLayout mentionDatesLayout = new VRLayout();
         mentionDatesLayout.setHgap(0);
         mentionDates.setLayout(mentionDatesLayout);
@@ -862,33 +1032,40 @@ public class IkenshoIkenshoInfoMention extends
         mentionHokenNo.setEditable(false);
         mentionHokenNo.setColumns(10);
         mentionHokenNo.setBindPath("INSURER_NO");
+        mentionHokenType.setVisible(false);
+        mentionHokenType.setBindPath("INSURER_TYPE");
+        // 2006/02/07[Tozo Tanaka] : add begin
+        addITType.setVisible(false);
+        addITType.setBindPath("SHOSIN_ADD_IT_TYPE");
+        // 2006/09/07[Tozo Tanaka] : add end
+
         mentionLayout.setFitHLast(true);
         mentionLayout.setFitVLast(true);
         mentionHasegawaDay2.setAgeVisible(false);
         mentionHasegawaDay2.setDayVisible(false);
         mentionHasegawaDay2.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
         mentionHasegawaDay2.setBindPath("P_HASE_SCR_DT");
-        mentionTokkiMoreAbstractions.setLayout(new BorderLayout());
+        getMentionTokkiMoreAbstractions().setLayout(new BorderLayout());
         mentionHiHokenNo.setColumns(10);
         mentionHiHokenNo.setCharType(VRCharType.ONLY_ALNUM);
         mentionHiHokenNo.setBindPath("INSURED_NO");
         mentionHiHokenNo.setMaxLength(10);
         mentionHasegawasLayout.setAutoWrap(false);
-        mentionHasegawas.setLayout(mentionHasegawasLayout);
-        mentionHasegawas.setText("長谷川式 ＝");
-        mentionHasegawas
+        getMentionHasegawas().setLayout(mentionHasegawasLayout);
+        getMentionHasegawas().setText("長谷川式 ＝");
+        getMentionHasegawas()
                 .setFocusBackground(IkenshoConstants.COLOR_BACK_PANEL_BACKGROUND);
-        mentionHasegawas
+        getMentionHasegawas()
                 .setFocusForeground(IkenshoConstants.COLOR_BACK_PANEL_FOREGROUND);
-        mentionHasegawas.setContentAreaFilled(true);
-        mentionSeikyushoGroup.setLayout(mentionSeikyushoGroupLayout);
-        mentionSeikyushoGroup
+        getMentionHasegawas().setContentAreaFilled(true);
+        getMentionSeikyushoGroup().setLayout(mentionSeikyushoGroupLayout);
+        getMentionSeikyushoGroup()
                 .setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
-        mentionSeikyushoGroup.setText("以下の項目は請求書作成用の項目です（必須項目は自治体により異なります）");
+        getMentionSeikyushoGroup().setText("以下の項目は請求書作成用の項目です（必須項目は自治体により異なります）");
         mentionShisetsu2.setEnabled(false);
         mentionShisetsu2.setEditable(false);
         mentionShisetsu2.setBindPath("INST_SEL_PR2");
-        mentionShisetsus.setText("施設選択（優先度）");
+        getMentionShisetsus().setText("施設選択（優先度）");
         mentionShisetsu2Head.setEnabled(false);
         mentionShisetsu2Head.setText("　２．");
         // mentionTokkiAbstraction2.setText("結果も記載して下さい。");
@@ -898,14 +1075,14 @@ public class IkenshoIkenshoInfoMention extends
         mentionOrderNo.setColumns(10);
         mentionOrderNo.setBindPath("REQ_NO");
         mentionOrderNo.setMaxLength(10);
-        mentionTokkiMoreAbstraction
+        getMentionTokkiMoreAbstraction()
                 .setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
         mentionOrderNo.setCharType(VRCharType.ONLY_ALNUM);
         mentionShisetsu1.setPreferredSize(new Dimension(250, 19));
         mentionShisetsu1.setEditable(false);
         mentionShisetsu1.setBindPath("INST_SEL_PR1");
-        mentionTokkiGroup.setLayout(mentionTokkiGroupLayout);
-        mentionTokkiGroup.setText("その他特記すべき事項");
+        getMentionTokkiGroup().setLayout(mentionTokkiGroupLayout);
+        getMentionTokkiGroup().setText("その他特記すべき事項");
         mentionHasegawa2.setColumns(3);
         mentionHasegawa2.setHorizontalAlignment(SwingConstants.RIGHT);
         mentionHasegawa2.setBindPath("P_HASE_SCORE");
@@ -936,8 +1113,8 @@ public class IkenshoIkenshoInfoMention extends
                 .setToolTipText("「その他特記事項」選択画面を表示します。");
         mentionShowTokkiMoreAbstractionChooser.setMnemonic('T');
         mentionShowTokkiMoreAbstractionChooser.setText("特記事項選択(T)");
-        mentionTokkiMoreAbstraction.setText("以下の項目は「主治医意見書」の必須項目ではありません。");
-        mentionTokkiMoreAbstraction.setBounds(new Rectangle(0, 0, 297, 15));
+        getMentionTokkiMoreAbstraction().setText("以下の項目は「主治医意見書」の必須項目ではありません。");
+        getMentionTokkiMoreAbstraction().setBounds(new Rectangle(0, 0, 297, 15));
         mentionShisetsu1Head.setText("１．");
         mentionCareType.setMinimumSize(new Dimension(27, 23));
         mentionCareType.setBindPath("KIND");
@@ -1014,40 +1191,45 @@ public class IkenshoIkenshoInfoMention extends
         insureParameters.add(s110, null);
         insureParameters.add(s19, null);
         insureParameters.add(s18, null);
-        mentionHasegawas.add(mentionHasegawas1, VRLayout.FLOW);
-        mentionHasegawas.add(mentionHasegawaDays1, VRLayout.FLOW);
+        getMentionHasegawas().add(mentionHasegawas1, VRLayout.FLOW);
+        getMentionHasegawas().add(mentionHasegawaDays1, VRLayout.FLOW);
         mentionHasegawaDays1.add(mentionHasegawaDaysHeses1, null);
         mentionHasegawaDaysHeses1.add(mentionHasegawaDay1, null);
         mentionHasegawas1.add(mentionHasegawa1, null);
         mentionHasegawas1.add(mentionHasegawa1Tail, null);
-        mentionTokkiAbstractions.add(mentionTokkiAbstraction1, VRLayout.NORTH);
+        getMentionTokkiAbstractions().add(mentionTokkiAbstraction1, VRLayout.NORTH);
         // mentionTokkiAbstractions.add(mentionTokkiAbstraction2,
         // VRLayout.FLOW);
-        mentionTokkiAbstractions.add(mentionTokkiAbstraction3,
+        getMentionTokkiAbstractions().add(mentionTokkiAbstraction3,
                 VRLayout.FLOW_RETURN);
-        mentionTokkiAbstractions
+        getMentionTokkiAbstractions()
                 .setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
-        mentionTokkis.setLayout(new VRLayout());
-        mentionTokkis.add(mentionTokki, VRLayout.LEFT);
-        mentionTokkiMoreAbstractions.add(mentionTokkiMoreAbstraction,
+        getMentionTokkis().setLayout(new VRLayout());
+        getMentionTokkis().add(mentionTokki, VRLayout.LEFT);
+        getMentionTokkiMoreAbstractions().add(getMentionTokkiMoreAbstraction(),
                 BorderLayout.CENTER);
-        mentionTokkiMoreAbstractions.add(
+        getMentionTokkiMoreAbstractions().add(
                 mentionShowTokkiMoreAbstractionChooser, BorderLayout.EAST);
-        mentionTokkiGroup.add(mentionTokkiAbstractions, VRLayout.NORTH);
-        mentionTokkiGroup.add(mentionTokkis, VRLayout.NORTH);
-        mentionTokkiGroup.add(mentionTokkiMoreAbstractions, VRLayout.NORTH);
-        mentionTokkiGroup.add(mentionHasegawas, VRLayout.NORTH);
-        mentionTokkiGroup.add(mentionShisetsus, VRLayout.NORTH);
-        mentionShisetsus.add(mentionShisetsu1Head, VRLayout.WEST);
-        mentionShisetsus.add(mentionShisetsu1, VRLayout.WEST);
-        mentionShisetsus.add(mentionShisetsu2Head, VRLayout.WEST);
-        mentionShisetsus.add(mentionShisetsu2, VRLayout.CLIENT);
+        // 2006/07/24
+        // 医師意見書 - 追加項目変更
+        // Replace - begin [Masahiko Higuchi]
+        addMentionTokkiGroupComponent();
+            // mentionTokkiGroup.add(mentionTokkiAbstractions, VRLayout.NORTH);
+            // mentionTokkiGroup.add(mentionTokkis, VRLayout.NORTH);
+            // mentionTokkiGroup.add(mentionTokkiMoreAbstractions, VRLayout.NORTH);
+            // mentionTokkiGroup.add(mentionHasegawas, VRLayout.NORTH);
+            // mentionTokkiGroup.add(mentionShisetsus, VRLayout.NORTH);
+        // Replace - end
+        getMentionShisetsus().add(mentionShisetsu1Head, VRLayout.WEST);
+        getMentionShisetsus().add(mentionShisetsu1, VRLayout.WEST);
+        getMentionShisetsus().add(mentionShisetsu2Head, VRLayout.WEST);
+        getMentionShisetsus().add(mentionShisetsu2, VRLayout.CLIENT);
         mentionShinseiDates.add(mentionShinseiDate, null);
         mentionHiHokenNos.add(mentionHiHokenNo, null);
         mentionDates.add(mentionShinseiDates, VRLayout.FLOW_INSETLINE);
         mentionDates.add(mentionCreateDates, VRLayout.FLOW_INSETLINE);
         mentionDates.add(mentionSendDates, VRLayout.FLOW_INSETLINE);
-        mentionSeikyushoGroup.add(mentionDates, VRLayout.WEST);
+        getMentionSeikyushoGroup().add(mentionDates, VRLayout.WEST);
 
         mentionInsurers.add(mentionHiHokenNos, VRLayout.FLOW);
         mentionInsurers.add(mentionCareTypes, VRLayout.FLOW_RETURN);
@@ -1055,7 +1237,7 @@ public class IkenshoIkenshoInfoMention extends
         mentionInsurers.add(mentionAddHokensha, VRLayout.FLOW);
         mentionInsurers.add(mentionAddKensa, VRLayout.FLOW_RETURN);
         mentionInsurers.add(mentionHokenNames, VRLayout.FLOW_RETURN);
-        mentionSeikyushoGroup.add(mentionInsurers, VRLayout.CLIENT);
+        getMentionSeikyushoGroup().add(mentionInsurers, VRLayout.CLIENT);
         mentionCareTypes.add(mentionCareType, null);
         mentionCreateDates.add(mentionCreateDate, null);
         mentionOrderNos.add(mentionOrderNo, null);
@@ -1063,20 +1245,152 @@ public class IkenshoIkenshoInfoMention extends
         mentionHokenNames.add(mentionHokenName, BorderLayout.CENTER);
         mentionHokenNames.add(mentionHokenNoHeses, BorderLayout.EAST);
         mentionHokenNoHeses.add(mentionHokenNo, null);
+        mentionHokenNoHeses.add(mentionHokenType, null);
+        // 2006/02/07[Tozo Tanaka] : add begin
+        mentionHokenNoHeses.add(addITType, null);
+        // 2006/09/07[Tozo Tanaka] : add end
+
         hiddenParameters.add(ikenshoGroupBox1, null);
         ikenshoGroupBox1.add(insurerName, null);
         hiddenParameters.add(insureParameters, null);
-        this.add(mentionTitle, VRLayout.NORTH);
-        this.add(mentionTokkiGroup, VRLayout.NORTH);
-        this.add(mentionSeikyushoGroup, VRLayout.NORTH);
-        this.add(hiddenParameters, VRLayout.SOUTH);
+        // 2006/07/11
+        // 医師意見書対応 - override用にメソッドに変更
+        // Replece - begin [Masahiko Higuchi]
+        addComponent();
+            // this.add(mentionTitle, VRLayout.NORTH);
+            // this.add(mentionTokkiGroup, VRLayout.NORTH);
+            // this.add(mentionSeikyushoGroup, VRLayout.NORTH);
+            // this.add(hiddenParameters, VRLayout.SOUTH);
+        // Replace - end
         mentionHasegawas2.add(mentionHasegawa2, null);
         mentionHasegawas2.add(mentionHasegawa2Tail, null);
-        mentionHasegawas.add(mentionHasegawasHeses2, VRLayout.FLOW);
+        getMentionHasegawas().add(mentionHasegawasHeses2, VRLayout.FLOW);
         mentionHasegawasHeses2.add(mentionHasegawas2, null);
         mentionHasegawasHeses2.add(mentionHasegawaDays2, null);
         mentionHasegawaDays2.add(mentionHasegawaDayHeses2, null);
         mentionHasegawaDayHeses2.add(mentionHasegawaDay2, null);
+        
+        
+        //2006/08/11 Tozo TANAKA begin-add 平成のみ表示させる対応 
+        mentionShinseiDate.setEraRange(3);
+        mentionCreateDate.setEraRange(3);
+        mentionSendDate.setEraRange(3);
+        //2006/08/11 Tozo TANAKA begin-end 平成のみ表示させる対応
+    }
+    
+    /**
+     * overrideしてタブパネルへの追加順序を定義します。
+     */
+    protected void addComponent(){
+        this.add(mentionTitle, VRLayout.NORTH);
+        this.add(mentionTokkiGroup, VRLayout.NORTH);
+        this.add(getMentionSeikyushoGroup(), VRLayout.NORTH);
+        this.add(hiddenParameters, VRLayout.SOUTH);
+    }
+    
+    /**
+     * overrideして特別な医療グループの追加順序を定義します。
+     */
+    protected void addMentionTokkiGroupComponent(){
+        getMentionTokkiGroup().add(getMentionTokkiAbstractions(), VRLayout.NORTH);
+        getMentionTokkiGroup().add(getMentionTokkis(), VRLayout.NORTH);
+        getMentionTokkiGroup().add(getMentionTokkiMoreAbstractions(), VRLayout.NORTH);
+        getMentionTokkiGroup().add(getMentionHasegawas(), VRLayout.NORTH);
+        getMentionTokkiGroup().add(getMentionShisetsus(), VRLayout.NORTH);
     }
 
-}
+    /**
+     * 請求グループを返します。
+     * @return
+     */
+    protected ACGroupBox getHiddenParameters() {
+        if(hiddenParameters == null){
+            hiddenParameters = new ACGroupBox();
+        }
+        return hiddenParameters;
+    }
+    /**
+     * 請求書作成用グループを返します。
+     * @return
+     */
+    protected ACGroupBox getMentionSeikyushoGroup() {
+        if(mentionSeikyushoGroup == null){
+            mentionSeikyushoGroup = new ACGroupBox();
+        }
+        return mentionSeikyushoGroup;
+    }
+    /**
+     * 特記すべき事項グループを返します。
+     * @return
+     */
+    protected ACGroupBox getMentionTokkiGroup() {
+        if(mentionTokkiGroup == null){
+            mentionTokkiGroup = new ACGroupBox();
+        }
+        return mentionTokkiGroup;
+    }
+    /**
+     * 特記すべき事項パネルを返します。
+     * @return
+     */
+    protected VRPanel getMentionTokkiAbstractions() {
+        if(mentionTokkiAbstractions == null){
+            mentionTokkiAbstractions = new VRPanel();
+        }
+        return mentionTokkiAbstractions;
+    }
+    /**
+     * 特記すべき事項ラベルコンテナを返します。
+     * @return
+     */
+    protected ACLabelContainer getMentionTokkis() {
+        if(mentionTokkis == null){
+            mentionTokkis = new ACLabelContainer();
+        }
+        return mentionTokkis;
+    }
+    /**
+     *　します。
+     * @return
+     */
+    protected VRPanel getMentionTokkiMoreAbstractions() {
+        if(mentionTokkiMoreAbstractions == null){
+            mentionTokkiMoreAbstractions = new VRPanel();
+        }
+        return mentionTokkiMoreAbstractions;
+    }
+    /**
+     * 長谷川式ラベルコンテナを返します。
+     * @return
+     */
+    protected ACLabelContainer getMentionHasegawas() {
+        if(mentionHasegawas == null){
+            mentionHasegawas = new ACLabelContainer();
+        }
+        return mentionHasegawas;
+    }
+    /**
+     * 施設ラベルコンテナを返します。
+     * @return
+     */
+    protected ACLabelContainer getMentionShisetsus() {
+        if(mentionShisetsus == null){
+            mentionShisetsus = new ACLabelContainer();
+        }
+        return mentionShisetsus;
+    }
+
+    protected VRLabel getMentionTokkiMoreAbstraction() {
+        if(mentionTokkiMoreAbstraction == null){
+            mentionTokkiMoreAbstraction = new VRLabel();
+        }
+        return mentionTokkiMoreAbstraction;
+    }
+    /**
+     * 保険者名を返します。
+     * @return 保険者名
+     */
+    public ACComboBox getMentionHokenName(){
+        return mentionHokenName;
+    }
+ }

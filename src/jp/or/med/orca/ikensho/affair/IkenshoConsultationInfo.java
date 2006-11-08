@@ -11,6 +11,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.net.BindException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -22,7 +23,6 @@ import java.util.Map;
 import javax.swing.BorderFactory;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JTextField;
 import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
@@ -36,9 +36,12 @@ import jp.nichicom.ac.component.event.ACFollowDisabledItemListener;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
+import jp.nichicom.vr.bind.event.VRBindEvent;
+import jp.nichicom.vr.bind.event.VRBindEventListener;
 import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
@@ -52,7 +55,7 @@ import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** TODO <HEAD_IKENSYO> */
-public class IkenshoConsultationInfo extends JDialog {
+public class IkenshoConsultationInfo extends IkenshoDialog {
     public static final int STATE_ZAITAKU = 1;
     public static final int STATE_SHISETSU = 2;
     public static final int STATE_FIRST = 4;
@@ -198,6 +201,7 @@ public class IkenshoConsultationInfo extends JDialog {
     protected String firstTestName;
     protected String firstTestKey;
     protected int stateFlag;
+    protected int formatKubun;
 
     protected IkenshoInitialNegativeIntegerTextField ikenshoCharge = new IkenshoInitialNegativeIntegerTextField();
 
@@ -208,6 +212,9 @@ public class IkenshoConsultationInfo extends JDialog {
      */
     public boolean showModal() {
         root.setSource(source);
+        // TODO SET
+        // calcRootにsourceを設定 ※範囲が大きいので要注意
+        calcRoot.setSource(source);
         try {
 
             // フィールド翻訳
@@ -263,6 +270,9 @@ public class IkenshoConsultationInfo extends JDialog {
         sb.append(" WHERE");
         sb.append(" (INSURER.INSURER_NO=");
         sb.append(IkenshoCommon.getDBSafeString("INSURER_NO", source));
+        sb.append(")");
+        sb.append(" AND(INSURER.INSURER_TYPE=");
+        sb.append(IkenshoCommon.getDBSafeNumber("INSURER_TYPE", source));
         sb.append(")");
 
         VRArrayList array = (VRArrayList) dbm.executeQuery(sb.toString());
@@ -350,12 +360,14 @@ public class IkenshoConsultationInfo extends JDialog {
      * 
      * @param src データソース
      * @param stateFlg 状態フラグ
+     * @param formatKubun 文書区分
      * @see stateFlagは定数の組み合わせで指定します。
      */
-    public IkenshoConsultationInfo(VRMap src, int stateFlg) {
+    public IkenshoConsultationInfo(VRMap src, int stateFlg, int formatKubun) {
         super(ACFrame.getInstance(), "診察・検査内容入力", true);
         this.source = src;
         this.stateFlag = stateFlg;
+        this.formatKubun = formatKubun;
 
         pointMap.clear();
         pointMap.putAll(source);
@@ -363,7 +375,7 @@ public class IkenshoConsultationInfo extends JDialog {
         try {
             jbInit();
             pack();
-            initComponent();
+            init();
             paraseState();
         } catch (Exception exception) {
             exception.printStackTrace();
@@ -400,18 +412,20 @@ public class IkenshoConsultationInfo extends JDialog {
                         }
                     }
 
-                    //2006/02/11[Tozo Tanaka] : replace begin
-                    //TODO canEdit?
-//                    root.applySource();
-                    //血液化学検査が空欄でも、nullに上書きさせない
-                         Object old=source.getData(bloodChemistryTestPoint.getBindPath());
-                         root.applySource();
-                         Object now = source.getData(bloodChemistryTestPoint.getBindPath());
-                         if((now==null)||("".equals(now))){
-                             source.setData(bloodChemistryTestPoint.getBindPath(), old);
-                         }
-                    //2006/02/11[Tozo Tanaka] : replace end
-                                        
+                    // 2006/02/11[Tozo Tanaka] : replace begin
+                    // canEdit?
+                    // root.applySource();
+                    // 血液化学検査が空欄でも、nullに上書きさせない
+                    Object old = source.getData(bloodChemistryTestPoint
+                            .getBindPath());
+                    root.applySource();
+                    Object now = source.getData(bloodChemistryTestPoint
+                            .getBindPath());
+                    if ((now == null) || ("".equals(now))) {
+                        source.setData(bloodChemistryTestPoint.getBindPath(),
+                                old);
+                    }
+                    // 2006/02/11[Tozo Tanaka] : replace end
                     if ("SHOSIN_OTHER".equals(firstTestKey)
                             && firstTest.isSelected()) {
                         firstTestPoint.setBindPath(firstTestKey);
@@ -430,6 +444,7 @@ public class IkenshoConsultationInfo extends JDialog {
                 }
             }
         });
+
         reset.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 if (ACMessageBox.show("最新の保険者の情報を反映させますか？\n請求金額が変わる可能性があります。",
@@ -447,6 +462,26 @@ public class IkenshoConsultationInfo extends JDialog {
                         useDefaultPoint();
                         followBind();
 
+                        // 2006/08/03 TODO
+                        // useDefaultPoint()内で取得したSHOSIN_TAISHOUチェックの値を保持する。
+                        // 同時に現在の点数で再計算した値を表示する。
+                        // Addition - begin [Masahiko Higuchi]
+                        tmp.setData("SHOSIN_TAISHOU", source
+                                .getData("SHOSIN_TAISHOU"));
+                        source.putAll((Map) tmp);
+                        // 初診チェックがついている場合のみ再計算する。
+                        // チェック無しの状態での表示変更対策
+                        if (new Integer(1).equals(source
+                                .getData("SHOSIN_TAISHOU"))) {
+                            firstTestPoint
+                                    .setText(IkenshoConstants.FORMAT_DOUBLE1
+                                            .format(new Double(String
+                                                    .valueOf(VRBindPathParser
+                                                            .get(firstTestKey,
+                                                                    source)))));
+                            calcCost();
+                        }
+                        // Addition - end
                         // 摘要欄を差し戻す
                         old = calcRoot.getSource();
                         calcRoot.setSource(tmp);
@@ -627,14 +662,18 @@ public class IkenshoConsultationInfo extends JDialog {
         // デフォルト設定
         // pointMap.clear();
 
+        VRMap newSource = (VRMap) points.createSource();
+        newSource.setData("SHOSIN_TAISHOU", ACCastUtilities.toInteger(firstTest
+                .getValue()));
         loadDefault();
 
-        VRMap newSource = (VRMap) points.createSource();
+        // VRMap newSource = (VRMap) points.createSource();
         points.setSource(newSource);
         points.applySource();
         tax.applySource();
         firstTest.applySource();
-        newSource.setData("SHOSIN_TAISHOU", source.getData("SHOSIN_TAISHOU"));
+        // newSource.setData("SHOSIN_TAISHOU",
+        // source.getData("SHOSIN_TAISHOU"));
         newSource.setData("TAX", source.getData("TAX"));
         points.setSource(source);
 
@@ -644,6 +683,34 @@ public class IkenshoConsultationInfo extends JDialog {
         }
         source.putAll(defaultInsure);
 
+        // 初期値を読込んだ後に改めて上書きする。
+        // TODO ★選択中の医療機関の電子化加算の有無によって、初診点数の加算を行う★
+        // 電子化加算フラグが渡って来た場合
+        if (VRBindPathParser.has("DR_ADD_IT", source)) {
+            // 電子化加算点数をdoubleの値として保持する
+            // 2006/02/07[Tozo Tanaka] : replace begin
+            //if (ACCastUtilities.toInt(VRBindPathParser.get("DR_ADD_IT", source)) == 1){
+            if (IkenshoCommon.canAddIT(formatKubun, ACCastUtilities
+                    .toInt(VRBindPathParser.get("DR_ADD_IT", source)) == 1,
+                    source)) {
+            // 2006/02/07[Tozo Tanaka] : replace end
+                double addIT = ACCastUtilities.toDouble(source
+                        .getData("SHOSIN_ADD_IT"), 0);
+                double shoshinHos = ACCastUtilities.toDouble(source
+                        .getData("SHOSIN_HOSPITAL"), 0);
+                double shoshinSin = ACCastUtilities.toDouble(source
+                        .getData("SHOSIN_SINRYOUJO"), 0);
+
+                double shoshinHosAdd = shoshinHos += addIT;
+                double shoshinSinAdd = shoshinSin += addIT;
+
+                source.setData("SHOSIN_HOSPITAL", new Double(shoshinHosAdd));
+                source.setData("SHOSIN_SINRYOUJO", new Double(shoshinSinAdd));
+                pointMap.setData("SHOSIN_HOSPITAL", new Double(shoshinHosAdd));
+                pointMap.setData("SHOSIN_SINRYOUJO", new Double(shoshinSinAdd));
+            }
+        }
+
         source.putAll(newSource);
 
         if ("SHOSIN_OTHER".equals(firstTestKey)) {
@@ -652,6 +719,13 @@ public class IkenshoConsultationInfo extends JDialog {
                 firstTestPoint.setText("0");
             }
         }
+        
+        //2006/09/09 [Tozo Tanaka] : remove begin
+//        //2006/09/07 [Tozo Tanaka] : add begin
+//        source.put("NEW_DR_ADD_IT", source.get("DR_ADD_IT"));
+//        //2006/09/07 [Tozo Tanaka] : add end
+        //2006/09/09 [Tozo Tanaka] : remove end
+        
     }
 
     /**
@@ -689,7 +763,7 @@ public class IkenshoConsultationInfo extends JDialog {
     /**
      * 位置を初期化します。
      */
-    private void initComponent() {
+    private void init() {
         // ウィンドウのサイズ
         setSize(new Dimension(770, 590));
         // ウィンドウを中央に配置
@@ -795,9 +869,9 @@ public class IkenshoConsultationInfo extends JDialog {
         // bloodChemistryTestPoint.setMargin(new Insets(1, 5, 2, 4));
         bloodChemistryTestPoint.setColumns(7);
         bloodChemistryTestPoint.setHorizontalAlignment(SwingConstants.RIGHT);
-        //2006/02/06[Tozo Tanaka] : add begin
+        // 2006/02/06[Tozo Tanaka] : add begin
         bloodChemistryTestPoint.setBindPath("EXP_KKK_KKK");
-        //2006/02/06[Tozo Tanaka] : add end
+        // 2006/02/06[Tozo Tanaka] : add end
         bloodChemistryTestPointUnit.setText("点");
         seikagakuTestCostPoint.setEditable(false);
         // seikagakuTestCostPoint.setMargin(new Insets(1, 5, 2, 4));
@@ -1326,13 +1400,12 @@ public class IkenshoConsultationInfo extends JDialog {
         public void follow(boolean select) {
             try {
                 if (select) {
-                    Object val = VRBindPathParser
-                    .get(key, source);
-                    if(val==null){
+                    Object val = VRBindPathParser.get(key, source);
+                    if (val == null) {
                         point.setText("");
-                    }else{
+                    } else {
                         point.setText(IkenshoConstants.FORMAT_DOUBLE1
-                            .format(new Double(String.valueOf(val))));
+                                .format(new Double(String.valueOf(val))));
                     }
                 } else {
                     point.setText("");
@@ -1344,14 +1417,14 @@ public class IkenshoConsultationInfo extends JDialog {
                 for (int i = 0; i < end; i++) {
                     if (checks[i].isSelected()) {
                         array.add(summarys[i]);
-                        //2006/02/11[Tozo Tanaka] : replace begin
-                        //TODO canEdit?
-//                        total += Double.parseDouble(points[i].getText());
+                        // 2006/02/11[Tozo Tanaka] : replace begin
+                        // TODO canEdit?
+                        // total += Double.parseDouble(points[i].getText());
                         String val = points[i].getText();
-                        if(!"".equals(val)){
+                        if (!"".equals(val)) {
                             total += Double.parseDouble(val);
                         }
-                        //2006/02/11[Tozo Tanaka] : replace end
+                        // 2006/02/11[Tozo Tanaka] : replace end
                     }
                 }
 

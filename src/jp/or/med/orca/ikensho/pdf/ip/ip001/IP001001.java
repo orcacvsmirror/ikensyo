@@ -93,6 +93,12 @@ public class IP001001 extends IP001001Event {
         case 10:
             fileName = "CSVFileOutputPatientList.xml";
             break;
+        case 11:
+            fileName = "IkenshoShien1.xml";
+            break;
+        case 12:
+            fileName = "IkenshoShien2.xml";
+            break;
         }
 
         ACFrameEventProcesser processer = ACFrame.getInstance()
@@ -158,6 +164,10 @@ public class IP001001 extends IP001001Event {
                 formatIndex = 8;
             } else if (fileName.endsWith("seikyuikenshoichiran.xml")) {
                 formatIndex = 9;
+            } else if (fileName.endsWith("ikenshoshien1.xml")) {
+                formatIndex = 11;
+            } else if (fileName.endsWith("ikenshoshien2.xml")) {
+                formatIndex = 12;
             }
         }
         getFormats().setSelectedIndex(formatIndex);

@@ -1229,10 +1229,10 @@ public class IkenshoShijishoCSVImport extends ACAffairContainer implements
         String path = "unknown";
         boolean hasError = true;
         try {
-            if (ACFrame.getInstance().hasProperity("DBConfig/Server")) {
-                ip = ACFrame.getInstance().getProperity("DBConfig/Server");
-                if (ACFrame.getInstance().hasProperity("DBConfig/Path")) {
-                    path = ACFrame.getInstance().getProperity("DBConfig/Path");
+            if (ACFrame.getInstance().hasProperty("DBConfig/Server")) {
+                ip = ACFrame.getInstance().getProperty("DBConfig/Server");
+                if (ACFrame.getInstance().hasProperty("DBConfig/Path")) {
+                    path = ACFrame.getInstance().getProperty("DBConfig/Path");
                     hasError = false;
                 }
             }

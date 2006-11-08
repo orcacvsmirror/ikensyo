@@ -428,4 +428,89 @@ public class IkenshoIkenshoInfoCare1
     care1Pain.setValueBindPath("ITAMI_TAISHO_HOUSIN");
   }
 
+  /**
+   * ”AΈ‹Φ‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return ”AΈ‹Φ‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1Shikkin(){
+      return care1Shikkin;
+  }
+  /**
+   * “]“|ά‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return “]“|ά‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1Tentou(){
+      return care1Tentou;
+  }
+  /**
+   * pj‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return pj‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1Haikai(){
+      return care1Haikai;
+  }
+  /**
+   * ερα‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return ερα‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1Jyokusou(){
+      return care1Jyokusou;
+  }
+  /**
+   * ‹‰Ί«”x‰‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return ‹‰Ί«”x‰‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1Haien(){
+      return care1Haien;
+  }
+  /**
+   * ’°•ΒΗ‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return ’°•ΒΗ‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1Chouheisoku(){
+      return care1Chouheisoku;
+  }
+  /**
+   * Υ΄υ«‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return Υ΄υ«‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1Ekikan(){
+      return care1Ekikan;
+  }
+  /**
+   * S”x‹@”\‚Μ’α‰Ί‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return S”x‹@”\‚Μ’α‰Ί‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1ShinpaiDown(){
+      return care1ShinpaiDown;
+  }
+  /**
+   * ’Ι‚έ‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return ’Ι‚έ‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1Pain(){
+      return care1Pain;
+  }
+  /**
+   * ’E…‚Φ‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return ’E…‚Φ‚Μ‘Ξ•ϋj
+   */
+  protected IkenshoCareStatusContainer getCare1Dassui(){
+      return care1Dassui;
+  }
+  /**
+   * ‚»‚Μ‘Ό‚Μ‘Ξ•ϋj‚π•Τ‚µ‚ά‚·B
+   * @return ‚»‚Μ‘Ό‚Μ‘Ξ•ϋj
+   */
+  protected ACComboBox getCare1OtherTaisyo(){
+      return care1OtherTaisyo;
+  }
+
+  /**
+   * ‚»‚Μ‘Ό‚Μ–ΌΜ‚π•Τ‚µ‚ά‚·B
+   * @return ‚»‚Μ‘Ό‚Μ–ΌΜ
+   */
+  protected ACComboBox getCare1OtherName(){
+      return care1OtherName;
+  }
 }

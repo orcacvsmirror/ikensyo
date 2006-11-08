@@ -9,22 +9,21 @@ import java.util.Iterator;
 import java.util.Map;
 
 import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACDefaultFrameEventProcesser;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACPDFCreatable;
-import jp.nichicom.ac.core.AbstractACFrameEventProcesser;
 import jp.nichicom.ac.io.ACFileUtilities;
 import jp.nichicom.ac.io.ACFileUtilitiesCreateResult;
 import jp.nichicom.ac.io.ACPropertyXML;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.util.ACMessageBox;
-import jp.nichicom.ac.util.ACSplashable;
 import jp.nichicom.ac.util.splash.ACSplash;
+import jp.nichicom.ac.util.splash.ACSplashable;
 import jp.nichicom.bridge.pdf.BridgeSimplePDF;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 
-public class IkenshoFrameEventProcesser extends AbstractACFrameEventProcesser
+public class IkenshoFrameEventProcesser extends ACDefaultFrameEventProcesser
         implements ACPDFCreatable {
     protected HashMap pdfReplaceHash;
     protected String printPDFDirectory;
@@ -33,9 +32,7 @@ public class IkenshoFrameEventProcesser extends AbstractACFrameEventProcesser
     protected ACSplash splash;
     protected boolean properityReaded;
     protected ACPropertyXML properityXML;
-//  2006/04/24[Tozo Tanaka] : add begin
     private BridgeSimplePDF pdfManager;
-//  2006/04/24[Tozo Tanaka] : add end
 
     public String getPrintPDFDirectory() {
         if (printPDFDirectory == null) {
@@ -92,8 +89,8 @@ public class IkenshoFrameEventProcesser extends AbstractACFrameEventProcesser
 
     public void openPDF(String pdfPath) throws Exception {
         String acrobatPath = "";
-        if (ACFrame.getInstance().hasProperity("Acrobat/Path")) {
-            acrobatPath = ACFrame.getInstance().getProperity("Acrobat/Path");
+        if (ACFrame.getInstance().hasProperty("Acrobat/Path")) {
+            acrobatPath = ACFrame.getInstance().getProperty("Acrobat/Path");
         }
 
         String[] arg = { "", pdfPath };
@@ -113,14 +110,21 @@ public class IkenshoFrameEventProcesser extends AbstractACFrameEventProcesser
         Runtime.getRuntime().exec(arg);
     }
 
-    public ACSplashable createSplash(ACAffairInfo newAffair) throws Exception {
+    public ACSplashable createSplash(String title) throws Exception {
         if (splash == null) {
             splash = new ACSplash();
             splash.setIconPathes(getSplashFilePathes());
             splash.refreshSize(getSplashWindowSize());
         }
+
         if (!splash.isVisible()) {
-            splash.showModaless(newAffair.getTitle());
+            splash.showModaless(title);
+        }else{
+            if ((title == null) || "".equals(title)) {
+                splash.setMessage("次画面展開中...");
+            }else{
+                splash.setMessage("「" + title + "」展開中...");
+            }
         }
         return splash;
     }
@@ -135,18 +139,10 @@ public class IkenshoFrameEventProcesser extends AbstractACFrameEventProcesser
     }
 
     public void showExceptionMessage(Throwable ex) {
-        //2006/12/03[Tozo Tanaka] : replace begin 
-//        StringWriter sw = new StringWriter();
-//        ex.printStackTrace(new PrintWriter(sw));
-//        
-//        ACMessageBox.show("重大なエラーが発生しました。" + ACConstants.LINE_SEPARATOR
-//                + "サポートセンターに電話してください。");
-//        VRLogger.warning(sw.toString());
         IkenshoCommon.showExceptionMessage(ex);
-        //2006/12/03[Tozo Tanaka] : replace end
     }
 
-    public ACPropertyXML getProperityXML() throws Exception {
+    public ACPropertyXML getPropertyXML() throws Exception {
         if (!properityReaded) {
             properityReaded = true;
             if (properityXML == null) {
@@ -166,46 +162,8 @@ public class IkenshoFrameEventProcesser extends AbstractACFrameEventProcesser
      * @throws Exception 処理例外
      */
     protected ACSplashable getPrintingSplash() throws Exception {
-//        return null;
-        return createSplash(new ACAffairInfo("", null, "印刷中"));
+        return createSplash("印刷中");
     }
-
-
-//  2006/04/24[Tozo Tanaka] : remove begin
-//    public String writePDF(ACChotarouXMLWriter data) throws Exception {
-//        String dir = getPrintPDFDirectory();
-//        File pdfDirectory = new File(dir);
-//        if (!pdfDirectory.exists()) {
-//            // ディレクトリ作成
-//            if (!pdfDirectory.mkdir()) {
-//                ACMessageBox.showExclamation("印刷に失敗しました。");
-//                return "";
-//            }
-//        }
-//        //2006/02/12[Tozo Tanaka] : delete begin
-////        ACSplashable splash = getPrintingSplash();
-//        //2006/02/12[Tozo Tanaka] : delete end
-//
-//        Calendar cal = Calendar.getInstance();
-//        String pdfFilePath = dir
-//                + VRDateParser.format(cal.getTime(), "yyyyMMddHHmmss") + ".pdf";
-//
-//        //2006/02/12[Tozo Tanaka] : add begin
-//        ACSplashable splash = getPrintingSplash();
-//        //2006/02/12[Tozo Tanaka] : add end
-//        
-//        new BridgeSimplePDF().write(data.getDataXml(), pdfFilePath);
-// 
-//        if (splash != null) {
-//            splash.close();
-//            splash = null;
-//        }
-//
-//        return pdfFilePath;
-//    }
-//  2006/04/24[Tozo Tanaka] : remove end
-
-//  2006/04/24[Tozo Tanaka] : add begin
     public String writePDF(ACChotarouXMLWriter data) throws Exception {
         String pdfFilePath = createPDFPath();
         if ((pdfFilePath == null) || "".equals(pdfFilePath)) {
@@ -327,7 +285,6 @@ public class IkenshoFrameEventProcesser extends AbstractACFrameEventProcesser
     protected void processErrorOnPDFViewerNotFound() throws Exception {
         ACMessageBox.showExclamation("PDFビューワの設定を取得できません。");
     }
-//  2006/04/24[Tozo Tanaka] : add end
     
     /**
      * コンストラクタです。

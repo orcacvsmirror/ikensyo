@@ -62,6 +62,7 @@ public interface IkenshoConstants {
 
   public static final int IKENSHO_LOW_DEFAULT = 0;
   public static final int IKENSHO_LOW_H18 = 1;
+  public static final int IKENSHO_LOW_ISHI_IKENSHO = 2;
 
   public static final String BUTTON_IMAGE_PATH_BACK =
       "jp/or/med/orca/ikensho/images/icon/pix24/btn_40.png";

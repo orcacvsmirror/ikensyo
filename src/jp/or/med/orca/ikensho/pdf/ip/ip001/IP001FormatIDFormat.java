@@ -70,10 +70,67 @@ public class IP001FormatIDFormat extends Format {
                 newID = 8;
             } else if (fileName.endsWith("seikyuikenshoichiran.xml")) {
                 newID = 9;
+            } else if (fileName.endsWith("ikenshoshien1.xml")) {
+                newID = 11;
+            } else if (fileName.endsWith("ikenshoshien2.xml")) {
+                newID = 12;
             }
         }
         setFormatType(newID);
 
+    }
+    public StringBuffer format(Object obj, StringBuffer toAppendTo,
+            FieldPosition pos) {
+        if (obj == null) {
+            return toAppendTo;
+        }
+
+        String code = String.valueOf(obj);
+        switch (getFormatType()) {
+        case 0://主治医意見書1ページ目
+            obj = formatIkensho1(code, obj);
+            break;
+        case 1://主治医意見書2ページ目
+            obj = formatIkensho2(code, obj);
+            break;
+        case 2://訪問看護指示書（医療機関）
+            obj = formatShijisho(code, obj);
+            break;
+        case 3://訪問看護指示書（介護老人保健施設）
+            obj = formatShijishoB(code, obj);
+            break;
+        case 4://請求書一覧
+            obj = formatSeikyuIchitan(code, obj);
+            break;
+        case 5://請求書合計
+            obj = formatSeikyuIchiranTotal(code, obj);
+            break;
+        case 6://主治医意見書作成料・検査料請求(総括)書
+            obj = formatSoukatsusho(code, obj);
+            break;
+        case 7://主治医意見書作成料請求(明細)書
+            obj = formatMeisaisho(code, obj);
+            break;
+        case 8://登録患者一覧
+            obj = formatPatientList(code, obj);
+            break;
+        case 9://請求対象意見書一覧
+            obj = formatSeikyuIkenshoIchiran(code, obj);
+            break;
+        case 10://ＣＳＶファイル提出患者一覧
+            obj = formatCSVList(code, obj);
+            break;
+        case 11://医師意見書1ページ目
+            obj = formatIkenshoShien1(code, obj);
+            break;
+        case 12://医師意見書2ページ目
+            obj = formatIkenshoShien2(code, obj);
+            break;
+        }
+
+        toAppendTo.append(obj);
+
+        return toAppendTo;
     }
 
     /**
@@ -1608,6 +1665,29 @@ public class IP001FormatIDFormat extends Format {
         else if ("table.h21.w9".equals(code)) obj = "20行目「最新指示書記入日」";
         else if ("title".equals(code)) obj = "登録患者一覧・見出し　枠";
         else if ("title.h1.w1".equals(code)) obj = "「登録患者一覧」　見出し";
+        // 2006/08/25
+        // 医師意見書対応カラム追加
+        else if ("table.h1.w10".equals(code)) obj = "列名「最新医師意見書記入日」";
+        else if ("table.h2.w10".equals(code)) obj = "1行目「最新医師意見書記入日」";
+        else if ("table.h3.w10".equals(code)) obj = "2行目「最新医師意見書記入日」";
+        else if ("table.h4.w10".equals(code)) obj = "3行目「最新医師意見書記入日」";
+        else if ("table.h5.w10".equals(code)) obj = "4行目「最新医師意見書記入日」";
+        else if ("table.h6.w10".equals(code)) obj = "5行目「最新医師意見書記入日」";
+        else if ("table.h7.w10".equals(code)) obj = "6行目「最新医師意見書記入日」";
+        else if ("table.h8.w10".equals(code)) obj = "7行目「最新医師意見書記入日」";
+        else if ("table.h9.w10".equals(code)) obj = "8行目「最新医師意見書記入日」";
+        else if ("table.h10.w10".equals(code)) obj = "9行目「最新医師意見書記入日」";
+        else if ("table.h11.w10".equals(code)) obj = "10行目「最新医師意見書記入日」";
+        else if ("table.h12.w10".equals(code)) obj = "11行目「最新医師意見書記入日」";
+        else if ("table.h13.w10".equals(code)) obj = "12行目「最新医師意見書記入日」";
+        else if ("table.h14.w10".equals(code)) obj = "13行目「最新医師意見書記入日」";
+        else if ("table.h15.w10".equals(code)) obj = "14行目「最新医師意見書記入日」";
+        else if ("table.h16.w10".equals(code)) obj = "15行目「最新医師意見書記入日」";
+        else if ("table.h17.w10".equals(code)) obj = "16行目「最新医師意見書記入日」";
+        else if ("table.h18.w10".equals(code)) obj = "17行目「最新医師意見書記入日」";
+        else if ("table.h19.w10".equals(code)) obj = "18行目「最新医師意見書記入日」";
+        else if ("table.h20.w10".equals(code)) obj = "19行目「最新医師意見書記入日」";
+        else if ("table.h21.w10".equals(code)) obj = "20行目「最新医師意見書記入日」";
         return obj;
     }
 
@@ -2122,52 +2202,225 @@ public class IP001FormatIDFormat extends Format {
         return obj;
     }
 
-    public StringBuffer format(Object obj, StringBuffer toAppendTo,
-            FieldPosition pos) {
-        if (obj == null) {
-            return toAppendTo;
-        }
+    /**
+     * 医師意見書1ページ目の定義体IDをフォーマット化します。
+     * @param code コード
+     * @param obj 変換前
+     * @return 変換結果
+     */
+    protected Object formatIkenshoShien1(String code, Object obj){
+        // 医師意見書1ページ目
+        if ("Label27".equals(code)) obj = "申請者情報・性別「女」　見出し";
+        else if ("Label26".equals(code)) obj = "申請者情報・性別「男」　見出し";
+        else if ("Label25".equals(code)) obj = "申請者情報・生年月日「昭和」　見出し";
+        else if ("Label24".equals(code)) obj = "申請者情報・生年月日「大正」　見出し";
+        else if ("Label23".equals(code)) obj = "申請者情報・生年月日「明治」　見出し";
+        else if ("PatienBirthShowa".equals(code)) obj = "申請者情報・生年月日「昭和」　○";
+        else if ("PatienBirthTaisho".equals(code)) obj = "申請者情報・利用者生年月日「大正」　○";
+        else if ("Label21".equals(code)) obj = "１.傷病に関する意見・｢（1）診断名」　見出し2";
+        else if ("Label16".equals(code)) obj = "医療機関所在地　下線";
+        else if ("Label15".equals(code)) obj = "医療機関名　下線";
+        else if ("Label14".equals(code)) obj = "医師氏名　下線";
+        else if ("Label1".equals(code)) obj = "３.心身の状態に関する意見・「(１)行動上の障害の有無 （該当する項目全てチェック）｣　見出し";
+        else if ("Label20".equals(code)) obj = "医師意見書　見出し";
+        else if ("Label6".equals(code)) obj = "医師意見書　ページ数";
+        else if ("Label8".equals(code)) obj = "３.心身の状態に関する意見　見出し1";
+        else if ("Label9".equals(code)) obj = "１. 傷病に関する意見 見出し";
+        else if ("Label10".equals(code)) obj = "２. 特別な医療　見出し2";
+        else if ("Label11".equals(code)) obj = "２. 特別な医療　見出し1";
+        else if ("PatienBirthMeiji".equals(code)) obj = "申請者情報・生年月日「明治」　○";
+        else if ("PatientSexMale".equals(code)) obj = "申請者情報・性別「男」　○";
+        else if ("PatientSexFemale".equals(code)) obj = "申請者情報・性別「女」　○";
+        else if ("Shape93".equals(code)) obj = "記入日　下線";
+        else if ("ShobyoKeika".equals(code)) obj = "１.傷病に関する意見・「障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容」　内容";
+        else if ("ShojoFuanteiJokyo".equals(code)) obj = "１.傷病に関する意見・「(２) 症状としての安定性」　内容";
+        else if ("Label5".equals(code)) obj = "１. 傷病に関する意見・「入院歴」　見出し";
+        else if ("Label87".equals(code)) obj = "３．心身の状態に関する意見・「専門医受診の有無」　見出し";
+        else if ("SeishinShinkeiName".equals(code)) obj = "３．心身の状態に関する意見・「(２) 精神･神経症状の有無」　症状名";
+        else if ("SeishinShinkeiSenmoniName".equals(code)) obj = "３．心身の状態に関する意見・「専門医受診の有無」　内容";
+        else if ("SeishinShinkeiOtherName".equals(code)) obj = "３．心身の状態に関する意見・「(２) 精神･神経症状の有無（その他）」　症状名";
+        else if ("Label18".equals(code)) obj = "申請者情報・生年月日「平成」　見出し";
+        else if ("PatienBirthHeisei".equals(code)) obj = "申請者情報・生年月日「平成」　○";
+        else if ("INSURER_NO".equals(code)) obj = "保険者番号";
+        else if ("INSURED_NO".equals(code)) obj = "被保険者番号";
+        else if ("SeishinShinkeiKiokuShogaiTanki".equals(code)) obj = "３. 心身の状態に関する意見・「(２) 精神･神経症状の有無（短期）」　○";
+        else if ("SeishinShinkeiKiokuShogaiChouki".equals(code)) obj = "３. 心身の状態に関する意見・「(２) 精神･神経症状の有無（長期）」　○";
+        else if ("ShochiKyuinCount".equals(code)) obj = "２. 特別な医療・「吸引処置　回数」";
+        else if ("shussei1".equals(code)) obj = "１. 傷病に関する意見・「出生時1」";
+        else if ("shussei2".equals(code)) obj = "１. 傷病に関する意見・「出生時2」";
+        else if ("shussei3".equals(code)) obj = "１. 傷病に関する意見・「出生時3」";
+        else if ("Grid10.h1.w1".equals(code)) obj = "２. 特別な医療・「処置内容」　見出し";
+        else if ("Grid10.h3.w1".equals(code)) obj = "２. 特別な医療・「特別な対応」　見出し";
+        else if ("Grid10.h4.w1".equals(code)) obj = "２. 特別な医療・「失禁への対応」　見出し";
+        else if ("Grid1.h1.w2".equals(code)) obj = "申請者情報・「ふりがな」　見出し";
+        else if ("Grid1.h1.w3".equals(code)) obj = "申請者情報・「ふりがな」";
+        else if ("Grid1.h1.w12".equals(code)) obj = "申請者情報・「〒」　見出し";
+        else if ("Grid1.h1.w11".equals(code)) obj = "申請者情報・「郵便番号1」";
+        else if ("Grid1.h1.w17".equals(code)) obj = "申請者情報・「郵便番号2」";
+        else if ("Grid1.h2.w1".equals(code)) obj = "申請者情報・「 申 請 者」　見出し";
+        else if ("Grid1.h2.w3".equals(code)) obj = "申請者情報・「患者名」";
+        else if ("Grid1.h2.w12".equals(code)) obj = "申請者情報・「住所」";
+        else if ("Grid1.h3.w3".equals(code)) obj = "申請者情報・生年月日「年」";
+        else if ("Grid1.h3.w4".equals(code)) obj = "申請者情報・生年月日「年」　見出し";
+        else if ("Grid1.h3.w5".equals(code)) obj = "申請者情報・生年月日「月」";
+        else if ("Grid1.h3.w6".equals(code)) obj = "申請者情報・生年月日「月」　見出し";
+        else if ("Grid1.h3.w7".equals(code)) obj = "申請者情報・生年月日「日」";
+        else if ("Grid1.h3.w8".equals(code)) obj = "申請者情報・生年月日「日生」　見出し";
+        else if ("Grid1.h3.w10".equals(code)) obj = "申請者情報・生年月日「年齢」　見出し";
+        else if ("Grid1.h3.w11".equals(code)) obj = "申請者情報・「連絡先」　見出し";
+        else if ("Grid1.h3.w17".equals(code)) obj = "申請者情報・「電話番号1」";
+        else if ("Grid1.h3.w19".equals(code)) obj = "申請者情報・「電話番号2」";
+        else if ("Grid1.h3.w21".equals(code)) obj = "申請者情報・「電話番号3」";
+        else if ("Grid4.h1.w1".equals(code)) obj = "「医師氏名」　見出し";
+        else if ("Grid4.h1.w3".equals(code)) obj = "「医師氏名」";
+        else if ("Grid4.h2.w1".equals(code)) obj = "「医療機関名」　見出し";
+        else if ("Grid4.h2.w4".equals(code)) obj = "「医療機関名」";
+        else if ("Grid4.h3.w1".equals(code)) obj = "「医療機関所在地」　見出し";
+        else if ("Grid4.h3.w5".equals(code)) obj = "「医療機関所在地」";
+        else if ("Grid14.h3.w9".equals(code)) obj = "３.心身の状態に関する意見・(１)行動上の障害の有無「その他」　内容";
+        else if ("Grid7.h1.w2".equals(code)) obj = "１. 傷病に関する意見・「(１) 診断名」　見出し";
+        else if ("Grid7.h2.w2".equals(code)) obj = "１. 傷病に関する意見・「(２) 症状としての安定性」　見出し";
+        else if ("Grid7.h5.w2".equals(code)) obj = "１. 傷病に関する意見・「(３) 障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容」　見出し";
+        else if ("Grid8.h1.w2".equals(code)) obj = "１. 傷病に関する意見・「診断名1」";
+        else if ("Grid8.h1.w3".equals(code)) obj = "１. 傷病に関する意見・「発症年月日1」　見出し";
+        else if ("Grid8.h1.w15".equals(code)) obj = "１. 傷病に関する意見・「発症年月日1-1」";
+        else if ("Grid8.h1.w14".equals(code)) obj = "１. 傷病に関する意見・「発症年月日1-2」";
+        else if ("Grid8.h1.w13".equals(code)) obj = "１. 傷病に関する意見・発症年月日「年」　見出し";
+        else if ("Grid8.h1.w12".equals(code)) obj = "１. 傷病に関する意見・「発症年月日1-3」";
+        else if ("Grid8.h1.w11".equals(code)) obj = "１. 傷病に関する意見・発症年月日「月」　見出し";
+        else if ("Grid8.h1.w10".equals(code)) obj = "１. 傷病に関する意見・「発症年月日1-4」";
+        else if ("Grid8.h1.w9".equals(code)) obj = "１. 傷病に関する意見・発症年月日「日頃」　見出し";
+        else if ("Grid8.h2.w2".equals(code)) obj = "１. 傷病に関する意見・「診断名2」";
+        else if ("Grid8.h2.w3".equals(code)) obj = "１. 傷病に関する意見・「発症年月日2」　見出し";
+        else if ("Grid8.h2.w15".equals(code)) obj = "１. 傷病に関する意見・「発症年月日2-1」";
+        else if ("Grid8.h2.w14".equals(code)) obj = "１. 傷病に関する意見・「発症年月日2-2」";
+        else if ("Grid8.h2.w13".equals(code)) obj = "１. 傷病に関する意見・発症年月日「年」　見出し";
+        else if ("Grid8.h2.w12".equals(code)) obj = "１. 傷病に関する意見・「発症年月日2-3」";
+        else if ("Grid8.h2.w11".equals(code)) obj = "１. 傷病に関する意見・発症年月日「月」　見出し";
+        else if ("Grid8.h2.w10".equals(code)) obj = "１. 傷病に関する意見・「発症年月日2-4」";
+        else if ("Grid8.h2.w9".equals(code)) obj = "１. 傷病に関する意見・発症年月日「日頃」　見出し";
+        else if ("Grid8.h3.w2".equals(code)) obj = "１. 傷病に関する意見・「診断名3」";
+        else if ("Grid8.h3.w3".equals(code)) obj = "１. 傷病に関する意見・「発症年月日3」　見出し";
+        else if ("Grid8.h3.w15".equals(code)) obj = "１. 傷病に関する意見・「発症年月日3-1」";
+        else if ("Grid8.h3.w14".equals(code)) obj = "１. 傷病に関する意見・「発症年月日3-2」";
+        else if ("Grid8.h3.w13".equals(code)) obj = "１. 傷病に関する意見・発症年月日「年」　見出し";
+        else if ("Grid8.h3.w12".equals(code)) obj = "１. 傷病に関する意見・「発症年月日3-3」";
+        else if ("Grid8.h3.w11".equals(code)) obj = "１. 傷病に関する意見・発症年月日「月」　見出し";
+        else if ("Grid8.h3.w10".equals(code)) obj = "１. 傷病に関する意見・「発症年月日3-4」";
+        else if ("Grid8.h3.w9".equals(code)) obj = "１. 傷病に関する意見・発症年月日「日頃」　見出し";
+        else if ("Grid13.h1.w1".equals(code)) obj = "３. 心身の状態に関する意見・「(２) 精神･神経症状の有無」　見出し";
+        else if ("Grid6.h1.w1".equals(code)) obj = "「(１) 最終診察日」　見出し";
+        else if ("Grid6.h1.w12".equals(code)) obj = "(１) 最終診察日「元号」";
+        else if ("Grid6.h1.w11".equals(code)) obj = "(１) 最終診察日「年」";
+        else if ("Grid6.h1.w10".equals(code)) obj = "(１) 最終診察日「年」　見出し";
+        else if ("Grid6.h1.w9".equals(code)) obj = "(１) 最終診察日「月」";
+        else if ("Grid6.h1.w8".equals(code)) obj = "(１) 最終診察日「月」　見出し";
+        else if ("Grid6.h1.w7".equals(code)) obj = "(１) 最終診察日「日」";
+        else if ("Grid6.h1.w6".equals(code)) obj = "(１) 最終診察日「日」　見出し";
+        else if ("Grid6.h2.w1".equals(code)) obj = "「(２) 意見書作成回数」　見出し";
+        else if ("Grid6.h5.w1".equals(code)) obj = "「(３) 他科受診の有無」　見出し";
+        else if ("Grid6.h3.w4".equals(code)) obj = "(３) 他科受診の有無・「その他」　内容";
+        else if ("Grid5.h1.w1".equals(code)) obj = "「医療機関連絡先」　見出し";
+        else if ("Grid5.h1.w2".equals(code)) obj = "「医療機関連絡先1」";
+        else if ("Grid5.h1.w4".equals(code)) obj = "「医療機関連絡先2」";
+        else if ("Grid5.h1.w6".equals(code)) obj = "「医療機関連絡先3」";
+        else if ("Grid5.h3.w1".equals(code)) obj = "「医療機関FAX」　見出し";
+        else if ("Grid5.h3.w2".equals(code)) obj = "「医療機関FAX1」";
+        else if ("Grid5.h3.w4".equals(code)) obj = "「医療機関FAX2」";
+        else if ("Grid5.h3.w6".equals(code)) obj = "「医療機関FAX3」";
+        else if ("Grid9.h1.w1".equals(code)) obj = "疾病の経過・治療内容・投薬内容1";
+        else if ("Grid9.h1.w2".equals(code)) obj = "疾病の経過・治療内容・投薬内容2";
+        else if ("Grid9.h2.w1".equals(code)) obj = "疾病の経過・治療内容・投薬内容3";
+        else if ("Grid9.h2.w2".equals(code)) obj = "疾病の経過・治療内容・投薬内容4";
+        else if ("Grid9.h3.w1".equals(code)) obj = "疾病の経過・治療内容・投薬内容5";
+        else if ("Grid9.h3.w2".equals(code)) obj = "疾病の経過・治療内容・投薬内容6";
+        else if ("Grid11.h1.w1".equals(code)) obj = "１. 傷病に関する意見・「1」　見出し";
+        else if ("Grid11.h1.w2".equals(code)) obj = "１. 傷病に関する意見・「入院歴開始1-1」";
+        else if ("Grid11.h1.w3".equals(code)) obj = "１. 傷病に関する意見・「入院歴開始1-2」";
+        else if ("Grid11.h1.w5".equals(code)) obj = "１. 傷病に関する意見・「入院歴開始1-3」";
+        else if ("Grid11.h1.w7".equals(code)) obj = "１. 傷病に関する意見・「入院歴終了1-1」";
+        else if ("Grid11.h1.w8".equals(code)) obj = "１. 傷病に関する意見・「入院歴終了1-2」";
+        else if ("Grid11.h1.w10".equals(code)) obj = "１. 傷病に関する意見・「入院歴終了1-3」";
+        else if ("Grid11.h1.w13".equals(code)) obj = "１. 傷病に関する意見・「入院歴終了1傷病名」";
+        else if ("Grid12.h1.w1".equals(code)) obj = "１. 傷病に関する意見・「2」　見出し";
+        else if ("Grid12.h1.w2".equals(code)) obj = "１. 傷病に関する意見・「入院歴開始2-1」";
+        else if ("Grid12.h1.w3".equals(code)) obj = "１. 傷病に関する意見・「入院歴開始2-2」";
+        else if ("Grid12.h1.w5".equals(code)) obj = "１. 傷病に関する意見・「入院歴開始2-3」";
+        else if ("Grid12.h1.w7".equals(code)) obj = "１. 傷病に関する意見・「入院歴終了2-1」";
+        else if ("Grid12.h1.w8".equals(code)) obj = "１. 傷病に関する意見・「入院歴終了2-2」";
+        else if ("Grid12.h1.w10".equals(code)) obj = "１. 傷病に関する意見・「入院歴終了2-3」";
+        else if ("Grid12.h1.w13".equals(code)) obj = "１. 傷病に関する意見・「入院歴終了2傷病名」";
+        else if ("Grid2.h1.w1".equals(code)) obj = "「記入日」　元号　見出し";
+        else if ("Grid2.h1.w2".equals(code)) obj = "「記入日」　元号";
+        else if ("Grid2.h1.w3".equals(code)) obj = "「記入日」　年";
+        else if ("Grid2.h1.w4".equals(code)) obj = "「記入日」　年　見出し";
+        else if ("Grid2.h1.w5".equals(code)) obj = "「記入日」　月";
+        else if ("Grid2.h1.w6".equals(code)) obj = "「記入日」　月　見出し";
+        else if ("Grid2.h1.w7".equals(code)) obj = "「記入日」　日";
+        else if ("Grid2.h1.w8".equals(code)) obj = "「記入日」　日　見出し";
+        return obj;
+    }
 
-        String code = String.valueOf(obj);
-        switch (getFormatType()) {
-        case 0://主治医意見書1ページ目
-            obj = formatIkensho1(code, obj);
-            break;
-        case 1://主治医意見書2ページ目
-            obj = formatIkensho2(code, obj);
-            break;
-        case 2://訪問看護指示書（医療機関）
-            obj = formatShijisho(code, obj);
-            break;
-        case 3://訪問看護指示書（介護老人保健施設）
-            obj = formatShijishoB(code, obj);
-            break;
-        case 4://請求書一覧
-            obj = formatSeikyuIchitan(code, obj);
-            break;
-        case 5://請求書合計
-            obj = formatSeikyuIchiranTotal(code, obj);
-            break;
-        case 6://主治医意見書作成料・検査料請求(総括)書
-            obj = formatSoukatsusho(code, obj);
-            break;
-        case 7://主治医意見書作成料請求(明細)書
-            obj = formatMeisaisho(code, obj);
-            break;
-        case 8://登録患者一覧
-            obj = formatPatientList(code, obj);
-            break;
-        case 9://請求対象意見書一覧
-            obj = formatSeikyuIkenshoIchiran(code, obj);
-            break;
-        case 10://ＣＳＶファイル提出患者一覧
-            obj = formatCSVList(code, obj);
-            break;
-        }
-
-        toAppendTo.append(obj);
-
-        return toAppendTo;
+    /**
+     * 医師意見書2ページ目の定義体IDをフォーマット化します。
+     * @param code コード
+     * @param obj 変換前
+     * @return 変換結果
+     */
+    protected Object formatIkenshoShien2(String code, Object obj){
+        // 医師意見書2ページ目
+        if ("NijikuSeishin".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「二軸評価：精神症状」";
+        else if ("INSURER_NO".equals(code)) obj = "保険者番号";
+        else if ("INSURED_NO".equals(code)) obj = "被保険者番号";
+        else if ("Label7".equals(code)) obj = "「４. サービス利用に関する意見」　見出し";
+        else if ("Label9".equals(code)) obj = "「５. その他特記すべき事項」　見出し";
+        else if ("KansetsuItamiBui".equals(code)) obj = "３.心身の状態に関する意見・関節の痛み「部位」　部位";
+        else if ("IkenByoutaitaName".equals(code)) obj = "４. サービス利用に関する意見・(１)現在、発生の可能性が高い病態とその対処方針「その他」";
+        else if ("MahiOtherBui".equals(code)) obj = "３.心身の状態に関する意見・麻痺「その他」　部位";
+        else if ("KoushukuOtherBui".equals(code)) obj = "３.心身の状態に関する意見・関節の拘縮「その他部位」";
+        else if ("JokusouBui".equals(code)) obj = "３.心身の状態に関する意見・褥瘡「部位」";
+        else if ("Label178".equals(code)) obj = "３.心身の状態に関する意見・その他の皮膚疾患「部位」　見出し";
+        else if ("HifuShikkanBui".equals(code)) obj = "３.心身の状態に関する意見・その他の皮膚疾患「部位」";
+        else if ("KinouHyoukaTitle".equals(code)) obj = "５. その他特記すべき事項・「<精神障害の機能評価>」　見出し";
+        else if ("NijikuNoryoku".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「二軸評価：能力障害」";
+        else if ("SeikatsuShokuji".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：食事」";
+        else if ("SeikatsuRhythm".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：生活リズム」";
+        else if ("SeikatsuHosei".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：保清」";
+        else if ("SeikatsuKinsenKanri".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：金銭管理」";
+        else if ("SeikatsuFukuyakuKanri".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：服薬管理」";
+        else if ("SeikatsuTaijinKankei".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：対人関係」";
+        else if ("SeikatsuShakaiTekiou".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：社会的適応を妨げる行動」";
+        else if ("SeikatsuHanteiYear".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：判断時期」　年";
+        else if ("SeikatsuHanteiMonth".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：判断時期」　月";
+        else if ("NijikuHanteiYear".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「二軸評価：判定時期」　年";
+        else if ("NijikuHanteiMonth".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「二軸評価：判定時期」　月";
+        else if ("IkenKaigoOther".equals(code)) obj = "４. サービス利用に関する意見・(２)介護サービス（ホームヘルプサービス等）の利用時に関する医学的観点からの留意事項「その他」";
+        else if ("KinryokuTeikaBui".equals(code)) obj = "３.心身の状態に関する意見・筋力の低下「部位」";
+        else if ("NijikuHanteiEra".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「二軸評価：判定時期」　元号";
+        else if ("SeikatsuHanteiEra".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「生活障害評価：判断時期」　元号";
+        else if ("ShishikessonBui".equals(code)) obj = "３.心身の状態に関する意見・四肢欠損「部位」";
+        else if ("Grid3.h1.w1".equals(code)) obj = "３.心身の状態に関する意見・「(３)身体の状態」　見出し";
+        else if ("Grid15.h1.w1".equals(code)) obj = "４. サービス利用に関する意見・「(３)感染症の有無 (有の場合は具体的に記入して下さい)」　見出し";
+        else if ("Grid16.h1.w5".equals(code)) obj = "４. サービス利用に関する意見・「(３)感染症の有無」　詳細";
+        else if ("Grid8.h1.w1".equals(code)) obj = "４. サービス利用に関する意見・「(１)現在、発生の可能性が高い病態とその対処方針」　見出し";
+        else if ("Grid10.h1.w2".equals(code)) obj = "４. サービス利用に関する意見・「対処方針」";
+        else if ("Grid23.h1.w1".equals(code)) obj = "３.心身の状態に関する意見・「＜てんかん＞」　見出し";
+        else if ("Grid4.h1.w1".equals(code)) obj = "３.心身の状態に関する意見・「利き腕（」　見出し";
+        else if ("Grid4.h1.w2".equals(code)) obj = "３.心身の状態に関する意見・「身長」";
+        else if ("Grid4.h1.w3".equals(code)) obj = "３.心身の状態に関する意見・「体重」　見出し";
+        else if ("Grid4.h1.w4".equals(code)) obj = "３.心身の状態に関する意見・「体重」";
+        else if ("Grid13.h1.w1".equals(code)) obj = "４. サービス利用に関する意見・「(２)介護サービス（ホームヘルプサービス等）の利用時に関する医学的観点からの留意事項」　見出し";
+        else if ("Grid2.h1.w1".equals(code)) obj = "申請者情報・「患者氏名」";
+        else if ("Grid2.h1.w3".equals(code)) obj = "申請者情報・「年齢」";
+        else if ("Grid2.h1.w4".equals(code)) obj = "申請者情報・「年齢」　見出し";
+        else if ("Grid2.h1.w5".equals(code)) obj = "申請者情報・生年月日「元号」";
+        else if ("Grid2.h1.w6".equals(code)) obj = "申請者情報・生年月日「年」";
+        else if ("Grid2.h1.w7".equals(code)) obj = "申請者情報・生年月日「年」　見出し";
+        else if ("Grid2.h1.w8".equals(code)) obj = "申請者情報・生年月日「月」";
+        else if ("Grid2.h1.w9".equals(code)) obj = "申請者情報・生年月日「月」　見出し";
+        else if ("Grid2.h1.w10".equals(code)) obj = "申請者情報・生年月日「日」";
+        else if ("Grid2.h1.w11".equals(code)) obj = "申請者情報・生年月日「日」　見出し";
+        return obj;
     }
 
 }

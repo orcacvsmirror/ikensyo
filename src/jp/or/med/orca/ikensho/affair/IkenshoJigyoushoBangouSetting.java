@@ -8,9 +8,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.WindowEvent;
 import java.awt.im.InputSubset;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.FocusManager;
-import javax.swing.JDialog;
 import javax.swing.JPanel;
 
 import jp.nichicom.ac.component.ACButton;
@@ -18,7 +19,9 @@ import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
@@ -33,7 +36,7 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 import jp.or.med.orca.ikensho.util.IkenshoSnapshot;
 
 /** <HEAD_IKENSYO> */
-public class IkenshoJigyoushoBangouSetting extends JDialog {
+public class IkenshoJigyoushoBangouSetting extends IkenshoDialog {
     private JPanel contentPane = new JPanel();
     private VRPanel client = new VRPanel();
     private ACLabelContainer insurerNmContainer = new ACLabelContainer();
@@ -152,14 +155,19 @@ public class IkenshoJigyoushoBangouSetting extends JDialog {
         IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
         StringBuffer sb = new StringBuffer();
         sb.append(" SELECT");
+        sb.append(" DISTINCT");
         sb.append(" INSURER_NO");
         sb.append(" ,INSURER_NM");
+        sb.append(" ,INSURER_TYPE");
         sb.append(" FROM");
         sb.append(" INSURER");
         insurerData = (VRArrayList) dbm.executeQuery(sb.toString());
+        
+        IkenshoCommon.buildInsureNameType(insurerData, "INSURER_NM_TYPE"); 
+        
         IkenshoCommon.applyComboModel(insurerNm,
                 new VRHashMapArrayToConstKeyArrayAdapter(insurerData,
-                        "INSURER_NM"));
+                        "INSURER_NM_TYPE"));
 
         // 渡りデータを取得し、各コンポーネントに設定する
         this.affair = affair;
@@ -176,14 +184,29 @@ public class IkenshoJigyoushoBangouSetting extends JDialog {
                     .getData("SEL_ROW")));
             VRMap row = (VRMap) enteredData.getData(selRow);
 
-            // 保険者名
+            //編集対象の選択
             String insurerNmParam = String.valueOf(row.getData("INSURER_NM"));
-            for (int i = 0; i < insurerNm.getItemCount(); i++) {
-                if (insurerNm.getItemAt(i).toString().equals(insurerNmParam)) {
+            String insurerNoParam = String.valueOf(row.getData("INSURER_NO"));
+            String insurerTypeParam = String.valueOf(row.getData("INSURER_TYPE"));
+            int end = insurerData.size();
+            for(int i=0; i<end; i++){
+                VRMap r=(VRMap)insurerData.get(i);
+                if(insurerNmParam.equals(String.valueOf(r.getData("INSURER_NM")))&&
+                        insurerNoParam.equals(String.valueOf(r.getData("INSURER_NO")))&&
+                        insurerTypeParam.equals(String.valueOf(r.getData("INSURER_TYPE")))){
                     insurerNm.setSelectedIndex(i);
                     break;
                 }
             }
+
+//            // 保険者名
+//            String insurerNmParam = String.valueOf(row.getData("INSURER_NM"));
+//            for (int i = 0; i < insurerNm.getItemCount(); i++) {
+//                if (insurerNm.getItemAt(i).toString().equals(insurerNmParam)) {
+//                    insurerNm.setSelectedIndex(i);
+//                    break;
+//                }
+//            }
 
             // 保険者番号
             insurerNoOld = String.valueOf(row.getData("INSURER_NO"));
@@ -199,14 +222,35 @@ public class IkenshoJigyoushoBangouSetting extends JDialog {
         // スナップショット撮影
         IkenshoSnapshot.getInstance().snapshot();
     }
+    /**
+     * 選択している保険者データの特定バインドパスの値を返します。
+     * @param bindPath 取得対象のバインドパス
+     * @param defaultValue 取得できなかった場合のデフォルト値
+     * @return バインドパスの値
+     */
+    private String getSelectedInsurerDataValue(String bindPath, String defaultValue){
+        Object o = null;
+        int sel = insurerNm.getSelectedIndex();
+        if ((sel >= 0) && (sel < insurerData.getDataSize())) {
+            o = insurerData.get(sel);
+        }
+        if(o instanceof Map){
+            try{
+                return ACCastUtilities.toString(VRBindPathParser.get(bindPath, (VRMap)o),defaultValue);
+            }catch (Exception ex) {
+            }
+        }
+        return defaultValue;
+    }
 
     private void event() throws Exception {
         // 保険者名コンボ
         insurerNm.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
                 // 選択された保険者名から保険者番号を取得し、TextFieldに設定する
-                insurerNoField.setText(findInsurerNo(String.valueOf(insurerNm
-                        .getSelectedItem())));
+                  insurerNoField.setText(getSelectedInsurerDataValue("INSURER_NO", ""));
+//                insurerNoField.setText(findInsurerNo(String.valueOf(insurerNm
+//                        .getSelectedItem())));
             }
         });
 
@@ -215,9 +259,18 @@ public class IkenshoJigyoushoBangouSetting extends JDialog {
             public void actionPerformed(ActionEvent e) {
                 if (canSubmit()) {
                     // パラメータを渡し用HashMapに格納する
-                    paramas.put("ACT", "submit");
-                    paramas.put("INSURER_NM", String.valueOf(insurerNm
+                    Object o = null;
+                    if((insurerNm.getSelectedIndex()>=0) && (insurerNm.getSelectedIndex()<insurerData.getDataSize())){
+                        o = insurerData.get(insurerNm.getSelectedIndex());
+                    }
+                    
+                    if(o instanceof Map){
+                        paramas.putAll((Map)o);
+                    }else{
+                        paramas.put("INSURER_NM", String.valueOf(insurerNm
                             .getSelectedItem()));
+                    }
+                    paramas.put("ACT", "submit");
                     paramas.put("INSURER_NO", insurerNoField.getText());
                     paramas.put("JIGYOUSHA_NO", jigyoushoNoField.getText()); // DB:JIGYOUSHA,
                                                                                 // 画面:事業所
@@ -233,6 +286,7 @@ public class IkenshoJigyoushoBangouSetting extends JDialog {
                     // パラメータを渡し用HashMapに格納する
                     paramas.put("ACT", "close");
                     paramas.put("INSURER_NM", "");
+                    paramas.put("INSURER_TYPE", new Integer(0));
                     paramas.put("INSURER_NO", "");
                     paramas.put("JIGYOUSHA_NO", "");
                     closeWindow();
@@ -334,11 +388,13 @@ public class IkenshoJigyoushoBangouSetting extends JDialog {
         }
         if (checkFlg) {
             String insurerNoNew = insurerNoField.getText();
+            String insurerTypeNew = getSelectedInsurerDataValue("INSURER_TYPE", "");
             VRArrayList data = (VRArrayList) affair.getData("DATA");
             for (int i = 0; i < data.getDataSize(); i++) {
                 VRMap tmp = (VRMap) data.getData(i);
-                String dataInsurerNo = tmp.getData("INSURER_NO").toString();
-                if (dataInsurerNo.equals(insurerNoNew)) {
+                String dataInsurerNo = ACCastUtilities.toString(tmp.getData("INSURER_NO"),"");
+                String dataInsurerType = ACCastUtilities.toString(tmp.getData("INSURER_TYPE"),"");
+                if (dataInsurerNo.equals(insurerNoNew)&&dataInsurerType.equals(insurerTypeNew)) {
                     insurerNm.requestFocus();
                     ACMessageBox.show("同一の保険者が既に登録されています。",
                             ACMessageBox.BUTTON_OK,

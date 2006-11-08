@@ -18,6 +18,8 @@ import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.sql.ACSQLUtilities;
+import jp.nichicom.ac.text.ACSQLSafeNullToZeroIntegerFormat;
+import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
@@ -264,6 +266,18 @@ public class IkenshoAffairContainer extends ACAffairContainer {
     protected String getDBSafeNumber(String key, VRBindSource source)
             throws ParseException {
         return ACSQLUtilities.getInstance().getDBSafeNumber(key, source);
+    }
+    /**
+     * ソース内の指定キーの値をDBへ格納可能な数値文字列として返します。
+     * Nullの場合は0を返します。
+     * @param key 取得キー
+     * @param source ソース
+     * @throws ParseException 解析例外
+     * @return 変換結果
+     */
+    protected String getDBSafeNumberNullToZero(String key, VRBindSource source)
+            throws ParseException {
+        return ACSQLSafeNullToZeroIntegerFormat.getInstance().format(VRBindPathParser.get(key, source));
     }
 
     /**

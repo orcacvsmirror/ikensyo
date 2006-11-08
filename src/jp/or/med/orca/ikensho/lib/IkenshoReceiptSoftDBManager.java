@@ -41,8 +41,8 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
-import jp.nichicom.ac.util.ACSplashable;
 import jp.nichicom.ac.util.splash.ACSplash;
+import jp.nichicom.ac.util.splash.ACSplashable;
 import jp.nichicom.ac.util.splash.ACStopButtonSplash;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRHashMap;

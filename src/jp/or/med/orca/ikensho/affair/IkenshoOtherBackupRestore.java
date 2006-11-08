@@ -12,7 +12,6 @@ import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.text.VRDateFormat;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.lib.IkenshoFDBFileFilter;
-import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** <HEAD_IKENSYO> */
 public class IkenshoOtherBackupRestore {
