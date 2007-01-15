@@ -30,6 +30,10 @@ public class IkenshoIshiIkenshoInfoApplicant extends
          */
         protected void checkWriteDateAge() {
             // メソッドのoverrideにより処理を行わせない。
+        	// add begin 2006/12/20 kamitsukasa
+        	super.checkWriteDateAge();
+            getOutOfCareRange().setVisible(false);
+        	// add end 2006/12/20 kamitsukasa
         }
         
 }

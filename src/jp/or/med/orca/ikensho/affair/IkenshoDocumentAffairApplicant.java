@@ -70,7 +70,9 @@ public class IkenshoDocumentAffairApplicant extends IkenshoTabbableChildAffairCo
   private IkenshoEraDateTextField applicantBirth = new IkenshoEraDateTextField();
   private VRLabel applicantBirthTail = new VRLabel();
   private IkenshoZipTextField applicantZip = new IkenshoZipTextField();
-  private VRLabel outOfCareRange = new VRLabel();
+  // replace begin 2006/12/20 kamitsukasa
+  protected VRLabel outOfCareRange = new VRLabel();
+  // replace end 2006/12/20 kamitsukasa
   private transient Vector applicantNameChageListeners;
 
   public VRMap createSourceInnerBindComponent() {
@@ -369,4 +371,21 @@ public class IkenshoDocumentAffairApplicant extends IkenshoTabbableChildAffairCo
     }
   }
 
+  // add begin 2006/12/20 kamitsukasa
+	/**
+	 * @return outOfCareRange ÇñﬂÇµÇ‹Ç∑ÅB
+	 */
+	public VRLabel getOutOfCareRange() {
+		return outOfCareRange;
+	}
+
+	/**
+	 * @param outOfCareRange
+	 *            outOfCareRange Çê›íËÅB
+	 */
+	public void setOutOfCareRange(VRLabel outOfCareRange) {
+		this.outOfCareRange = outOfCareRange;
+	}
+  // add end 2006/12/20 kamitsukasa
+  
 }

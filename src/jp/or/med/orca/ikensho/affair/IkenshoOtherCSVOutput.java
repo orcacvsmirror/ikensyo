@@ -4138,6 +4138,10 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(" IKN_ORIGIN.FORMAT_KBN=1");
         sb.append(" AND");
         sb.append(" IKN_BILL.FD_OUTPUT_KBN=1");
+        // add begin 2006/12/20 kamitsukasa
+        sb.append(" AND");
+        sb.append(" COMMON_IKN_SIS.DOC_KBN=1");
+        // add end 2006/12/20 kamitsukasa
         return sb.toString();
     }
 
@@ -4406,6 +4410,10 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(" IKN_ORIGIN.FORMAT_KBN=2");
         sb.append(" AND");
         sb.append(" IKN_BILL.FD_OUTPUT_KBN=1");
+        // add begin 2006/12/20 kamitsukasa
+        sb.append(" AND");
+        sb.append(" COMMON_IKN_SIS.DOC_KBN=1");
+        // add end 2006/12/20 kamitsukasa
         
         return sb.toString();
      
