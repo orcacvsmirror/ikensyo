@@ -95,6 +95,26 @@ public class IkenshoIshiIkenshoInfoCare2 extends IkenshoIkenshoInfoCare2H18 {
                 IkenshoCommon.TEIKEI_ISHI_CARE_SERVICE_OTHER_NAME);
         applyPoolTeikeibun(getCare2KansenName(),
                 IkenshoCommon.TEIKEI_ISHI_INFECTION_NAME);
+        
+
+        // 2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応
+        // ACComboBox⇒IkenshoOptionComboBox
+        getCare2KetsuattsuValue().setOptionComboBoxParameters("血圧",
+                IkenshoCommon.TEIKEI_ISHI_CARE_SERVICE_BLOOD_PRESSURE_NAME, 30);
+        getCare2EngeValue().setOptionComboBoxParameters("嚥下",
+                IkenshoCommon.TEIKEI_ISHI_CARE_SERVICE_ENGE_NAME, 30);
+        getCare2SesshokuValue().setOptionComboBoxParameters("摂食",
+                IkenshoCommon.TEIKEI_ISHI_CARE_SERVICE_EAT_NAME, 30);
+        getCare2MoveValue().setOptionComboBoxParameters("移動",
+                IkenshoCommon.TEIKEI_ISHI_CARE_SERVICE_MOVE_NAME, 30);
+        getCare2ServiceOtherValue().setOptionComboBoxParameters("その他",
+                IkenshoCommon.TEIKEI_ISHI_CARE_SERVICE_OTHER_NAME, 50);
+        getCare2KansenName().setOptionComboBoxParameters("有の場合",
+                IkenshoCommon.TEIKEI_ISHI_INFECTION_NAME, 30);
+        //      2007/10/18 [Masahiko Higuchi] Addition - end
+        
+        
+        
       }
 
 }

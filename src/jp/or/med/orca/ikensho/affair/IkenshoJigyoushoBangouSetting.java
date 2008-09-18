@@ -80,6 +80,9 @@ public class IkenshoJigyoushoBangouSetting extends IkenshoDialog {
         VRLayout clientLayout = new VRLayout();
         clientLayout.setHgap(2);
         clientLayout.setVgap(2);
+        // Addition - begin [Masahiko Higuchi] 2007/09/20 Vista‰æ–ÊŒ©Ø‚ê‘Î‰
+        clientLayout.setAutoWrap(false);
+        // Addition - end
         client.setLayout(clientLayout);
         client.add(insurerNmContainer, VRLayout.FLOW_INSETLINE);
         client.add(insurerNoPnl, VRLayout.FLOW_RETURN);

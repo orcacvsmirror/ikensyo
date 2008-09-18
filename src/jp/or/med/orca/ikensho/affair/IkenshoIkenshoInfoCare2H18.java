@@ -18,6 +18,7 @@ import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -33,7 +34,9 @@ public class IkenshoIkenshoInfoCare2H18 extends IkenshoIkenshoInfoCare2 {
     private IkenshoAddWestClearableRadioButtonGroup sports;
     private ACParentHesesPanelContainer sportstHeses;
     private ACLabelContainer sportss;
-    private ACComboBox sportsValue;
+//  2007/10/18 [Masahiko Higuchi] Replace - begin ã∆ñ±ëJà⁄ÉRÉìÉ{ëŒâû ACComboBoxÅÀIkenshoOptionComboBox
+    private IkenshoOptionComboBox sportsValue;
+//  2007/10/18 [Masahiko Higuchi] Replace - end
 
     // private VRListModelAdapter careServiceSportsModel;
 
@@ -73,10 +76,12 @@ public class IkenshoIkenshoInfoCare2H18 extends IkenshoIkenshoInfoCare2 {
      * â^ìÆÇ…Ç¬Ç¢ÇƒÇï‘ÇµÇ‹Ç∑ÅB
      * 
      * @return â^ìÆÇ…Ç¬Ç¢Çƒ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
      */
-    protected ACComboBox getSportsValue() {
+    protected IkenshoOptionComboBox getSportsValue() {
         if (sportsValue == null) {
-            sportsValue = new ACComboBox();
+            sportsValue = new IkenshoOptionComboBox();
         }
         return sportsValue;
     }
@@ -201,6 +206,25 @@ public class IkenshoIkenshoInfoCare2H18 extends IkenshoIkenshoInfoCare2 {
         }
         // Addition - end
 
+        // 2007/10/18 [Masahiko Higuchi] Addition - begin ã∆ñ±ëJà⁄ÉRÉìÉ{ëŒâû
+        // ACComboBoxÅÀIkenshoOptionComboBox
+        getCare2KetsuattsuValue().setOptionComboBoxParameters("ååà≥",
+                IkenshoCommon.TEIKEI_CARE_SERVICE_BLOOD_PRESSURE_NAME, 30);
+        getCare2EngeValue().setOptionComboBoxParameters("öãâ∫",
+                IkenshoCommon.TEIKEI_CARE_SERVICE_ENGE_NAME, 30);
+        getCare2SesshokuValue().setOptionComboBoxParameters("ê€êH",
+                IkenshoCommon.TEIKEI_CARE_SERVICE_EAT_NAME, 30);
+        getCare2MoveValue().setOptionComboBoxParameters("à⁄ìÆ",
+                IkenshoCommon.TEIKEI_CARE_SERVICE_MOVE_NAME, 30);
+        getCare2ServiceOtherValue().setOptionComboBoxParameters("ÇªÇÃëº",
+                IkenshoCommon.TEIKEI_CARE_SERVICE_OTHER_NAME, 50);
+        getCare2KansenName().setOptionComboBoxParameters("óLÇÃèÍçá",
+                IkenshoCommon.TEIKEI_INFECTION_NAME, 30);
+        getSportsValue().setOptionComboBoxParameters("â^ìÆ",
+                IkenshoCommon.TEIKEI_CARE_SERVICE_UNDOU_NAME, 30);
+        //      2007/10/18 [Masahiko Higuchi] Addition - end
+        
+        
     }
 
     /**

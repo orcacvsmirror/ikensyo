@@ -782,7 +782,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         rollBackPnl.setLayout(new VRLayout());
         rollBackPnl.add(rollBack, VRLayout.EAST);
         insurerNmContainer.add(insurerNmField, java.awt.BorderLayout.CENTER);
-        rollBack.setText("H18”Nf—Ã•ñV’P‰¿(D)");
+        // 2008/02/25 [Masahiko_Higuchi] edit - begin V3.0.6 •½¬20”N“xf—Ã•ñV’P‰¿•ÏX‘Î‰
+        rollBack.setText("H20”Nf—Ã•ñV’P‰¿(D)");
+        // 2008/02/25 [Masahiko_Higuchi] edit - end
         rollBack.setMnemonic('D');
     }
 
@@ -874,10 +876,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         // ‰Šúf—Ã•ñV’P‰¿‚É–ß‚·
         rollBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
+                // 2008/02/25 [Masahiko_Higuchi] edit - begin V3.0.6 •½¬20”N“xf—Ã•ñV’P‰¿•ÏX‘Î‰
                 int result = ACMessageBox.show(
-                        "ˆÓŒ©‘ì¬—¿^f@EŒŸ¸”ï—p“_”‚É\nH18”Nf—Ã•ñV’P‰¿‚ğİ’è‚µ‚Ü‚·B‚æ‚ë‚µ‚¢‚Å‚·‚©H",
+                        "ˆÓŒ©‘ì¬—¿^f@EŒŸ¸”ï—p“_”‚É"+ ACConstants.LINE_SEPARATOR + "H20”Nf—Ã•ñV’P‰¿‚ğİ’è‚µ‚Ü‚·B‚æ‚ë‚µ‚¢‚Å‚·‚©H",
                         ACMessageBox.BUTTON_OKCANCEL,
                         ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+                // 2008/02/25 [Masahiko_Higuchi] edit - end
                 if (result == ACMessageBox.RESULT_OK) {
                     try {
                         loadMKingakuTensu();
@@ -1040,12 +1044,14 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             // •½¬18”N“xŒŸ¸”ï—p“_” 
             // 2006/06/20
             // Addition - [Masahiko Higuchi]
-            kingakuTensuData.put("EXP_KS",new Double(12.0)); // ŒŒ‰tÌæ(Ã–¬)
-            kingakuTensuData.put("EXP_KIK_MKI",new Double(23.0)); // ––½ŒŒ‰tˆê”ÊŒŸ¸
-            kingakuTensuData.put("EXP_KIK_KEKK",new Double(135.0)); // ŒŒ‰tŠw“IŒŸ¸”»’f—¿
-            kingakuTensuData.put("EXP_KKK_KKK",new Double(130.0)); // ŒŒ‰t‰»ŠwŒŸ¸(10€–ÚˆÈã)
-            kingakuTensuData.put("EXP_KKK_SKK",new Double(155.0)); // ¶‰»Šw“IŒŸ¸(I)”»’f—¿
-            kingakuTensuData.put("EXP_NITK",new Double(28.0)); // ”A’†ˆê”Ê•¨¿’è«”»’è—ÊŒŸ¸
+            // 2008/02/25 [Masahiko_Higuchi] edit - begin V3.0.6 •½¬20”N“xf—Ã•ñV’P‰¿•ÏX‘Î‰
+            kingakuTensuData.put("EXP_KS",new Double(11.0)); // ŒŒ‰tÌæ(Ã–¬)
+            kingakuTensuData.put("EXP_KIK_MKI",new Double(22.0)); // ––½ŒŒ‰tˆê”ÊŒŸ¸
+            kingakuTensuData.put("EXP_KIK_KEKK",new Double(125.0)); // ŒŒ‰tŠw“IŒŸ¸”»’f—¿
+            kingakuTensuData.put("EXP_KKK_KKK",new Double(129.0)); // ŒŒ‰t‰»ŠwŒŸ¸(10€–ÚˆÈã)
+            kingakuTensuData.put("EXP_KKK_SKK",new Double(144.0)); // ¶‰»Šw“IŒŸ¸(I)”»’f—¿
+            kingakuTensuData.put("EXP_NITK",new Double(26.0)); // ”A’†ˆê”Ê•¨¿’è«”»’è—ÊŒŸ¸
+            // 2008/02/25 [Masahiko_Higuchi] edit - end
             kingakuTensuData.put("EXP_XRAY_TS",new Double(65.0)); // ’PƒB‰e
             kingakuTensuData.put("EXP_XRAY_SS",new Double(85.0)); // Ê^f’f(‹¹•”)
             kingakuTensuData.put("EXP_XRAY_FILM",new Double(13.0));// ƒtƒBƒ‹ƒ€(‘åŠp)

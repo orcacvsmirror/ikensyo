@@ -10,6 +10,7 @@ import jp.nichicom.ac.component.event.ACFollowDisableSelectionListener;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -17,12 +18,165 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoIkenshoInfoSickH18 extends IkenshoIkenshoInfoSick {
   private ACLabelContainer notStableStateContainer;
-  private ACComboBox noteStableState;
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボに差し替え
+  private IkenshoOptionComboBox noteStableState;
+//2007/10/18 [Masahiko Higuchi] Replace - end
 
   public void initDBCopmponent(IkenshoFirebirdDBManager dbm) throws Exception {
-    super.initDBCopmponent(dbm);
-    applyPoolTeikeibun(noteStableState, IkenshoCommon.TEIKEI_INSECURE_CONDITION_NAME);
-  }
+        super.initDBCopmponent(dbm);
+        applyPoolTeikeibun(noteStableState,
+                IkenshoCommon.TEIKEI_INSECURE_CONDITION_NAME);
+
+        noteStableState.setOptionComboBoxParameters("「不安定」とした場合の具体的状況",
+                IkenshoCommon.TEIKEI_INSECURE_CONDITION_NAME, 30);
+
+        getSickName1().setOptionComboBoxParameters("疾病名",
+                IkenshoCommon.TEIKEI_SICK_NAME, 30);
+        getSickName1().addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickName2(), getSickName3() });
+        getSickName2().setOptionComboBoxParameters("疾病名",
+                IkenshoCommon.TEIKEI_SICK_NAME, 30);
+        getSickName2().addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickName1(), getSickName3() });
+        getSickName3().setOptionComboBoxParameters("疾病名",
+                IkenshoCommon.TEIKEI_SICK_NAME, 30);
+        getSickName3().addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickName1(), getSickName2() });
+
+        // 設定する値を差し替える
+        getSickSpecial1().setUnpressedModel(getSickName1().getOriginalModel());
+        getSickSpecial2().setUnpressedModel(getSickName2().getOriginalModel());
+        getSickSpecial3().setUnpressedModel(getSickName3().getOriginalModel());
+
+        getSickMedicineName(0).setOptionComboBoxParameters("薬剤名",
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
+        getSickMedicineName(1).setOptionComboBoxParameters("薬剤名",
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
+        getSickMedicineName(2).setOptionComboBoxParameters("薬剤名",
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
+        getSickMedicineName(3).setOptionComboBoxParameters("薬剤名",
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
+        getSickMedicineName(4).setOptionComboBoxParameters("薬剤名",
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
+        getSickMedicineName(5).setOptionComboBoxParameters("薬剤名",
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
+
+        // コンボ連動設定
+        getSickMedicineName(0).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineName(1),
+                        getSickMedicineName(2), getSickMedicineName(3),
+                        getSickMedicineName(4), getSickMedicineName(5) });
+        getSickMedicineName(1).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineName(0),
+                        getSickMedicineName(2), getSickMedicineName(3),
+                        getSickMedicineName(4), getSickMedicineName(5) });
+        getSickMedicineName(2).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineName(0),
+                        getSickMedicineName(1), getSickMedicineName(3),
+                        getSickMedicineName(4), getSickMedicineName(5) });
+        getSickMedicineName(3).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineName(0),
+                        getSickMedicineName(1), getSickMedicineName(2),
+                        getSickMedicineName(4), getSickMedicineName(5) });
+        getSickMedicineName(4).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineName(0),
+                        getSickMedicineName(1), getSickMedicineName(2),
+                        getSickMedicineName(3), getSickMedicineName(5) });
+        getSickMedicineName(5).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineName(0),
+                        getSickMedicineName(1), getSickMedicineName(2),
+                        getSickMedicineName(3), getSickMedicineName(4) });
+
+        getSickMedicineDosageUnit(0).setOptionComboBoxParameters("用量単位",
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
+        getSickMedicineDosageUnit(1).setOptionComboBoxParameters("用量単位",
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
+        getSickMedicineDosageUnit(2).setOptionComboBoxParameters("用量単位",
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
+        getSickMedicineDosageUnit(3).setOptionComboBoxParameters("用量単位",
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
+        getSickMedicineDosageUnit(4).setOptionComboBoxParameters("用量単位",
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
+        getSickMedicineDosageUnit(5).setOptionComboBoxParameters("用量単位",
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
+
+        // 連動コンボの登録
+        getSickMedicineDosageUnit(0).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(1),
+                        getSickMedicineDosageUnit(2),
+                        getSickMedicineDosageUnit(3),
+                        getSickMedicineDosageUnit(4),
+                        getSickMedicineDosageUnit(5) });
+        getSickMedicineDosageUnit(1).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
+                        getSickMedicineDosageUnit(2),
+                        getSickMedicineDosageUnit(3),
+                        getSickMedicineDosageUnit(4),
+                        getSickMedicineDosageUnit(5) });
+        getSickMedicineDosageUnit(2).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
+                        getSickMedicineDosageUnit(1),
+                        getSickMedicineDosageUnit(3),
+                        getSickMedicineDosageUnit(4),
+                        getSickMedicineDosageUnit(5) });
+        getSickMedicineDosageUnit(3).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
+                        getSickMedicineDosageUnit(1),
+                        getSickMedicineDosageUnit(2),
+                        getSickMedicineDosageUnit(4),
+                        getSickMedicineDosageUnit(5) });
+        getSickMedicineDosageUnit(4).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
+                        getSickMedicineDosageUnit(1),
+                        getSickMedicineDosageUnit(2),
+                        getSickMedicineDosageUnit(3),
+                        getSickMedicineDosageUnit(5) });
+        getSickMedicineDosageUnit(5).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
+                        getSickMedicineDosageUnit(1),
+                        getSickMedicineDosageUnit(2),
+                        getSickMedicineDosageUnit(3),
+                        getSickMedicineDosageUnit(4) });
+
+        getSickMedicineUsage(0).setOptionComboBoxParameters("用法",
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
+        getSickMedicineUsage(1).setOptionComboBoxParameters("用法",
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
+        getSickMedicineUsage(2).setOptionComboBoxParameters("用法",
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
+        getSickMedicineUsage(3).setOptionComboBoxParameters("用法",
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
+        getSickMedicineUsage(4).setOptionComboBoxParameters("用法",
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
+        getSickMedicineUsage(5).setOptionComboBoxParameters("用法",
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
+        // 連動コンボの登録
+        getSickMedicineUsage(0).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineUsage(1),
+                        getSickMedicineUsage(2), getSickMedicineUsage(3),
+                        getSickMedicineUsage(4), getSickMedicineUsage(5) });
+        getSickMedicineUsage(1).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
+                        getSickMedicineUsage(2), getSickMedicineUsage(3),
+                        getSickMedicineUsage(4), getSickMedicineUsage(5) });
+        getSickMedicineUsage(2).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
+                        getSickMedicineUsage(1), getSickMedicineUsage(3),
+                        getSickMedicineUsage(4), getSickMedicineUsage(5) });
+        getSickMedicineUsage(3).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
+                        getSickMedicineUsage(1), getSickMedicineUsage(2),
+                        getSickMedicineUsage(4), getSickMedicineUsage(5) });
+        getSickMedicineUsage(4).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
+                        getSickMedicineUsage(1), getSickMedicineUsage(2),
+                        getSickMedicineUsage(3), getSickMedicineUsage(5) });
+        getSickMedicineUsage(5).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
+                        getSickMedicineUsage(1), getSickMedicineUsage(2),
+                        getSickMedicineUsage(3), getSickMedicineUsage(4) });
+
+    }
 
   /**
    * コンストラクタです。
@@ -50,10 +204,12 @@ public class IkenshoIkenshoInfoSickH18 extends IkenshoIkenshoInfoSick {
   /**
    * 不安定時の具体的な状況を返します。
    * @return 不安定時の具体的な状況
+   * @version 2.0
+   *    Masahiko Higuchi
    */
-  protected ACComboBox getNotStableState() {
+  protected IkenshoOptionComboBox getNotStableState() {
     if(noteStableState==null){
-      noteStableState = new ACComboBox();
+      noteStableState = new IkenshoOptionComboBox();
     }
     return noteStableState;
   }

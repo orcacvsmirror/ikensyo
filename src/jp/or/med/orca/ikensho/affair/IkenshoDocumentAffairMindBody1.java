@@ -42,6 +42,7 @@ import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoHintButton;
 import jp.or.med.orca.ikensho.component.IkenshoHintContainer;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.lib.IkenshoHashableComboFormat;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
@@ -72,7 +73,9 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
       ACIntegerCheckBox();
   private ACClearableRadioButtonGroup mindBody1HasShinkeiProJyusin = new
       ACClearableRadioButtonGroup();
-  private ACComboBox mindBody1Shinkei;
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox mindBody1Shinkei;
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACClearableRadioButtonGroup mindBody1Syokuji = new
       ACClearableRadioButtonGroup();
   private IkenshoHintButton mindBody1NinchiHelp = new IkenshoHintButton();
@@ -270,10 +273,12 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
   /**
    * その他の精神・神経症状コンボを返します。
    * @return その他の精神・神経症状コンボ
+   * @author Masahiko Higuchi
+   * @since 3.0.5
    */
-  protected ACComboBox getMindBody1Shinkei(){
+  protected IkenshoOptionComboBox getMindBody1Shinkei(){
     if(mindBody1Shinkei==null){
-      mindBody1Shinkei = new ACComboBox();
+      mindBody1Shinkei = new IkenshoOptionComboBox();
     }
     return mindBody1Shinkei;
   }

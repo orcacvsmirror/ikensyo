@@ -612,6 +612,11 @@ public class IkenshoIshiIkenshoInfoMindBody2 extends
         super.initDBCopmponent(dbm);
 
         applyPoolTeikeibun(getSonota().getComboBox(), IkenshoCommon.TEIKEI_CENNECT_KOSHUKU_NAME);
+        // 2007/10/18 [Masahiko Higuchi] Addition - begin ‹Æ–±‘JˆÚƒRƒ“ƒ{‘Î‰
+        // ACComboBoxËIkenshoOptionComboBox
+        getSonota().getComboBox().setOptionComboBoxParameters("ŠÖß‚ÌSkE•”ˆÊ",
+                IkenshoCommon.TEIKEI_CENNECT_KOSHUKU_NAME, 10);
+        // 2007/10/18 [Masahiko Higuchi] Addition - end
       }
 
 }

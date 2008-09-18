@@ -21,6 +21,7 @@ import jp.nichicom.vr.layout.VRLayout;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoCareStatusContainer;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.component.IkenshoUnderlineFormatableLabel;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
@@ -46,8 +47,10 @@ public class IkenshoIkenshoInfoCare1
   private ACLabelContainer care1OtherTaisyos = new ACLabelContainer();
   private VRLayout care1OthersLayout = new VRLayout();
   private VRLayout care1AbstractionsLayout = new VRLayout();
-  private ACComboBox care1OtherName = new ACComboBox();
-  private ACComboBox care1OtherTaisyo = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin ‹Æ–±‘JˆÚƒRƒ“ƒ{‘Î‰ ACComboBoxËIkenshoOptionComboBox
+  private IkenshoOptionComboBox care1OtherName = new IkenshoOptionComboBox();
+  private IkenshoOptionComboBox care1OtherTaisyo = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private IkenshoCareStatusContainer care1Shikkin = new IkenshoCareStatusContainer();
   private IkenshoCareStatusContainer care1Jyokusou = new IkenshoCareStatusContainer();
   private IkenshoCareStatusContainer care1Haikai = new IkenshoCareStatusContainer();
@@ -230,7 +233,6 @@ public class IkenshoIkenshoInfoCare1
     applyPoolTeikeibun(care1Dassui.getValueCombo(), IkenshoCommon.TEIKEI_SICK_COPE_DEHYDRATION_NAME);
     applyPoolTeikeibun(care1OtherTaisyo, IkenshoCommon.TEIKEI_SICK_COPE_OTHER_NAME);
     applyPoolTeikeibun(care1OtherName, IkenshoCommon.TEIKEI_SICK_TYPE_OTHER_NAME);
-
 
   }
 
@@ -498,19 +500,31 @@ public class IkenshoIkenshoInfoCare1
   protected IkenshoCareStatusContainer getCare1Dassui(){
       return care1Dassui;
   }
-  /**
-   * ‚»‚Ì‘¼‚Ì‘Îˆ•ûj‚ğ•Ô‚µ‚Ü‚·B
-   * @return ‚»‚Ì‘¼‚Ì‘Îˆ•ûj
-   */
-  protected ACComboBox getCare1OtherTaisyo(){
-      return care1OtherTaisyo;
-  }
+  
 
-  /**
-   * ‚»‚Ì‘¼‚Ì–¼Ì‚ğ•Ô‚µ‚Ü‚·B
-   * @return ‚»‚Ì‘¼‚Ì–¼Ì
-   */
-  protected ACComboBox getCare1OtherName(){
-      return care1OtherName;
-  }
+    // 2007/10/18 [Masahiko Higuchi] Addition - begin ‹Æ–±‘JˆÚƒRƒ“ƒ{‘Î‰
+    // ACComboBoxËIkenshoOptionComboBox
+    /**
+     * ‚»‚Ì‘¼‚Ì‘Îˆ•ûj‚ğ•Ô‚µ‚Ü‚·B
+     * 
+     * @return ‚»‚Ì‘¼‚Ì‘Îˆ•ûj
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected IkenshoOptionComboBox getCare1OtherTaisyo() {
+        return care1OtherTaisyo;
+    }
+
+    /**
+     * ‚»‚Ì‘¼‚Ì–¼Ì‚ğ•Ô‚µ‚Ü‚·B
+     * 
+     * @return ‚»‚Ì‘¼‚Ì–¼Ì
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected IkenshoOptionComboBox getCare1OtherName() {
+        return care1OtherName;
+    }
+    //2007/10/18 [Masahiko Higuchi] Addition - end
+  
 }

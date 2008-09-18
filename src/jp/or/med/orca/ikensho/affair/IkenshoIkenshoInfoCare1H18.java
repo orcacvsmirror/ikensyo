@@ -90,6 +90,48 @@ public class IkenshoIkenshoInfoCare1H18
     applyPoolTeikeibun(getLowEnergy().getComboBox(), IkenshoCommon.TEIKEI_LOW_ENERGY_NAME);
     applyPoolTeikeibun(getEngeDown().getComboBox(), IkenshoCommon.TEIKEI_SESSHOKU_ENGE_DOWN_NAME);
     applyPoolTeikeibun(getToutsu().getComboBox(), IkenshoCommon.TEIKEI_GAN_TOTSU_NAME);
+        
+
+        // 2007/10/18 [Masahiko Higuchi] Addition - begin ‹Ζ–±‘JΪƒRƒ“ƒ{‘Ξ‰
+        // ACComboBoxΛIkenshoOptionComboBox
+        getCare1Shikkin().getComboBox().setOptionComboBoxParameters("”AΈ‹Φ",
+                IkenshoCommon.TEIKEI_SICK_COPE_URINE_NAME, 30);
+        getCare1Tentou().getComboBox().setOptionComboBoxParameters("“]“|Eά",
+                IkenshoCommon.TEIKEI_SICK_COPE_FACTURE_NAME, 30);
+        getCare1Haikai().getComboBox().setOptionComboBoxParameters("pj",
+                IkenshoCommon.TEIKEI_SICK_COPE_PROWL_NAME, 30);
+        getCare1Jyokusou().getComboBox().setOptionComboBoxParameters("ερα",
+                IkenshoCommon.TEIKEI_SICK_COPE_JYOKUSOU_NAME, 30);
+        getCare1Haien().getComboBox().setOptionComboBoxParameters("‹‰Ί«”x‰",
+                IkenshoCommon.TEIKEI_SICK_COPE_PNEUMONIA_NAME, 30);
+        getCare1Chouheisoku().getComboBox().setOptionComboBoxParameters("’°•ΒΗ",
+                IkenshoCommon.TEIKEI_SICK_COPE_INTESTINES_NAME, 30);
+        getCare1Ekikan().getComboBox().setOptionComboBoxParameters("Υ΄υ«",
+                IkenshoCommon.TEIKEI_SICK_COPE_INFECTION_NAME, 30);
+        getCare1ShinpaiDown().getComboBox().setOptionComboBoxParameters(
+                "S”x‹@”\‚Μ’α‰Ί", IkenshoCommon.TEIKEI_SICK_COPE_HEART_LUNG_NAME, 30);
+        getCare1Pain().getComboBox().setOptionComboBoxParameters("’Ι‚έ",
+                IkenshoCommon.TEIKEI_SICK_COPE_PAIN_NAME, 30);
+        getCare1Dassui().getComboBox().setOptionComboBoxParameters("’E…",
+                IkenshoCommon.TEIKEI_SICK_COPE_DEHYDRATION_NAME, 30);
+        getCare1OtherTaisyo().setOptionComboBoxParameters("‚»‚Μ‘ΌEΪΧ",
+                IkenshoCommon.TEIKEI_SICK_COPE_OTHER_NAME, 30);
+        getCare1OtherName().setOptionComboBoxParameters("‚»‚Μ‘ΌE€–Ϊ–Ό",
+                IkenshoCommon.TEIKEI_SICK_TYPE_OTHER_NAME, 15);
+        getMoveDown().getComboBox().setOptionComboBoxParameters("Ϊ“®”\—Ν‚Μ’α‰Ί",
+                IkenshoCommon.TEIKEI_MOVILITY_DOWN_NAME, 30);
+        getTojikomori().getComboBox().setOptionComboBoxParameters("•Β‚¶‚±‚ΰ‚θ",
+                IkenshoCommon.TEIKEI_TOJIKOMORI_NAME, 30);
+        getIyokuDown().getComboBox().setOptionComboBoxParameters("Σ—~’α‰Ί",
+                IkenshoCommon.TEIKEI_IYOKU_DOWN_NAME, 30);
+        getLowEnergy().getComboBox().setOptionComboBoxParameters("’α‰h—{",
+                IkenshoCommon.TEIKEI_LOW_ENERGY_NAME, 30);
+        getEngeDown().getComboBox().setOptionComboBoxParameters("ΫHE‹‰Ί‹@”\’α‰Ί",
+                IkenshoCommon.TEIKEI_SESSHOKU_ENGE_DOWN_NAME, 30);
+        getToutsu().getComboBox().setOptionComboBoxParameters("‚ª‚ρ“™‚Ι‚ζ‚ιαu’Ι",
+                IkenshoCommon.TEIKEI_GAN_TOTSU_NAME, 30);
+        //  2007/10/18 [Masahiko Higuchi] Addition - end
+
   }
 
   /**

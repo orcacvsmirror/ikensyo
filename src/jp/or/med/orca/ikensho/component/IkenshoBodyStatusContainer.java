@@ -28,7 +28,10 @@ public class IkenshoBodyStatusContainer
       ACClearableRadioButtonGroup();
   private ACIntegerCheckBox check = new
       ACIntegerCheckBox();
-  private ACComboBox pos = new ACComboBox();
+  // 2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応
+    // ACComboBox⇒IkenshoOptionComboBox
+    private IkenshoOptionComboBox pos = new IkenshoOptionComboBox();
+    // 2007/10/18 [Masahiko Higuchi] end
   private VRLabelContainer poss = new VRLabelContainer();
   private VRLabelContainer ranks = new VRLabelContainer();
   private ACParentHesesPanelContainer heses = new ACParentHesesPanelContainer();
@@ -84,8 +87,9 @@ public class IkenshoBodyStatusContainer
   /**
    * コンボボックスを返します。
    * @return コンボボックス
+   * @since 3.0.5
    */
-  public ACComboBox getComboBox() {
+  public IkenshoOptionComboBox getComboBox() {
     return pos;
   }
 

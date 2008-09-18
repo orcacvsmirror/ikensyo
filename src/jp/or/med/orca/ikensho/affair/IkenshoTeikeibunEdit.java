@@ -42,7 +42,9 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
     private VRLabel header2 = new VRLabel();
     private VRLabel header3 = new VRLabel();
     private VRPanel inputs = new VRPanel();
-    private ACTable table = new ACTable();
+    // 2008/01/16 [Masahiko Higuchi] add - begin 変更後選択対応（スコープ範囲の変更）
+    protected ACTable table = new ACTable();
+    // 2008/01/16 [Masahiko Higuchi] add - end
     private VRPanel messages = new VRPanel();
     private VRLabel inputNote = new VRLabel();
     private VRLabel inputNote2 = new VRLabel();
@@ -77,6 +79,10 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
     protected String orderStatement;
     protected String whereStatement;
     protected String whereFieldName;
+    
+    // 2008/01/16 [Masahiko Higuchi] add - begin 変更後選択対応（変更時のRow保持用）
+    protected int editRow = -1;
+    // 2008/01/16 [Masahiko Higuchi] add - end
 
     protected boolean changed = false;
 
@@ -256,6 +262,18 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
 
                 // 後処理
                 table.clearSelection();
+                
+                // 2008/01/16 [Masahiko Higuchi] add - begin 変更後選択対応
+                try{
+                	// 選択行の退避
+                	editRow = selRow;
+                	// イベントを呼ぶ
+                	addChangeAfter();
+                }catch (Exception ex) {
+                	return;
+                }
+                // 2008/01/16 [Masahiko Higuchi] add - end
+                
                 modified = true;
             }
         });
@@ -345,6 +363,12 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
                 modified = true;
             }
         });
+        
+        
+       // 2007/10/05 [Masahiko Higuchi] 2007年度対応 Addition - begin
+        addEvents();
+       // 2007/10/05 [Masahiko Higuchi] Addition - begin
+        
     }
 
     /**
@@ -352,10 +376,17 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
      * 
      * @throws Exception 処理例外
      */
-    private void jbInit() throws Exception {
-        FlowLayout buttonsLayout = new FlowLayout();
-        buttonsLayout.setAlignment(FlowLayout.RIGHT);
-
+    protected void jbInit() throws Exception {
+        //FlowLayout buttonsLayout = new FlowLayout();
+        //buttonsLayout.setAlignment(FlowLayout.RIGHT);
+        // 2007/10/10 [Masahiko Higuchi] Replace - begin
+        VRLayout buttonsLayout = new VRLayout();
+        buttonsLayout.setAlignment(VRLayout.RIGHT);
+        buttonsLayout.setAutoWrap(true);
+        buttonsLayout.setHgap(5);
+        buttonsLayout.setVgap(0);
+        // 2007/10/10 [Masahiko Higuchi] Replace - end
+        
         header.setLayout(new VRLayout());
         mover.setLayout(new VRLayout());
         buttons.setLayout(buttonsLayout);
@@ -373,12 +404,17 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
         otherAdd.setVisible(false);
         editors.add(inputs, BorderLayout.NORTH);
         editors.add(buttons, BorderLayout.SOUTH);
-        buttons.add(otherAdd, null);
-        buttons.add(add, null);
-        buttons.add(edit, null);
-        buttons.add(delete, null);
-        buttons.add(comit, null);
-        buttons.add(close, null);
+        // 2007/10/18 [Masahiko Higuchi] Delete - begin
+        //buttons.add(otherAdd, null);
+        //buttons.add(add, null);
+        //buttons.add(edit, null);
+        //buttons.add(delete, null);
+        //buttons.add(comit, null);
+        //buttons.add(close, null);
+        // 2007/10/18 [Masahiko Higuchi] Delete - end
+        // 2007/10/18 [Masahiko Higuchi] Addition - begin
+        buildButtonsPanel();
+        // 2007/10/18 [Masahiko Higuchi] Addition - end        
 
         inputs.setLayout(new BorderLayout());
         messages.setLayout(new BorderLayout());
@@ -433,6 +469,12 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
         otherAdd.setMnemonic('O');
 
         table.setColumnSort(false);
+        
+        
+        // 2007/10/05 [Masahiko Higuchi] コンボからの定型文編集機能 Addition - begin
+        jbInitCustom();
+        // 2007/10/05 [Masahiko Higuchi] Addition - end
+        
     }
 
     /**
@@ -585,8 +627,11 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
      * テーブルの変更内容をDBに反映します。
      * 
      * @throws Exception 処理例外
+     * @version 1.0 
+     * @version 2.0 
+     *  Masahiko Higuchi スコープ範囲をprivateからprotectedに修正
      */
-    private void updateData() throws Exception {
+    protected void updateData() throws Exception {
         // DELETE文
 
         IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
@@ -773,4 +818,146 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
 
         return false;
     }
+
+    /**
+     * オプションコンボ画面変更処理用。
+     * 
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected void jbInitCustom() {
+        
+    }
+    
+    /**
+     * ボタン領域を取得します。
+     * 
+     * @return ボタン領域
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected VRPanel getButtons() {
+        return buttons;
+    }
+    
+    /**
+     * 登録ボタンを取得します。
+     * 
+     * @return 登録ボタン
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected ACButton getComit() {
+        return comit;
+    }
+    
+    /**
+     * 継承先からイベントを追加する際に使用します。
+     * 
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected void addEvents(){
+        
+    }
+    
+    /**
+     * 一覧を取得します。
+     * 
+     * @return 一覧テーブル
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected ACTable getTable() {
+        return table;
+    }
+
+    /**
+     * ボタン領域の生成を行います。
+     * 
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected void buildButtonsPanel(){
+        buttons.add(otherAdd, null);
+        buttons.add(add, null);
+        buttons.add(edit, null);
+        buttons.add(delete, null);
+        buttons.add(comit, null);
+        buttons.add(close, null);
+    }
+    
+    
+    /**
+     * 変更が発生したかチェックします。
+     * 
+     * @return 変更の有無
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected boolean isModified() {
+        return modified;
+    }
+
+    /**
+     * 追加ボタン を返します。
+     * @return 追加ボタン
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected ACButton getAdd() {
+        return add;
+    }
+
+    /**
+     * 閉じるボタン を返します。
+     * @return 閉じるボタン
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected ACButton getClose() {
+        return close;
+    }
+
+    /**
+     * 削除ボタン を返します。
+     * @return 削除ボタン
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected ACButton getDelete() {
+        return delete;
+    }
+
+    /**
+     * 変更ボタン を返します。
+     * @return 変更ボタン
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected ACButton getEdit() {
+        return edit;
+    }
+
+    /**
+     * 他に追加ボタン を返します。
+     * @return 他に追加ボタン
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected ACButton getOtherAdd() {
+        return otherAdd;
+    }
+    
+    /**
+     * 変更ボタン押下後の処理を実装
+     * 
+     * @throws Exception 処理例外
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    protected void addChangeAfter() throws Exception{
+    	
+    }
+    
 }

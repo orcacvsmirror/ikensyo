@@ -26,6 +26,8 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoEraDateTextField;
+import jp.or.med.orca.ikensho.event.IkenshoEraDateTextFieldEvent;
+import jp.or.med.orca.ikensho.event.IkenshoEraDateTextFieldListener;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -115,7 +117,7 @@ public class IkenshoIkenshoInfoApplicant
         }
       }
     });
-
+    
     int end = otherDepartmentUse.getCheckBoxCount();
     for (int i = 0; i < end; i++) {
       otherDepartmentUse.getCheckBox(i).setEnabled(false);
@@ -220,6 +222,10 @@ public class IkenshoIkenshoInfoApplicant
     lastExaminationDateGroup.add(lastExaminationDateCaption,
                                  VRLayout.FLOW_INSETLINE);
     lastExaminationDateCaption.add(lastExaminationDate, null);
+    // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+    lastExaminationDate.setEraPreclusion("平成");
+    lastExaminationDate.setDateTypeConv(true);
+    // 2007/10/25 [Masahiko Higuchi] Addition - end
     writeDateGroup.add(writeDateCaption, VRLayout.FLOW_INSETLINE);
     writeDateCaption.add(writeDate, null);
     otherDepartmentCaption.add(otherDepartment, null);
@@ -251,30 +257,48 @@ public class IkenshoIkenshoInfoApplicant
         writeDate.requestChildFocus();
         return false;
     }
-
-
-    switch (lastExaminationDate.getInputStatus()) {
-      case IkenshoEraDateTextField.STATE_EMPTY:
-        break;
-      case IkenshoEraDateTextField.STATE_VALID:
-        //有効ならば記入日との前後チェック
-        if (lastExaminationDate.getDate().compareTo(writeDate.getDate())>0) {
-          //記入日のほうが古い
-          ACMessageBox.show("最終診察日は記入日以前でなければなりません。");
-          lastExaminationDate.requestChildFocus();
-          return false;
+    // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+    lastExaminationDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+    if(!"".equals(lastExaminationDate.getEra())&& !"".equals(lastExaminationDate.getYear())){
+        lastExaminationDate.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+        // 2007/10/25 [Masahiko Higuchi] Addition - end
+        switch (lastExaminationDate.getInputStatus()) {
+          case IkenshoEraDateTextField.STATE_EMPTY:
+              // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+              lastExaminationDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+              // 2007/10/25 [Masahiko Higuchi] Addition - end
+            break;
+          case IkenshoEraDateTextField.STATE_VALID:
+            //有効ならば記入日との前後チェック
+            if (lastExaminationDate.getDate().compareTo(writeDate.getDate())>0) {
+              //記入日のほうが古い
+              ACMessageBox.show("最終診察日は記入日以前でなければなりません。");
+              lastExaminationDate.requestChildFocus();
+              // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+              lastExaminationDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+              // 2007/10/25 [Masahiko Higuchi] Addition - end
+              return false;
+            }
+            // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+            lastExaminationDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+            // 2007/10/25 [Masahiko Higuchi] Addition - end
+            break;
+          case IkenshoEraDateTextField.STATE_FUTURE:
+            ACMessageBox.showExclamation("未来の日付です。");
+            lastExaminationDate.requestChildFocus();
+            // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+            lastExaminationDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+            // 2007/10/25 [Masahiko Higuchi] Addition - end
+            return false;
+          default:
+            ACMessageBox.show("日付に誤りがあります。");
+            lastExaminationDate.requestChildFocus();
+            // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+            lastExaminationDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+            // 2007/10/25 [Masahiko Higuchi] Addition - end
+            return false;
         }
-        break;
-      case IkenshoEraDateTextField.STATE_FUTURE:
-        ACMessageBox.showExclamation("未来の日付です。");
-        lastExaminationDate.requestChildFocus();
-        return false;
-      default:
-        ACMessageBox.show("日付に誤りがあります。");
-        lastExaminationDate.requestChildFocus();
-        return false;
     }
-
     if (otherDepartment.getSelectedIndex() == 1) {
       //他科受診あり
       if (otherDepartmentOtherUse.isSelected()) {

@@ -484,35 +484,78 @@ public class IkenshoIshiIkenshoInfoSpecialMention2 extends
      */
     public boolean noControlError() {
         if(super.noControlError()){
-            // 精神症状-判定時期チェック
-            switch (getSpiritEraDate().getInputStatus()) {
-            case IkenshoEraDateTextField.STATE_EMPTY:
-            case IkenshoEraDateTextField.STATE_VALID:
-                break;
-            case IkenshoEraDateTextField.STATE_FUTURE:
-                ACMessageBox.showExclamation("未来の日付です。");
-                getSpiritEraDate().requestChildFocus();
-                return false;
-            default:
-                ACMessageBox.show("日付に誤りがあります。");
-                getSpiritEraDate().requestChildFocus();
-                return false;
+        	
+            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+            // チェックする対象期間の初期値を設定
+        	getSpiritEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+            if(!"".equals(getSpiritEraDate().getEra()) && !"".equals(getSpiritEraDate().getYear())){
+            	// チェック用の対象期間設定に変更する。
+            	getSpiritEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+            // 2008/01/15 [Masahiko Higuchi] add - end
+        	
+	            // 精神症状-判定時期チェック
+	            switch (getSpiritEraDate().getInputStatus()) {
+	            case IkenshoEraDateTextField.STATE_EMPTY:
+	            case IkenshoEraDateTextField.STATE_VALID:
+		            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	            	getSpiritEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+		            // 2008/01/15 [Masahiko Higuchi] add - end
+	                break;
+	            case IkenshoEraDateTextField.STATE_FUTURE:
+	                ACMessageBox.showExclamation("未来の日付です。");
+	                getSpiritEraDate().requestChildFocus();
+		            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	            	getSpiritEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+		            // 2008/01/15 [Masahiko Higuchi] add - end
+	                return false;
+	            default:
+	                ACMessageBox.show("日付に誤りがあります。");
+	                getSpiritEraDate().requestChildFocus();
+		            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	            	getSpiritEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+		            // 2008/01/15 [Masahiko Higuchi] add - end
+	                return false;
+	            }
+	        // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
             }
+	        // 2008/01/15 [Masahiko Higuchi] add - end
             
-            // 生活障害-判断時期チェック
-            switch (getSeikatsuEraDate().getInputStatus()) {
-            case IkenshoEraDateTextField.STATE_EMPTY:
-            case IkenshoEraDateTextField.STATE_VALID:
-                break;
-            case IkenshoEraDateTextField.STATE_FUTURE:
-                ACMessageBox.showExclamation("未来の日付です。");
-                getSeikatsuEraDate().requestChildFocus();
-                return false;
-            default:
-                ACMessageBox.show("日付に誤りがあります。");
-                getSeikatsuEraDate().requestChildFocus();
-                return false;
+            
+            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+            // チェックする対象期間の初期値を設定
+            getSeikatsuEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+            if(!"".equals(getSeikatsuEraDate().getEra()) && !"".equals(getSeikatsuEraDate().getYear())){
+            	// チェック用の対象期間設定に変更する。
+            	getSeikatsuEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+            // 2008/01/15 [Masahiko Higuchi] add - end
+            
+	            // 生活障害-判断時期チェック
+	            switch (getSeikatsuEraDate().getInputStatus()) {
+	            case IkenshoEraDateTextField.STATE_EMPTY:
+	            case IkenshoEraDateTextField.STATE_VALID:
+		            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	            	getSeikatsuEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+		            // 2008/01/15 [Masahiko Higuchi] add - end
+	                break;
+	            case IkenshoEraDateTextField.STATE_FUTURE:
+	                ACMessageBox.showExclamation("未来の日付です。");
+	                getSeikatsuEraDate().requestChildFocus();
+		            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	            	getSeikatsuEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+		            // 2008/01/15 [Masahiko Higuchi] add - end
+	                return false;
+	            default:
+	                ACMessageBox.show("日付に誤りがあります。");
+	                getSeikatsuEraDate().requestChildFocus();
+		            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	            	getSeikatsuEraDate().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+		            // 2008/01/15 [Masahiko Higuchi] add - end
+	                return false;
+	            }
+
+		    // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
             }
+	        // 2008/01/15 [Masahiko Higuchi] add - end
             
             return true;
         }else{
@@ -611,6 +654,12 @@ public class IkenshoIshiIkenshoInfoSpecialMention2 extends
             spiritEraDate.setBindPath("SK_NIJIKU_DT");
             // 表示領域を平成と空白のみに設定
             spiritEraDate.setEraRange(3);
+            
+    		// 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+            spiritEraDate.setEraPreclusion("平成");
+            spiritEraDate.setDefaultCheckRange(IkenshoEraDateTextField.RNG_YEAR);
+            spiritEraDate.setDateTypeConv(false);
+    		// 2008/01/15 [Masahiko Higuchi] add - end
         }
         return spiritEraDate;
     }
@@ -686,6 +735,12 @@ public class IkenshoIshiIkenshoInfoSpecialMention2 extends
             seikatsuEraDate.setBindPath("SK_SEIKATSU_DT");
             // 表示領域を平成と空白に限定
             seikatsuEraDate.setEraRange(3);
+            
+    		// 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+            seikatsuEraDate.setEraPreclusion("平成");
+            seikatsuEraDate.setDefaultCheckRange(IkenshoEraDateTextField.RNG_YEAR);
+            seikatsuEraDate.setDateTypeConv(false);
+    		// 2008/01/15 [Masahiko Higuchi] add - end
         }
         return seikatsuEraDate;
     }

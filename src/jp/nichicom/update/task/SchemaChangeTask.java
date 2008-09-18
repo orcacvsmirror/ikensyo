@@ -29,7 +29,7 @@ public class SchemaChangeTask extends AbstractTask{
 	 * 設定されているタスクを実行する。
 	 * 
 	 */
-	public boolean runTask() throws Exception{
+	public boolean runTask(TaskProcesser tp) throws Exception{
 		DBConnect db = new DBConnect();
 		try{
 			///バージョンチェック
@@ -37,17 +37,20 @@ public class SchemaChangeTask extends AbstractTask{
 			//サーバ上のモジュールバージョンが新しければ、コピー実行
 			if(version.compareTo(getVersionNo()) >= 0){
 				db = null;
+                tp.skipTask(this);
 				return false;
 			}
 			db.commit();
 			
 			db.begin();
 			
+            tp.setStatus("スキーマ更新("+getVersionNo()+")");
 			for(int i = 0; i < taskList.size(); i++){
 				String query = (String)taskList.get(i);
 				if(!Util.isNull(query)){
 					db.exec(query);
 				}
+                tp.addProgress();
 			}
 			db.exec("UPDATE IKENSYO_VERSION SET SCHEMA_VERSION = " + getVersionNo() + ",LAST_TIME = CURRENT_TIMESTAMP");
 			db.commit();
@@ -70,5 +73,7 @@ public class SchemaChangeTask extends AbstractTask{
 	public String getDataVersion(DBConnect db) throws Exception {
 		return db.execQuerySingle("SELECT SCHEMA_VERSION FROM IKENSYO_VERSION");
 	}
-
+      public int size(){
+            return taskList.size();
+        }
 }

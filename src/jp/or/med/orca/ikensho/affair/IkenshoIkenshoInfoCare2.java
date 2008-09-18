@@ -25,6 +25,7 @@ import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoCareStatusContainer;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.component.IkenshoUndelineIntegerCheckBox;
 import jp.or.med.orca.ikensho.component.IkenshoUnderlineFormatableLabel;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
@@ -35,7 +36,9 @@ public class IkenshoIkenshoInfoCare2 extends
         IkenshoTabbableChildAffairContainer {
     private IkenshoUndelineIntegerCheckBox care2HoumonShikaEisei = new IkenshoUndelineIntegerCheckBox();
     private ACValueArrayRadioButtonGroup care2Kansen;
-    private ACComboBox care2KansenName;
+//  2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    private IkenshoOptionComboBox care2KansenName;
+//  2007/10/18 [Masahiko Higuchi] Replace - end
     private ACLabelContainer care2HoumonEiyous = new ACLabelContainer();
     private IkenshoUnderlineFormatableLabel care2HoumonAbstract2 = new IkenshoUnderlineFormatableLabel();
     private IkenshoUndelineIntegerCheckBox care2HoumonYakuzai = new IkenshoUndelineIntegerCheckBox();
@@ -45,13 +48,17 @@ public class IkenshoIkenshoInfoCare2 extends
     private ACGroupBox care2ServiceGroup = new ACGroupBox();
     private VRLayout careLayout = new VRLayout();
     private IkenshoUndelineIntegerCheckBox care2HoumonsKango = new IkenshoUndelineIntegerCheckBox();
-    private ACComboBox care2ServiceOtherValue = new ACComboBox();
-    private ACComboBox care2SesshokuValue = new ACComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    private IkenshoOptionComboBox care2ServiceOtherValue = new IkenshoOptionComboBox();
+    private IkenshoOptionComboBox care2SesshokuValue = new IkenshoOptionComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - end
     private IkenshoUndelineIntegerCheckBox care2TsuushyoReha = new IkenshoUndelineIntegerCheckBox();
     private IkenshoUndelineIntegerCheckBox care2TankiNyuushyoKaigo = new IkenshoUndelineIntegerCheckBox();
     private ACLabelContainer care2HoumonOthers = new ACLabelContainer();
     private ACLabelContainer care2HoumonRehas = new ACLabelContainer();
-    private ACComboBox care2KetsuattsuValue = new ACComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    private IkenshoOptionComboBox care2KetsuattsuValue = new IkenshoOptionComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - end
     private ACLabelContainer care2ServiceOthers = new ACLabelContainer();
     private IkenshoAddWestClearableRadioButtonGroup care2Move = new IkenshoAddWestClearableRadioButtonGroup();
     // private NCClearableRadioButtonGroup care2Move = new
@@ -66,7 +73,9 @@ public class IkenshoIkenshoInfoCare2 extends
     private ACLabelContainer care2Moves = new ACLabelContainer();
     private VRPanel care2Needs3 = new VRPanel();
     private ACLabelContainer care2HoumonKangos = new ACLabelContainer();
-    private ACComboBox care2EngeValue = new ACComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    private IkenshoOptionComboBox care2EngeValue = new IkenshoOptionComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - end
     private IkenshoAddWestClearableRadioButtonGroup care2Sesshoku = new IkenshoAddWestClearableRadioButtonGroup();
     // private NCClearableRadioButtonGroup care2Sesshoku = new
     // NCClearableRadioButtonGroup();
@@ -82,7 +91,9 @@ public class IkenshoIkenshoInfoCare2 extends
     private IkenshoAddWestClearableRadioButtonGroup care2Enge = new IkenshoAddWestClearableRadioButtonGroup();
     // private NCClearableRadioButtonGroup care2Enge = new
     // NCClearableRadioButtonGroup();
-    private ACComboBox care2MoveValue = new ACComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    private IkenshoOptionComboBox care2MoveValue = new IkenshoOptionComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - end
     private IkenshoAddWestClearableRadioButtonGroup care2Ketsuattsu = new IkenshoAddWestClearableRadioButtonGroup();
     // private NCClearableRadioButtonGroup care2Ketsuattsu = new
     // NCClearableRadioButtonGroup();
@@ -391,10 +402,12 @@ public class IkenshoIkenshoInfoCare2 extends
      * 感染症名を返します。
      * 
      * @return 感染症名
+     * @author Masahiko Higuchi
+     * @since 3.0.5
      */
-    protected ACComboBox getCare2KansenName() {
+    protected IkenshoOptionComboBox getCare2KansenName() {
         if (care2KansenName == null) {
-            care2KansenName = new ACComboBox();
+            care2KansenName = new IkenshoOptionComboBox();
         }
         return care2KansenName;
     }
@@ -722,40 +735,52 @@ public class IkenshoIkenshoInfoCare2 extends
         }
     }
     
-
+//  2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
     /**
      * 血圧への留意事項を返します。
      * @return 血圧への留意事項
+     * @author Masahiko Higuchi
+     * @since 3.0.5
      */
-    protected ACComboBox getCare2KetsuattsuValue(){
+    protected IkenshoOptionComboBox getCare2KetsuattsuValue(){
         return care2KetsuattsuValue;
     }
     /**
      * 嚥下への留意事項を返します。
      * @return 嚥下への留意事項
+     * @author Masahiko Higuchi
+     * @since 3.0.5
      */
-    protected ACComboBox getCare2EngeValue(){
+    protected IkenshoOptionComboBox getCare2EngeValue(){
         return care2EngeValue;
     }
     /**
      * 摂食への留意事項を返します。
      * @return 摂食への留意事項
+     * @author Masahiko Higuchi
+     * @since 3.0.5
      */
-    protected ACComboBox getCare2SesshokuValue(){
+    protected IkenshoOptionComboBox getCare2SesshokuValue(){
         return care2SesshokuValue;
     }
     /**
      * 移動への留意事項を返します。
      * @return 移動への留意事項
+     * @author Masahiko Higuchi
+     * @since 3.0.5
      */
-    protected ACComboBox getCare2MoveValue(){
+    protected IkenshoOptionComboBox getCare2MoveValue(){
         return care2MoveValue;
     }
     /**
      * その他の留意事項を返します。
      * @return その他の留意事項
+     * @author Masahiko Higuchi
+     * @since 3.0.5
      */
-    protected ACComboBox getCare2ServiceOtherValue(){
+    protected IkenshoOptionComboBox getCare2ServiceOtherValue(){
         return care2ServiceOtherValue;
     }
+//  2007/10/18 [Masahiko Higuchi] Addition - end
+    
 }

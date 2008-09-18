@@ -197,7 +197,6 @@ public class XMLDocumentUtil {
 	 * @throws Exception
 	 */
 	public void setNodeValue(String properities,String properity,String value) throws Exception {
-		
 		Node node = getNode(properities,properity);
 		
 		if(node != null){
@@ -212,13 +211,13 @@ public class XMLDocumentUtil {
 	 * @return 指定ノードが見つからない場合は、nullをリターン
 	 */
 	private Node getNode(String properities,String properity){
-		NodeList list = root.getElementsByTagName("properities");
+		NodeList list = root.getElementsByTagName("properties");
 		Node n;
 		for(int i = 0; i < list.getLength(); i++){
 			n = list.item(i);
 			NamedNodeMap map = n.getAttributes();
 			if(properities.equals(map.getNamedItem("id").getNodeValue())){
-				NodeList list2 = ((Element)n).getElementsByTagName("properity");
+				NodeList list2 = ((Element)n).getElementsByTagName("property");
 				for(int j = 0; j < list2.getLength(); j++){
 					Node node = list2.item(j);
 					NamedNodeMap map2 = node.getAttributes();

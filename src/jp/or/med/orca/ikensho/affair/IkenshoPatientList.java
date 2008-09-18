@@ -1,10 +1,15 @@
 package jp.or.med.orca.ikensho.affair;
 
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.event.MouseEvent;
+import java.awt.im.InputSubset;
+import java.sql.Date;
 import java.text.Format;
 import java.text.ParseException;
 import java.util.ArrayList;
@@ -14,10 +19,21 @@ import javax.swing.JPopupMenu;
 import javax.swing.SwingConstants;
 import javax.swing.event.ListSelectionEvent;
 
+import jp.nichicom.ac.ACCommon;
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.component.ACAffairButtonBar;
+import jp.nichicom.ac.component.ACButton;
+import jp.nichicom.ac.component.ACComboBox;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACLabel;
+import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.table.ACTable;
+import jp.nichicom.ac.component.table.ACTableCellViewer;
 import jp.nichicom.ac.component.table.ACTableColumn;
+import jp.nichicom.ac.container.ACBackLabelContainer;
+import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
@@ -25,15 +41,21 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACPassiveKey;
+import jp.nichicom.ac.text.ACDateFormat;
+import jp.nichicom.ac.text.ACHashMapFormat;
+import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.component.table.VRTableColumnModel;
 import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.text.VRCharType;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.IkenshoEraDateTextField;
 import jp.or.med.orca.ikensho.component.table.IkenshoCheckBoxTableCellEditor;
 import jp.or.med.orca.ikensho.component.table.IkenshoCheckBoxTableCellRenderer;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
@@ -51,6 +73,35 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
     private ACAffairButton print = new ACAffairButton();
     private ACTable table = new ACTable();
 
+    // 2007/09/18 [Masahiko Higuchi] Addition - begin
+    private ACPanel findPanel;
+    private ACPanel findButtonPanel;
+    private ACTextField kanjyaText;
+    private ACLabelContainer kanjyaIDContainer;
+    private ACLabelContainer furiganaContainer;
+    private ACLabelContainer reportContainer;
+    private ACLabelContainer kanjyaContainer;
+    private ACLabelContainer birthDayContainer;
+    private ACTextField furiganaText;
+    private ACComboBox reportCombo;
+    private ACIntegerCheckBox kanjyaCheck;
+    private IkenshoEraDateTextField birthDayDateText;
+    private ACLabelContainer reportDateFromContainer;
+    private ACLabelContainer reportDateToContainer;
+    private IkenshoEraDateTextField reportDateFrom;
+    private IkenshoEraDateTextField reportDateTo;
+    private ACBackLabelContainer reportBackContainer;
+    private ACLabel reportFromToLabel;
+    private ACButton clearButton;
+    private ACPanel reportPanel;
+    private ACButton findButton;
+    private ACButton initialFindButton;
+    // 有効カラム
+    private ACTableColumn patientEnabledColumn;
+    // 生年月日カラム
+    private ACTableColumn patientBirthColumn;
+    // 2007/09/18 [Masahiko Higuchi] Addition - end
+    
     /** @todo menu */
     private JPopupMenu popup = new JPopupMenu();
     private JMenuItem detailMenu = new JMenuItem();
@@ -88,23 +139,40 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         addTableSelectedTrigger(table);
         addPrintTableTrigger(print);
         addTableDoubleClickedTrigger(table);
+        
+        // 2007/09/18 [Masahiko Higuchi] Addition - begin
+        //addFindTrigger(getFindMenu());
+        //addFindTrigger(getFind());
+        addFindTrigger(getFindButton());
+        getClearButton().addActionListener(
+                new IkenshoPatientList_clearDate_actionAdapter(this));
+        getInitialFindButton().addActionListener(
+				new IkenshoPatientList_initialFind_actionAdapter(this));
+        // 2007/09/18 [Masahiko Higuchi] Addition - end        
 
         VRMap params = affair.getParameters();
         if (VRBindPathParser.has("PREV_DATA", params)) {
             // 画面遷移キャッシュデータがある場合は、パラメタを置き換える
             params = (VRMap) VRBindPathParser.get("PREV_DATA", params);
         }
-
-        doSelect();
         
+        // 2007/10/15 [Masahiko Higuchi] Delete - begin
+        //doSelect();
+        // 2007/10/15 [Masahiko Higuchi] Delete - end
+        // 2007/10/15 [Masahiko Higuchi] Addition - begin
+        doFind();
+        // 2007/10/15 [Masahiko Higuchi] Addition - end
+        
+        
+        // 2007/10/15 [Masahiko Higuchi] Replace - begin
         // 2006/07/05
         // 医師意見書対応
         // 医師意見書最終記入年月日表示用のカラムを追加
         // Addition - begin [Masahiko Higuchi]
         setTableModelAdapter(new ACTableModelAdapter(data, new String[] {
-                "CHART_NO", "PATIENT_NM", "PATIENT_KN", "SEX", "BIRTHDAY",
+                "CHART_NO","PATIENT_NM", "PATIENT_KN", "SEX", "BIRTHDAY",
                 "IKN_ORIGIN_KINYU_DT", "SIS_ORIGIN_KINYU_DT", "KOUSIN_DT",
-                "DELETE_FLAG","IKN_ORIGIN_KINYU_DT_ISHI" }));
+                "DELETE_FLAG","IKN_ORIGIN_KINYU_DT_ISHI","SHOW_FLAG","BIRTHDAY","PATIENT_NO" }));
         // Addition - end
         table.setModel(getTableModelAdapter());
 
@@ -112,11 +180,13 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
                 new ACTableColumn(8, 22, "　",
                         new IkenshoCheckBoxTableCellRenderer(),
                         deleteCheckEditor),
+                getPatientEnabledColumn(),
                 new ACTableColumn(0, 50, "患者ID"),
                 new ACTableColumn(1, 110, "氏名"),
                 new ACTableColumn(2, 130, "ふりがな"),
                 new ACTableColumn(3, 32, "性別", SwingConstants.CENTER,
                         IkenshoConstants.FORMAT_SEX),
+                getPatientBirthColumn(),
                 new ACTableColumn(4, 32, "年齢", SwingConstants.RIGHT,
                         IkenshoConstants.FORMAT_NOW_AGE),
                         // 2006/07/05
@@ -132,7 +202,8 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
                         IkenshoConstants.FORMAT_ERA_YMD),
                 new ACTableColumn(7, 120, "最終更新日",
                         IkenshoConstants.FORMAT_ERA_HMS), }));
-
+        // 2007/10/15 [Masahiko Higuchi] Replace - end
+        
         if (table.getRowCount() > 0) {
             int sel = 0;
             if (VRBindPathParser.has("PATIENT_NO", params)) {
@@ -152,12 +223,13 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
             // 初行を自動選択
             table.setSelectedModelRow(sel);
         }
-
+        
     }
 
     /**
      * 選択処理を行います。
      * 
+     * @deprecated doFindメソッドの使用を推奨
      * @throws Exception 処理例外
      */
     private void doSelect() throws Exception {
@@ -203,6 +275,9 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         sb.append(" PATIENT.SEX,");
         sb.append(" PATIENT.BIRTHDAY,");
         sb.append(" PATIENT.KOUSIN_DT,");
+        // 2007/10/15 [Masahiko Higuchi] Addition - begin
+        sb.append(" PATIENT.SHOW_FLAG,");
+        // 2007/10/15 [Masahiko Higuchi] Addition - end        
         sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_MAX_EDA,");
         // 2006/07/05
         // 医師意見書対応 TODO
@@ -315,7 +390,7 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         if (getTableModelAdapter() != null) {
             getTableModelAdapter().setAdaptee(data);
         }
-
+        
         checkButtonsEnabled();
 
         setStatusText(String.valueOf(data.getDataSize()) + "件登録されています。");
@@ -379,6 +454,10 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         } catch (Exception e) {
             e.printStackTrace();
         }
+        // 2007/09/18 [Masahiko Higuchi] Addition - begin        
+        //fitAffairButtonSize();
+        // 2007/09/18 [Masahiko Higuchi] Addition - end
+        
         deleteCheckEditor = new IkenshoCheckBoxTableCellEditor();
 
         deleteCheckEditor.addItemListener(new ItemListener() {
@@ -740,8 +819,7 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 
         return true;
     }
-    
-    
+
     protected void detailActionPerformed(ActionEvent e) throws Exception {
         int row = table.getSelectedModelRow();
         if (row < 0) {
@@ -751,7 +829,6 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         VRMap param = new VRHashMap();
         param.putAll((VRMap) data.getData(row));
         param.setData("AFFAIR_MODE", IkenshoConstants.AFFAIR_MODE_UPDATE);
-
         ACAffairInfo affair = new ACAffairInfo(IkenshoPatientInfo.class
                 .getName(), param, "患者最新基本情報");
         ACFrame.getInstance().next(affair);
@@ -858,10 +935,24 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
             }
 
             int lastSelectedIndex = table.getSelectedSortedRow();
-            doSelect();
+            // 2007/10/24 [Masahiko Higuchi] Delete - begin ソースレビュー後修正
+            //doSelect();
+            // 2007/10/24 [Masahiko Higuchi] Delete - end
+            // 2007/10/24 [Masahiko Higuchi] Addition - begin ソースレビュー後修正
+            doFind();
+            // 2007/10/24 [Masahiko Higuchi] Addition - end
             table.setSelectedSortedRowOnAfterDelete(lastSelectedIndex);
 
         }
+    }
+    
+    /**
+     * 検索処理を実行します。
+     */
+    protected void findActionPerformed(ActionEvent e) throws Exception {
+        // 検索の実行
+        doFind();
+        
     }
 
     public boolean canBack(VRMap parameters) throws Exception {
@@ -928,6 +1019,12 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         deleteMenu.setMnemonic('D');
         deleteMenu.setText("患者削除(D)");
         this.add(buttons, VRLayout.NORTH);
+        
+        // 2007/09/18 [Masahiko Higuchi] Addition - begin 
+        this.add(getFindPanel(),VRLayout.NORTH);
+        this.add(getFindButtonPanel(),VRLayout.NORTH);
+        // 2007/09/18 [Masahiko Higuchi] Addition - end
+        
         this.add(table, VRLayout.CLIENT);
 
         buttons.add(print, VRLayout.EAST);
@@ -941,6 +1038,7 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         popup.add(ikenshoMenu);
         popup.add(sijishoMenu);
         popup.add(deleteMenu);
+
     }
 
     public ACAffairButtonBar getButtonBar() {
@@ -964,5 +1062,961 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
     protected void setTableModelAdapter(ACTableModelAdapter tableModelAdapter) {
         this.tableModelAdapter = tableModelAdapter;
     }
+    
+    /**
+     * 検索領域を取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACPanel getFindPanel() {
+        if(findPanel == null){
+            findPanel = new ACPanel();
+            findPanel.add(getKanjyaIDContainer(),VRLayout.FLOW_INSETLINE);
+            findPanel.add(getKanjyaContainer(),VRLayout.FLOW_INSETLINE_RETURN);
+            findPanel.add(getFuriganaContainer(),VRLayout.FLOW_INSETLINE);
+            getFindPanel().add(getBirthDayContainer(),VRLayout.FLOW_INSETLINE_RETURN);
+            findPanel.add(getReportBackContainer(),VRLayout.FLOW_INSETLINE);
+        }
+        
+        return findPanel;
+    }
 
+    /**
+     * 「ふりがな」コンテナを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACLabelContainer getFuriganaContainer() {
+        if(furiganaContainer == null){
+            furiganaContainer = new ACLabelContainer();
+            furiganaContainer.setText("ふりがな");
+            furiganaContainer.add(getFuriganaText());
+        }
+        return furiganaContainer;
+    }
+
+    /**
+     * 「ふりがな」テキストを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACTextField getFuriganaText() {
+        if(furiganaText == null){
+            furiganaText = new ACTextField();
+            furiganaText.setColumns(15);
+            furiganaText.setMaxLength(30);
+            furiganaText.setIMEMode(InputSubset.KANJI);
+            furiganaText.setHorizontalAlignment(SwingConstants.LEFT);
+        }        
+        return furiganaText;
+    }
+
+    /**
+     * 「現在有効でない患者も含めて検索する」チェックボックスを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACIntegerCheckBox getKanjyaCheck() {
+        if(kanjyaCheck == null){
+            kanjyaCheck = new ACIntegerCheckBox();
+            kanjyaCheck.setText("現在有効でない患者も含めて検索する(A)");
+            kanjyaCheck.setMnemonic('A');
+            kanjyaCheck.setBindPath("HIDE_FLAG");
+        }    
+        return kanjyaCheck;
+    }
+
+    /**
+     * 患者IDコンテナを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACLabelContainer getKanjyaIDContainer() {
+        if(kanjyaIDContainer == null){
+            kanjyaIDContainer = new ACLabelContainer();
+            kanjyaIDContainer.setText("患者ID");
+            kanjyaIDContainer.add(getKanjyaText());
+        }    
+        return kanjyaIDContainer;
+    }
+
+    /**
+     * 患者IDテキストを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACTextField getKanjyaText() {
+        if(kanjyaText == null){
+            kanjyaText = new ACTextField();
+            kanjyaText.setColumns(15);
+            kanjyaText.setMaxLength(20);
+            kanjyaText.setIMEMode(InputSubset.LATIN);
+            kanjyaText.setHorizontalAlignment(SwingConstants.LEFT);
+        }    
+        return kanjyaText;
+    }
+
+    /**
+     * 帳票種類コンボを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACComboBox getReportCombo() {
+        if(reportCombo == null){
+            reportCombo = new ACComboBox();
+            reportCombo.setEditable(false);
+            reportCombo.setColumns(8);
+            reportCombo.setBlankItem("");
+            reportCombo.setBlankable(true);
+            reportCombo.setModel(new String[]{"主治医意見書","医師意見書","訪問看護指示書"});
+        } 
+        return reportCombo;
+    }
+    
+    /**
+     * 帳票種類ラベルコンテナを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACLabelContainer getReportContainer() {
+        if(reportContainer == null){
+            reportContainer = new ACLabelContainer();
+            VRLayout reportLayout = new VRLayout();
+            reportLayout.setHgap(0);
+            reportContainer.setText("帳票種類");
+            reportContainer.setLayout(reportLayout);
+            reportContainer.add(getReportCombo(),null);
+        } 
+        return reportContainer;
+    }
+    
+    /**
+     * 生年月日コンポーネントを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected IkenshoEraDateTextField getBirthDayDateText() {
+        if(birthDayDateText == null){
+            birthDayDateText = new IkenshoEraDateTextField();
+            birthDayDateText.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+            birthDayDateText.setVisible(true);
+        }
+        return birthDayDateText;
+    }
+
+    /**
+     * 生年月日ラベルコンテナを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACLabelContainer getBirthDayContainer() {
+        if(birthDayContainer == null){
+            birthDayContainer = new ACLabelContainer();
+            birthDayContainer.add(getBirthDayDateText());
+            birthDayContainer.setText("生年月日");
+        }
+        return birthDayContainer;
+    }
+    
+    /**
+     * 帳票期間検索領域を返します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACBackLabelContainer getReportBackContainer() {
+        if(reportBackContainer == null){
+            reportBackContainer = new ACBackLabelContainer();
+            reportBackContainer.setAutoWrap(false);
+            // 帳票種類
+            reportBackContainer.add(getReportContainer(),VRLayout.FLOW);
+            // 開始日付
+            reportBackContainer.add(getReportDateFromContainer(),VRLayout.FLOW);
+            // 「～」
+            reportBackContainer.add(getReportFromToLabel(),VRLayout.FLOW);
+            // 終了日付
+            reportBackContainer.add(getReportDateToContainer(),VRLayout.FLOW);
+            // クリアボタン
+            reportBackContainer.add(getClearButton(),VRLayout.FLOW);
+        }
+        return reportBackContainer;
+    }
+
+    /**
+     * 最新記入日（終了日）を取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected IkenshoEraDateTextField getReportDateTo() {
+        if(reportDateTo == null){
+            reportDateTo = new IkenshoEraDateTextField();
+            reportDateTo.setAgeVisible(false);
+            reportDateTo.setEra("平成");
+            reportDateTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+            reportDateTo.setAllowedFutureDate(true);
+            reportDateTo.setBindPath("FIND_DATE_TO");
+        }
+        return reportDateTo;
+    }
+    /**
+     * 最新記入日コンテナを取得します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACLabelContainer getReportDateToContainer() {
+        if(reportDateToContainer == null){
+            reportDateToContainer = new ACLabelContainer();
+            reportDateToContainer.add(getReportDateTo());
+        }
+        return reportDateToContainer;
+    }
+
+    /**
+     * 開始日付を取得します。
+     * 
+     * @return 開始日付
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected IkenshoEraDateTextField getReportDateFrom() {
+        if(reportDateFrom == null){
+            reportDateFrom = new IkenshoEraDateTextField();
+            reportDateFrom.setAgeVisible(false);
+            reportDateFrom.setEra("平成");
+            reportDateFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+            reportDateFrom.setAllowedFutureDate(true);
+            reportDateFrom.setBindPath("FIND_DATE_FROM");
+        }
+        return reportDateFrom;
+    }
+    
+    /**
+     * 開始日付を返します。
+     * 
+     * 2007/09/19 2007年度対応 [Masahiko Higuchi] Addition
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACLabelContainer getReportDateFromContainer() {
+        if(reportDateFromContainer == null){
+            reportDateFromContainer = new ACLabelContainer();
+            reportDateFromContainer.setText("最新記入日");
+            reportDateFromContainer.add(getReportDateFrom());
+        }
+        return reportDateFromContainer;
+    }
+    
+    /**
+     * 『～』（期間セパレーター）ラベルを返します。
+     * 
+     * 2007/09/19 2007年度対応 [Masahiko Higuchi] Addition
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACLabel getReportFromToLabel() {
+        if(reportFromToLabel == null){
+            reportFromToLabel = new ACLabel();
+            reportFromToLabel.setText("～");
+        }
+        return reportFromToLabel;
+    }
+
+    /**
+     * 日付消去ボタンを返します。
+     * 
+     * 2007/09/19 2007年度対応 [Masahiko Higuchi] Addition
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACButton getClearButton() {
+        if(clearButton == null){
+            clearButton = new ACButton();
+            clearButton.setText("日付消去(C)");
+            clearButton.setMnemonic('C');
+            clearButton.setToolTipText("入力された日付を消去します。");
+        }
+        return clearButton;
+    }
+    
+    /**
+     * 帳票種類検索領域パネルを返します。
+     * 
+     * 2007/09/19 2007年度対応 [Masahiko Higuchi] Addition
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACPanel getReportPanel() {
+        if(reportPanel == null){
+            reportPanel = new ACPanel();
+
+        }
+        return reportPanel;
+    }
+
+
+    /**
+     * 患者コンテナを取得します。
+     * 
+     * 2007/09/19 2007年度対応 [Masahiko Higuchi] Addition
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACLabelContainer getKanjyaContainer() {
+        if(kanjyaContainer == null){
+            kanjyaContainer = new ACLabelContainer();
+            kanjyaContainer.add(getKanjyaCheck());
+        }
+        return kanjyaContainer;
+    }
+    
+    /**
+     * 検索ボタンを取得します。
+     * 
+     * 2007/09/19 2007年度対応 [Masahiko Higuchi] Addition
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACButton getFindButton() {
+        if(findButton == null){
+            VRLayout findButtonLayout = new VRLayout();
+            findButtonLayout.setHgap(20);
+            findButtonLayout.setVgap(20);
+            findButton = new ACButton();
+            findButton.setLayout(findButtonLayout);
+            findButton.setText("検索(V)");
+            findButton.setMnemonic('V');
+            findButton.setToolTipText("現在入力されている条件により、一覧を表示します。");
+            
+        }
+        return findButton;
+    }
+    
+    /**
+     * 検索条件をクリアボタンを取得します。
+     * 
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2008/01/16
+     * @since 3.0.5
+     */
+    protected ACButton getInitialFindButton() {
+    	if(initialFindButton == null){
+            VRLayout initButtonLayout = new VRLayout();
+            initButtonLayout.setHgap(20);
+            initButtonLayout.setVgap(20);
+            initialFindButton = new ACButton();
+            initialFindButton.setLayout(initButtonLayout);
+            initialFindButton.setText("検索条件をクリア(K)");
+            initialFindButton.setMnemonic('K');
+            initialFindButton.setToolTipText("検索条件をクリアし、一覧を表示します。");    		
+    	}
+    	return initialFindButton;
+    }
+    
+    /**
+     * 検索ボタン用のパネルを返します。
+     * @return
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACPanel getFindButtonPanel() {
+        if(findButtonPanel == null){
+            ACLabel spaces = new ACLabel();
+            ACLabel buttonSpace = new ACLabel();
+            spaces.setText("　");
+            buttonSpace.setText(" ");
+            findButtonPanel = new ACPanel();
+            findButtonPanel.add(spaces,VRLayout.WEST);
+            findButtonPanel.add(getFindButton(),VRLayout.WEST);
+            findButtonPanel.add(buttonSpace,VRLayout.WEST);
+            findButtonPanel.add(getInitialFindButton(),VRLayout.WEST);
+        }
+        return findButtonPanel;
+    }
+    
+    /**
+     * 患者情報一覧：有効を取得します。
+     * @return 患者情報一覧：有効
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    public ACTableColumn getPatientEnabledColumn(){
+      if(patientEnabledColumn==null){
+        patientEnabledColumn = new ACTableColumn(10);
+        patientEnabledColumn.setHeaderValue("有効");
+        patientEnabledColumn.setColumns(3);
+        patientEnabledColumn.setHorizontalAlignment(SwingConstants.CENTER);
+        patientEnabledColumn.setRendererType(ACTableCellViewer.RENDERER_TYPE_ICON);
+        patientEnabledColumn.setSortable(false);
+        // テーブルカラムにフォーマッタを設定する。
+        patientEnabledColumn.setFormat(
+                new ACHashMapFormat(new String[] {
+                        "jp/nichicom/ac/images/icon/pix16/btn_080.png",
+                        "jp/nichicom/ac/images/icon/pix16/btn_079.png" },
+                        new Integer[] { new Integer(0), new Integer(1), }));
+
+      }
+      return patientEnabledColumn;
+
+    }
+    
+    /**
+     * 利用者一覧：生年月日を取得します。
+     * @return 利用者一覧：生年月日
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    public ACTableColumn getPatientBirthColumn(){
+      if(patientBirthColumn==null){
+        patientBirthColumn = new ACTableColumn(11);
+        patientBirthColumn.setHeaderValue("生年月日");
+        patientBirthColumn.setColumns(10);
+        patientBirthColumn.setFormat(new ACDateFormat("ggge年MM月dd日"));
+      }
+      return patientBirthColumn;
+
+    }
+
+    /**
+     * 検索キーを取得します。
+     * @return
+     * @throws Exception
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected VRMap getFindKey() throws Exception{
+        VRMap keyParam = new VRHashMap();
+        
+        String keyValue;
+        int keyInteger;
+        java.util.Date keyDate;
+        
+        // 一覧表示
+        keyInteger = 0;
+        keyInteger = getKanjyaCheck().getValue();
+        if(keyInteger == 0){
+            // チェックなし
+            keyParam.setData("HIDE_FLAG",new Boolean(false));
+            
+        }else{
+            // チェック有
+            keyParam.setData("HIDE_FLAG",new Boolean(true));
+            
+        }
+        
+        // 患者ID
+        keyValue = "";
+        keyValue = getKanjyaText().getText();
+        if(!"".equals(keyValue)){
+            keyParam.setData("CHART_NO",getKanjyaText().getText());
+        }
+        
+        // ふりがな
+        keyValue = "";
+        keyValue = getFuriganaText().getText();
+        if(!"".equals(keyValue)){
+            keyParam.setData("PATIENT_KN",keyValue);
+        }
+        
+        // 生年月日
+        keyDate = null;
+        keyDate = (java.util.Date) getBirthDayDateText().getDate();
+        if(keyDate != null){
+            keyParam.setData("BIRTHDAY",keyDate);
+        }
+        
+        // 帳票種類
+        keyInteger = -1;
+        keyInteger = getReportCombo().getSelectedIndex();
+        switch(keyInteger){
+            case -1: // 未選択
+                break;
+            case 1: // 主治医意見書
+                keyParam.setData("IKN_ORIGIN_KINYU_DT",new Boolean(true));
+                break;
+            case 2: // 医師意見書
+                keyParam.setData("IKN_ORIGIN_KINYU_DT_ISHI",new Boolean(true));
+                break;
+            case 3: // 訪問看護指示書
+                keyParam.setData("SIS_ORIGIN_KINYU_DT",new Boolean(true));
+                break;
+        }
+        
+        // 最新記入日
+        keyDate = null;
+        keyDate = (java.util.Date)getReportDateFrom().getDate();
+        if(keyDate != null){
+            keyParam.setData("KINYU_DT_FROM",keyDate);
+        }
+        
+        keyDate = null;
+        keyDate = (java.util.Date)getReportDateTo().getDate();
+        if(keyDate != null){
+            keyParam.setData("KINYU_DT_TO",keyDate);
+        }
+        
+        return keyParam;
+        
+    }
+
+    /**
+    /**
+     * 検索処理を実行します。
+     * @throws Exception
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    public void doFind() throws Exception{
+        
+        VRMap param = new VRHashMap();
+        StringBuffer sb = new StringBuffer();
+        IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
+        
+        // 検索キーのチェック処理
+        if(!checkFindKey()){
+            return;
+            
+        }
+        // 検索キーの取得
+        param = getFindKey();
+        
+        sb.append(" SELECT");
+        sb.append(" PATIENT.PATIENT_NO,");
+        sb.append(" PATIENT.CHART_NO,");
+        sb.append(" PATIENT.PATIENT_NM,");
+        sb.append(" PATIENT.PATIENT_KN,");
+        sb.append(" PATIENT.SEX,");
+        sb.append(" PATIENT.BIRTHDAY,");
+        sb.append(" PATIENT.KOUSIN_DT,");
+        sb.append(" PATIENT.SHOW_FLAG,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_MAX_EDA,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_FORMAT_KBN,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_KINYU_DT_ISHI,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_MAX_EDA_ISHI,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_KINYU_DT,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_LASTDAY,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_CREATE_DT,");
+        sb.append(" IKN_ORIGIN_NEW.IKN_ORIGIN_LAST_TIME,");
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_KINYU_DT,");
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_CREATE_DT,");
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_LAST_TIME,");
+        sb.append(" PATIENT.LAST_TIME");
+        sb.append(" FROM");
+        sb
+                .append(" PATIENT LEFT OUTER JOIN IKN_ORIGIN_NEW(PATIENT.PATIENT_NO) ON PATIENT.PATIENT_NO = IKN_ORIGIN_NEW.IKN_ORIGIN_PATIENT_NO");
+        sb
+                .append(" LEFT OUTER JOIN SIS_ORIGIN_NEW(PATIENT.PATIENT_NO) ON PATIENT.PATIENT_NO = SIS_ORIGIN_NEW.SIS_ORIGIN_PATIENT_NO");
+        
+        // WHERE句の作成
+        buildFindWhere(sb,param);
+        
+        sb.append(" ORDER BY");
+        sb.append(" PATIENT_KN ASC");
+        
+        data = (VRArrayList) dbm.executeQuery(sb.toString());
+        dbm.finalize();
+
+        // ふりがなをSQL検索不可能なためキーが入っている場合は手動で検索する。
+        data = doManualFind(data,param,"PATIENT_KN");
+        
+        // 患者IDについても手動で検索
+        data = doManualFind(data,param,"CHART_NO");
+        
+        int end = data.getDataSize();
+        for (int k = 0; k < end; k++) {
+            VRMap map = ((VRMap) data.getData(k));
+            map.setData("DELETE_FLAG", new Boolean(false));
+        }
+        // パッシブチェック予約
+        clearReservedPassive();
+        reservedPassive(PASSIVE_CHECK_KEY, data);
+        reservedPassive(PASSIVE_CHECK_IKENSHO_KEY, data);
+        reservedPassive(PASSIVE_CHECK_SIJISHO_KEY, data);
+
+        if (getTableModelAdapter() != null) {
+            getTableModelAdapter().setAdaptee(data);
+        }
+        
+        checkButtonsEnabled();
+
+        setStatusText(String.valueOf(data.getDataSize()) + "件登録されています。");
+        
+        table.setSelectedSortedFirstRow();            
+
+    }
+    
+    /**
+     * 検索キーをチェックします。
+     * @return True:正常 False:異常有
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public boolean checkFindKey(){
+        // 生年月日が不正な場合
+        if (!"".equals(getBirthDayDateText().getEra())) {
+            if (getBirthDayDateText().getInputStatus() != IkenshoEraDateTextField.STATE_VALID) {
+                ACMessageBox.showExclamation("生年月日の入力に誤りがあります。");
+                getBirthDayDateText().transferFocus();
+                return false;
+
+            }
+        }
+        
+        // 最新記入日（開始）が入力されている場合
+        if(isIkenshoEraDateInput(getReportDateFrom())){
+        //if (!"".equals(getReportDateFrom().getEra())) {
+            getReportDateFrom().setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+            if(getReportDateFrom().getInputStatus() != IkenshoEraDateTextField.STATE_VALID) {
+                ACMessageBox.showExclamation("最新記入日の開始日付の入力に誤りがあります。");
+                getReportDateFrom().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+                getReportDateFrom().transferFocus();
+                return false;            
+            }
+            getReportDateFrom().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+        }
+
+        // 最新記入日（終了）が入力されている場合
+        if(isIkenshoEraDateInput(getReportDateTo())){
+        //if (!"".equals(getReportDateTo().getEra())) {
+            getReportDateTo().setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+            if(getReportDateTo().getInputStatus() != IkenshoEraDateTextField.STATE_VALID) {
+                ACMessageBox.showExclamation("最新記入日の終了日付の入力に誤りがあります。");
+                getReportDateTo().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+                getReportDateTo().transferFocus();
+                return false;            
+            }
+            getReportDateTo().setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+        }
+        
+        // 日付の大小比較
+        if (isIkenshoEraDateInput(getReportDateFrom())
+                && isIkenshoEraDateInput(getReportDateTo())) {
+            if (ACDateUtilities.compareOnDay(getReportDateFrom().getDate(),
+                    getReportDateTo().getDate()) > 0) {
+                ACMessageBox.showExclamation("最新記入日の開始日付と終了日付が逆転しています。");
+                getReportDateFrom().transferFocus();
+                return false;
+
+            }
+        }
+        
+        return true;
+    }
+    
+    /**
+     * 医見書日付コンポーネントに入力があるかチェックします。
+     * @param eraDateText
+     * @return
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    private boolean isIkenshoEraDateInput(IkenshoEraDateTextField eraDateText){
+        return (!"".equals(eraDateText.getEra())
+                &&!"".equals(eraDateText.getYear()));
+
+    }
+    
+    /**
+     * 検索時のWhere句を構築します。
+     * @param sb
+     * @param sqlParam
+     * @throws Exception
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public StringBuffer buildFindWhere(StringBuffer sb,VRMap sqlParam) throws Exception{
+        
+        boolean dayFrom = false;
+        boolean dayTo = false;
+        
+        sb.append(" WHERE");
+        // 一覧表示
+        if(ACCastUtilities.toBoolean(sqlParam.getData("HIDE_FLAG")) == false){
+            sb.append(" SHOW_FLAG IN(1)");
+        }else{
+            sb.append(" SHOW_FLAG IN(0,1)");
+        }
+        // 生年月日
+        if(sqlParam.containsKey("BIRTHDAY")){
+            sb.append(" AND");
+            sb.append(" BIRTHDAY = ");
+            sb.append(getDBSafeDate("BIRTHDAY",sqlParam));
+        }
+        // 帳票種類
+        //　主治医意見書選択時
+        if(sqlParam.containsKey("IKN_ORIGIN_KINYU_DT")){
+            sb.append(" AND");
+            sb.append(" IKN_ORIGIN_KINYU_DT IS NOT NULL");
+            // 最新記入日（開始）
+            if(sqlParam.containsKey("KINYU_DT_FROM")){
+                sb.append(" AND");
+                sb.append(" IKN_ORIGIN_KINYU_DT >= ");
+                sb.append(getDBSafeDate("KINYU_DT_FROM",sqlParam));
+            }
+            // 最新記入日（終了）
+            if(sqlParam.containsKey("KINYU_DT_TO")){
+                sb.append(" AND");
+                sb.append(" IKN_ORIGIN_KINYU_DT <= ");
+                sb.append(getDBSafeDate("KINYU_DT_TO",sqlParam));
+            }            
+
+        }else{
+            // 医師意見書選択時
+            if(sqlParam.containsKey("IKN_ORIGIN_KINYU_DT_ISHI")){
+                sb.append(" AND");
+                sb.append(" IKN_ORIGIN_KINYU_DT_ISHI IS NOT NULL");
+                // 最新記入日（開始）
+                if(sqlParam.containsKey("KINYU_DT_FROM")){
+                    sb.append(" AND");
+                    sb.append(" IKN_ORIGIN_KINYU_DT_ISHI >= ");
+                    sb.append(getDBSafeDate("KINYU_DT_FROM",sqlParam));
+                }
+                // 最新記入日（終了）
+                if(sqlParam.containsKey("KINYU_DT_TO")){
+                    sb.append(" AND");
+                    sb.append(" IKN_ORIGIN_KINYU_DT_ISHI <= ");
+                    sb.append(getDBSafeDate("KINYU_DT_TO",sqlParam));
+                }         
+                
+            }else{
+                // 訪問看護指示書選択時
+                if(sqlParam.containsKey("SIS_ORIGIN_KINYU_DT")){
+                    sb.append(" AND");
+                    sb.append(" SIS_ORIGIN_KINYU_DT IS NOT NULL");
+                    // 最新記入日（開始）
+                    if(sqlParam.containsKey("KINYU_DT_FROM")){
+                        sb.append(" AND");
+                        sb.append(" SIS_ORIGIN_KINYU_DT >= ");
+                        sb.append(getDBSafeDate("KINYU_DT_FROM",sqlParam));
+                    }
+                    // 最新記入日（終了）
+                    if(sqlParam.containsKey("KINYU_DT_TO")){
+                        sb.append(" AND");
+                        sb.append(" SIS_ORIGIN_KINYU_DT <= ");
+                        sb.append(getDBSafeDate("KINYU_DT_TO",sqlParam));
+                    }     
+                    
+                }else{
+                // 何も選択されていない場合（帳票種類）
+                    // 最新記入日
+                    if(sqlParam.containsKey("KINYU_DT_FROM")){
+                        dayFrom = true;
+                    }
+                    if(sqlParam.containsKey("KINYU_DT_TO")){
+                        dayTo = true;
+                    }
+                    
+                    // 双方とも入力がない場合は処理終了
+                    if(!dayFrom && !dayTo){
+                        return sb;
+                    }else{
+                        sb.append(" AND(");
+                    }
+                                        
+                    // 主治医意見書の日付条件句作成
+                    buildDateWhere(sb,sqlParam,dayFrom,dayTo,"IKN_ORIGIN_KINYU_DT");
+
+                    sb.append(" OR");
+                    // 医師意見書の日付条件句作成
+                    buildDateWhere(sb,sqlParam,dayFrom,dayTo,"IKN_ORIGIN_KINYU_DT_ISHI");
+                    
+                    sb.append(" OR");
+                    // 訪問看護指示書の日付条件句作成
+                    buildDateWhere(sb,sqlParam,dayFrom,dayTo,"SIS_ORIGIN_KINYU_DT");
+
+                    sb.append(")");
+                }
+            }
+        }
+        
+        return sb;
+    }
+
+    /**
+     * 主治医意見書の日付のWhere句を作成します。
+     * @param sb SQL本体
+     * @param sqlParam 検索キー群
+     * @param isDateFromKey 開始日付の入力の有無 True:入力有 False:入力無
+     * @param isDateToKey 終了日付の入力の有無 True:入力有 False:入力無
+     * @param dateKeyName Where句のキー名称
+     * @return
+     * @throws Exception
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    private void buildDateWhere(StringBuffer sb, VRMap sqlParam,
+            boolean isDateFromKey, boolean isDateToKey,String dateKeyName) throws Exception {
+        
+        // 最新記入日（開始）
+        if(sqlParam.containsKey("KINYU_DT_FROM")){
+            sb.append(" ");
+            sb.append(dateKeyName);
+            sb.append(" >= ");
+            sb.append(getDBSafeDate("KINYU_DT_FROM",sqlParam));
+        }
+        
+        // 既に入力済み
+        if (isDateFromKey && isDateToKey) {
+            sb.append(" AND");
+        }
+        
+        // 最新記入日（終了）
+        if(sqlParam.containsKey("KINYU_DT_TO")){
+            sb.append(" ");
+            sb.append(dateKeyName);
+            sb.append(" <= ");
+            sb.append(getDBSafeDate("KINYU_DT_TO",sqlParam));
+        }
+
+    }
+    
+    /**
+     * 「日付消去」ボタン押下時
+     *
+     * @param e ActionEvent
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    private void doClearDate_actionPerformed(ActionEvent e) {
+        getReportDateFrom().clear();
+        getReportDateFrom().setEra("平成");
+        getReportDateTo().clear();
+        getReportDateTo().setEra("平成");
+    }
+    
+    /**
+     * データ群の中から検索処理を行います。
+     * 
+     * @param data 検索対象データ群
+     * @param findParam 検索キーパラメーター群
+     * @param findKey 検索キー
+     * @return 検索キーの値に一致するデータ群
+     * @throws Exception 例外
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    private VRArrayList doManualFind(VRArrayList data, VRMap findParam,
+            String findKey) throws Exception {
+        // 検索値が存在する場合
+        if (findParam != null && findParam.containsKey(findKey)) {
+            // 検索キー
+            String findValue = ACCastUtilities.toString(findParam.get(findKey));
+            VRArrayList cloneArray = new VRArrayList();
+            cloneArray = (VRArrayList) data.clone();
+            data = new VRArrayList();
+            for (int j = 0; j < cloneArray.size(); j++) {
+                VRMap map = new VRHashMap();
+                map = (VRMap) cloneArray.getData(j);
+                // 前方一致検索
+                if ((ACCastUtilities.toString(map.getData(findKey)))
+                        .startsWith(findValue)) {
+                    // 一致した値を結果に格納する。
+                    data.add(map);
+                }
+            }
+
+        }
+
+        return data;
+    }
+    
+    
+    /**
+     * 
+     * IkenshoPatientList_clearDate_actionAdapterです。
+     * <p>
+     * Copyright (c) 2007 Nippon Computer Corpration. All Rights Reserved.
+     * </p>
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    class IkenshoPatientList_clearDate_actionAdapter implements ActionListener {
+        private IkenshoPatientList adaptee;
+
+        IkenshoPatientList_clearDate_actionAdapter(IkenshoPatientList adaptee) {
+            this.adaptee = adaptee;
+        }
+
+        public void actionPerformed(ActionEvent e) {
+            adaptee.doClearDate_actionPerformed(e);
+        }
+    }
+    
+    /**
+     * 検索条件クリアボタンのアクションリスナクラスです
+     * 
+     * @author Masahiko Higuchi
+     * @version 1.0 2008/01/16
+     * @since 3.0.5
+     * 
+     */
+    class IkenshoPatientList_initialFind_actionAdapter implements ActionListener {
+        private IkenshoPatientList adaptee; 
+    	
+        IkenshoPatientList_initialFind_actionAdapter(IkenshoPatientList adaptee){
+        	this.adaptee = adaptee; 
+        }
+        
+        public void actionPerformed(ActionEvent e) {
+        	try {
+        		// 検索条件クリア処理
+        		adaptee.doInitialFind_actionPerformed(e);
+        		
+        	}catch(Exception ex){
+        		ex.printStackTrace();
+        	}
+        	
+        }
+    	
+    }
+    
+    /**
+     * 検索条件クリア押下時のメイン処理
+     * 
+     * @param e
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     * @version 1.0 2008/01/16
+     */
+    private void doInitialFind_actionPerformed(ActionEvent e) throws Exception{
+    	// 全て初期化して検索処理を走らせる
+        // 患者ID
+        getKanjyaText().setText("");
+        // フリガナ
+        getFuriganaText().setText("");
+        // 生年月日
+        getBirthDayDateText().clear();
+        // 帳票種類
+        getReportCombo().setText("");
+    	// 帳票期間
+        getReportDateFrom().clear();
+        getReportDateFrom().setEra("平成");
+        getReportDateTo().clear();
+        getReportDateTo().setEra("平成");
+        // 一覧表示
+        getKanjyaCheck().setValue(0);
+        
+        // 検索処理
+        doFind();
+        
+    }
+    
 }

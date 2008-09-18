@@ -15,6 +15,7 @@ import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoEraDateTextField;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -46,10 +47,12 @@ public class IkenshoIshiIkenshoInfoSick1 extends IkenshoIkenshoInfoSickH18 {
     private ACBackLabelContainer nyuinrekiLabelContainer1;
     // 傷病名2ラベルコンテナ
     private ACBackLabelContainer nyuinrekiLabelContainer2;
-    // 傷病名1コンボボックス 
-    private ACComboBox nyuinrekiSickCombo1;
+//  2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    // 傷病名1コンボボックス
+    private IkenshoOptionComboBox nyuinrekiSickCombo1;
     // 傷病名2コンボボックス
-    private ACComboBox nyuinrekiSickCombo2;
+    private IkenshoOptionComboBox nyuinrekiSickCombo2;
+//  2007/10/18 [Masahiko Higuchi] Replace - end
     // 傷病名コンボ用ラベルコンテナ1
     private ACLabelContainer nyuinrekiSickCombo1LabelContainer;
     // 傷病名コンボ用ラベルコンテナ2
@@ -361,10 +364,12 @@ public class IkenshoIshiIkenshoInfoSick1 extends IkenshoIkenshoInfoSickH18 {
     /**
      * 入院歴-傷病名コンボ１を返します。
      * @return
+     * @author Masahiko Higuchi
+     * @since 3.0.5
      */
-    protected ACComboBox getNyuinrekiSickCombo1() {
+    protected IkenshoOptionComboBox getNyuinrekiSickCombo1() {
         if(nyuinrekiSickCombo1 == null){
-            nyuinrekiSickCombo1 = new ACComboBox();
+            nyuinrekiSickCombo1 = new IkenshoOptionComboBox();
             nyuinrekiSickCombo1.setBindPath("NYUIN_NM1");
             nyuinrekiSickCombo1.setMaxLength(30);
             nyuinrekiSickCombo1.setColumns(25);
@@ -386,10 +391,12 @@ public class IkenshoIshiIkenshoInfoSick1 extends IkenshoIkenshoInfoSickH18 {
     /**
      * 入院歴-傷病名コンボ２を返します。
      * @return
+     * @author Masahiko Higuchi
+     * @since 3.0.5
      */
-    protected ACComboBox getNyuinrekiSickCombo2() {
+    protected IkenshoOptionComboBox getNyuinrekiSickCombo2() {
         if(nyuinrekiSickCombo2 == null){
-            nyuinrekiSickCombo2 = new ACComboBox();
+            nyuinrekiSickCombo2 = new IkenshoOptionComboBox();
             nyuinrekiSickCombo2.setBindPath("NYUIN_NM2");
             nyuinrekiSickCombo2.setMaxLength(30);
             nyuinrekiSickCombo2.setColumns(25);
@@ -583,6 +590,46 @@ public class IkenshoIshiIkenshoInfoSick1 extends IkenshoIkenshoInfoSickH18 {
       applyPoolTeikeibun(getNyuinrekiSickCombo1(), IkenshoCommon.TEIKEI_ISHI_SICK_NAME);
       applyPoolTeikeibun(getNyuinrekiSickCombo2(), IkenshoCommon.TEIKEI_ISHI_SICK_NAME);
       applyPoolTeikeibun(getNotStableState(), IkenshoCommon.TEIKEI_ISHI_INSECURE_CONDITION_NAME);
+            
+
+        // 2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応
+        // ACComboBox⇒IkenshoOptionComboBox
+        getSickName1().setOptionComboBoxParameters("疾病名",
+                IkenshoCommon.TEIKEI_ISHI_SICK_NAME, 30);
+        getSickName2().setOptionComboBoxParameters("疾病名",
+                IkenshoCommon.TEIKEI_ISHI_SICK_NAME, 30);
+        getSickName3().setOptionComboBoxParameters("疾病名",
+                IkenshoCommon.TEIKEI_ISHI_SICK_NAME, 30);
+        getNyuinrekiSickCombo1().setOptionComboBoxParameters("疾病名",
+                IkenshoCommon.TEIKEI_ISHI_SICK_NAME, 30);
+        getNyuinrekiSickCombo2().setOptionComboBoxParameters("疾病名",
+                IkenshoCommon.TEIKEI_ISHI_SICK_NAME, 30);
+        getNotStableState().setOptionComboBoxParameters("「不安定」とした場合の具体的状況",
+                IkenshoCommon.TEIKEI_ISHI_INSECURE_CONDITION_NAME, 30);
+
+        // コンボの連動を設定
+        getSickName1().addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickName2(), getSickName3(),
+                        getNyuinrekiSickCombo1(), getNyuinrekiSickCombo2() });
+        getSickName2().addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickName1(), getSickName3(),
+                        getNyuinrekiSickCombo1(), getNyuinrekiSickCombo2() });
+        getSickName3().addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickName1(), getSickName2(),
+                        getNyuinrekiSickCombo1(), getNyuinrekiSickCombo2() });
+        getNyuinrekiSickCombo1().addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickName1(), getSickName2(),
+                        getSickName3(), getNyuinrekiSickCombo2() });
+        getNyuinrekiSickCombo2().addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickName1(), getSickName2(),
+                        getSickName3(), getNyuinrekiSickCombo1() });
+
+        // 設定する値を差し替える
+        getSickSpecial1().setUnpressedModel(getSickName1().getOriginalModel());
+        getSickSpecial2().setUnpressedModel(getSickName2().getOriginalModel());
+        getSickSpecial3().setUnpressedModel(getSickName3().getOriginalModel());
+        //    2007/10/18 [Masahiko Higuchi] Addition - end
+      
     }
     
     /**

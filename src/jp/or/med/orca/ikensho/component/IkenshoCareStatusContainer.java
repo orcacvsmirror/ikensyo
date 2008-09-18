@@ -19,7 +19,9 @@ import jp.or.med.orca.ikensho.IkenshoConstants;
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoCareStatusContainer
     extends VRLabelContainer {
-  private ACComboBox value = new ACComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    private IkenshoOptionComboBox value = new IkenshoOptionComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - end
   private ACIntegerCheckBox check = new ACIntegerCheckBox();
   private VRLabelContainer values = new VRLabelContainer();
   private ACParentHesesPanelContainer heses = new ACParentHesesPanelContainer();
@@ -31,13 +33,16 @@ public class IkenshoCareStatusContainer
     return check;
   }
 
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
   /**
    * コンボボックスを返します。
    * @return コンボボックス
+   * @since 3.0.5
    */
-  public ACComboBox getComboBox(){
+  public IkenshoOptionComboBox getComboBox(){
     return value;
   }
+//2007/10/18 [Masahiko Higuchi] Replace - end
 
   /**
    * チェック用のバインドパスを設定します。

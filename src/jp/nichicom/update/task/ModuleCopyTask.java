@@ -67,7 +67,7 @@ public class ModuleCopyTask extends AbstractTask{
 	/**
 	 * モジュール置換の実装
 	 */
-	public boolean runTask() throws Exception{
+	public boolean runTask(TaskProcesser tp) throws Exception{
         XMLDocumentUtil doc = new XMLDocumentUtil(PropertyUtil.getProperty("property.filename"));
         
         //String version = doc.getNodeValue("//properities[@id='Version']/properity[@id='no']");
@@ -75,12 +75,15 @@ public class ModuleCopyTask extends AbstractTask{
 		
 		//サーバ上のモジュールバージョンが新しければ、コピー実行
 		if(version.compareTo(getVersionNo()) >= 0){
+            tp.skipTask(this);
 			return false;
 		}
 		
+        tp.setStatus("ファイル更新("+getVersionNo()+")");
 		for(int i = 0; i<taskList.size();i++){
 			CopyTask task = (CopyTask)taskList.get(i);
 			task.runTask();
+            tp.addProgress();
 		}
 		
 		doc.setNodeValue("Version","no",getVersionNo());
@@ -94,6 +97,10 @@ public class ModuleCopyTask extends AbstractTask{
 		
 		return true;
 	}
+
+    public int size(){
+        return taskList.size();
+    }
 }
 
 /**

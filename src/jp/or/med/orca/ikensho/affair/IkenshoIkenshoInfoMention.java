@@ -238,111 +238,231 @@ public class IkenshoIkenshoInfoMention extends
     public boolean noControlError() {
         // エラーチェック
         IkenshoIkenshoInfo info = (IkenshoIkenshoInfo) getMasterAffair();
-
-        switch (mentionHasegawaDay1.getInputStatus()) {
-        case IkenshoEraDateTextField.STATE_EMPTY:
-        case IkenshoEraDateTextField.STATE_VALID:
-            break;
-        case IkenshoEraDateTextField.STATE_FUTURE:
-            ACMessageBox.showExclamation("未来の日付です。");
-            mentionHasegawaDay1.requestChildFocus();
-            return false;
-        default:
-            ACMessageBox.show("日付に誤りがあります。");
-            mentionHasegawaDay1.requestChildFocus();
-            return false;
+        
+        // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+        // チェックする対象期間の初期値を設定
+        mentionHasegawaDay1.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+        if(!"".equals(mentionHasegawaDay1.getEra()) && !"".equals(mentionHasegawaDay1.getYear())){
+        	// チェック用の対象期間設定に変更する。
+        	mentionHasegawaDay1.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+        // 2008/01/15 [Masahiko Higuchi] add - end
+	        switch (mentionHasegawaDay1.getInputStatus()) {
+	        case IkenshoEraDateTextField.STATE_EMPTY:
+	        case IkenshoEraDateTextField.STATE_VALID:
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionHasegawaDay1.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            break;
+	        case IkenshoEraDateTextField.STATE_FUTURE:
+	            ACMessageBox.showExclamation("未来の日付です。");
+	            mentionHasegawaDay1.requestChildFocus();
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionHasegawaDay1.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            return false;
+	        default:
+	            ACMessageBox.show("日付に誤りがあります。");
+	            mentionHasegawaDay1.requestChildFocus();
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionHasegawaDay1.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            return false;
+	        }
+	    // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
         }
+        // 2008/01/15 [Masahiko Higuchi] add - end
 
-        switch (mentionHasegawaDay2.getInputStatus()) {
-        case IkenshoEraDateTextField.STATE_EMPTY:
-        case IkenshoEraDateTextField.STATE_VALID:
-            break;
-        case IkenshoEraDateTextField.STATE_FUTURE:
-            ACMessageBox.showExclamation("未来の日付です。");
-            mentionHasegawaDay2.requestChildFocus();
-            return false;
-        default:
-            ACMessageBox.show("日付に誤りがあります。");
-            mentionHasegawaDay2.requestChildFocus();
-            return false;
+        // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+        // チェックする対象期間の初期値を設定
+        mentionHasegawaDay2.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+        if(!"".equals(mentionHasegawaDay2.getEra()) && !"".equals(mentionHasegawaDay2.getYear())){
+        	// チェック用の対象期間設定に変更する。
+        	mentionHasegawaDay2.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+        // 2008/01/15 [Masahiko Higuchi] add - end
+	        switch (mentionHasegawaDay2.getInputStatus()) {
+	        case IkenshoEraDateTextField.STATE_EMPTY:
+	        case IkenshoEraDateTextField.STATE_VALID:
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionHasegawaDay2.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            break;
+	        case IkenshoEraDateTextField.STATE_FUTURE:
+	            ACMessageBox.showExclamation("未来の日付です。");
+	            mentionHasegawaDay2.requestChildFocus();
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionHasegawaDay2.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            return false;
+	        default:
+	            ACMessageBox.show("日付に誤りがあります。");
+	            mentionHasegawaDay2.requestChildFocus();
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionHasegawaDay2.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            return false;
+	        }
+	    // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
         }
+        // 2008/01/15 [Masahiko Higuchi] add - end
 
-        switch (mentionShinseiDate.getInputStatus()) {
-        case IkenshoEraDateTextField.STATE_EMPTY:
-            break;
-        case IkenshoEraDateTextField.STATE_VALID:
-            if (mentionShinseiDate.getDate().compareTo(
-                    info.getApplicant().getWriteDate()) > 0) {
-                // 記入日のほうが古い
-                ACMessageBox.show("申請日は記入日以前でなければいけません。");
-                mentionShinseiDate.requestChildFocus();
-                return false;
-            }
-            if (mentionCreateDate.getInputStatus() == IkenshoEraDateTextField.STATE_VALID) {
-                if (mentionShinseiDate.getDate().compareTo(
-                        mentionCreateDate.getDate()) > 0) {
-                    // 作成依頼日の方が古い
-                    ACMessageBox.show("申請日は作成依頼日以前でなければいけません。");
-                    mentionShinseiDate.requestChildFocus();
-                    return false;
-                }
-            }
-            break;
-        case IkenshoEraDateTextField.STATE_FUTURE:
-            ACMessageBox.showExclamation("未来の日付です。");
-            mentionShinseiDate.requestChildFocus();
-            return false;
-        default:
-            ACMessageBox.show("日付に誤りがあります。");
-            mentionShinseiDate.requestChildFocus();
-            return false;
+        // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+        // チェックする対象期間の初期値を設定
+        mentionShinseiDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+        if(!"".equals(mentionShinseiDate.getEra()) && !"".equals(mentionShinseiDate.getYear())){
+        	// チェック用の対象期間設定に変更する。
+        	mentionShinseiDate.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+        // 2008/01/15 [Masahiko Higuchi] add - end
+	        switch (mentionShinseiDate.getInputStatus()) {
+	        case IkenshoEraDateTextField.STATE_EMPTY:
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionShinseiDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            break;
+	        case IkenshoEraDateTextField.STATE_VALID:
+	            if (mentionShinseiDate.getDate().compareTo(
+	                    info.getApplicant().getWriteDate()) > 0) {
+	                // 記入日のほうが古い
+	                ACMessageBox.show("申請日は記入日以前でなければいけません。");
+	                mentionShinseiDate.requestChildFocus();
+		            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+		        	mentionShinseiDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+		            // 2008/01/15 [Masahiko Higuchi] add - end
+	                return false;
+	            }
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	            // 値チェック用に取得範囲を設定する。
+	            mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+    	        // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	            if (mentionCreateDate.getInputStatus() == IkenshoEraDateTextField.STATE_VALID) {
+	                if (mentionShinseiDate.getDate().compareTo(
+	                        mentionCreateDate.getDate()) > 0) {
+	                    // 作成依頼日の方が古い
+	                    ACMessageBox.show("申請日は作成依頼日以前でなければいけません。");
+	                    mentionShinseiDate.requestChildFocus();
+	    	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	    	        	mentionShinseiDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	    	        	mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	    	            // 2008/01/15 [Masahiko Higuchi] add - end
+	                    return false;
+	                }
+	            }
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionShinseiDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	        	mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            break;
+	        case IkenshoEraDateTextField.STATE_FUTURE:
+	            ACMessageBox.showExclamation("未来の日付です。");
+	            mentionShinseiDate.requestChildFocus();
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionShinseiDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            return false;
+	        default:
+	            ACMessageBox.show("日付に誤りがあります。");
+	            mentionShinseiDate.requestChildFocus();
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	        	mentionShinseiDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            return false;
+	        }
+        // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
         }
-
-        switch (mentionCreateDate.getInputStatus()) {
-        case IkenshoEraDateTextField.STATE_EMPTY:
-            break;
-        case IkenshoEraDateTextField.STATE_VALID:
-            if (mentionCreateDate.getDate().compareTo(
-                    info.getApplicant().getWriteDate()) > 0) {
-                // 記入日のほうが古い
-                ACMessageBox.show("作成依頼日は記入日以前でなければいけません。");
-                mentionCreateDate.requestChildFocus();
-                return false;
-            }
-            break;
-        case IkenshoEraDateTextField.STATE_FUTURE:
-            ACMessageBox.showExclamation("未来の日付です。");
-            mentionCreateDate.requestChildFocus();
-            return false;
-        default:
-            ACMessageBox.show("日付に誤りがあります。");
-            mentionCreateDate.requestChildFocus();
-            return false;
+        // 2008/01/15 [Masahiko Higuchi] add - end
+        
+        // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+        // チェックする対象期間の初期値を設定
+        mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+        if(!"".equals(mentionCreateDate.getEra()) && !"".equals(mentionCreateDate.getYear())){
+        	// チェック用の対象期間設定に変更する。
+        	mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+        // 2008/01/15 [Masahiko Higuchi] add - end
+	        switch (mentionCreateDate.getInputStatus()) {
+	        case IkenshoEraDateTextField.STATE_EMPTY:
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+                mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            break;
+	        case IkenshoEraDateTextField.STATE_VALID:
+	            if (mentionCreateDate.getDate().compareTo(
+	                    info.getApplicant().getWriteDate()) > 0) {
+	                // 記入日のほうが古い
+	                ACMessageBox.show("作成依頼日は記入日以前でなければいけません。");
+	                mentionCreateDate.requestChildFocus();
+		            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	                mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+		            // 2008/01/15 [Masahiko Higuchi] add - end
+	                return false;
+	            }
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+                mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            break;
+	        case IkenshoEraDateTextField.STATE_FUTURE:
+	            ACMessageBox.showExclamation("未来の日付です。");
+	            mentionCreateDate.requestChildFocus();
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+                mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            return false;
+	        default:
+	            ACMessageBox.show("日付に誤りがあります。");
+	            mentionCreateDate.requestChildFocus();
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+                mentionCreateDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            return false;
+	        }
+	        
+	    // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
         }
-
-        switch (mentionSendDate.getInputStatus()) {
-        case IkenshoEraDateTextField.STATE_EMPTY:
-        case IkenshoEraDateTextField.STATE_FUTURE:
-            break;
-        case IkenshoEraDateTextField.STATE_VALID:
-            if (info.getApplicant().getWriteDate().compareTo(
-                    mentionSendDate.getDate()) > 0) {
-                // 記入日のほうが古い
-                ACMessageBox.show("記入日は送付日以前でなければいけません。");
-                mentionSendDate.requestChildFocus();
-                return false;
-            }
-            break;
-        // case NCEraDateTextField.STATE_FUTURE:
-        // NCMessageBox.showExclamation("未来の日付です。");
-        // mentionSendDate.requestChildFocus();
-        // return false;
-        default:
-            ACMessageBox.show("日付に誤りがあります。");
-            mentionSendDate.requestChildFocus();
-            return false;
+        // 2008/01/15 [Masahiko Higuchi] add - end
+        
+	    // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+        mentionSendDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+        if(!"".equals(mentionSendDate.getEra()) && !"".equals(mentionSendDate.getYear())){
+        	mentionSendDate.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+        // 2008/01/15 [Masahiko Higuchi] add - end
+	        switch (mentionSendDate.getInputStatus()) {
+	        case IkenshoEraDateTextField.STATE_EMPTY:
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+                mentionSendDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	        case IkenshoEraDateTextField.STATE_FUTURE:
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+                mentionSendDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            break;
+	        case IkenshoEraDateTextField.STATE_VALID:
+	            if (info.getApplicant().getWriteDate().compareTo(
+	                    mentionSendDate.getDate()) > 0) {
+	                // 記入日のほうが古い
+	                ACMessageBox.show("記入日は送付日以前でなければいけません。");
+	                mentionSendDate.requestChildFocus();
+		            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+	                mentionSendDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+		            // 2008/01/15 [Masahiko Higuchi] add - end
+	                return false;
+	            }
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+                mentionSendDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            break;
+	        // case NCEraDateTextField.STATE_FUTURE:
+	        // NCMessageBox.showExclamation("未来の日付です。");
+	        // mentionSendDate.requestChildFocus();
+	        // return false;
+	        default:
+	            ACMessageBox.show("日付に誤りがあります。");
+	            mentionSendDate.requestChildFocus();
+	            // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+                mentionSendDate.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+	            // 2008/01/15 [Masahiko Higuchi] add - end
+	            return false;
+	        }
+		// 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応        
         }
-
+		// 2008/01/15 [Masahiko Higuchi] add - end
         return true;
     }
 
@@ -1276,6 +1396,23 @@ public class IkenshoIkenshoInfoMention extends
         mentionCreateDate.setEraRange(3);
         mentionSendDate.setEraRange(3);
         //2006/08/11 Tozo TANAKA begin-end 平成のみ表示させる対応
+        
+        // 2008/01/15 [Masahiko Higuchi] add - begin 平成デフォルト表示対応
+        mentionHasegawaDay1.setEraPreclusion("平成");
+        mentionHasegawaDay1.setDateTypeConv(false);
+        // チェック範囲は個別に指定
+        mentionHasegawaDay1.setDefaultCheckRange(IkenshoEraDateTextField.RNG_YEAR);
+        mentionHasegawaDay2.setEraPreclusion("平成");
+        mentionHasegawaDay2.setDateTypeConv(false);
+        // チェック範囲は個別に指定
+        mentionHasegawaDay2.setDefaultCheckRange(IkenshoEraDateTextField.RNG_YEAR);
+        mentionShinseiDate.setEraPreclusion("平成");
+        mentionShinseiDate.setDateTypeConv(true);
+        mentionCreateDate.setEraPreclusion("平成");
+        mentionCreateDate.setDateTypeConv(true);
+        mentionSendDate.setEraPreclusion("平成");
+        mentionSendDate.setDateTypeConv(true);
+        // 2008/01/15 [Masahiko Higuchi] add - end
     }
     
     /**

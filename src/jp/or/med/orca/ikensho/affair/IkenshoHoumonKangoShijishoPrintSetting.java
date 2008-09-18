@@ -343,26 +343,78 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
             }
         }
 
+        //2008/3/6 H.Tanaka Add Sta 訪問看護指示書印字変更対応
         // 主たる傷病名
         sb = new StringBuffer();
-        text = String.valueOf(VRBindPathParser.get("SINDAN_NM1", data));
-        if (!IkenshoCommon.isNullText(text)) {
-            sb.append(text);
+        VRArrayList array = new VRArrayList() ;
+        
+        Object shindanName1 = VRBindPathParser.get("SINDAN_NM1", data);
+        if (!IkenshoCommon.isNullText(shindanName1)){
+        	array.add(String.valueOf(shindanName1));
         }
-        text = String.valueOf(VRBindPathParser.get("SINDAN_NM2", data));
-        if (!IkenshoCommon.isNullText(text)) {
-            if (sb.length() > 0) {
-                sb.append("／");
-            }
-            sb.append(text);
+               
+        
+        Object shindanName2 = VRBindPathParser.get("SINDAN_NM2", data);
+        if (!IkenshoCommon.isNullText(shindanName2)){
+        	array.add(String.valueOf(shindanName2));
         }
-        text = String.valueOf(VRBindPathParser.get("SINDAN_NM3", data));
-        if (!IkenshoCommon.isNullText(text)) {
-            if (sb.length() > 0) {
-                sb.append("／");
-            }
-            sb.append(text);
+        
+        Object shindanName3 = VRBindPathParser.get("SINDAN_NM3", data);
+        if (!IkenshoCommon.isNullText(shindanName3)){
+        	array.add(String.valueOf(shindanName3));
         }
+        
+        //arrayの中にデータが入っているかどうか確認
+        if (!array.isEmpty()){
+        	
+         	//主たる傷病が名が１つしか記載されていないの場合、番号は付けない。
+	        if (array.size() == 1){
+	        	sb.append(array.get(0));
+	        }
+	        //主たる傷病名が１つ以上記載されている場合、"（１）"から番号を付ける。
+	        else{
+	        	for (int i=0; i<array.size(); i++){
+	        		switch (i){
+	        		case 0 :
+	        			sb.append("(１)");
+	        			sb.append(array.get(i));
+	        			break;
+	        		case 1 :
+	        			sb.append(" ");
+	        			sb.append("(２)");
+	        			sb.append(array.get(i));
+	        			break;
+	        		case 2 :
+	        			sb.append(" ");
+	        			sb.append("(３)");
+	        			sb.append(array.get(i));
+	        			break;
+	        		}
+	        		
+	        	}
+	        }
+        }
+        //2008/3/6 H.Tanaka Add End
+        //2008/3/6 H.Tanaka Del Sta 訪問看護指示書印字変更対応
+        //text = String.valueOf(VRBindPathParser.get("SINDAN_NM1", data));
+        //if (!IkenshoCommon.isNullText(text)) {
+        //    sb.append(text);
+        //}
+        //text = String.valueOf(VRBindPathParser.get("SINDAN_NM2", data));
+        //if (!IkenshoCommon.isNullText(text)) {
+        //    if (sb.length() > 0) {
+        //        sb.append("／");
+        //    }
+        //    sb.append(text);
+        //}
+        //text = String.valueOf(VRBindPathParser.get("SINDAN_NM3", data));
+        //if (!IkenshoCommon.isNullText(text)) {
+        //    if (sb.length() > 0) {
+        //        sb.append("／");
+        //    }
+        //    sb.append(text);
+        //}
+        //2008/3/6 H.Tanaka Del end
         IkenshoCommon.addString(pd, "Grid4.h1.w2", sb.toString());
 
         // 傷病治療状態
@@ -555,6 +607,7 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
         }
 
         // 療養生活指導上の留意事項
+                    
         IkenshoCommon.addString(pd, data, "RSS_RYUIJIKOU", "Grid10.h2.w2");
         // リハビリテーション
         if (((Integer) VRBindPathParser.get("REHA_SIJI_UMU", data)).intValue() != 1) {

@@ -35,23 +35,26 @@ public class DataUpdateTask extends AbstractTask{
 	/**
 	 * データ更新タスクの実行
 	 */
-	public boolean runTask() throws Exception{
+	public boolean runTask(TaskProcesser tp) throws Exception{
 		DBConnect db = new DBConnect();
 		try{
-			///バージョンチェック
+            ///バージョンチェック
 			String version = getDataVersion(db);
 			//サーバ上のモジュールバージョンが新しければ、コピー実行
 			if(version.compareTo(getVersionNo()) >= 0){
 				db = null;
+                tp.skipTask(this);
 				return false;
 			}
 			db.commit();
 			
 			db.begin();
 			
+            tp.setStatus("マスタ更新("+getVersionNo()+")");
 			for(int i = 0; i < taskList.size(); i++){
 				UpdateTask task = (UpdateTask)taskList.get(i);
 				task.runTask(db);
+                tp.addProgress();
 			}
 			db.exec("UPDATE IKENSYO_VERSION SET DATA_VERSION = " + getVersionNo() + ",LAST_TIME = CURRENT_TIMESTAMP");
 			
@@ -74,6 +77,10 @@ public class DataUpdateTask extends AbstractTask{
 	public String getDataVersion(DBConnect db) throws Exception {
 		return db.execQuerySingle("SELECT DATA_VERSION FROM IKENSYO_VERSION");
 	}
+    
+      public int size(){
+            return taskList.size();
+        }
 }
 
 /**

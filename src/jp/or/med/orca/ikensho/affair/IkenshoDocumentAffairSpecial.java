@@ -20,6 +20,7 @@ import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.component.IkenshoSpecialSijiContainer;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
@@ -35,34 +36,48 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
   private ACIntegerCheckBox specialJyoumyakuEiyou = new
       ACIntegerCheckBox();
   private ACIntegerCheckBox specialOtherUse = new ACIntegerCheckBox();
-  private ACComboBox specialCannulaSize = new ACComboBox();
+//// 2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox specialCannulaSize = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end 
   private ACIntegerCheckBox specialJokusou = new ACIntegerCheckBox();
   private ACIntegerCheckBox specialKoumon = new ACIntegerCheckBox();
-  private ACComboBox specialDorenPos = new ACComboBox();
-  private ACComboBox specialRyuchiCatheterChange = new ACComboBox();
+//// 2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox specialDorenPos = new IkenshoOptionComboBox();
+  private IkenshoOptionComboBox specialRyuchiCatheterChange = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACIntegerCheckBox specialKeikanEiyou;
   private VRLabel specialMonitorMessage2 = new VRLabel();
-  private ACComboBox specialRyuchiCatheterSize = new ACComboBox();
+//// 2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox specialRyuchiCatheterSize = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - emd
   private VRLabel specialJinkouKokyuMiddle = new VRLabel();
-  private ACComboBox specialKeikanEiyouSize = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox specialKeikanEiyouSize = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACTextField specialOther = new ACTextField();
   private FlowLayout specialRyuchiCatheterLaout = new FlowLayout();
   private ACIntegerCheckBox specialCannula = new ACIntegerCheckBox();
   private ACIntegerCheckBox specialKyuinnki = new ACIntegerCheckBox();
-  private ACComboBox specialKeikanEiyouChange = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox specialKeikanEiyouChange = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private VRLayout specialLayout = new VRLayout();
   private VRPanel specialMonitorPanel = new VRPanel();
   private VRLayout specialGroupLayout = new VRLayout();
   private ACIntegerCheckBox specialTousinKango = new
       ACIntegerCheckBox();
-  private ACComboBox specialJinkouKokyuHousiki = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox specialJinkouKokyuHousiki = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private VRPanel specialOtherPanel = new VRPanel();
   private ACIntegerCheckBox specialKikanSekkai = new ACIntegerCheckBox();
   private VRLabel specialMonitorMessage1 = new VRLabel();
   private ACIntegerCheckBox specialDoren = new ACIntegerCheckBox();
   private ACIntegerCheckBox specialTouseki = new
       ACIntegerCheckBox();
-  private ACComboBox specialKeikanEiyouMethod = new ACComboBox();
+// 2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox specialKeikanEiyouMethod = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private FlowLayout specialOxRyouhouRyoouLaout = new FlowLayout();
   private ACTextField specialOxRyouhouRyou = new ACTextField();
   private ACIntegerCheckBox specialOxRyouhou = new ACIntegerCheckBox();
@@ -74,7 +89,9 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
   private VRLayout specialOtherLaout = new VRLayout();
   private ACIntegerCheckBox specialJinkouKokyu = new
       ACIntegerCheckBox();
-  private ACComboBox specialJinkouKokyuSettei = new ACComboBox();
+// 2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox specialJinkouKokyuSettei = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private VRLabel specialRyuchiCatheterSizeHead = new VRLabel();
   private VRLabel specialRyuchiCatheterMiddle = new VRLabel();
   private VRLabel specialRyuchiCatheterFoot = new VRLabel();
@@ -461,7 +478,9 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialOxRyouhou.setBindPath("OX_RYO");
     specialMessage1.setForeground(Color.blue);
     specialMessage1.setToolTipText("");
-    specialMessage1.setText("「訪問看護指示書」作成に必要な項目です。");
+    // 2008/02/25 [Masahiko_Higuchi] edit - begin V3.0.6 平成20年度診療報酬単価変更対応
+    specialMessage1.setText("背景色が黄色の項目は「訪問看護指示書」作成に必要な項目です。");
+    // 2008/02/25 [Masahiko_Higuchi] edit - end
     specialJinkouBoukou.setOpaque(false);
     specialJinkouBoukou.setText("人工膀胱");
     specialJinkouBoukou.setBindPath("JINKOU_BOUKOU");
@@ -495,7 +514,9 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialCatheter.setBindPath("CATHETER");
     getSpecialMessage2().setForeground(Color.blue);
     getSpecialMessage2().setVerticalAlignment(javax.swing.SwingConstants.TOP);
-    getSpecialMessage2().setText("「主治医意見書」では印刷されません。");
+    // 2008/02/25 [Masahiko_Higuchi] edit - begin V3.0.6 平成20年度診療報酬単価変更対応
+    getSpecialMessage2().setText("背景色が黄色の項目は「主治医意見書」では印刷されません。");
+    // 2008/02/25 [Masahiko_Higuchi] edit - end
     specialKeikanEiyouMiddle1.setText("）l/min");
     specialKeikanEiyouMiddle1.setText("：チューブサイズ");
     specialMonitor.setText("モニター測定");
@@ -661,4 +682,124 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
         }
         return specialMessage2;
     }
+
+//  2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    /**
+     * 気管カニューレサイズ を返します。
+     * @return 気管カニューレサイズコンボ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public IkenshoOptionComboBox getSpecialCannulaSize() {
+        if(specialCannulaSize == null){
+            specialCannulaSize = new IkenshoOptionComboBox();
+        }
+        return specialCannulaSize;
+    }
+
+    /**
+     * ドレーン部位 を返します。
+     * @return ドレーン部位コンボ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public IkenshoOptionComboBox getSpecialDorenPos() {
+        if(specialDorenPos == null){
+            specialDorenPos = new IkenshoOptionComboBox();
+        }
+        return specialDorenPos;
+    }
+
+    /**
+     * 留置カテーテル交換 を返します。
+     * @return 留置カテーテル交換コンボ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public IkenshoOptionComboBox getSpecialRyuchiCatheterChange() {
+        if(specialRyuchiCatheterChange == null){
+            specialRyuchiCatheterChange = new IkenshoOptionComboBox();
+        }
+        return specialRyuchiCatheterChange;
+    }
+
+    /**
+     * 留置カテーテールサイズ を返します。
+     * @return 留置カテーテールサイズコンボ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public IkenshoOptionComboBox getSpecialRyuchiCatheterSize() {
+        if(specialRyuchiCatheterSize == null){
+            specialRyuchiCatheterSize = new IkenshoOptionComboBox();
+        }
+        return specialRyuchiCatheterSize;
+    }
+
+    /**
+     * 経管栄養サイズ を返します。
+     * @return 経管栄養サイズコンボ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public IkenshoOptionComboBox getSpecialKeikanEiyouSize() {
+        if(specialKeikanEiyouSize == null){
+            specialKeikanEiyouSize = new IkenshoOptionComboBox();
+        }
+        return specialKeikanEiyouSize;
+    }
+
+    /**
+     * 経管栄養交換 を返します。
+     * @return 経管栄養交換コンボ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public IkenshoOptionComboBox getSpecialKeikanEiyouChange() {
+        if(specialKeikanEiyouChange == null){
+            specialKeikanEiyouChange = new IkenshoOptionComboBox();
+        }
+        return specialKeikanEiyouChange;
+    }
+
+    /**
+     * 人工呼吸器方式 を返します。
+     * @return 人工呼吸器方式コンボ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public IkenshoOptionComboBox getSpecialJinkouKokyuHousiki() {
+        if(specialJinkouKokyuHousiki == null){
+            specialJinkouKokyuHousiki = new IkenshoOptionComboBox();
+        }
+        return specialJinkouKokyuHousiki;
+    }
+
+    /**
+     * 経管栄養方法 を返します。
+     * @return 経管栄養方法コンボ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public IkenshoOptionComboBox getSpecialKeikanEiyouMethod() {
+        if(specialKeikanEiyouMethod == null){
+            specialKeikanEiyouMethod = new IkenshoOptionComboBox();
+        }
+        return specialKeikanEiyouMethod;
+    }
+
+    /**
+     * 人工呼吸器設定 を返します。
+     * @return 人工呼吸器設定コンボ
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public IkenshoOptionComboBox getSpecialJinkouKokyuSettei() {
+        if(specialJinkouKokyuSettei == null){
+            specialJinkouKokyuSettei = new IkenshoOptionComboBox();
+        }
+        return specialJinkouKokyuSettei;
+    }
+//  2007/10/18 [Masahiko Higuchi] Addition - end
+    
 }

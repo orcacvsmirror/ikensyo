@@ -99,6 +99,7 @@ public class ProxySelect  extends JDialog implements ActionListener {
 		setBounds( (screenSize.width - getWidth()) / 2,
 			(screenSize.height - getHeight()) /
 			2, getWidth(), getHeight());
+        pack();
 	}
 	
 	/**

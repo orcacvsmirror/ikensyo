@@ -911,10 +911,15 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         // てんかんを処理
         IkenshoCommon.addFollowCheckNumberUpdate(sb, originalData, "TENKAN",
                 new String[] { "TENKAN_HINDO" }, true);
+
+        // 2007/07/02 - Firebird2.0
+        // 重複コールのため削除(IkenshoIkenshoInfo.doUpdateIkensho())
+        // Delete - begin [kamitsukasa.kazuyoshi]
         // 関節関係は項目の関係が変わっているのでoverrideしたメソッドで変更する
-        try{
-            appendDifferenceUpdateItem(sb);
-        }catch(Exception e){}
+//        try{
+//            appendDifferenceUpdateItem(sb);
+//        }catch(Exception e){}
+        // Delete - end [kamitsukasa.kazuyoshi]
         
         // 失調・不随意
         if(new Integer(1).equals(originalData.getData("SICCHOU_FLAG"))){
@@ -983,10 +988,16 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         sb.append(getDBSafeString("SHUSSEI2",originalData));
         sb.append(",SHUSSEI3 = ");
         sb.append(getDBSafeString("SHUSSEI3",originalData));
+
+        // 2007/07/02 - Firebird2.0
+        // 重複コールのため削除(IkenshoIkenshoInfo.doUpdateIkensho())
+        // Delete - begin [kamitsukasa.kazuyoshi]
         // 専門医受診のみ変更
-        try{
-            doUpdateDifferenceItemSenmoni(sb);
-        }catch (Exception e) { }
+//        try{
+//            doUpdateDifferenceItemSenmoni(sb);
+//        }catch (Exception e) { }
+        // Delete - end [kamitsukasa.kazuyoshi]
+        
     }
     
     protected void doUpdateDifferenceItemSenmoni(StringBuffer sb)throws Exception{
@@ -1005,7 +1016,7 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
     protected void appendDifferenceUpdateItem(StringBuffer sb) throws Exception{
         IkenshoCommon.addFollowCheckNumberUpdate(sb, originalData,
                 "KOUSHU", new String[] { "KATA_KOUSHU", "MATA_KOUSHU",
-                        "HIJI_KOUSHU", "HIZA_KOUSHU","KOUSHU_ETC" }, true);
+                        "HIJI_KOUSHU", "HIZA_KOUSHU","KOUSHU_ETC" }, false);
         // 各関節の部位に関する処理
         // 肩
         if (new Integer(1).equals(originalData.getData("KOUSHU"))

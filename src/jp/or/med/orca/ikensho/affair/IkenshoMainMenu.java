@@ -7,7 +7,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.io.BufferedReader;
 import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileReader;
+import java.io.InputStreamReader;
+import java.io.Reader;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
@@ -17,11 +24,14 @@ import javax.swing.border.BevelBorder;
 
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACAffairButtonBar;
+import jp.nichicom.ac.component.ACEditorPane;
+import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.mainmenu.ACMainMenuButton;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.version.ACVersionAdjuster;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.splash.ACSplashChaine;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -36,6 +46,7 @@ import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.event.IkenshoHiddenCommandKeyListener;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
+import jp.or.med.orca.ikensho.component.*;
 
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoMainMenu extends VRPanel implements ACAffairable {
@@ -88,6 +99,9 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
     private JLabel firebirfVersion = new JLabel();
     private JLabel firebirfVersion2 = new JLabel();
     // 2006/02/08[Shin Fujihara] : add end
+    // 2007/10/22 [Masahiko Higuchi] Addition - begin バージョンアップお知らせ機能対応
+    private ACEditorPane editor;
+    // 2007/10/22 [Masahiko Higuchi] Addition - end
 
     public IkenshoMainMenu() {
         try {
@@ -130,9 +144,30 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
         versionPanel.add(dataVersion, VRLayout.FLOW_RETURN);
         versionPanel.add(schemaVersion, VRLayout.FLOW_RETURN);
         versionPanel.add(versionBottomSpacer, VRLayout.FLOW_RETURN);
-        this.add(titleBar, BorderLayout.WEST);
-        this.add(menus, BorderLayout.CENTER);
-
+        
+        // 2007/10/22 [Masahiko Higuchi] Addition - begin バージョンアップお知らせ機能対応
+        editor = new ACEditorPane();
+        try{
+            // HTML読込みクラス生成
+            IkenshoHtmlPageReader reader = new IkenshoHtmlPageReader();
+            // 別スレッドで読込み開始
+            reader.start();
+            
+        }catch(Exception e){}
+        
+        VRPanel menuIkenshoShijishoPanel = new VRPanel(new VRLayout());
+        VRPanel menuSeikyuushoAndBasicPanel = new VRPanel(new VRLayout());
+        VRPanel menuOtherAndSettingPanel = new VRPanel(new VRLayout());
+        VRPanel menuClosePanel = new VRPanel(new VRLayout());
+        VRPanel htmlPanel = new VRPanel();
+        VRLayout htmlLayout = new VRLayout();
+        // 終了ボタンの左側の領域に配置
+        ACLabel hiddenLabel = new ACLabel("   ");
+        // 2007/10/22 [Masahiko Higuchi] Addition - end
+        // 2007/10/22 [Masahiko Higuchi] Replace - begin バージョンアップお知らせ機能対応
+        this.add(titleBar, VRLayout.WEST);
+        this.add(menus, VRLayout.CENTER);
+        // 2007/10/22 [Masahiko Higuchi] Replace - end
         titleBar.setLayout(new BorderLayout());
         titleBar.setBackground(new java.awt.Color(0, 51, 153));
         // 2006/02/03[Tozo Tanaka] : replace begin
@@ -148,15 +183,33 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
         menus.setBackground(Color.white);
         VRLayout menusLayout = new VRLayout();
         menusLayout.setHgap(10);
-        menusLayout.setVgap(10);
+        // 2007/10/22 [Masahiko Higuchi] Replace - begin バージョンアップお知らせ機能対応
+        menusLayout.setVgap(2);
+        // 2007/10/22 [Masahiko Higuchi] Replace - end
         menus.setLayout(menusLayout);
-        menus.add(ikenshoShijisho, VRLayout.NORTH);
-        menus.add(seikyuusho, VRLayout.NORTH);
-        menus.add(basic, VRLayout.NORTH);
-        menus.add(other, VRLayout.NORTH);
-        menus.add(setting, VRLayout.NORTH);
-        menus.add(closeBtnPnl, VRLayout.SOUTH);
-
+		// 2007/10/22 [Masahiko Higuchi] Replace - begin バージョンアップお知らせ機能対応
+        htmlPanel.setLayout(htmlLayout);
+        menuIkenshoShijishoPanel.add(ikenshoShijisho, VRLayout.CLIENT);
+        menuSeikyuushoAndBasicPanel.add(seikyuusho, VRLayout.CLIENT);
+        menuSeikyuushoAndBasicPanel.add(basic, VRLayout.CLIENT);
+        menuOtherAndSettingPanel.add(other, VRLayout.CLIENT);
+        menuOtherAndSettingPanel.add(setting, VRLayout.CLIENT);
+        menuClosePanel.add(hiddenLabel, VRLayout.CLIENT);
+        menuClosePanel.add(closeBtnPnl, VRLayout.CLIENT);
+        htmlPanel.add(editor);
+        // 背景色は白に設定
+        menuIkenshoShijishoPanel.setBackground(Color.white);
+        menuSeikyuushoAndBasicPanel.setBackground(Color.white);
+        menuOtherAndSettingPanel.setBackground(Color.white);
+        menuClosePanel.setBackground(Color.white);
+        editor.setBackground(Color.white);
+        // メニューにボタンの配置
+        menus.add(menuIkenshoShijishoPanel,VRLayout.NORTH);
+        menus.add(menuSeikyuushoAndBasicPanel,VRLayout.NORTH);
+        menus.add(menuOtherAndSettingPanel,VRLayout.NORTH);
+        menus.add(menuClosePanel,VRLayout.NORTH);
+        menus.add(editor,VRLayout.CLIENT);
+        // 2007/10/22 [Masahiko Higuchi] Replace - end
         // 意見書・指示書
         ikenshoShijisho.setToolTipText("「主治医意見書・医師意見書・訪問看護指示書」の作成および編集を行います。");
         ikenshoShijisho.setMnemonic('K');
@@ -205,7 +258,9 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
         // 閉じる
         closeBtnPnl.setLayout(new BorderLayout());
         closeBtnPnl.setOpaque(false);
-        closeBtnPnl.add(close, BorderLayout.EAST);
+		// 2007/10/22 [Masahiko Higuchi] Replace - begin バージョンアップお知らせ機能対応
+        closeBtnPnl.add(close, BorderLayout.CENTER);
+		// 2007/10/22 [Masahiko Higuchi] Replace - end
         close.setToolTipText("プログラムを終了します。");
         close.setMnemonic('E');
         // close.setBackground(new java.awt.Color(102, 102, 255));
@@ -527,6 +582,15 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
             }
         }
 
+        // 2008/02/08[Masahiko Higuchi] : add start version 3.0.5 Mac JVM1.5対応
+        //3回までは、FrameProcesserを設定しなおす
+        for (int i = 0; (ACFrame.getInstance().getFrameEventProcesser() == null)
+				&& (i < 3); i++) {
+			ACFrame.getInstance().setFrameEventProcesser(
+					new IkenshoFrameEventProcesser());
+		}
+        // 2008/02/08[Masahiko Higuchi] : add end
+        
         // DB接続テスト
         checkDBVersion();
 
@@ -693,4 +757,94 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
             // dlg.show();
         }
     }
+    
+    
+    /**
+     * アクセスするURLを返します。
+     * 
+     * @return アクセスするURL
+     */
+    protected String getVersionUpInfoURL() {
+        try {
+            File f = new File(ACFrame.getInstance().getExeFolderPath(),
+                    "versionUpInfo.txt");
+            BufferedReader br = new BufferedReader(new InputStreamReader(
+                    new FileInputStream(f)));
+            if (br != null) {
+                String txt = br.readLine();
+                if (!ACTextUtilities.isNullText(txt)) {
+                    return txt;
+                }
+                br.close();
+            }
+        } catch (Exception e) {
+        }
+        return "";
+    }
+    
+    /**
+     * 
+     * IkenshoHtmlPageReaderです。
+     * <p>
+     * Copyright (c) 2007 Nippon Computer Corpration. All Rights Reserved.
+     * </p>
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     * @see Runnable
+     */
+    class IkenshoHtmlPageReader implements Runnable{
+        Thread th;
+        
+        /**
+         * HTMLページ読み込みのメイン処理です。
+         */
+        public void run() {
+            if(th != null){
+                // 最初は非表示
+                editor.setVisible(false);
+                URL url;
+                try {
+                    // OS種類を取得
+                    String osName = System.getProperty("os.name");
+                    // Macの場合は非適用
+                    if ((osName != null) && (osName.indexOf("Mac") < 0)) {
+                        // プロキシサーバ名称を設定する
+                        System.setProperty("http.proxyHost", PropertyUtil
+                                .getProperty("http.proxyHost"));
+                        // プロキシのポート番号を設定する。
+                        System.setProperty("http.proxyPort", PropertyUtil
+                                .getProperty("http.proxyPort"));
+                        // プロキシを使わないサーバの設定
+                        System.setProperty("http.nonProxyHosts", PropertyUtil
+                                .getProperty("http.nonProxyHosts"));
+                    }
+                    // URLを生成
+                    url = new URL(getVersionUpInfoURL());
+                    // 先にVisibleを切り替える
+                    editor.setVisible(true);
+                    // ページの表示
+                    editor.showHtmlPage(url);
+                    // Enable制御
+                    editor.setEnabled(true);
+                    // スレッドの破棄
+                    th = null;
+                    editor.revalidate();
+                } catch (Exception e) {
+                    // 読み込み失敗時は非表示
+                    editor.setVisible(false);
+                }
+            }
+            
+        }
+        
+        /**
+         * 新規のスレッドを生成して処理を実行します。
+         */
+        public void start(){
+            th = new Thread(this);
+            th.start();
+        }
+        
+    }
+    
 }

@@ -125,6 +125,37 @@ public class IkenshoIshiIkenshoInfoCare1 extends IkenshoIkenshoInfoCare1H18 {
       applyPoolTeikeibun(getCare1Dassui().getValueCombo(), IkenshoCommon.TEIKEI_ISHI_SICK_COPE_DEHYDRATION_NAME);
       applyPoolTeikeibun(getCare1OtherTaisyo(), IkenshoCommon.TEIKEI_ISHI_SICK_COPE_OTHER_NAME);
       applyPoolTeikeibun(getCare1OtherName(), IkenshoCommon.TEIKEI_ISHI_SICK_TYPE_OTHER_NAME);
+      
+
+        // 2007/10/18 [Masahiko Higuchi] Addition - begin ã∆ñ±ëJà⁄ÉRÉìÉ{ëŒâû
+        // ACComboBoxÅÀIkenshoOptionComboBox
+        getCare1Shikkin().getComboBox().setOptionComboBoxParameters("îAé∏ã÷",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_URINE_NAME, 30);
+        getCare1Tentou().getComboBox().setOptionComboBoxParameters("ì]ì|ÅEçúê‹",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_FACTURE_NAME, 30);
+        getCare1Haikai().getComboBox().setOptionComboBoxParameters("úpúj",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_PROWL_NAME, 30);
+        getCare1Jyokusou().getComboBox().setOptionComboBoxParameters("ÂÒ·å",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_JYOKUSOU_NAME, 30);
+        getCare1Haien().getComboBox().setOptionComboBoxParameters("öãâ∫ê´îxâä",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_PNEUMONIA_NAME, 30);
+        getCare1Chouheisoku().getComboBox().setOptionComboBoxParameters("í∞ï¬ç«",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_INTESTINES_NAME, 30);
+        getCare1Ekikan().getComboBox().setOptionComboBoxParameters("à’ä¥êıê´",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_INFECTION_NAME, 30);
+        getCare1ShinpaiDown().getComboBox().setOptionComboBoxParameters(
+                "êSîxã@î\ÇÃí·â∫", IkenshoCommon.TEIKEI_ISHI_SICK_COPE_HEART_LUNG_NAME,
+                30);
+        getCare1Pain().getComboBox().setOptionComboBoxParameters("í…Ç›",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_PAIN_NAME, 30);
+        getCare1Dassui().getComboBox().setOptionComboBoxParameters("íEêÖ",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_DEHYDRATION_NAME, 30);
+        getCare1OtherTaisyo().setOptionComboBoxParameters("ÇªÇÃëºÅEè⁄ç◊",
+                IkenshoCommon.TEIKEI_ISHI_SICK_COPE_OTHER_NAME, 30);
+        getCare1OtherName().setOptionComboBoxParameters("ÇªÇÃëºÅEçÄñ⁄ñº",
+                IkenshoCommon.TEIKEI_ISHI_SICK_TYPE_OTHER_NAME, 15);
+        //    2007/10/18 [Masahiko Higuchi] Addition - end
+      
     }
 
 }

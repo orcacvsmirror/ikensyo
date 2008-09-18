@@ -11,6 +11,7 @@ import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
@@ -33,7 +34,9 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACFrameEventProcesser;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.text.ACKanaConvert;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.ac.util.splash.ACSplash;
@@ -102,6 +105,13 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
     private ACLabelContainer checkEditMethodContainer = new ACLabelContainer();
     private int foundCount=0; 
     private int pageBegin=0;
+	// 2007/11/26 [Masahiko Higuchi] add - begin 日レセ連携対応 v3.0.4
+    private ACComboBox versionCombo = null;
+    private ACLabelContainer versionContainer = null;
+    // 初期表示時のレセプトソフトバージョンコンボの設定値
+    private final int DEFAULT_RECEIPT_VERSION_INDEX = 1;
+	// 2007/11/26 [Masahiko Higuchi] add - end
+    
     /**
      * 1ページあたりの表示件数です。
      */
@@ -120,6 +130,9 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
         String port = "8013";
         String user = "ormaster";
         String pass = "ormaster";
+        // 2007/11/26 [Masahiko Higuchi] add - begin 日レセ連携対応 v3.0.4
+        int receiptVersion = DEFAULT_RECEIPT_VERSION_INDEX;
+        // 2007/11/26 [Masahiko Higuchi] add - end
         
         try{
             //過去の通信設定を読み込む
@@ -144,6 +157,13 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
             if(ACFrame.getInstance().hasProperty("ReceiptAccess/KanaConvert")){
                 useKanaConvert.setSelected("true".equals(ACFrame.getInstance().getProperty("ReceiptAccess/KanaConvert")));
             }
+            // 2007/11/26 [Masahiko Higuchi] add - begin 日レセ連携対応 v3.0.4
+            if(ACFrame.getInstance().hasProperty("ReceiptAccess/ReceiptSoftVersion")){
+                receiptVersion = ACCastUtilities.toInt(ACFrame.getInstance()
+                        .getProperty("ReceiptAccess/ReceiptSoftVersion"),
+                        DEFAULT_RECEIPT_VERSION_INDEX);
+            }
+            // 2007/11/26 [Masahiko Higuchi] add - end
         }catch(Exception ex){
             
         }
@@ -152,6 +172,9 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
         userName.setText(user);
         password.setText(pass);
         this.port.setText(port);
+        // 2007/11/26 [Masahiko Higuchi] add - begin 日レセ連携対応 v3.0.4
+        getVersionCombo().setSelectedIndex(receiptVersion);
+        // 2007/11/26 [Masahiko Higuchi] add - end
         // 2006/02/09[Tozo Tanaka] : add end
     }
 
@@ -680,6 +703,10 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
             String pass = password.getText();
             String dbsVer = dbsVersion.getText();
             String hospID = hospitalID.getText();
+            // 2007/11/26 [Masahiko Higuchi] add - begin 日レセ連携対応 v3.0.4
+            String receiptVersion = ACCastUtilities.toString(getVersionCombo()
+                    .getSelectedIndex(), ACCastUtilities.toString(DEFAULT_RECEIPT_VERSION_INDEX));
+            // 2007/11/26 [Masahiko Higuchi] add - end
             ACFrame.getInstance().getPropertyXML().setForceValueAt(
                     "ReceiptAccess/IP", ip);
             ACFrame.getInstance().getPropertyXML().setForceValueAt(
@@ -699,7 +726,23 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
                 ACFrame.getInstance().getPropertyXML().setForceValueAt(
                         "ReceiptAccess/KanaConvert", "false");
             }
+            // 2007/11/26 [Masahiko Higuchi] add - begin 日レセ連携対応 v3.0.4
+            ACFrame.getInstance().getPropertyXML().setForceValueAt(
+                    "ReceiptAccess/ReceiptSoftVersion", receiptVersion);
+            // パスがnullでないか念のためチェックする
+            if(pass != null){
+                // 空白がパスワードに設定されている場合
+                if(pass.indexOf(" ") != -1 || pass.indexOf("　") != -1 ){
+                    ACMessageBox.showExclamation("入力されたパスワードに空白文字が含まれています。"
+                            + ACConstants.LINE_SEPARATOR
+                            + "空白文字を含んだパスワードは使用できません。");
+                    // 処理終了
+                    return;
+                }
+            }
             
+            
+            // 2007/11/26 [Masahiko Higuchi] add - end
             //2006/02/12[Tozo Tanaka] : replace begin
 //          ACFrame.getInstance().getProperityXML().write();
           if(!ACFrame.getInstance().getPropertyXML().writeWithCheck()){
@@ -720,68 +763,129 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
             // tbl_ptinf取得ストアドプロシージャ
             int count = 0;
             try {
-                String key = "all";
-                VRMap param = null;
-                if (usePatientIDFilter.isSelected()) {
-                    if ("".equals(hospID)) {
-                        ACMessageBox.showExclamation("医療機関IDが未入力です。"
+                
+                // 2007/11/26 [Masahiko Higuchi] add - begin 日レセ連携対応 v3.0.4
+                if(getVersionCombo().getSelectedIndex() != DEFAULT_RECEIPT_VERSION_INDEX){
+                // 2007/11/26 [Masahiko Higuchi] add - end
+                    
+                    String key = "all";
+                    VRMap param = null;
+                    if (usePatientIDFilter.isSelected()) {
+                        if ("".equals(hospID)) {
+                            ACMessageBox.showExclamation("医療機関IDが未入力です。"
+                                    + ACConstants.LINE_SEPARATOR
+                                    + "日医標準レセプトソフトの「システム管理マスタ」を参照するか、"
+                                    + ACConstants.LINE_SEPARATOR
+                                    + "サポートベンダにお問い合わせください。");
+                            return;
+                        }
+                        String id = patientID.getText();
+                        if ("".equals(id)) {
+    //                        ACMessageBox.showExclamation("患者IDが未入力です。");
+                            ACMessageBox.showExclamation("患者カナ氏名が未入力です。");
+                            return;
+                        }
+    //                    if(!VRCharType.ONLY_NUMBER.isMatch(id)){
+    //                        ACMessageBox
+    //                                .showExclamation("日医標準レセプトソフトにて標準構成以外の患者番号構成を使用している場合、"
+    //                                        + ACConstants.LINE_SEPARATOR
+    //                                        + "患者IDを指定した検索には対応しておりません。"
+    //                                        + ACConstants.LINE_SEPARATOR
+    //                                        + "（詳しくは日医標準レセプトソフトのマニュアルを参照してください）");
+    //                        return;
+    //                    }
+    
+                        param = new VRHashMap();
+                        param.put("tbl_ptinf.HOSPID", hospID);
+    //                    param.put("tbl_ptinf.PTID", id);
+    //                    key = "key";
+                        param.put("tbl_ptinf.KANANAME", id+"%");
+                        key = "key3";
+                    }else{
+                        if (ACMessageBox.showOkCancel("すべての患者を検索します。よろしいですか？"
                                 + ACConstants.LINE_SEPARATOR
-                                + "日医標準レセプトソフトの「システム管理マスタ」を参照するか、"
-                                + ACConstants.LINE_SEPARATOR
-                                + "サポートベンダにお問い合わせください。");
-                        return;
+                                + "※100件あたり5秒程度かかります。",
+                                ACMessageBox.FOCUS_CANCEL) != ACMessageBox.RESULT_OK) {
+                            return;
+                        }
                     }
-                    String id = patientID.getText();
-                    if ("".equals(id)) {
-//                        ACMessageBox.showExclamation("患者IDが未入力です。");
-                        ACMessageBox.showExclamation("患者カナ氏名が未入力です。");
-                        return;
+                    
+                    //スプラッシュの準備
+                    ACFrameEventProcesser processer = ACFrame.getInstance().getFrameEventProcesser();
+                    if(processer instanceof IkenshoFrameEventProcesser){
+                        splash = new ACStopButtonSplash();
+                        ((ACSplash)splash).setIconPathes(((IkenshoFrameEventProcesser)processer).getSplashFilePathes());
+                        Dimension d=((IkenshoFrameEventProcesser)processer).getSplashWindowSize();
+                        if(d!=null){
+                            d= new Dimension((int)d.getWidth(), (int)d.getHeight()+20);
+                        }
+                        
+                        ((ACSplash)splash).refreshSize(d);
+                        if (!((ACSplash)splash).isVisible()) {
+                            ((ACSplash)splash).showModaless("データ通信");
+                        }
+                        
                     }
-//                    if(!VRCharType.ONLY_NUMBER.isMatch(id)){
-//                        ACMessageBox
-//                                .showExclamation("日医標準レセプトソフトにて標準構成以外の患者番号構成を使用している場合、"
-//                                        + ACConstants.LINE_SEPARATOR
-//                                        + "患者IDを指定した検索には対応しておりません。"
-//                                        + ACConstants.LINE_SEPARATOR
-//                                        + "（詳しくは日医標準レセプトソフトのマニュアルを参照してください）");
-//                        return;
-//                    }
-
-                    param = new VRHashMap();
-                    param.put("tbl_ptinf.HOSPID", hospID);
-//                    param.put("tbl_ptinf.PTID", id);
-//                    key = "key";
-                    param.put("tbl_ptinf.KANANAME", id+"%");
-                    key = "key3";
+                    
+                    
+                    count = dbm.executeQuery("tbl_ptinf", key, param, splash);
+                    // result = dbm.executeQueryProcedure("all");
+                    
+                // 2007/11/26 [Masahiko Higuchi] edit - begin 日レセ連携対応 v3.0.4
                 }else{
+                    // 日レセ新バージョンの場合
                     if (ACMessageBox.showOkCancel("すべての患者を検索します。よろしいですか？"
                             + ACConstants.LINE_SEPARATOR
                             + "※100件あたり5秒程度かかります。",
                             ACMessageBox.FOCUS_CANCEL) != ACMessageBox.RESULT_OK) {
                         return;
                     }
-                }
-                
-                //スプラッシュの準備
-                ACFrameEventProcesser processer = ACFrame.getInstance().getFrameEventProcesser();
-                if(processer instanceof IkenshoFrameEventProcesser){
-                    splash = new ACStopButtonSplash();
-                    ((ACSplash)splash).setIconPathes(((IkenshoFrameEventProcesser)processer).getSplashFilePathes());
-                    Dimension d=((IkenshoFrameEventProcesser)processer).getSplashWindowSize();
-                    if(d!=null){
-                        d= new Dimension((int)d.getWidth(), (int)d.getHeight()+20);
+                    //スプラッシュの準備
+                    ACFrameEventProcesser processer = ACFrame.getInstance().getFrameEventProcesser();
+                    if(processer instanceof IkenshoFrameEventProcesser){
+                        splash = new ACStopButtonSplash();
+                        ((ACSplash)splash).setIconPathes(((IkenshoFrameEventProcesser)processer).getSplashFilePathes());
+                        Dimension d=((IkenshoFrameEventProcesser)processer).getSplashWindowSize();
+                        if(d!=null){
+                            d= new Dimension((int)d.getWidth(), (int)d.getHeight()+20);
+                        }
+                        
+                        ((ACSplash)splash).refreshSize(d);
+                        if (!((ACSplash)splash).isVisible()) {
+                            ((ACSplash)splash).showModaless("データ通信");
+                        }
+                        
                     }
+                    // HOSPNUM取得用の関数情報定義
+                    String key = "key";
+                    VRMap initialParam = new VRHashMap();
+                    HashMap hospNumResult = new HashMap();
+                    initialParam.put("tbl_sysuser.USERID",user);
                     
-                    ((ACSplash)splash).refreshSize(d);
-                    if (!((ACSplash)splash).isVisible()) {
-                        ((ACSplash)splash).showModaless("データ通信");
-                    }
+                    // 通信準備
+                    dbm.executeSetUp();
                     
+                    // 一旦HOSPNUMを取得する。
+                    hospNumResult = dbm.executeQueryData("tbl_sysuser",key,initialParam);
+                    
+                    // COMMIT
+                    dbm.commitTransaction();
+                    
+                    // 患者情報取得用の関数情報定義                    
+                    key = "all";
+                    // 変数準備
+                    VRMap findParam = new VRHashMap();
+                    // HOSPNUMの取得
+                    Integer hospNum = ACCastUtilities.toInteger(hospNumResult.get("tbl_sysuser.HOSPNUM"),0);
+                    // 検索キー設定
+                    findParam.put("tbl_ptinf.HOSPNUM",hospNum);
+                    // 患者情報取得
+                    count = dbm.executeQuery("tbl_ptinf", key, findParam, splash);
+                    // 終了処理
+                    dbm.close();
+
                 }
-                
-                
-                count = dbm.executeQuery("tbl_ptinf", key, param, splash);
-                // result = dbm.executeQueryProcedure("all");
+                // 2007/11/26 [Masahiko Higuchi] edit - end
             } catch (Exception ex) {
                 splash = closeSplash(splash);
                 Throwable cause = ex.getCause();
@@ -811,8 +915,21 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
                                         + ACConstants.LINE_SEPARATOR
                                         + "接続先DBSのサポートセンターにご連絡ください。");
                         return;
-                    }                    
+                    }
+                    
+                // 2007/11/26 [Masahiko Higuchi] add - begin 日レセ連携対応 v3.0.4
+                }else if("Connection reset".equals(ex.getMessage())){
+                    // 日レセのバージョン選択にミスの可能性有り
+                    ACMessageBox
+                    .showExclamation("接続に失敗しました。"
+                            + ACConstants.LINE_SEPARATOR
+                            + "通信の切断、もしくは日医標準レセプトソフトのバージョンが異なる可能性があります。"
+                            + ACConstants.LINE_SEPARATOR
+                            + "接続設定を確認してください。");
+                    dbm.close();
+                    return;
                 }
+                // 2007/11/26 [Masahiko Higuchi] add - end
                 throw ex;
             }
 
@@ -1423,6 +1540,9 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
         accessSettings.add(dbsVersions, VRLayout.FLOW_INSETLINE_RETURN);
         accessSettings.add(userNames, VRLayout.FLOW_INSETLINE);
         accessSettings.add(passwords, VRLayout.FLOW_INSETLINE_RETURN);
+        // 2007/11/26 [Masahiko Higuchi] add - begin 日レセ連携対応 v3.0.4
+        accessSettings.add(getVersionContainer(),VRLayout.FLOW_INSETLINE_RETURN);
+        // 2007/11/26 [Masahiko Higuchi] add - end
         passwords.add(password, null);
         hostNames.add(hostName, null);
         ports.add(port, null);
@@ -1621,6 +1741,35 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
     public Component getFirstFocusComponent() {
         return hostName;
     }
-    
-    
+
+    /**
+     * 日レセバージョン情報コンボを取得します。
+     * @return コンボボックス
+     * @since v3.0.4
+     * @author Masahiko Higuchi
+     */
+    public ACComboBox getVersionCombo() {
+        if(versionCombo == null){
+            versionCombo = new ACComboBox();
+            versionCombo.setEditable(false);
+            versionCombo.setModel(new String[]{"version 4.0.0未満","version 4.0.0以上"});
+            versionCombo.setBlankable(false);
+        }
+        return versionCombo;
+    }
+    /**
+     * 日医標準レセプトソフト情報ラベルコンテナを取得します。
+     * @return ラベルコンテナ
+     * @since v3.0.4
+     * @author Masahiko Higuchi
+     */
+    public ACLabelContainer getVersionContainer() {
+        if(versionContainer == null){
+            versionContainer = new ACLabelContainer();
+            versionContainer.add(getVersionCombo());
+            versionContainer.setText("日医標準レセプトソフトバージョン");
+        }
+        return versionContainer;
+    }
+
 }

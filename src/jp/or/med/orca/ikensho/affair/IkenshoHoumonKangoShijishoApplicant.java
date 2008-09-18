@@ -75,61 +75,138 @@ public class IkenshoHoumonKangoShijishoApplicant
        houmonSijiSyo.requestFocus();
        return false;
      }
-
-     switch (sijiKikanFrom.getInputStatus()) {
-       case IkenshoEraDateTextField.STATE_EMPTY:
-         break;
-       case IkenshoEraDateTextField.STATE_VALID:
-         if (sijiKikanTo.getInputStatus() == IkenshoEraDateTextField.STATE_VALID) {
-           if (sijiKikanFrom.getDate().compareTo(sijiKikanTo.getDate()) >= 0) {
-             ACMessageBox.showExclamation("指示期間「開始日付」と「終了日付」の範囲に誤りがあります。");
+     // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+     sijiKikanFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+     if(!"".equals(sijiKikanFrom.getEra())&& !"".equals(sijiKikanFrom.getYear())){
+         sijiKikanFrom.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+         // 2007/10/25 [Masahiko Higuchi] Addition - end
+         switch (sijiKikanFrom.getInputStatus()) {
+           case IkenshoEraDateTextField.STATE_EMPTY:
+               // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+               sijiKikanFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+               // 2007/10/25 [Masahiko Higuchi] Addition - end
+             break;
+           case IkenshoEraDateTextField.STATE_VALID:
+             // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+             sijiKikanTo.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+             // 2007/10/25 [Masahiko Higuchi] Addition - end
+             if (sijiKikanTo.getInputStatus() == IkenshoEraDateTextField.STATE_VALID) {
+               if (sijiKikanFrom.getDate().compareTo(sijiKikanTo.getDate()) >= 0) {
+                 ACMessageBox.showExclamation("指示期間「開始日付」と「終了日付」の範囲に誤りがあります。");
+                 sijiKikanFrom.requestChildFocus();
+                 // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+                 sijiKikanFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+                 sijiKikanTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+                 // 2007/10/25 [Masahiko Higuchi] Addition - end
+                 return false;
+               }
+             }
+             // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+             sijiKikanFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+             sijiKikanTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+             // 2007/10/25 [Masahiko Higuchi] Addition - end
+             break;
+           default:
+             ACMessageBox.show("日付に誤りがあります。");
              sijiKikanFrom.requestChildFocus();
+             // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+             sijiKikanFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+             // 2007/10/25 [Masahiko Higuchi] Addition - end
              return false;
-           }
          }
-         break;
-       default:
-         ACMessageBox.show("日付に誤りがあります。");
-         sijiKikanFrom.requestChildFocus();
-         return false;
+     // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
      }
-     switch (sijiKikanTo.getInputStatus()) {
-       case IkenshoEraDateTextField.STATE_EMPTY:
-       case IkenshoEraDateTextField.STATE_VALID:
-         break;
-       default:
-         ACMessageBox.show("日付に誤りがあります。");
-         sijiKikanTo.requestChildFocus();
-         return false;
-     }
+     // 2007/10/25 [Masahiko Higuchi] Addition - end
 
-     switch (tentekiFrom.getInputStatus()) {
-       case IkenshoEraDateTextField.STATE_EMPTY:
-         break;
-       case IkenshoEraDateTextField.STATE_VALID:
-         if (tentekiTo.getInputStatus() == IkenshoEraDateTextField.STATE_VALID) {
-           if (tentekiFrom.getDate().compareTo(tentekiTo.getDate()) >= 0) {
-             ACMessageBox.showExclamation("指示期間「開始日付」と「終了日付」の範囲に誤りがあります。");
+     // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+     sijiKikanTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+     if(!"".equals(sijiKikanTo.getEra())&& !"".equals(sijiKikanTo.getYear())){
+         sijiKikanTo.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+     // 2007/10/25 [Masahiko Higuchi] Addition - end
+         switch (sijiKikanTo.getInputStatus()) {
+           case IkenshoEraDateTextField.STATE_EMPTY:
+           case IkenshoEraDateTextField.STATE_VALID:
+               // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+               sijiKikanTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+               // 2007/10/25 [Masahiko Higuchi] Addition - end
+             break;
+           default:
+             ACMessageBox.show("日付に誤りがあります。");
+             sijiKikanTo.requestChildFocus();
+             // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+             sijiKikanTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+             // 2007/10/25 [Masahiko Higuchi] Addition - end
+             return false;
+         }
+     // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+     }
+     // 2007/10/25 [Masahiko Higuchi] Addition - end
+     
+     // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+     tentekiFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+     if(!"".equals(tentekiFrom.getEra())&& !"".equals(tentekiFrom.getYear())){
+         tentekiFrom.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+         // 2007/10/25 [Masahiko Higuchi] Addition - end
+         switch (tentekiFrom.getInputStatus()) {
+           case IkenshoEraDateTextField.STATE_EMPTY:
+               // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+               tentekiFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+               // 2007/10/25 [Masahiko Higuchi] Addition - end
+             break;
+           case IkenshoEraDateTextField.STATE_VALID:
+             // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+             tentekiTo.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+             // 2007/10/25 [Masahiko Higuchi] Addition - end
+             if (tentekiTo.getInputStatus() == IkenshoEraDateTextField.STATE_VALID) {
+               if (tentekiFrom.getDate().compareTo(tentekiTo.getDate()) >= 0) {
+                 ACMessageBox.showExclamation("指示期間「開始日付」と「終了日付」の範囲に誤りがあります。");
+                 tentekiFrom.requestChildFocus();
+                 // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+                 tentekiFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+                 tentekiTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+                 // 2007/10/25 [Masahiko Higuchi] Addition - end
+                 return false;
+               }
+             }
+             // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+             tentekiFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+             tentekiTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+             // 2007/10/25 [Masahiko Higuchi] Addition - end
+             break;
+           default:
+             ACMessageBox.show("日付に誤りがあります。");
              tentekiFrom.requestChildFocus();
+             // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+             tentekiFrom.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+             // 2007/10/25 [Masahiko Higuchi] Addition - end
              return false;
-           }
          }
-         break;
-       default:
-         ACMessageBox.show("日付に誤りがあります。");
-         tentekiFrom.requestChildFocus();
-         return false;
+     // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
      }
-     switch (tentekiTo.getInputStatus()) {
-       case IkenshoEraDateTextField.STATE_EMPTY:
-       case IkenshoEraDateTextField.STATE_VALID:
-         break;
-       default:
-         ACMessageBox.show("日付に誤りがあります。");
-         tentekiTo.requestChildFocus();
-         return false;
+     // 2007/10/25 [Masahiko Higuchi] Addition - end
+     
+     // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+     tentekiTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+     if(!"".equals(tentekiTo.getEra())&& !"".equals(tentekiTo.getYear())){
+         tentekiTo.setRequestedRange(IkenshoEraDateTextField.RNG_DAY);
+         // 2007/10/25 [Masahiko Higuchi] Addition - end
+         switch (tentekiTo.getInputStatus()) {
+           case IkenshoEraDateTextField.STATE_VALID:
+               // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+               tentekiTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+               // 2007/10/25 [Masahiko Higuchi] Addition - end
+             break;
+           default:
+             ACMessageBox.show("日付に誤りがあります。");
+             tentekiTo.requestChildFocus();
+             // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+             tentekiTo.setRequestedRange(IkenshoEraDateTextField.RNG_ERA);
+             // 2007/10/25 [Masahiko Higuchi] Addition - end
+             return false;
+         }
+     // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
      }
-
+     // 2007/10/25 [Masahiko Higuchi] Addition - end
      return true;
   }
 
@@ -211,12 +288,22 @@ public class IkenshoHoumonKangoShijishoApplicant
     sijiKikanContainer.setContentAreaFilled(true);
     sijiKikanFrom.setAgeVisible(false);
     sijiKikanFrom.setAllowedFutureDate(true);
-    sijiKikanFrom.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+    // 2007/10/25 [Masahiko Higuchi] Delete - begin 平成デフォルト表示対応
+    //sijiKikanFrom.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+    // 2007/10/25 [Masahiko Higuchi] Delete - end
     sijiKikanFrom.setBindPath("SIJI_KIKAN_FROM");
+    // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+    sijiKikanFrom.setEraPreclusion("平成");
+    sijiKikanTo.setEraPreclusion("平成");
+    sijiKikanFrom.setDateTypeConv(false);
+    sijiKikanTo.setDateTypeConv(false);
+    // 2007/10/25 [Masahiko Higuchi] Addition - end
     sijiKikanSep.setText("から");
     sijiKikanTo.setAllowedFutureDate(true);
     sijiKikanTo.setAgeVisible(false);
-    sijiKikanTo.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+    // 2007/10/25 [Masahiko Higuchi] Delete - begin 平成デフォルト表示対応
+    //sijiKikanTo.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+    // 2007/10/25 [Masahiko Higuchi] Delete - end
     sijiKikanTo.setBindPath("SIJI_KIKAN_TO");
     sijiKikanClear.setText("日付消去(C)");
     sijiKikanClear.setMnemonic('C');
@@ -238,11 +325,23 @@ public class IkenshoHoumonKangoShijishoApplicant
     tentekiContainer.setContentAreaFilled(true);
     tentekiFrom.setAgeVisible(false);
     tentekiFrom.setAllowedFutureDate(true);
-    tentekiFrom.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+    // 2007/10/25 [Masahiko Higuchi] Delete - begin 平成デフォルト表示対応
+    //tentekiFrom.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+    // 2007/10/25 [Masahiko Higuchi] Delete - end
     tentekiFrom.setBindPath("TENTEKI_FROM");
+    // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+    tentekiFrom.setEraPreclusion("平成");
+    tentekiTo.setEraPreclusion("平成");
+    tentekiFrom.setDateTypeConv(false);
+    tentekiTo.setDateTypeConv(false);
+    tentekiFrom.clear();
+    tentekiTo.clear();
+    // 2007/10/25 [Masahiko Higuchi] Addition - end
     tentekiSep.setText("から");
     tentekiTo.setAgeVisible(false);
-    tentekiTo.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+    // 2007/10/25 [Masahiko Higuchi] Delete - begin 平成デフォルト表示対応
+    //tentekiTo.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
+    // 2007/10/25 [Masahiko Higuchi] Delete - end
     tentekiTo.setAllowedFutureDate(true);
     tentekiTo.setBindPath("TENTEKI_TO");
     tentekiClear.setText("日付消去(C)");

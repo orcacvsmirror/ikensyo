@@ -23,6 +23,7 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.component.IkenshoBodyStatusContainer;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.component.picture.IkenshoHumanPicture;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
@@ -552,6 +553,66 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
         // Addition - begin [Masahiko Higuchi]
         return mindBody2Title;
         // Addition - end
+    }
+    /**
+     * mindBody2Pos1 を返します。
+     * @return mindBody2Pos1
+     * @author Masahiko Higuchi
+     * @version 3.0.5
+     */
+    protected IkenshoBodyStatusContainer getMindBody2Pos1() {
+        if(mindBody2Pos1 == null){
+            mindBody2Pos1 = new IkenshoBodyStatusContainer();
+        }
+        return mindBody2Pos1;
+    }
+    /**
+     * mindBody2Pos2 を返します。
+     * @return mindBody2Pos2
+     * @author Masahiko Higuchi
+     * @version 3.0.5
+     */
+    protected IkenshoBodyStatusContainer getMindBody2Pos2() {
+        if(mindBody2Pos2 == null){
+            mindBody2Pos2 = new IkenshoBodyStatusContainer();
+        }
+        return mindBody2Pos2;
+    }
+    /**
+     * mindBody2Pos3 を返します。
+     * @return mindBody2Pos3
+     * @author Masahiko Higuchi
+     * @version 3.0.5
+     */
+    protected IkenshoBodyStatusContainer getMindBody2Pos3() {
+        if(mindBody2Pos3 == null){
+            mindBody2Pos3 = new IkenshoBodyStatusContainer();
+        }
+        return mindBody2Pos3;
+    }
+    /**
+     * mindBody2Pos4 を返します。
+     * @return mindBody2Pos4
+     * @author Masahiko Higuchi
+     * @version 3.0.5
+     */
+    protected IkenshoBodyStatusContainer getMindBody2Pos4() {
+        if(mindBody2Pos4 == null){
+            mindBody2Pos4 = new IkenshoBodyStatusContainer();
+        }
+        return mindBody2Pos4;
+    }
+    /**
+     * mindBody2Pos5 を返します。
+     * @return mindBody2Pos5
+     * @author Masahiko Higuchi
+     * @version 3.0.5
+     */
+    protected IkenshoBodyStatusContainer getMindBody2Pos5() {
+        if(mindBody2Pos5 == null){
+            mindBody2Pos5 = new IkenshoBodyStatusContainer();
+        }
+        return mindBody2Pos5;
     }
 
 }

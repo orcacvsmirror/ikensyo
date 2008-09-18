@@ -36,6 +36,7 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.lib.IkenshoHashableComboFormat;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
@@ -107,8 +108,10 @@ public class IkenshoIshiIkenshoInfoMindBody1 extends IkenshoTabbableChildAffairC
     private ACParentHesesPanelContainer seishinShinkeiShogaiHesesPanel = new ACParentHesesPanelContainer();
     // 精神・神経症状 - 有の場合　ラベルコンテナ
     private ACLabelContainer seishinShinkeiShojyoLabelConainer;
+//  2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
     // 症状名テキスト
-    private ACComboBox seishinShinkeiShojyomeiText = new ACComboBox(); 
+    private IkenshoOptionComboBox seishinShinkeiShojyomeiText = new IkenshoOptionComboBox();
+//  2007/10/18 [Masahiko Higuchi] Replace - end
     // 精神・神経症状パネル上部 - 右
     private ACPanel seishinShinkeiShojyomeiPanelTopRightPanel = new ACPanel();
     // 精神・神経症状パネル下部
@@ -1079,6 +1082,11 @@ public class IkenshoIshiIkenshoInfoMindBody1 extends IkenshoTabbableChildAffairC
         VRArrayList renkeiDoctors = (VRArrayList) dbm.executeQuery(sb.toString());
         seishinShinkeiSenmoniComboBox.setFormat(new IkenshoHashableComboFormat(renkeiDoctors, "SINRYOUKA"));
         IkenshoCommon.applyComboModel(seishinShinkeiSenmoniComboBox, renkeiDoctors);
+        // 2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応
+        // ACComboBox⇒IkenshoOptionComboBox
+        seishinShinkeiShojyomeiText.setOptionComboBoxParameters("精神・神経症状",
+                IkenshoCommon.TEIKEI_ISHI_MIND_SICK_NAME, 30);
+        // 2007/10/18 [Masahiko Higuchi] Addition - end
         
     }
 

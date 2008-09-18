@@ -38,6 +38,18 @@ public class IkenshoIkenshoInfoMindBody2H18 extends IkenshoIkenshoInfoMindBody2 
     applyPoolTeikeibun(mahiOther.getComboBox(), IkenshoCommon.TEIKEI_MAHI_POSITION_OTHER_NAME);
     applyPoolTeikeibun(connectKousyuku.getComboBox(), IkenshoCommon.TEIKEI_CENNECT_KOSHUKU_NAME);
     applyPoolTeikeibun(connectPain.getComboBox(), IkenshoCommon.TEIKEI_CONNECT_PAIN_NAME);
+    
+    // 2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    mahiOther.getComboBox().setOptionComboBoxParameters("麻痺(その他)・部位",IkenshoCommon.TEIKEI_MAHI_POSITION_OTHER_NAME,10);
+    connectKousyuku.getComboBox().setOptionComboBoxParameters("関節の拘縮・部位",IkenshoCommon.TEIKEI_CENNECT_KOSHUKU_NAME,10);
+    connectPain.getComboBox().setOptionComboBoxParameters("関節の痛み・部位",IkenshoCommon.TEIKEI_CONNECT_PAIN_NAME,10);
+    getMindBody2Pos1().getComboBox().setOptionComboBoxParameters("四肢欠損・部位",IkenshoCommon.TEIKEI_BODY_STATUS_HAND_FOOT_NAME,10);
+    getMindBody2Pos2().getComboBox().setOptionComboBoxParameters("麻痺・部位",IkenshoCommon.TEIKEI_BODY_STATUS_PARALYSIS_NAME,10);
+    getMindBody2Pos3().getComboBox().setOptionComboBoxParameters("筋力の低下・部位",IkenshoCommon.TEIKEI_BODY_STATUS_MUSCULAR_DOWN_NAME,10);
+    getMindBody2Pos4().getComboBox().setOptionComboBoxParameters("褥瘡・部位",IkenshoCommon.TEIKEI_BODY_STATUS_JYOKUSOU_NAME,10);
+    getMindBody2Pos5().getComboBox().setOptionComboBoxParameters("その他の皮膚疾患・部位",IkenshoCommon.TEIKEI_BODY_STATUS_SKIN_NAME,10);
+    // 2007/10/18 [Masahiko Higuchi] Addition - end    
+    
   }
 
   protected void bindSourceInnerBindComponent() throws Exception {

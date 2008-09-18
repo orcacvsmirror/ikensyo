@@ -27,6 +27,7 @@ import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoEraDateTextField;
 import jp.or.med.orca.ikensho.component.IkenshoSpecialSickButton;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -42,68 +43,99 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   private ACGroupBox sickNameGroup = new ACGroupBox();
   private VRLayout sickNameGroupLayout = new VRLayout();
   private VRLabel sickMedicineDosageHead5 = new VRLabel();
-  private ACComboBox sickMedicineDosageUnit5 = new ACComboBox();
+  //private ACComboBox sickMedicineDosageUnit5 = new ACComboBox();
+  private IkenshoOptionComboBox sickMedicineDosageUnit5 = new IkenshoOptionComboBox();
 //  private JScrollPane sickProgressSroll = new JScrollPane();
   private VRLabel sickMedicineUsageHead5 = new VRLabel();
   private VRLayout sickNames1Layout = new VRLayout();
   private VRLayout sickNames2Layout = new VRLayout();
   private VRLayout sickNames3Layout = new VRLayout();
-  private ACComboBox sickMedicineDosageUnit4 = new ACComboBox();
-  private ACComboBox sickMedicineDosageUnit3 = new ACComboBox();
-  private ACComboBox sickMedicineDosageUnit6 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineDosageUnit4 = new IkenshoOptionComboBox();
+  private IkenshoOptionComboBox sickMedicineDosageUnit3 = new IkenshoOptionComboBox();
+  private IkenshoOptionComboBox sickMedicineDosageUnit6 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACLabelContainer sickMedicines1 = new ACLabelContainer();
   private IkenshoEraDateTextField sickDate3 = new IkenshoEraDateTextField();
   private VRLabel sickMedicineUsageHead6 = new VRLabel();
-  private ACComboBox sickMedicineName1 = new ACComboBox();
-  private ACComboBox sickMedicineDosageUnit2 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineName1 = new IkenshoOptionComboBox();
+  private IkenshoOptionComboBox sickMedicineDosageUnit2 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACTextField sickMedicineDosage6 = new ACTextField();
   private VRLabel sickMedicineDosageHead3 = new VRLabel();
-  private ACComboBox sickMedicineName6 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineName6 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACLabelContainer sickMedicines5 = new ACLabelContainer();
   private VRLabel sickMedicineDosageHead1 = new VRLabel();
   private ACLabelContainer sickProgresss;
   private ACGroupBox sickStableGroup;
-  private ACComboBox sickMedicineName4 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineName4 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACLabelContainer sickMedicines2 = new ACLabelContainer();
-  private ACComboBox sickMedicineDosageUnit1 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineDosageUnit1 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private VRLabel sickMedicineUsageHead4 = new VRLabel();
   private ACTextField sickMedicineDosage2 = new ACTextField();
-  private ACComboBox sickName1 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickName1 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private VRLabel sickMedicineUsageHead2 = new VRLabel();
   private ACTextArea sickProgress = new ACTextArea();
   private VRLayout sickLayout = new VRLayout();
-  private ACComboBox sickMedicineName5 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineName5 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private VRLabel sickMedicineUsageHead3 = new VRLabel();
   private ACParentHesesPanelContainer sickDates2;
   private ACGroupBox sickOutlookGroup;
-  private ACComboBox sickMedicineUsage2 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineUsage2 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACTextField sickMedicineDosage4 = new ACTextField();
   private IkenshoSpecialSickButton sickSpecial3;
-  private ACComboBox sickMedicineUsage1 = new ACComboBox();
-  private ACComboBox sickMedicineName3 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineUsage1 = new IkenshoOptionComboBox();
+  private IkenshoOptionComboBox sickMedicineName3 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACParentHesesPanelContainer sickDates3;
-  private ACComboBox sickMedicineUsage3 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineUsage3 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private IkenshoEraDateTextField sickDate2 = new IkenshoEraDateTextField();
   private VRLabel sickMedicineDosageHead6 = new VRLabel();
   private ACLabelContainer sickMedicines6 = new ACLabelContainer();
   private IkenshoSpecialSickButton sickSpecial1;
   private ACTextField sickMedicineDosage5 = new ACTextField();
   private ACLabelContainer sickMedicines3 = new ACLabelContainer();
-  private ACComboBox sickMedicineUsage5 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineUsage5 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACParentHesesPanelContainer sickDates1;
   private ACTextField sickMedicineDosage1 = new ACTextField();
-  private ACComboBox sickName3 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickName3 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACClearableRadioButtonGroup sickStable;
-  private ACComboBox sickMedicineName2 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineName2 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private VRLabel sickMedicineDosageHead4 = new VRLabel();
   private ACTextField sickMedicineDosage3 = new ACTextField();
   private ACLabelContainer sickMedicines4 = new ACLabelContainer();
-  private ACComboBox sickName2 = new ACComboBox();
-  private ACComboBox sickMedicineUsage6 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickName2 = new IkenshoOptionComboBox();
+  private IkenshoOptionComboBox sickMedicineUsage6 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private IkenshoSpecialSickButton sickSpecial2;
   private IkenshoEraDateTextField sickDate1 = new IkenshoEraDateTextField();
   private VRLabel sickMedicineUsageHead1 = new VRLabel();
-  private ACComboBox sickMedicineUsage4 = new ACComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox sickMedicineUsage4 = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
   private VRLabel sickMedicineDosageHead2 = new VRLabel();
   private ACClearableRadioButtonGroup sickOutlook = new ACClearableRadioButtonGroup();
   private VRLayout sickStableLayout = new VRLayout();
@@ -260,42 +292,42 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
 
   public void initDBCopmponent(IkenshoFirebirdDBManager dbm) throws Exception {
 
-    applyPoolTeikeibun(sickName1, IkenshoCommon.TEIKEI_SICK_NAME);
-    applyPoolTeikeibun(sickName2, IkenshoCommon.TEIKEI_SICK_NAME);
-    applyPoolTeikeibun(sickName3, IkenshoCommon.TEIKEI_SICK_NAME);
+      applyPoolTeikeibun(sickName1, IkenshoCommon.TEIKEI_SICK_NAME);
+      applyPoolTeikeibun(sickName2, IkenshoCommon.TEIKEI_SICK_NAME);
+      applyPoolTeikeibun(sickName3, IkenshoCommon.TEIKEI_SICK_NAME);
 
-    VRHashMapArrayToConstKeyArrayAdapter adapt;
-    getSickSpecial1().setUnpressedModel(sickName1.getModel());
-    getSickSpecial2().setUnpressedModel(sickName2.getModel());
-    getSickSpecial3().setUnpressedModel(sickName3.getModel());
-
-
-    adapt = IkenshoCommon.getMDisease(dbm, IkenshoCommon.DISEASE_SEPCIAL_SICK_NAME);
-    getSickSpecial1().setPressedModel(IkenshoCommon.createComboAdapter(adapt));
-    getSickSpecial2().setPressedModel(IkenshoCommon.createComboAdapter(adapt));
-    getSickSpecial3().setPressedModel(IkenshoCommon.createComboAdapter(adapt));
+      VRHashMapArrayToConstKeyArrayAdapter adapt;
+      getSickSpecial1().setUnpressedModel(sickName1.getModel());
+      getSickSpecial2().setUnpressedModel(sickName2.getModel());
+      getSickSpecial3().setUnpressedModel(sickName3.getModel());
 
 
-    applyPoolTeikeibun(sickMedicineName1, IkenshoCommon.TEIKEI_MEDICINE_NAME);
-    applyPoolTeikeibun(sickMedicineName2, IkenshoCommon.TEIKEI_MEDICINE_NAME);
-    applyPoolTeikeibun(sickMedicineName3, IkenshoCommon.TEIKEI_MEDICINE_NAME);
-    applyPoolTeikeibun(sickMedicineName4, IkenshoCommon.TEIKEI_MEDICINE_NAME);
-    applyPoolTeikeibun(sickMedicineName5, IkenshoCommon.TEIKEI_MEDICINE_NAME);
-    applyPoolTeikeibun(sickMedicineName6, IkenshoCommon.TEIKEI_MEDICINE_NAME);
-    applyPoolTeikeibun(sickMedicineDosageUnit1, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
-    applyPoolTeikeibun(sickMedicineDosageUnit2, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
-    applyPoolTeikeibun(sickMedicineDosageUnit3, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
-    applyPoolTeikeibun(sickMedicineDosageUnit4, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
-    applyPoolTeikeibun(sickMedicineDosageUnit5, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
-    applyPoolTeikeibun(sickMedicineDosageUnit6, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
-    applyPoolTeikeibun(sickMedicineUsage1, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
-    applyPoolTeikeibun(sickMedicineUsage2, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
-    applyPoolTeikeibun(sickMedicineUsage3, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
-    applyPoolTeikeibun(sickMedicineUsage4, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
-    applyPoolTeikeibun(sickMedicineUsage5, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
-    applyPoolTeikeibun(sickMedicineUsage6, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
+      adapt = IkenshoCommon.getMDisease(dbm, IkenshoCommon.DISEASE_SEPCIAL_SICK_NAME);
+      getSickSpecial1().setPressedModel(IkenshoCommon.createComboAdapter(adapt));
+      getSickSpecial2().setPressedModel(IkenshoCommon.createComboAdapter(adapt));
+      getSickSpecial3().setPressedModel(IkenshoCommon.createComboAdapter(adapt));
 
-  }
+
+      applyPoolTeikeibun(sickMedicineName1, IkenshoCommon.TEIKEI_MEDICINE_NAME);
+      applyPoolTeikeibun(sickMedicineName2, IkenshoCommon.TEIKEI_MEDICINE_NAME);
+      applyPoolTeikeibun(sickMedicineName3, IkenshoCommon.TEIKEI_MEDICINE_NAME);
+      applyPoolTeikeibun(sickMedicineName4, IkenshoCommon.TEIKEI_MEDICINE_NAME);
+      applyPoolTeikeibun(sickMedicineName5, IkenshoCommon.TEIKEI_MEDICINE_NAME);
+      applyPoolTeikeibun(sickMedicineName6, IkenshoCommon.TEIKEI_MEDICINE_NAME);
+      applyPoolTeikeibun(sickMedicineDosageUnit1, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
+      applyPoolTeikeibun(sickMedicineDosageUnit2, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
+      applyPoolTeikeibun(sickMedicineDosageUnit3, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
+      applyPoolTeikeibun(sickMedicineDosageUnit4, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
+      applyPoolTeikeibun(sickMedicineDosageUnit5, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
+      applyPoolTeikeibun(sickMedicineDosageUnit6, IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT);
+      applyPoolTeikeibun(sickMedicineUsage1, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
+      applyPoolTeikeibun(sickMedicineUsage2, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
+      applyPoolTeikeibun(sickMedicineUsage3, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
+      applyPoolTeikeibun(sickMedicineUsage4, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
+      applyPoolTeikeibun(sickMedicineUsage5, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
+      applyPoolTeikeibun(sickMedicineUsage6, IkenshoCommon.TEIKEI_MEDICINE_USAGE);
+
+    }
   
   public boolean noControlError() {
 
@@ -749,32 +781,39 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     /**
      * 傷病名1を返します。
      * @return 傷病名1
+     * @since 3.0.5
+     * @author Masahiko Higuchi
      */
-    protected ACComboBox getSickName1(){
+    protected IkenshoOptionComboBox getSickName1(){
         return sickName1;
     }
     /**
      * 傷病名2を返します。
      * @return 傷病名2
+     * @since 3.0.5
+     * @author Masahiko Higuchi
      */
-    protected ACComboBox getSickName2(){
+    protected IkenshoOptionComboBox getSickName2(){
         return sickName2;
     }
     /**
      * 傷病名3を返します。
      * @return 傷病名3
+     * @since 3.0.5
+     * @author Masahiko Higuchi
      */
-    protected ACComboBox getSickName3(){
+    protected IkenshoOptionComboBox getSickName3(){
         return sickName3;
     }
-
     /**
      * 指定番号の投薬名を返します。
      * @param index 番号
      * @return 投薬名
+     * @since 3.0.5
+     * @author Masahiko Higuchi
      */
-    protected ACComboBox getSickMedicineName(int index){
-        return new ACComboBox[] { sickMedicineName1, sickMedicineName2,
+    protected IkenshoOptionComboBox getSickMedicineName(int index){
+        return new IkenshoOptionComboBox[] { sickMedicineName1, sickMedicineName2,
                   sickMedicineName3, sickMedicineName4, sickMedicineName5,
                   sickMedicineName6 }[index];
     }
@@ -782,9 +821,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
      * 指定番号の投薬単位を返します。
      * @param index 番号
      * @return 投薬単位
+     * @since 3.0.5
+     * @author Masahiko Higuchi
      */
-    protected ACComboBox getSickMedicineDosageUnit(int index){
-        return new ACComboBox[] { sickMedicineDosageUnit1, sickMedicineDosageUnit2,
+    protected IkenshoOptionComboBox getSickMedicineDosageUnit(int index){
+        return new IkenshoOptionComboBox[] { sickMedicineDosageUnit1, sickMedicineDosageUnit2,
                   sickMedicineDosageUnit3, sickMedicineDosageUnit4, sickMedicineDosageUnit5,
                   sickMedicineDosageUnit6 }[index];
     }
@@ -792,9 +833,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
      * 指定番号の投薬用法を返します。
      * @param index 番号
      * @return 投薬用法
+     * @since 3.0.5
+     * @author Masahiko Higuchi
      */
-    protected ACComboBox getSickMedicineUsage(int index){
-        return new ACComboBox[] { sickMedicineUsage1, sickMedicineUsage2,
+    protected IkenshoOptionComboBox getSickMedicineUsage(int index){
+        return new IkenshoOptionComboBox[] { sickMedicineUsage1, sickMedicineUsage2,
                   sickMedicineUsage3, sickMedicineUsage4, sickMedicineUsage5,
                   sickMedicineUsage6 }[index];
     }

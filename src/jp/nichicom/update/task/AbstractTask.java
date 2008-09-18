@@ -11,14 +11,16 @@ public abstract class AbstractTask {
 	 * バージョンNo
 	 */
 	private String version_no = "";
+    
 	/**
 	 * タスクの実行内容を記述する。
+     * @param tp タスクプロセッサ
 	 * @return タスクを実行したか否か
 	 * @throws Exception 実行時例外
 	 */
-	 public boolean runTask() throws Exception{
+	 public abstract boolean runTask(TaskProcesser tp) throws Exception;/*{
 	 	return true;
-	 }
+	 }*/
 	 
 	 /**
 	  * 実行タスクのバージョンを設定する
@@ -35,4 +37,11 @@ public abstract class AbstractTask {
 	 public String getVersionNo(){
 	 	return version_no;
 	 }
+     
+        /**
+         * 実行タスク数を返します。
+         * @return 実行タスク数
+         */
+        public abstract int size();
+
 }

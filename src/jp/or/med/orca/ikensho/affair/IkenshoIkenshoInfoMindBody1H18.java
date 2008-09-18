@@ -5,6 +5,8 @@ import java.util.Arrays;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.lib.IkenshoCommon;
+import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoIkenshoInfoMindBody1H18 extends IkenshoIkenshoInfoMindBody1 {
@@ -64,5 +66,22 @@ public class IkenshoIkenshoInfoMindBody1H18 extends IkenshoIkenshoInfoMindBody1 
    getMindBody1HasShinkei().add(getMindBody1Shinkei(), null);
  }
 
+//2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+    /**
+     * コンボへの定型文設定などDBへのアクセスを必要とする初期化処理を生成します。
+     * 
+     * @param dbm DBManager
+     * @throws Exception 処理例外
+     * @author Masahiko Higuchi
+     * @since 3.0.5
+     */
+    public void initDBCopmponent(IkenshoFirebirdDBManager dbm) throws Exception {
+        super.initDBCopmponent(dbm);
+        
+        getMindBody1Shinkei().setOptionComboBoxParameters("精神・神経症状",
+                IkenshoCommon.TEIKEI_MIND_SICK_NAME, 30);
+
+    }
+//  2007/10/18 [Masahiko Higuchi] Addition - end
 
 }

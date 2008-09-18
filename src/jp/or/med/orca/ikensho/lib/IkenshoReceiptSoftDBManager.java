@@ -1140,6 +1140,58 @@ protected void execData(final Map rec) throws IOException, Exception {
         return executeQuery(table, procedure, whereCondition, null);
     }
     /**
+     * SELECT 文を発行する。
+     * <P>
+     * DBSELECT後にFETCH処理まで行いデータを取得します。
+     * <P>
+     * 複数行の場合は続けてFETCH処理
+     * 
+     * @param table テーブル名
+     * @param procedure 発行するプロシージャ名
+     * @param whereCondition WHERE句マップ
+     * @return 実行結果
+     * @throws Exception 実行時例外
+     * @since v3.0.4
+     * @author Masahiko Higuchi
+     */
+    public HashMap executeQueryData(String table, String procedure,
+            Map whereCondition) throws Exception {
+        // DBSELECT
+        execute(COMMAND_DBSELECT,table, procedure, whereCondition);
+        // DBFETCH
+        return execute(COMMAND_DBFETCH,table, procedure, whereCondition);
+        
+    }
+    /**
+     * SQL発行前の準備処理を行います。
+     * <P>
+     * executeQueryDataとセットで扱います。
+     * <P>
+     * executeSetUp → executeQueryData → close
+     * 
+     * @return
+     * @throws Exception 実行時例外
+     * @since v3.0.4
+     * @author Masahiko Higuchi
+     */
+    public int executeSetUp() throws Exception{
+        // 接続済みであるか
+        if (!isConnected()) {
+            // 接続処理
+            if (connect() != STATUS_CODE_OK) {
+                return -1;
+            }
+        }
+        // トランザクションの開始
+        if (beginTransaction() != STATUS_CODE_OK) {
+            return -2;
+        }
+        // 正常終了
+        return STATUS_CODE_OK;
+    }
+    
+ 
+    /**
      * 中間テーブルを初期化します。
      * @param dbm DBマネージャ
      * @throws Exception 処理例外

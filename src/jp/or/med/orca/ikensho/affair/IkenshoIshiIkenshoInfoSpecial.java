@@ -66,7 +66,9 @@ public class IkenshoIshiIkenshoInfoSpecial extends IkenshoIkenshoInfoSpecial {
         getSpecialKyuinShochiCountDayComment().setText("回／日,");
         getKyuinShochiPanel().setOpaque(false);
         getSpecialKeikanEiyou().setText("経管栄養(胃ろう)");
-        getSpecialMessage2().setText("「医師意見書」では印刷されません。");
+        // 2008/02/25 [Masahiko_Higuchi] edit - begin 平成20年度診療報酬単価変更対応
+        getSpecialMessage2().setText("背景色が黄色の項目は「医師意見書」では印刷されません。");
+        // 2008/02/25 [Masahiko_Higuchi] edit - end
         getSpecialKyuinShochiHases().setBeginText("（回数");
         
         // サイズ設定

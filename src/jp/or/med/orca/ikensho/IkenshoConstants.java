@@ -171,8 +171,9 @@ public interface IkenshoConstants {
       0);
   public static final Color COLOR_MESSAGE_WARNING_TEXT_FOREGROUND = new java.awt.Color(160, 0,
       0);
-
-  public static final Color COLOR_RANGE_PANEL_BACKGROUND = new java.awt.Color(255, 255, 211);
+  // 2008/02/29 [Masahiko_Higuchi] edit - begin version3.0.7 îwåiêFÇÃïœçX 
+  public static final Color COLOR_RANGE_PANEL_BACKGROUND = new java.awt.Color(255, 255, 150);
+  // 2008/02/29 [Masahiko_Higuchi] edit - end
 
   public static final Color COLOR_BACK_PANEL_BACKGROUND = new java.awt.Color(204, 204, 255);
   public static final Color COLOR_BACK_PANEL_FOREGROUND = Color.black;

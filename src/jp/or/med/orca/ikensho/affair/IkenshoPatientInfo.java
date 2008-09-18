@@ -18,6 +18,7 @@ import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.component.ACKanaSendTextField;
 import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.table.ACTable;
@@ -104,6 +105,10 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
     private ACTableModelAdapter ikenshoTableModel;
     private ACTableModelAdapter sijishoTableModel;
 
+    // 2007/09/18 [Masahiko Higuchi] Addition - begin
+    private ACLabelContainer showContainer;
+    private ACIntegerCheckBox showCheck;
+    // 2007/09/18 [Masahiko Higuchi] Addition - end
     private static final ACPassiveKey PASSIVE_CHECK_KEY = new ACPassiveKey(
             "PATIENT", new String[] { "PATIENT_NO" }, new Format[] { null },
             "LAST_TIME", "LAST_TIME");
@@ -151,6 +156,7 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
         } else {
             // 患者番号なし
             setNowMode(IkenshoConstants.AFFAIR_MODE_INSERT);
+
         }
 
         doSelect();
@@ -301,6 +307,12 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
             sijishoArray = new VRArrayList();
             patientArray = new VRArrayList();
             patientData = (VRMap) editor.createSource();
+            
+            // 2007/10/16 [Masahiko Higuchi] Addition - begin
+            // 登録モードの場合はチェックをつけておく
+            patientData.setData("SHOW_FLAG",new Integer(1));
+            // 2007/10/16 [Masahiko Higuchi] Addition - end
+            
             patientArray.addData(patientData);
 
             editor.setSource(patientData);
@@ -629,6 +641,9 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
             sb.append(",CHART_NO");
             sb.append(",KOUSIN_DT");
             sb.append(",LAST_TIME");
+            // Addition 2007/10/02 [Masahiko Higuchi] begin 一覧に表示チェック追加
+            sb.append(",SHOW_FLAG");
+            // Addition 2007/10/02 [Masahiko Higuchi] end
             sb.append(" )");
             sb.append(" VALUES");
             sb.append(" (");
@@ -653,6 +668,10 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
             sb.append(getDBSafeString("CHART_NO", patientData));
             sb.append(",CURRENT_TIMESTAMP");
             sb.append(",CURRENT_TIMESTAMP");
+            // Addition 2007/10/02 [Masahiko Higuchi] begin 一覧に表示チェック追加
+            sb.append(",");
+            sb.append(getDBSafeNumberNullToZero("SHOW_FLAG",patientData));
+            // Addition 2007/10/02 [Masahiko Higuchi] end
             sb.append(")");
 
             dbm = new IkenshoFirebirdDBManager();
@@ -1025,6 +1044,10 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
             sb.append(getDBSafeString("CHART_NO", patientData));
             sb.append(",KOUSIN_DT = CURRENT_TIMESTAMP");
             sb.append(",LAST_TIME = CURRENT_TIMESTAMP");
+            // Addition 2007/10/02 [Masahiko Higuchi] begin 一覧に表示チェック追加
+            sb.append(",SHOW_FLAG = ");
+            sb.append(getDBSafeNumberNullToZero("SHOW_FLAG",patientData));
+            // Addition 2007/10/02 [Masahiko Higuchi] end
             sb.append(" WHERE");
             sb.append(" (PATIENT.PATIENT_NO = ");
             sb.append(String.valueOf(VRBindPathParser.get("PATIENT_NO",
@@ -1221,8 +1244,17 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
         contents.add(editor, BorderLayout.NORTH);
         document.setLayout(new VRLayout());
         editor.setLayout(editorLayout);
-
-        editor.add(names, VRLayout.FLOW_INSETLINE_RETURN);
+        // 2007/09/18 [Masahiko Higuchi] Delete - begin
+        // フローレイアウトに設定するために削除
+        //editor.add(names, VRLayout.FLOW_INSETLINE_RETURN);
+        // 2007/09/18 [Masahiko Higuchi] Delete - end
+        // 2007/09/18 [Masahiko Higuchi] Addition - begin
+        // フローレイアウト
+        editor.add(names, VRLayout.FLOW_INSETLINE);
+        // 一覧表示チェック：フロー改行レイアウト
+        editor.add(getShowContainer(),VRLayout.FLOW_INSETLINE_RETURN);
+        // 2007/09/18 [Masahiko Higuchi] Addition - end
+        
         editor.add(kanas, VRLayout.FLOW_INSETLINE_RETURN);
         editor.add(sexs, VRLayout.FLOW_INSETLINE);
         editor.add(births, VRLayout.FLOW_INSETLINE_RETURN);
@@ -1315,6 +1347,37 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
      */
     private void setPatientNo(String patientNo) {
         this.patientNo = patientNo;
+    }
+
+    /**
+     * 一覧に表示するチェックボックスを取得します。
+     * 
+     * @return 「一覧に表示する」チェックボックス
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACIntegerCheckBox getShowCheck() {
+        if(showCheck == null){
+            showCheck = new ACIntegerCheckBox();
+            showCheck.setText("一覧に表示する");
+            showCheck.setBindPath("SHOW_FLAG");
+        }
+        return showCheck;
+    }
+
+    /**
+     * 一覧に表示するコンテナを取得します。
+     * 
+     * @return 「一覧に表示する」コンテナ
+     * @author Masahiko Higuchi
+     * @version 1.0 2007/10/15
+     */
+    protected ACLabelContainer getShowContainer() {
+        if(showContainer == null){
+            showContainer = new ACLabelContainer();
+            showContainer.add(getShowCheck());
+        }
+        return showContainer;
     }
 
 }

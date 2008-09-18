@@ -43,6 +43,13 @@ public class IkenshoSpecialSickButton
       if (!isPushed()) {
         if (getPressedModel() != null) {
           unPressedValue = getCombo().getEditor().getItem();
+          // 2007/10/10 [Masahiko Higuchi] Addition - begin
+          // 押下時
+          if(getCombo() instanceof IkenshoOptionComboBox){
+            ((IkenshoOptionComboBox)getCombo()).setOptionMode(false);
+            setUnpressedModel(((IkenshoOptionComboBox)getCombo()).getOriginalModel());
+          }
+          // 2007/10/10 [Masahiko Higuchi] Addition - end
           getCombo().setModel(getPressedModel());
           getCombo().setEditable(false);
           getCombo().setSelectedItem(pressedValue);
@@ -51,6 +58,16 @@ public class IkenshoSpecialSickButton
       else {
         if (getUnpressedModel() != null) {
           pressedValue = getCombo().getEditor().getItem();
+          // 2007/10/10 [Masahiko Higuchi] Replace - begin
+          // 非押下時
+          if(getCombo() instanceof IkenshoOptionComboBox){
+              try {
+                ((IkenshoOptionComboBox)getCombo()).setOptionMode(true);
+                // 押下時⇒非押下時変更時のコンボの差し替え時に、定型文が編集されている場合に備え再設定
+                setUnpressedModel(((IkenshoOptionComboBox)getCombo()).getTeikeibunComboBoxModel());
+              } catch (Exception e) {}
+          }
+          // 2007/10/10 [Masahiko Higuchi] Replace - end
           getCombo().setModel(getUnpressedModel());
           getCombo().setEditable(true);
           getCombo().setSelectedItem(unPressedValue);

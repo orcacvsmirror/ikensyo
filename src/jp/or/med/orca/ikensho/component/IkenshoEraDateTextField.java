@@ -99,7 +99,15 @@ public class IkenshoEraDateTextField extends JPanel implements
     protected String bindPath;
     protected ArrayList listeners = new ArrayList();
     protected VRBindSource source;
-
+    // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+    // 初期表示を空白以外にするか
+    protected String defaultEraValue = "";
+    // 日付型で変換するかを保持
+    protected boolean dateTypeConv = false;
+    // チェック用の範囲指定を設定
+    private int defaultCheckRange = -1;
+    // 2007/10/25 [Masahiko Higuchi] Addition - end
+    
     /**
      * コンストラクタです。
      */
@@ -369,6 +377,15 @@ public class IkenshoEraDateTextField extends JPanel implements
         if ("".equals(y)) {
             return null;
         }
+        // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+        // デフォルトが空白以外の場合
+        if (!"".equals(getDefaultEraValue())) {
+            // 日付として不正な場合
+            if (this.getInputStatus() != STATE_VALID) {
+                return null;
+            }
+        }
+        // 2007/10/25 [Masahiko Higuchi] Addition - end
         String m = getMonth();
         if ("".equals(m)) {
             m = "1";
@@ -455,6 +472,51 @@ public class IkenshoEraDateTextField extends JPanel implements
         String month = null;
         String year = null;
         String era;
+        // 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+        // デフォルトが空白以外の場合
+        if (!"".equals(getDefaultEraValue())) {
+            // チェックは完全日付としてチェック
+            int range = getRequestedRange();
+            // チェックする範囲指定の有無をチェックする。
+            if(defaultCheckRange != -1){
+            	// 年月等でデフォルト表示を行い、チェックする範囲指定を変更している場合
+            	this.requestedRange = defaultCheckRange;
+            }else{
+            	// 年月日等の標準的なチェックの場合
+            	this.requestedRange = RNG_DAY;
+            }
+            // 日付として不正な場合
+            if (this.getInputStatus() != STATE_VALID) {
+                // 設定を戻す
+                this.requestedRange = range;
+                if(isDateUnknown()){
+                    era = "不詳";
+                }else{
+                    era = "00";
+                }
+                if (isYearVisible()) {
+                    year = "00年";
+                    if (isMonthVisible()) {
+                        month = "00月";
+                        if (isDayVisible()) {
+                            day = "00日";
+                        }else{
+                        	// VisibleがFalseなら空白に
+                        	day = "";
+                        }
+                    }else{
+                    	// VisibleがFalseなら空白に
+                    	month = "";
+                    	day = "";
+                    }
+                }
+
+                return era + year + month + day;
+            }
+            this.requestedRange = range;
+        }
+        // 2007/10/25 [Masahiko Higuchi] Addition - end
+        
         // 元号
         if (this.era.getSelectedIndex() == 0) {
             era = "00";
@@ -1291,7 +1353,14 @@ public class IkenshoEraDateTextField extends JPanel implements
     public void clear() {
         era.setSelectedItem("");
         if (era.getItemCount() > 0) {
-            era.setSelectedIndex(0);
+			// 2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+        	// デフォルトがある場合は優先する。
+            if(!"".equals(getDefaultEraValue())){
+              this.era.setSelectedItem(getDefaultEraValue());
+            }else{
+                era.setSelectedIndex(0);
+            }
+			// 2007/10/25 [Masahiko Higuchi] Addition - end
         }
         setYear("");
         setMonth("");
@@ -1434,14 +1503,21 @@ public class IkenshoEraDateTextField extends JPanel implements
         if (isMustDateType()) {
             obj = getDate();
         } else {
-            obj = getText();
+            // 2007/10/25 [Masahiko Higuchi] Replace - begin 平成デフォルト表示対応
+            // プロパティ設定が日付のみ許容の場合はgetDate
+            if(isDateTypeConv()){
+                obj = getDate();
+            }else{
+                obj = getText();
+            }
+            // 2007/10/25 [Masahiko Higuchi] Replace - end
         }
 
         if (VRBindPathParser.set(getBindPath(), getSource(), obj)) {
             fireApplySource();
         }
     }
-
+    
     /**
      * 「日」ラベルを返します。
      * 
@@ -1474,4 +1550,85 @@ public class IkenshoEraDateTextField extends JPanel implements
         setComponentEnabled(state);
     }
     
+//  2007/10/25 [Masahiko Higuchi] Addition - begin 平成デフォルト表示対応
+    /**
+     * 初期設定する元号を返します。
+     * 
+     * @return 初期設定元号文字列
+     * @since 3.0.5
+     * @author Masahiko Higuchi
+     */
+    public String getDefaultEraValue() {
+        return defaultEraValue;
+    }
+
+    /**
+     * 初期設定する元号を設定します。
+     * 
+     * @param 初期設定元号
+     * @since 3.0.5
+     * @author Masahiko Higuchi
+     */
+    public void setDefaultEraValue(String defaultEraValue) {
+        this.defaultEraValue = defaultEraValue;
+    }
+
+    /**
+     * 日付型保障の有無を返します
+     * 。
+     * @return true:日付型のみ許容 false:日付以外も許容
+     * @since 3.0.5
+     * @author Masahiko Higuchi
+     */
+    public boolean isDateTypeConv() {
+        return dateTypeConv;
+    }
+
+    /**
+     * 日付型保障の有無を設定します。
+     * 
+     * @param eraPreclusion
+     * @since 3.0.5
+     * @author Masahiko Higuchi
+     */
+    public void setDateTypeConv(boolean dateTypeConv) {
+        this.dateTypeConv = dateTypeConv;
+    }
+
+    /**
+     * 元号のデフォルトチェック除外用の制御を行います。
+     * 
+     * @param defaultEra
+     * @since 3.0.5
+     * @author Masahiko Higuchi
+     */
+    public void setEraPreclusion(String defaultEra){
+        // 初期元号
+        setDefaultEraValue(defaultEra);
+        // 日付の範囲は元号までに設定
+        this.requestedRange = RNG_ERA;
+    }
+    /**
+     * 初期表示元号設定を行っている場合のgetText処理時のチェック範囲を設定します。
+     * 未設定の場合は、RNG_DAYでチェックされます。
+     * 
+     * @param requestRange
+     * @since 3.0.5
+     * @author Masahiko Higuchi
+     */
+    public void setDefaultCheckRange(int requestRange){
+    	this.defaultCheckRange = requestRange;
+    	
+    }
+    /**
+     * 初期表示元号設定有りの場合の getText処理時のチェック範囲を取得します。
+     * 
+     * 
+     * @return
+     */
+	public int getDefaultCheckRange() {
+		return defaultCheckRange;
+	}
+    
+//  2007/10/25 [Masahiko Higuchi] Addition - end
 }

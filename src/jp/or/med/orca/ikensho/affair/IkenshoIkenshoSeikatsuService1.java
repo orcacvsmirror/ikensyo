@@ -13,6 +13,7 @@ import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
+import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -40,7 +41,9 @@ public class IkenshoIkenshoSeikatsuService1 extends IkenshoTabbableChildAffairCo
 //  private NCParentHesesPanelContainer mealIntakeMessages = new NCParentHesesPanelContainer();
 //  private NCComboBox mealIntakeMessage = new NCComboBox();
 //  private NCComboBox appetiteMessage = new NCComboBox();
-  private ACComboBox eatingMessage = new ACComboBox();
+// 2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+  private IkenshoOptionComboBox eatingMessage = new IkenshoOptionComboBox();
+//2007/10/18 [Masahiko Higuchi] Replace - end
 //  private NCParentHesesPanelContainer appetiteMessages = new NCParentHesesPanelContainer();
   private ACLabelContainer eatingMessages = new ACLabelContainer();
 //  private NCParentHesesPanelContainer nourishumentMessages = new NCParentHesesPanelContainer();
@@ -55,6 +58,13 @@ public class IkenshoIkenshoSeikatsuService1 extends IkenshoTabbableChildAffairCo
 //                               IkenshoCommon.TEIKEI_APPETITE_NAME);
     IkenshoCommon.setTeikeibun(dbm, eatingMessage,
                                IkenshoCommon.TEIKEI_EATING_RYUIJIKOU_NAME);
+    
+
+        // 2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応
+        // ACComboBox⇒IkenshoOptionComboBox
+        getEatingMessage().setOptionComboBoxParameters("栄養・食生活上の留意点",
+                IkenshoCommon.TEIKEI_EATING_RYUIJIKOU_NAME, 30);
+        // 2007/10/18 [Masahiko Higuchi] Addition - end
   }
 
   public boolean noControlWarning() throws Exception {
@@ -234,5 +244,20 @@ outdoorWalkGroupLayout.setFitHLast(true);
 //    addInnerBindComponent(appetiteMessage);
     addInnerBindComponent(eatingMessage);
   }
+
+//2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
+/**
+ * 栄養・食生活上の留意点 を返します。
+ * @return eatingMessage
+ * @author Masahiko Higuchi
+ * @since 3.0.5
+ */
+protected IkenshoOptionComboBox getEatingMessage() {
+    if(eatingMessage == null){
+        eatingMessage = new IkenshoOptionComboBox();
+    }
+    return eatingMessage;
+}
+//2007/10/18 [Masahiko Higuchi] Addition - end
 
 }
