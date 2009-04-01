@@ -570,6 +570,12 @@ public class IkenshoIshiIkenshoInfoSick1 extends IkenshoIkenshoInfoSickH18 {
         }
         return true;
     }
+    //2009/01/08 [Tozo Tanaka] Add - begin
+    protected boolean noControlErrorOfSickProgress(){
+        //医師医見書の場合、傷病の経過は別のタブに実装されているので、overrideしてチェックをスキップする。
+        return true;
+    }
+    //2009/01/08 [Tozo Tanaka] Add - end
     
     /**
      * コンボへの定型文設定などDBへのアクセスを必要とする初期化処理を生成します。

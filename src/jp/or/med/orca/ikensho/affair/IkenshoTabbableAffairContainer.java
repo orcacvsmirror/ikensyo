@@ -15,10 +15,13 @@ import java.util.Map;
 import javax.swing.JComboBox;
 import javax.swing.JTabbedPane;
 
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
@@ -31,6 +34,7 @@ import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRHashMapArrayToConstKeyArrayAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.IkenshoAffairButtonBar;
 import jp.or.med.orca.ikensho.component.IkenshoUnderlineFormatableLabel;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
@@ -51,9 +55,15 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
   protected ArrayList tabArray = new ArrayList();
   protected Component firstFocusComponent;
   protected HashMap teikeibunMap;
+  //2009/01/16 [Tozo Tanaka] Add - begin
+  private boolean sickMedicineCountAdjusted = false;
+  //2009/01/16 [Tozo Tanaka] Add - end
 
   //GUIコンポーネント
-  protected ACAffairButtonBar buttons = new ACAffairButtonBar();
+  // 2009/01/13 [Mizuki Tsutsumi] : add begin / メインメニューへ戻るボタン
+  //protected ACAffairButtonBar buttons = new ACAffairButtonBar();
+  protected IkenshoAffairButtonBar buttons = new IkenshoAffairButtonBar();
+  // 2009/01/13 [Mizuki Tsutsumi] : add end
   protected ACAffairButton update = new ACAffairButton();
   protected ACAffairButton print = new ACAffairButton();
   protected VRPanel editorInfo = new VRPanel();
@@ -370,7 +380,6 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
 
     doSelect();
 
-
     if (previewData != null) {
       originalData.putAll(previewData);
       fullBindSource();
@@ -393,8 +402,70 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
       firstFocusComponent = ((IkenshoTabbableChildAffairContainer) tabs.
           getSelectedComponent()).getFirstFocusComponent();
     }
+    
+    //2009/01/16 [Tozo Tanaka] Add - begin
+    if((previewData == null) && sickMedicineCountAdjusted){
+        //新規作成モードでかつ既存文書が存在する場合で、次画面からの戻りではなく、
+        //直前の文書に薬剤7または薬剤8が入力されており、かつ薬剤名の表示個数が6個設定の場合は削られる旨を警告
+        showSickMedicineCountAdjustedMessage();
+    }
+    //2009/01/16 [Tozo Tanaka] Add - end
+
   }
 
+  //2009/01/16 [Tozo Tanaka] Add - begin
+  protected void checkSickMedicineCountAdjusted(VRMap source) throws Exception{
+      //直前の文書に薬剤7または薬剤8が入力されており、かつ薬剤名の表示個数が6個設定の場合は削られる旨を警告
+      if (!(
+              IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE7", source)) && 
+              IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE8", source)) &&
+              IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE7", source)) && 
+              IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE8", source)) &&
+              IkenshoCommon.isNullText(VRBindPathParser.get("UNIT7", source)) && 
+              IkenshoCommon.isNullText(VRBindPathParser.get("UNIT8", source)) &&
+              IkenshoCommon.isNullText(VRBindPathParser.get("USAGE7", source)) && 
+              IkenshoCommon.isNullText(VRBindPathParser.get("USAGE8", source)) 
+              )) {
+          //薬剤7か薬剤8が入力されている場合
+          if (getMedicineViewCount() == 6) {
+              //薬剤名の表示個数が6個設定の場合
+              VRBindPathParser.set("MEDICINE7", source, "");
+              VRBindPathParser.set("MEDICINE8", source, "");
+              VRBindPathParser.set("DOSAGE7", source, "");
+              VRBindPathParser.set("DOSAGE8", source, "");
+              VRBindPathParser.set("UNIT7", source, "");
+              VRBindPathParser.set("UNIT8", source, "");
+              VRBindPathParser.set("USAGE7", source, "");
+              VRBindPathParser.set("USAGE8", source, "");
+              sickMedicineCountAdjusted = true;
+          }
+      }
+  }
+  
+  protected int getMedicineViewCount() {
+      try {
+          if (ACFrame.getInstance().hasProperty(
+                  "DocumentSetting/MedicineViewCount")
+                  && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
+                          "DocumentSetting/MedicineViewCount"), 6) == 8) {
+              return 8;
+          }
+      } catch (Exception e) {
+      }      
+    return 6;
+}
+  
+  protected void showSickMedicineCountAdjustedMessage(){
+      ACMessageBox
+      .show(
+//              "最新の文書に入力された薬剤7および薬剤8の情報は転記されません。"
+              "最新の文書に薬剤名が7個以上入力されています。"
+              + ACConstants.LINE_SEPARATOR
+              + "7個以上の薬剤を編集する場合は、"
+              + ACConstants.LINE_SEPARATOR
+              + "[メインメニュー]-[設定(S)]-[その他の設定(O)]より、薬剤名の表示個数を8個に変更してください。");
+  }
+  //2009/01/16 [Tozo Tanaka] Add - end
 
   /**
    * パッシブチェック用に再度LAST_TIMEを取り直します。
@@ -677,6 +748,7 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
         //直前の意見書・指示書共通
         doSelectBeforeCommonDocument(dbm);
 
+        
         if(patientData!=null){
           originalData.putAll(patientData);
         }
@@ -687,6 +759,10 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
             originalData.putAll( (Map)obj);
           }
         }
+      
+        // 2009/01/16[Tozo Tanaka] : add begin
+        checkSickMedicineCountAdjusted(originalData);
+        // 2009/01/16[Tozo Tanaka] : add end
       }else{
         //初期設定
         doSelectDefaultCustomDocument(dbm);
@@ -1287,6 +1363,16 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(",DOSAGE6");
     sb.append(",UNIT6");
     sb.append(",USAGE6");
+    //2009/01/06 [Tozo Tanaka] Add - begin★薬剤名増暫定隠ぺい
+//    sb.append(",MEDICINE7");
+//    sb.append(",DOSAGE7");
+//    sb.append(",UNIT7");
+//    sb.append(",USAGE7");
+//    sb.append(",MEDICINE8");
+//    sb.append(",DOSAGE8");
+//    sb.append(",UNIT8");
+//    sb.append(",USAGE8");
+    //2009/01/06 [Tozo Tanaka] Add - end★薬剤名増暫定隠ぺい
     sb.append(",NETAKIRI");
     sb.append(",CHH_STS");
     sb.append(",SHJ_ANT");
@@ -1425,6 +1511,24 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(getDBSafeString("UNIT6", originalData));
     sb.append(",");
     sb.append(getDBSafeString("USAGE6", originalData));
+    //2009/01/06 [Tozo Tanaka] Add - begin★薬剤名増暫定隠ぺい
+//    sb.append(",");
+//    sb.append(getDBSafeString("MEDICINE7", originalData));
+//    sb.append(",");
+//    sb.append(getDBSafeString("DOSAGE7", originalData));
+//    sb.append(",");
+//    sb.append(getDBSafeString("UNIT7", originalData));
+//    sb.append(",");
+//    sb.append(getDBSafeString("USAGE7", originalData));
+//    sb.append(",");
+//    sb.append(getDBSafeString("MEDICINE8", originalData));
+//    sb.append(",");
+//    sb.append(getDBSafeString("DOSAGE8", originalData));
+//    sb.append(",");
+//    sb.append(getDBSafeString("UNIT8", originalData));
+//    sb.append(",");
+//    sb.append(getDBSafeString("USAGE8", originalData));
+    //2009/01/06 [Tozo Tanaka] Add - end★薬剤名増暫定隠ぺい
     sb.append(",");
     sb.append(getDBSafeNumber("NETAKIRI", originalData));
     sb.append(",");
@@ -1642,6 +1746,25 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(getDBSafeString("UNIT6", originalData));
     sb.append(",USAGE6 = ");
     sb.append(getDBSafeString("USAGE6", originalData));
+    //2009/01/06 [Tozo Tanaka] Add - begin★薬剤名増暫定隠ぺい
+//    sb.append(",MEDICINE7 = ");
+//    sb.append(getDBSafeString("MEDICINE7", originalData));
+//    sb.append(",DOSAGE7 = ");
+//    sb.append(getDBSafeString("DOSAGE7", originalData));
+//    sb.append(",UNIT7 = ");
+//    sb.append(getDBSafeString("UNIT7", originalData));
+//    sb.append(",USAGE7 = ");
+//    sb.append(getDBSafeString("USAGE7", originalData));
+//    sb.append(",MEDICINE8 = ");
+//    sb.append(getDBSafeString("MEDICINE8", originalData));
+//    sb.append(",DOSAGE8 = ");
+//    sb.append(getDBSafeString("DOSAGE8", originalData));
+//    sb.append(",UNIT8 = ");
+//    sb.append(getDBSafeString("UNIT8", originalData));
+//    sb.append(",USAGE8 = ");
+//    sb.append(getDBSafeString("USAGE8", originalData));
+    //2009/01/06 [Tozo Tanaka] Add - end★薬剤名増暫定隠ぺい
+    
     sb.append(",NETAKIRI = ");
     sb.append(getDBSafeNumber("NETAKIRI", originalData));
     sb.append(",CHH_STS = ");
@@ -1943,5 +2066,14 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
       return simpleSnap;
       // Addition - end
   }
+
+  //2009/01/22 [Tozo Tanaka] Add - begin    
+  public ACAffairButton getUpdate(){
+      return update;
+  }
+  public ACAffairButton getPrint(){
+      return print;
+  }
+  //2009/01/22 [Tozo Tanaka] Add - end    
 
 }

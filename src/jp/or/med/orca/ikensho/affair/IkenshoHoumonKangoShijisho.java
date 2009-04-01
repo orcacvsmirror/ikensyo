@@ -11,6 +11,8 @@ import java.util.EventObject;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
@@ -247,6 +249,10 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
         sb.append(",OTHER_STATION_SIJI");
         sb.append(",OTHER_STATION_NM");
         sb.append(",LAST_TIME");
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 add begin 平成21年4月法改正対応
+        sb.append(",JOKUSOU_NPUAP");
+        sb.append(",JOKUSOU_DESIGN");
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 add end
 
         sb.append(" )");
         sb.append(" VALUES");
@@ -315,6 +321,12 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
                 "OTHER_STATION_SIJI", new String[] { "OTHER_STATION_NM" }, 2,
                 true);
         sb.append(",CURRENT_TIMESTAMP");
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 add begin 平成21年4月法改正対応
+        sb.append(",");
+        sb.append(getDBSafeString("JOKUSOU_NPUAP", originalData));
+        sb.append(",");
+        sb.append(getDBSafeString("JOKUSOU_DESIGN", originalData));
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 add end
 
         sb.append(")");
 
@@ -400,6 +412,12 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
                 "OTHER_STATION_SIJI", new String[] { "OTHER_STATION_NM" }, 2,
                 true);
         sb.append(",LAST_TIME = CURRENT_TIMESTAMP");
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 add begin 平成21年4月法改正対応
+        sb.append(",JOKUSOU_NPUAP = ");
+        sb.append(getDBSafeString("JOKUSOU_NPUAP", originalData));
+        sb.append(",JOKUSOU_DESIGN = ");
+        sb.append(getDBSafeString("JOKUSOU_DESIGN", originalData));
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 add end
         sb.append(" WHERE");
         sb.append(" (SIS_ORIGIN.PATIENT_NO = ");
         sb.append(getPatientNo());
@@ -459,12 +477,41 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
         // tab
         tabs.addTab("患者", applicant);
         tabs.addTab("傷病", shoubyou);
-        tabs.addTab("日常生活自立度", jiritudo);
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 replace begin 平成21年4月法改正対応
+        //tabs.addTab("日常生活自立度", jiritudo);
+        tabs.addTab("日常生活自立度・褥瘡の深さ", jiritudo);
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 replace end
         tabs.addTab("特別な医療", tokubetu);
         tabs.addTab("留意事項・指示事項", ryuiShiji);
         tabs.addTab("特記・訪問点滴注射", tenteki);
         tabs.addTab("医療機関", iryoukikan);
 
     }
+    //2009/01/16 [Tozo Tanaka] Add - begin
+    protected int getMedicineViewCount() {
+        int ikenshoCount = super.getMedicineViewCount();
+        int shijishoCount = ikenshoCount;
+        try {
+            if (
+                    ACFrame
+                    .getInstance()
+                    .hasProperty(
+                            "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6")
+                    && ACCastUtilities
+                            .toBoolean(
+                                    ACFrame
+                                            .getInstance()
+                                            .getProperty(
+                                                    "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6"),
+                                    false)
+            ) {
+                //指示書設定を優先
+                shijishoCount = 6;
+            }
+        } catch (Exception e) {
+        }
+        return shijishoCount;
+  }
+    //2009/01/16 [Tozo Tanaka] Add - end
 
 }

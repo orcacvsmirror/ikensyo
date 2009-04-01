@@ -183,6 +183,22 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
     private ACTextField expXrayFilm = new ACTextField();
     private JLabel expXrayFilmUnit = new JLabel();
 
+    //2009/01/06 [Tozo Tanaka] Add - begin
+    private jp.nichicom.ac.container.ACPanel sinsatuPointsRight2Pnl = new jp.nichicom.ac.container.ACPanel();
+    //デジタル撮影の場合：フィルムを算定する場合：画像記録用フィルム(大角)
+    private ACLabelContainer expXrayDigitalFilmContainer = new ACLabelContainer();
+    private ACTextField expXrayDigitalFilm = new ACTextField();
+    private JLabel expXrayDigitalFilmUnit = new JLabel();
+    //デジタル撮影の場合：フィルムを算定する場合：デジタル映像化処理加算
+    private ACLabelContainer expXrayDigitalImagingContainer = new ACLabelContainer();
+    private ACTextField expXrayDigitalImaging = new ACTextField();
+    private JLabel expXrayDigitalImagingUnit = new JLabel();
+    //デジタル撮影の場合：フィルムレスの場合：電子画像管理加算
+    private ACLabelContainer expXrayDigitalImageManagementContainer = new ACLabelContainer();
+    private ACTextField expXrayDigitalImageManagement = new ACTextField();
+    private JLabel expXrayDigitalImageManagementUnit = new JLabel();
+    //2009/01/06 [Tozo Tanaka] Add - end
+
     
     private ACLabelContainer insurertypeContainer = new ACLabelContainer();
     private ACClearableRadioButtonGroup insurerTypes = new ACClearableRadioButtonGroup();
@@ -642,6 +658,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sinsatuPointsGrp.setLayout(new VRLayout());
         sinsatuPointsGrp.add(sinsatuPointsLeftPnl, VRLayout.CLIENT);
         sinsatuPointsGrp.add(sinsatuPointsRightPnl, VRLayout.CLIENT);
+        sinsatuPointsGrp.add(sinsatuPointsRight2Pnl, VRLayout.CLIENT);
 
         VRLayout sinsatuPointsLeftPnlLayout = new VRLayout();
         sinsatuPointsLeftPnlLayout.setHgrid(100);
@@ -664,7 +681,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expKs.setIMEMode(InputSubset.LATIN_DIGITS);
         expKs.setFormat(new ACOneDecimalDoubleFormat());
         expKs.setCharType(new VRCharType("SHOUSUU1", DOUBLE_INPUT_PERSER));
-        expKs.setColumns(6);
+        expKs.setColumns(4);
         expKs.setMaxLength(6);
         expKs.setHorizontalAlignment(JTextField.RIGHT);
         expKs.setBindPath("EXP_KS");
@@ -676,7 +693,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expKikMki.setIMEMode(InputSubset.LATIN_DIGITS);
         expKikMki.setFormat(new ACOneDecimalDoubleFormat());
         expKikMki.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
-        expKikMki.setColumns(6);
+        expKikMki.setColumns(4);
         expKikMki.setMaxLength(6);
         expKikMki.setHorizontalAlignment(JTextField.RIGHT);
         expKikMki.setBindPath("EXP_KIK_MKI");
@@ -688,7 +705,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expKikKekk.setIMEMode(InputSubset.LATIN_DIGITS);
         expKikKekk.setFormat(new ACOneDecimalDoubleFormat());
         expKikKekk.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
-        expKikKekk.setColumns(6);
+        expKikKekk.setColumns(4);
         expKikKekk.setMaxLength(6);
         expKikKekk.setHorizontalAlignment(JTextField.RIGHT);
         expKikKekk.setBindPath("EXP_KIK_KEKK");
@@ -700,7 +717,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expKkkKkk.setIMEMode(InputSubset.LATIN_DIGITS);
         expKkkKkk.setFormat(new ACOneDecimalDoubleFormat());
         expKkkKkk.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
-        expKkkKkk.setColumns(6);
+        expKkkKkk.setColumns(4);
         expKkkKkk.setMaxLength(6);
         expKkkKkk.setHorizontalAlignment(JTextField.RIGHT);
         expKkkKkk.setBindPath("EXP_KKK_KKK");
@@ -712,7 +729,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expKkkSkk.setIMEMode(InputSubset.LATIN_DIGITS);
         expKkkSkk.setFormat(new ACOneDecimalDoubleFormat());
         expKkkSkk.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
-        expKkkSkk.setColumns(6);
+        expKkkSkk.setColumns(4);
         expKkkSkk.setMaxLength(6);
         expKkkSkk.setHorizontalAlignment(JTextField.RIGHT);
         expKkkSkk.setBindPath("EXP_KKK_SKK");
@@ -729,6 +746,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 VRLayout.FLOW_INSETLINE_RETURN);
         sinsatuPointsRightPnl.add(expXrayFilmContainer,
                 VRLayout.FLOW_INSETLINE_RETURN);
+        
         expNitkContainer.setText("尿中一般物質定性半定量検査");
         expNitkContainer.setLayout(new BorderLayout());
         expNitkContainer.add(expNitk, BorderLayout.CENTER);
@@ -736,7 +754,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expNitk.setIMEMode(InputSubset.LATIN_DIGITS);
         expNitk.setFormat(new ACOneDecimalDoubleFormat());
         expNitk.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
-        expNitk.setColumns(6);
+        expNitk.setColumns(4);
         expNitk.setMaxLength(6);
         expNitk.setHorizontalAlignment(JTextField.RIGHT);
         expNitk.setBindPath("EXP_NITK");
@@ -748,7 +766,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expXrayTs.setIMEMode(InputSubset.LATIN_DIGITS);
         expXrayTs.setFormat(new ACOneDecimalDoubleFormat());
         expXrayTs.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
-        expXrayTs.setColumns(6);
+        expXrayTs.setColumns(4);
         expXrayTs.setMaxLength(6);
         expXrayTs.setHorizontalAlignment(JTextField.RIGHT);
         expXrayTs.setBindPath("EXP_XRAY_TS");
@@ -760,7 +778,7 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expXraySs.setIMEMode(InputSubset.LATIN_DIGITS);
         expXraySs.setFormat(new ACOneDecimalDoubleFormat());
         expXraySs.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
-        expXraySs.setColumns(6);
+        expXraySs.setColumns(4);
         expXraySs.setMaxLength(6);
         expXraySs.setHorizontalAlignment(JTextField.RIGHT);
         expXraySs.setBindPath("EXP_XRAY_SS");
@@ -772,12 +790,65 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expXrayFilm.setIMEMode(InputSubset.LATIN_DIGITS);
         expXrayFilm.setFormat(new ACOneDecimalDoubleFormat());
         expXrayFilm.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
-        expXrayFilm.setColumns(6);
+        expXrayFilm.setColumns(4);
         expXrayFilm.setMaxLength(6);
         expXrayFilm.setHorizontalAlignment(JTextField.RIGHT);
         expXrayFilm.setBindPath("EXP_XRAY_FILM");
         expXrayFilmUnit.setText("点");
 
+        //2009/01/06 [Tozo Tanaka] Add - begin
+        //デジタル撮影の場合
+        sinsatuPointsRight2Pnl.setHgrid(200);
+        sinsatuPointsRight2Pnl.add(expXrayDigitalImageManagementContainer,
+                VRLayout.FLOW_INSETLINE_RETURN);
+        sinsatuPointsRight2Pnl.add(expXrayDigitalFilmContainer,
+                VRLayout.FLOW_INSETLINE_RETURN);
+        sinsatuPointsRight2Pnl.add(expXrayDigitalImagingContainer,
+                VRLayout.FLOW_INSETLINE_RETURN);
+        
+        //デジタル撮影の場合：フィルムレスの場合：電子画像管理加算
+        expXrayDigitalImageManagementContainer.setText("電子画像管理加算");
+        expXrayDigitalImageManagementContainer.setLayout(new BorderLayout());
+        expXrayDigitalImageManagementContainer.add(expXrayDigitalImageManagement, BorderLayout.CENTER);
+        expXrayDigitalImageManagementContainer.add(expXrayDigitalImageManagementUnit, BorderLayout.EAST);
+        expXrayDigitalImageManagement.setIMEMode(InputSubset.LATIN_DIGITS);
+        expXrayDigitalImageManagement.setFormat(new ACOneDecimalDoubleFormat());
+        expXrayDigitalImageManagement.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
+        expXrayDigitalImageManagement.setColumns(4);
+        expXrayDigitalImageManagement.setMaxLength(6);
+        expXrayDigitalImageManagement.setHorizontalAlignment(JTextField.RIGHT);
+        expXrayDigitalImageManagement.setBindPath("EXP_XRAY_DIGITAL_MANAGEMENT");
+        expXrayDigitalImageManagementUnit.setText("点");        
+        
+        //デジタル撮影の場合：フィルムを算定する場合：画像記録用フィルム(大角)
+        expXrayDigitalFilmContainer.setText("画像記録用フィルム(大角)");
+        expXrayDigitalFilmContainer.setLayout(new BorderLayout());
+        expXrayDigitalFilmContainer.add(expXrayDigitalFilm, BorderLayout.CENTER);
+        expXrayDigitalFilmContainer.add(expXrayDigitalFilmUnit, BorderLayout.EAST);
+        expXrayDigitalFilm.setIMEMode(InputSubset.LATIN_DIGITS);
+        expXrayDigitalFilm.setFormat(new ACOneDecimalDoubleFormat());
+        expXrayDigitalFilm.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
+        expXrayDigitalFilm.setColumns(4);
+        expXrayDigitalFilm.setMaxLength(6);
+        expXrayDigitalFilm.setHorizontalAlignment(JTextField.RIGHT);
+        expXrayDigitalFilm.setBindPath("EXP_XRAY_DIGITAL_FILM");
+        expXrayDigitalFilmUnit.setText("点");
+
+        //デジタル撮影の場合：フィルムを算定する場合：デジタル映像化処理加算
+        expXrayDigitalImagingContainer.setText("デジタル映像化処理加算");
+        expXrayDigitalImagingContainer.setLayout(new BorderLayout());
+        expXrayDigitalImagingContainer.add(expXrayDigitalImaging, BorderLayout.CENTER);
+        expXrayDigitalImagingContainer.add(expXrayDigitalImagingUnit, BorderLayout.EAST);
+        expXrayDigitalImaging.setIMEMode(InputSubset.LATIN_DIGITS);
+        expXrayDigitalImaging.setFormat(new ACOneDecimalDoubleFormat());
+        expXrayDigitalImaging.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
+        expXrayDigitalImaging.setColumns(4);
+        expXrayDigitalImaging.setMaxLength(6);
+        expXrayDigitalImaging.setHorizontalAlignment(JTextField.RIGHT);
+        expXrayDigitalImaging.setBindPath("EXP_XRAY_DIGITAL_IMAGING");
+        expXrayDigitalImagingUnit.setText("点");
+        //2009/01/06 [Tozo Tanaka] Add - end
+        
         // 戻すボタン
         rollBackPnl.setLayout(new VRLayout());
         rollBackPnl.add(rollBack, VRLayout.EAST);
@@ -1032,6 +1103,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sb.append(" EXP_XRAY_TS,");
         sb.append(" EXP_XRAY_SS,");
         sb.append(" EXP_XRAY_FILM,");
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(" EXP_XRAY_DIGITAL_MANAGEMENT,");
+        sb.append(" EXP_XRAY_DIGITAL_FILM,");
+        sb.append(" EXP_XRAY_DIGITAL_IMAGING,");
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(" LAST_TIME");
         sb.append(" FROM");
         sb.append(" M_KINGAKU_TENSU");
@@ -1055,6 +1131,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             kingakuTensuData.put("EXP_XRAY_TS",new Double(65.0)); // 単純撮影
             kingakuTensuData.put("EXP_XRAY_SS",new Double(85.0)); // 写真診断(胸部)
             kingakuTensuData.put("EXP_XRAY_FILM",new Double(13.0));// フィルム(大角)
+            // 2009/01/09[Tozo Tanaka] : add begin
+            kingakuTensuData.put("EXP_XRAY_DIGITAL_MANAGEMENT",new Double(60.0));// 電子画像管理加算
+            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(24.1));// 画像記録用フィルム(大角)
+            kingakuTensuData.put("EXP_XRAY_DIGITAL_IMAGING",new Double(15.0));// デジタル映像化処理加算
+            // 2009/01/09[Tozo Tanaka] : add end
             kingakuTensuData.put("SHOSIN_SINRYOUJO", new Double(270.0)); // 初診料(診療所)
             kingakuTensuData.put("SHOSIN_HOSPITAL", new Double(270.0)); // 初診料(病院)
 
@@ -1111,6 +1192,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sb.append(" EXP_XRAY_TS,");
         sb.append(" EXP_XRAY_SS,");
         sb.append(" EXP_XRAY_FILM,");
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(" EXP_XRAY_DIGITAL_MANAGEMENT,");
+        sb.append(" EXP_XRAY_DIGITAL_FILM,");
+        sb.append(" EXP_XRAY_DIGITAL_IMAGING,");
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(" SOUKATUHYOU_PRT,");
         sb.append(" MEISAI_KIND,");
         sb.append(" FURIKOMISAKI_PRT,");
@@ -1263,6 +1349,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 String EXP_XRAY_SS = getDBSafeNumber("EXP_XRAY_SS", insurerData);
                 String EXP_XRAY_FILM = getDBSafeNumber("EXP_XRAY_FILM",
                         insurerData);
+                // 2009/01/09[Tozo Tanaka] : add begin
+                String EXP_XRAY_DIGITAL_MANAGEMENT = getDBSafeNumber("EXP_XRAY_DIGITAL_MANAGEMENT", insurerData);
+                String EXP_XRAY_DIGITAL_FILM = getDBSafeNumber("EXP_XRAY_DIGITAL_FILM", insurerData);
+                String EXP_XRAY_DIGITAL_IMAGING = getDBSafeNumber("EXP_XRAY_DIGITAL_IMAGING", insurerData);
+                // 2009/01/09[Tozo Tanaka] : add end
 
                 // パッシブチェック / トランザクション開始
                 if (isUpdate) {
@@ -1326,6 +1417,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(",EXP_XRAY_TS=" + EXP_XRAY_TS);
                     sb.append(",EXP_XRAY_SS=" + EXP_XRAY_SS);
                     sb.append(",EXP_XRAY_FILM=" + EXP_XRAY_FILM);
+                    // 2009/01/09[Tozo Tanaka] : add begin
+                    sb.append(",EXP_XRAY_DIGITAL_MANAGEMENT=" + EXP_XRAY_DIGITAL_MANAGEMENT);
+                    sb.append(",EXP_XRAY_DIGITAL_FILM=" + EXP_XRAY_DIGITAL_FILM);
+                    sb.append(",EXP_XRAY_DIGITAL_IMAGING=" + EXP_XRAY_DIGITAL_IMAGING);
+                    // 2009/01/09[Tozo Tanaka] : add end
                     sb.append(",SOUKATUHYOU_PRT=" + SOUKATUHYOU_PRT);
                     sb.append(",MEISAI_KIND=" + MEISAI_KIND);
                     sb.append(",FURIKOMISAKI_PRT=" + FURIKOMISAKI_PRT);
@@ -1378,6 +1474,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(" EXP_XRAY_TS,");
                     sb.append(" EXP_XRAY_SS,");
                     sb.append(" EXP_XRAY_FILM,");
+                    // 2009/01/09[Tozo Tanaka] : add begin
+                    sb.append(" EXP_XRAY_DIGITAL_MANAGEMENT,");
+                    sb.append(" EXP_XRAY_DIGITAL_FILM,");
+                    sb.append(" EXP_XRAY_DIGITAL_IMAGING,");
+                    // 2009/01/09[Tozo Tanaka] : add end
                     sb.append(" SOUKATUHYOU_PRT,");
                     sb.append(" MEISAI_KIND,");
                     sb.append(" FURIKOMISAKI_PRT,");
@@ -1421,6 +1522,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append("," + EXP_XRAY_TS);
                     sb.append("," + EXP_XRAY_SS);
                     sb.append("," + EXP_XRAY_FILM);
+                    // 2009/01/09[Tozo Tanaka] : add begin
+                    sb.append("," + EXP_XRAY_DIGITAL_MANAGEMENT);
+                    sb.append("," + EXP_XRAY_DIGITAL_FILM);
+                    sb.append("," + EXP_XRAY_DIGITAL_IMAGING);
+                    // 2009/01/09[Tozo Tanaka] : add end
                     sb.append("," + SOUKATUHYOU_PRT);
                     sb.append("," + MEISAI_KIND);
                     sb.append("," + FURIKOMISAKI_PRT);

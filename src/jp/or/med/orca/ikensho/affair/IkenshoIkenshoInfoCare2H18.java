@@ -19,6 +19,7 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
+import jp.or.med.orca.ikensho.component.IkenshoUndelineIntegerCheckBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -40,6 +41,25 @@ public class IkenshoIkenshoInfoCare2H18 extends IkenshoIkenshoInfoCare2 {
 
     // private VRListModelAdapter careServiceSportsModel;
 
+    //2009/02/03[Tozo Tanaka] : add begin
+    private ACLabelContainer care2HoumonSodanShiens;
+    private IkenshoUndelineIntegerCheckBox care2HoumonSodanShien = new IkenshoUndelineIntegerCheckBox();
+
+
+    /**
+     * ä≈åÏêEàıÇÃñKñ‚Ç…ÇÊÇÈëäíkÅEéxâáÉRÉìÉeÉiÇï‘ÇµÇ‹Ç∑ÅB
+     * 
+     * @return ä≈åÏêEàıÇÃñKñ‚Ç…ÇÊÇÈëäíkÅEéxâáÉRÉìÉeÉi
+     */
+    protected ACLabelContainer getHoumonSodanShiens() {
+        if (care2HoumonSodanShiens == null) {
+            care2HoumonSodanShiens = new ACLabelContainer();
+        }
+        return care2HoumonSodanShiens;
+    }
+    //2009/02/03[Tozo Tanaka] : add end
+    
+    
     /**
      * â^ìÆÇ…Ç¬Ç¢ÇƒÉRÉìÉeÉiÇï‘ÇµÇ‹Ç∑ÅB
      * 
@@ -145,22 +165,43 @@ public class IkenshoIkenshoInfoCare2H18 extends IkenshoIkenshoInfoCare2 {
         vl.setHgrid(400);
         getNeedManagementGroup().setLayout(vl);
 
+        // 2009/02/03 [Tozo Tanaka] Replace - begin
+//        getNeedManagementGroup().add(getHoumonsShinryous(),
+//                VRLayout.FLOW_INSETLINE);
+//        getNeedManagementGroup().add(getHoumonsKangos(),
+//                VRLayout.FLOW_INSETLINE);
+//        getNeedManagementGroup().add(getHoumonShikaShinryous(),
+//                VRLayout.FLOW_INSETLINE);
+//        getNeedManagementGroup().add(getHoumonYakuzais(),
+//                VRLayout.FLOW_INSETLINE_RETURN);
+//
+//        getNeedManagementGroup().add(getHoumonRehas(), VRLayout.FLOW_INSETLINE);
+//        getNeedManagementGroup().add(getTankiNyuushyoKaigos(),
+//                VRLayout.FLOW_INSETLINE);
+//        getNeedManagementGroup().add(getHoumonShikaEiseis(),
+//                VRLayout.FLOW_INSETLINE);
+//        getNeedManagementGroup().add(getHoumonEiyous(),
+//                VRLayout.FLOW_INSETLINE_RETURN);
         getNeedManagementGroup().add(getHoumonsShinryous(),
                 VRLayout.FLOW_INSETLINE);
         getNeedManagementGroup().add(getHoumonsKangos(),
                 VRLayout.FLOW_INSETLINE);
-        getNeedManagementGroup().add(getHoumonShikaShinryous(),
+        getNeedManagementGroup().add(getHoumonSodanShiens(),
                 VRLayout.FLOW_INSETLINE);
-        getNeedManagementGroup().add(getHoumonYakuzais(),
+        getNeedManagementGroup().add(getHoumonShikaShinryous(),
                 VRLayout.FLOW_INSETLINE_RETURN);
 
+        getNeedManagementGroup().add(getHoumonYakuzais(),
+                VRLayout.FLOW_INSETLINE);
         getNeedManagementGroup().add(getHoumonRehas(), VRLayout.FLOW_INSETLINE);
         getNeedManagementGroup().add(getTankiNyuushyoKaigos(),
                 VRLayout.FLOW_INSETLINE);
         getNeedManagementGroup().add(getHoumonShikaEiseis(),
-                VRLayout.FLOW_INSETLINE);
-        getNeedManagementGroup().add(getHoumonEiyous(),
                 VRLayout.FLOW_INSETLINE_RETURN);
+        
+        getNeedManagementGroup().add(getHoumonEiyous(),
+                VRLayout.FLOW_INSETLINE);
+        // 2009/02/03 [Tozo Tanaka] Replace - end
 
         getNeedManagementGroup().add(getTsuushyoRehas(),
                 VRLayout.FLOW_INSETLINE);
@@ -306,6 +347,15 @@ public class IkenshoIkenshoInfoCare2H18 extends IkenshoIkenshoInfoCare2 {
         getSportstHeses().add(getSportsValue(), VRLayout.CLIENT);
 
         addInnerBindComponent(getSportsValue());
+        
+        
+        //2009/02/03[Tozo Tanaka] : add begin
+        care2HoumonSodanShien.setCheckBindPath("HOUMON_SODAN");
+        care2HoumonSodanShien.setText("ä≈åÏêEàıÇÃñKñ‚Ç…ÇÊÇÈëäíkÅEéxâá");
+        care2HoumonSodanShien.setUnderlineBindPath("HOUMON_SODAN_UL");
+        care2HoumonSodanShiens.add(care2HoumonSodanShien, null);
+        //2009/02/03[Tozo Tanaka] : add end
+        
     }
 
     protected void addGroup() {

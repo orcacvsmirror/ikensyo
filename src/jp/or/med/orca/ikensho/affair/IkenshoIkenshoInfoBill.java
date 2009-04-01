@@ -62,6 +62,15 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
   private ACGroupBox ikenshoGroupBox8 = new ACGroupBox();
   private ACOneDecimalDoubleTextField shosinAddIT = new ACOneDecimalDoubleTextField();
 
+  // 2009/01/09[Tozo Tanaka] : add begin
+  private ACOneDecimalDoubleTextField expXrayDigitalManagement = new ACOneDecimalDoubleTextField();
+  private ACOneDecimalDoubleTextField expXrayDigitalFilm = new ACOneDecimalDoubleTextField();
+  private ACOneDecimalDoubleTextField expXrayDigitalImaging = new ACOneDecimalDoubleTextField();
+  private IkenshoInitialNegativeIntegerTextField xrayDigitalManagement = new IkenshoInitialNegativeIntegerTextField();
+  private IkenshoInitialNegativeIntegerTextField xrayDigitalFilm = new IkenshoInitialNegativeIntegerTextField();
+  private IkenshoInitialNegativeIntegerTextField xrayDigitalImaging = new IkenshoInitialNegativeIntegerTextField();
+  // 2009/01/09[Tozo Tanaka] : add end
+
   /**
    * 検査点数グループを返します。
    * @return 検査点数グループ
@@ -206,6 +215,22 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
     ikenshoGroupBox2.add(s8, null);
     ikenshoGroupBox2.add(s9, null);
     ikenshoGroupBox2.add(s10, null);
+
+    // 2009/01/09[Tozo Tanaka] : add begin
+    expXrayDigitalManagement.setBindPath("EXP_XRAY_DIGITAL_MANAGEMENT");
+    expXrayDigitalFilm.setBindPath("EXP_XRAY_DIGITAL_FILM");
+    expXrayDigitalImaging.setBindPath("EXP_XRAY_DIGITAL_IMAGING");
+    xrayDigitalManagement.setBindPath("XRAY_DIGITAL_MANAGEMENT");
+    xrayDigitalFilm.setBindPath("XRAY_DIGITAL_FILM");
+    xrayDigitalImaging.setBindPath("XRAY_DIGITAL_IMAGING");
+    ikenshoGroupBox3.add(expXrayDigitalManagement, null);
+    ikenshoGroupBox3.add(expXrayDigitalFilm, null);
+    ikenshoGroupBox3.add(expXrayDigitalImaging, null);
+    ikenshoGroupBox2.add(xrayDigitalManagement, null);
+    ikenshoGroupBox2.add(xrayDigitalFilm, null);
+    ikenshoGroupBox2.add(xrayDigitalImaging, null);
+    // 2009/01/09[Tozo Tanaka] : add end
+ 
   }
 
   /**

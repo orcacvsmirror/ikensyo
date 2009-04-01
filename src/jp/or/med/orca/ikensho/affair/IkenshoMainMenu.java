@@ -481,6 +481,13 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
                         iasPdf.setVisible(true);
                         // iasPdf.show();
                         return;
+                    //2009/01/06 [Tozo Tanaka] Add - begin
+                        // ÇªÇÃëºÇÃê›íË
+                    case IkenshoSubMenu.SUB_SETTING_OTHER:
+                        IkenshoSettingOther iasOther = new IkenshoSettingOther();
+                        iasOther.setVisible(true);
+                        return;
+                    //2009/01/06 [Tozo Tanaka] Add - end
 
                     // ï¬Ç∂ÇÈ
                     case IkenshoSubMenu.SUB_CLOSED:

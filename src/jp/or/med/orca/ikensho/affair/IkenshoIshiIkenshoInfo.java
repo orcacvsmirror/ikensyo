@@ -1,5 +1,6 @@
 package jp.or.med.orca.ikensho.affair;
 
+import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -34,7 +35,11 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
      */
     protected ACAffairButton getShowHelp() {
         if(showHelp==null){
-            showHelp = new ACAffairButton("記載例(H)");
+        	// 2009/01/06 [Mizuki Tsutsumi] : edit begin
+        	//showHelp = new ACAffairButton("記載例(H)");
+        	showHelp = new ACAffairButton("例(H)");
+            // 2009/01/06 [Mizuki Tsutsumi] : edit end
+        	showHelp.setPreferredSize(new Dimension(67, 44));
             showHelp.setIconPath(ACConstants.ICON_PATH_QUESTION_24);
             showHelp.setMnemonic('H');
             showHelp.setToolTipText("記載例を表示します。");

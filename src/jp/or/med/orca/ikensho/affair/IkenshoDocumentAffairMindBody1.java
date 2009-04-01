@@ -52,14 +52,12 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
   protected VRArrayList renkeiDoctors;
 
   private VRLabel mindBody1Title = new VRLabel();
-  private ACGroupBox mindBody1JiritsuGroup = new ACGroupBox();
+  private ACGroupBox mindBody1JiritsuGroup;
   private ACGroupBox mindBody1RikaiKiokuGroup = new ACGroupBox();
   private ACGroupBox mindBody1MondaiGroup = new ACGroupBox();
   private ACGroupBox mindBody1ShinkeiGroup = new ACGroupBox();
-  private IkenshoHintButton mindBody1SyougaiJiritsuHelp = new
-      IkenshoHintButton();
-  private IkenshoHintButton mindBody1ChihouJiritsuHelp = new
-      IkenshoHintButton();
+  private IkenshoHintButton mindBody1SyougaiJiritsuHelp;
+  private IkenshoHintButton mindBody1ChihouJiritsuHelp;
 
   private VRListModelAdapter existEmptyListModel = new VRListModelAdapter(new
       VRArrayList(Arrays.asList(new String[] {"有", "無"})));
@@ -68,7 +66,7 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
   private IkenshoHintButton mindBody1TankiKiokuHelp = new IkenshoHintButton();
   private ACIntegerCheckBox mindBody1MondaiHushimatsu = new
       ACIntegerCheckBox();
-  private ACButton mindBody1JiritsuClear = new ACButton();
+  private ACButton mindBody1JiritsuClear;
   private ACIntegerCheckBox mindBody1MondaiBoukou = new
       ACIntegerCheckBox();
   private ACClearableRadioButtonGroup mindBody1HasShinkeiProJyusin = new
@@ -88,8 +86,7 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
   private VRLabel mindBody1ShinkeiProJyusinTail = new VRLabel();
   private ACClearableRadioButtonGroup mindBody1TankiKioku = new
       ACClearableRadioButtonGroup();
-  private VRLayout mindBody1JiritsuGroupLayout = new VRLayout();
-  private ACLabelContainer mindBody1SyougaiJiritsuPanel = new ACLabelContainer();
+  private ACLabelContainer mindBody1SyougaiJiritsuPanel;
   private IkenshoHintButton mindBody1SyokujiHelp = new IkenshoHintButton();
   private ACValueArrayRadioButtonGroup mindBody1HasMondai = new
       ACValueArrayRadioButtonGroup();
@@ -125,23 +122,23 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
       ACIntegerCheckBox();
   private VRPanel mindBody1MondaiOtherPanel = new VRPanel();
   private ACButton mindBody1RikaiKiokuClear = new ACButton();
-  private ACLabelContainer mindBody1ChihouJiritsuPanel = new ACLabelContainer();
+  private ACLabelContainer mindBody1ChihouJiritsuPanel;
   private ACTextField mindBody1MondaiOtherVal = new ACTextField();
   private ACComboBox mindBody1ShinkeiProJyusin = new ACComboBox();
   private ACIntegerCheckBox mindBody1MondaiHaikai = new
       ACIntegerCheckBox();
   private ACParentHesesPanelContainer mindBody1MondaiOtherValHeses = new
       ACParentHesesPanelContainer();
-  private ACGroupBox hint = new ACGroupBox();
-  private IkenshoHintContainer ikenshoHintPanel1 = new IkenshoHintContainer();
-  private VRPanel mindBody1SyougaiJiritsuHelpPanel = new VRPanel();
-  private VRPanel mindBody1ChihouJiritsuHelpPanel = new VRPanel();
+  private ACGroupBox hintContainer;
+  private IkenshoHintContainer hintArea;
+  private VRPanel mindBody1SyougaiJiritsuHelpPanel;
+  private VRPanel mindBody1ChihouJiritsuHelpPanel;
   private VRPanel mindBody1TankiKiokuHelpPanel = new VRPanel();
   private VRPanel mindBody1NinchiHelpPanel = new VRPanel();
   private VRPanel mindBody1DentatsuHelpPanel = new VRPanel();
   private VRPanel mindBody1SyokujiHelpPanel = new VRPanel();
 
-  /**
+/**
    * overrideして理解記憶に関するクリアボタンの格納先コンテナを返します。
    * @return 理解記憶に関するクリアボタンの格納先コンテナ
    */
@@ -162,7 +159,16 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
    * @return 日常生活自立度グループ
    */
   protected ACGroupBox getJiritsuGroup(){
-    return mindBody1JiritsuGroup;
+      if (mindBody1JiritsuGroup == null) {
+          mindBody1JiritsuGroup = new ACGroupBox();
+          mindBody1JiritsuGroup.setText("日常生活の自立度等について");
+          VRLayout mindBody1JiritsuGroupLayout = new VRLayout();
+          mindBody1JiritsuGroupLayout.setFitHLast(true);
+          mindBody1JiritsuGroupLayout.setHgap(0);
+          mindBody1JiritsuGroup.setLayout(mindBody1JiritsuGroupLayout);
+          addJiritsuGroup();
+      }
+      return mindBody1JiritsuGroup;
   }
   /**
    * 理解および記憶グループを返します。
@@ -190,6 +196,14 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
    * @return 障害老人の日常生活自立度ヘルプボタン
    */
   protected IkenshoHintButton getSyougaiJiritsuHelp(){
+      if(mindBody1SyougaiJiritsuHelp==null){
+          mindBody1SyougaiJiritsuHelp = new IkenshoHintButton();
+          mindBody1SyougaiJiritsuHelp.setToolTipText("詳細説明を表示します。");
+          mindBody1SyougaiJiritsuHelp.setHintArea(getHintArea());
+          mindBody1SyougaiJiritsuHelp.setHintContainer(getHintContainer());
+          mindBody1SyougaiJiritsuHelp.setFollowPressedButtons(new IkenshoHintButton[] {
+                  getChihouJiritsuHelp()});
+      }
     return mindBody1SyougaiJiritsuHelp;
   }
   /**
@@ -197,6 +211,14 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
    * @return  痴呆性老人の日常生活自立度ヘルプボタン
    */
   protected IkenshoHintButton getChihouJiritsuHelp(){
+      if(mindBody1ChihouJiritsuHelp==null){
+          mindBody1ChihouJiritsuHelp = new IkenshoHintButton();
+          mindBody1ChihouJiritsuHelp.setToolTipText("詳細説明を表示します。");
+          mindBody1ChihouJiritsuHelp.setHintArea(getHintArea());
+          mindBody1ChihouJiritsuHelp.setHintContainer(getHintContainer());
+          mindBody1ChihouJiritsuHelp.setFollowPressedButtons(new IkenshoHintButton[] {
+                  getSyougaiJiritsuHelp()});
+      }
     return mindBody1ChihouJiritsuHelp;
   }
   /**
@@ -211,16 +233,42 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
    * @return 日常生活自立度-障害老人
    */
   protected ACLabelContainer getSyougaiRoujinJiritsu(){
+      if(mindBody1SyougaiJiritsuPanel==null){
+          mindBody1SyougaiJiritsuPanel = new ACLabelContainer();
+          mindBody1SyougaiJiritsuPanel.setLayout(new BorderLayout());
+//        mindBody1SyougaiJiritsuPanel.setText("障害老人の日常生活自立度" +
+//                                             IkenshoConstants.LINE_SEPARATOR +
+//                                             "（寝たきり度）");
+        mindBody1SyougaiJiritsuPanel.setText("障害高齢者の日常生活自立度" +
+                IkenshoConstants.LINE_SEPARATOR +
+                "（寝たきり度）");
+        mindBody1SyougaiJiritsuPanel.setHorizontalAlignment(SwingConstants.RIGHT);
+        addSyougaiRoujinJiritsu();
+      }
     return mindBody1SyougaiJiritsuPanel;
   }
+  protected void addSyougaiRoujinJiritsu(){
+      getSyougaiRoujinJiritsu().add(getMindBody1SyougaiJiritsu(), BorderLayout.CENTER);
+      getSyougaiRoujinJiritsu().add(getMindBody1SyougaiJiritsuHelpPanel(), BorderLayout.EAST);
+    }
   /**
    * 日常生活自立度-痴呆性老人を返します。
    * @return 日常生活自立度-痴呆性老人
    */
   protected ACLabelContainer getChihouRoujinJiritsu(){
+      if(mindBody1ChihouJiritsuPanel==null){
+          mindBody1ChihouJiritsuPanel = new ACLabelContainer();
+          mindBody1ChihouJiritsuPanel.setLayout(new BorderLayout());
+//        mindBody1ChihouJiritsuPanel.setText("痴呆性老人の日常生活自立度");
+        mindBody1ChihouJiritsuPanel.setText("認知症高齢者の日常生活自立度");
+        addChihouRoujinJiritsu();
+      }
     return mindBody1ChihouJiritsuPanel;
   }
-
+  protected void addChihouRoujinJiritsu(){
+      getChihouRoujinJiritsu().add(getMindBody1ChihouJiritsu(), BorderLayout.CENTER);
+      getChihouRoujinJiritsu().add(getMindBody1ChihouJiritsuHelpPanel(), BorderLayout.EAST);
+  }
   /**
    * 問題行動の有無を返します。
    * @return 問題行動の有無
@@ -297,7 +345,7 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     IkenshoCommon.setHintButtons(dbm, new String[] {"1", "2", "3", "4", "5",
                                  "6", }
                                  , getFomratKubun(), new IkenshoHintButton[] {
-      mindBody1SyougaiJiritsuHelp, mindBody1ChihouJiritsuHelp,
+        getSyougaiJiritsuHelp(), getChihouJiritsuHelp(),
           mindBody1TankiKiokuHelp, mindBody1NinchiHelp, mindBody1DentatsuHelp,
           mindBody1SyokujiHelp
     });
@@ -439,8 +487,8 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
    * @throws Exception 処理例外
    */
   public void setFollowDisabledComponents(JComponent[] components) {
-    mindBody1SyougaiJiritsuHelp.setFollowDisabledComponents(components);
-    mindBody1ChihouJiritsuHelp.setFollowDisabledComponents(components);
+      getSyougaiJiritsuHelp().setFollowDisabledComponents(components);
+      getChihouJiritsuHelp().setFollowDisabledComponents(components);
     mindBody1TankiKiokuHelp.setFollowDisabledComponents(components);
     mindBody1NinchiHelp.setFollowDisabledComponents(components);
     mindBody1DentatsuHelp.setFollowDisabledComponents(components);
@@ -454,7 +502,6 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     catch (Exception e) {
       e.printStackTrace();
     }
-    hint.setVisible(false);
 
     mindBody1ShinkeiProJyusin.setRenderer(new ACBindListCellRenderer(
         "SINRYOUKA"));
@@ -495,17 +542,17 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     });
 
     mindBody1TankiKiokuHelp.setFollowHideComponents(new JComponent[] {
-        mindBody1JiritsuGroup, mindBody1MondaiGroup, mindBody1ShinkeiGroup});
+            getJiritsuGroup(), mindBody1MondaiGroup, mindBody1ShinkeiGroup});
     mindBody1NinchiHelp.setFollowHideComponents(new JComponent[] {
-                                                mindBody1JiritsuGroup,
+            getJiritsuGroup(),
                                                 mindBody1MondaiGroup,
                                                 mindBody1ShinkeiGroup});
     mindBody1DentatsuHelp.setFollowHideComponents(new JComponent[] {
-                                                  mindBody1JiritsuGroup,
+            getJiritsuGroup(),
                                                   mindBody1MondaiGroup,
                                                   mindBody1ShinkeiGroup});
     mindBody1SyokujiHelp.setFollowHideComponents(new JComponent[] {
-                                                 mindBody1JiritsuGroup,
+            getJiritsuGroup(),
                                                  mindBody1MondaiGroup,
                                                  mindBody1ShinkeiGroup});
 
@@ -516,13 +563,6 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1MondaiOther.addItemListener(new ACFollowDisabledItemListener(new
         JComponent[] {mindBody1MondaiOtherVal, mindBody1MondaiOtherValHeses}));
 
-    mindBody1JiritsuClear.addActionListener(new ActionListener() {
-      public void actionPerformed(ActionEvent e) {
-          getMindBody1SyougaiJiritsu().setSelectedIndex(getMindBody1SyougaiJiritsu().getNoSelectIndex());
-        getMindBody1ChihouJiritsu().setSelectedIndex(getMindBody1ChihouJiritsu().
-                                                getNoSelectIndex());
-      }
-    });
     mindBody1RikaiKiokuClear.addActionListener(new ActionListener() {
       public void actionPerformed(ActionEvent e) {
         mindBody1TankiKioku.setSelectedIndex(mindBody1TankiKioku.
@@ -564,10 +604,6 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
       }
     });
 
-    mindBody1SyougaiJiritsuHelp.setFollowPressedButtons(new IkenshoHintButton[] {
-        mindBody1ChihouJiritsuHelp});
-    mindBody1ChihouJiritsuHelp.setFollowPressedButtons(new IkenshoHintButton[] {
-        mindBody1SyougaiJiritsuHelp});
     mindBody1TankiKiokuHelp.setFollowPressedButtons(new IkenshoHintButton[] {
         mindBody1NinchiHelp, mindBody1DentatsuHelp, mindBody1SyokujiHelp});
     mindBody1NinchiHelp.setFollowPressedButtons(new IkenshoHintButton[] {
@@ -670,18 +706,12 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1MondaiBoukou.setBindPath("BOUKOU");
     mindBody1MondaiBoukou.setEnabled(false);
     mindBody1MondaiBoukou.setText("暴行");
-    mindBody1ChihouJiritsuHelp.setToolTipText("詳細説明を表示します。");
-    mindBody1ChihouJiritsuHelp.setHintArea(ikenshoHintPanel1);
-    mindBody1ChihouJiritsuHelp.setHintContainer(hint);
-    mindBody1JiritsuClear.setMargin(new Insets(0,0,0,0));
-    mindBody1JiritsuClear.setText("クリア");
-    mindBody1JiritsuClear.setToolTipText("「日常生活の自立度等について」の全項目の選択を解除します。");
     mindBody1MondaiHushimatsu.setBindPath("FUSIMATU");
     mindBody1MondaiHushimatsu.setEnabled(false);
     mindBody1MondaiHushimatsu.setText("火の不始末");
     mindBody1TankiKiokuHelp.setToolTipText("詳細説明を表示します。");
-    mindBody1TankiKiokuHelp.setHintArea(ikenshoHintPanel1);
-    mindBody1TankiKiokuHelp.setHintContainer(hint);
+    mindBody1TankiKiokuHelp.setHintArea(getHintArea());
+    mindBody1TankiKiokuHelp.setHintContainer(getHintContainer());
     mindBody1Layout.setFitVLast(true);
     mindBody1Layout.setFitHLast(true);
     mindBody1RikaiKiokuGroup.setLayout(mindBody1RikaiKiokuLayout);
@@ -698,10 +728,8 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1Syokuji.setNoSelectIndex(0);
     mindBody1Syokuji.setUseClearButton(false);
     mindBody1NinchiHelp.setToolTipText("詳細説明を表示します。");
-    mindBody1NinchiHelp.setHintArea(ikenshoHintPanel1);
-    mindBody1NinchiHelp.setHintContainer(hint);
-    mindBody1JiritsuGroup.setLayout(mindBody1JiritsuGroupLayout);
-    mindBody1JiritsuGroup.setText("日常生活の自立度等について");
+    mindBody1NinchiHelp.setHintArea(getHintArea());
+    mindBody1NinchiHelp.setHintContainer(getHintContainer());
     mindBody1Ninchi.setModel(new VRListModelAdapter(new
         VRArrayList(Arrays.asList(new
                                   String[] {"自立", "いくらか困難", "見守りが必要", "判断できない"}))));
@@ -739,27 +767,17 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1TankiKioku.setBindPath("TANKI_KIOKU");
     mindBody1TankiKioku.setNoSelectIndex(0);
     mindBody1TankiKioku.setUseClearButton(false);
-    mindBody1JiritsuGroupLayout.setFitHLast(true);
-    mindBody1JiritsuGroupLayout.setHgap(0);
-    mindBody1SyougaiJiritsuPanel.setLayout(new BorderLayout());
-//    mindBody1SyougaiJiritsuPanel.setText("障害老人の日常生活自立度" +
-//                                         IkenshoConstants.LINE_SEPARATOR +
-//                                         "（寝たきり度）");
-    mindBody1SyougaiJiritsuPanel.setText("障害高齢者の日常生活自立度" +
-            IkenshoConstants.LINE_SEPARATOR +
-            "（寝たきり度）");
-    mindBody1SyougaiJiritsuPanel.setHorizontalAlignment(SwingConstants.RIGHT);
     mindBody1SyokujiHelp.setToolTipText("詳細説明を表示します。");
-    mindBody1SyokujiHelp.setHintArea(ikenshoHintPanel1);
-    mindBody1SyokujiHelp.setHintContainer(hint);
+    mindBody1SyokujiHelp.setHintArea(getHintArea());
+    mindBody1SyokujiHelp.setHintContainer(getHintContainer());
     mindBody1MondaiGyakuten.setEnabled(false);
     mindBody1MondaiGyakuten.setText("昼夜逆転");
     mindBody1MondaiGyakuten.setBindPath("CHUYA");
     mindBody1MondaiGroup.setLayout(new VRLayout());
     mindBody1MondaiGroup.setText("問題行動の有無");
     mindBody1DentatsuHelp.setToolTipText("詳細説明を表示します。");
-    mindBody1DentatsuHelp.setHintArea(ikenshoHintPanel1);
-    mindBody1DentatsuHelp.setHintContainer(hint);
+    mindBody1DentatsuHelp.setHintArea(getHintArea());
+    mindBody1DentatsuHelp.setHintContainer(getHintContainer());
     mindBody1MondaiSeiteki.setEnabled(false);
     mindBody1MondaiSeiteki.setText("性的問題行動");
     mindBody1MondaiSeiteki.setBindPath("SEITEKI_MONDAI");
@@ -814,12 +832,6 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1RikaiKiokuClear.setToolTipText("「理解および記憶」の全項目の選択を解除します。");
     mindBody1RikaiKiokuClear.setText("クリア");
     mindBody1RikaiKiokuClear.setMargin(new Insets(0,0,0,0));
-    mindBody1ChihouJiritsuPanel.setLayout(new BorderLayout());
-//    mindBody1ChihouJiritsuPanel.setText("痴呆性老人の日常生活自立度");
-    mindBody1ChihouJiritsuPanel.setText("認知症高齢者の日常生活自立度");
-    mindBody1SyougaiJiritsuHelp.setToolTipText("詳細説明を表示します。");
-    mindBody1SyougaiJiritsuHelp.setHintArea(ikenshoHintPanel1);
-    mindBody1SyougaiJiritsuHelp.setHintContainer(hint);
     mindBody1MondaiOtherVal.setEnabled(false);
     mindBody1MondaiOtherVal.setColumns(10);
     mindBody1MondaiOtherVal.setIMEMode(InputSubset.KANJI);
@@ -833,7 +845,6 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1MondaiHaikai.setEnabled(false);
     mindBody1MondaiHaikai.setText("徘徊");
     mindBody1MondaiHaikai.setBindPath("HAIKAI");
-    hint.setLayout(new BorderLayout());
     mindBody1MondaiOtherValHeses.setEnabled(false);
     mindBody1TankiKiokuPanel.setLayout(new BorderLayout());
     mindBody1NinchiPanel.setLayout(new BorderLayout());
@@ -852,9 +863,6 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1RikaiKiokuGroup.add(mindBody1SyokujiPanel,
                                  VRLayout.FLOW_INSETLINE_RETURN);
 
-    mindBody1SyougaiJiritsuPanel.add(getMindBody1SyougaiJiritsu(), BorderLayout.CENTER);
-    mindBody1SyougaiJiritsuPanel.add(mindBody1SyougaiJiritsuHelpPanel, BorderLayout.EAST);
-    mindBody1SyougaiJiritsuHelpPanel.add(mindBody1SyougaiJiritsuHelp, null);
 
     mindBody1DentatsuPanel.setLayout(new BorderLayout());
     mindBody1DentatsuPanel.add(mindBody1Dentatsu, BorderLayout.CENTER);
@@ -867,14 +875,6 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1SyokujiHelpPanel.add(mindBody1SyokujiHelp, null);
 
 
-    mindBody1JiritsuGroup.add(mindBody1SyougaiJiritsuPanel,
-                              VRLayout.FLOW_INSETLINE_RETURN);
-    mindBody1JiritsuGroup.add(mindBody1ChihouJiritsuPanel,
-                              VRLayout.FLOW_INSETLINE_RETURN);
-    mindBody1ChihouJiritsuPanel.add(getMindBody1ChihouJiritsu(), BorderLayout.CENTER);
-    mindBody1ChihouJiritsuPanel.add(mindBody1ChihouJiritsuHelpPanel, BorderLayout.EAST);
-    mindBody1ChihouJiritsuHelpPanel.add(mindBody1JiritsuClear, null);
-    mindBody1ChihouJiritsuHelpPanel.add(mindBody1ChihouJiritsuHelp, null);
     mindBody1MondaiGroup.add(mindBody1HasMondai, VRLayout.NORTH);
     mindBody1MondaiGroup.add(mindBody1MondaiPanel, VRLayout.CLIENT);
     mindBody1MondaiPanel.add(mindBody1MondaiGensi, VRLayout.FLOW);
@@ -899,12 +899,11 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1HasShinkeiProJyusin.add(mindBody1ShinkeiProJyusin, 1);
     mindBody1HasShinkeiProJyusin.add(mindBody1ShinkeiProJyusinTail, 2);
     this.add(getTitle(), VRLayout.NORTH);
-    this.add(mindBody1JiritsuGroup, VRLayout.NORTH);
+    this.add(getJiritsuGroup(), VRLayout.NORTH);
     this.add(mindBody1RikaiKiokuGroup, VRLayout.NORTH);
     this.add(mindBody1MondaiGroup, VRLayout.NORTH);
     this.add(mindBody1ShinkeiGroup, VRLayout.NORTH);
-    this.add(hint, VRLayout.CLIENT);
-    hint.add(ikenshoHintPanel1, BorderLayout.CENTER);
+    this.add(getHintContainer(), VRLayout.CLIENT);
 
     addInnerBindComponent(getMindBody1Shinkei());
     addInnerBindComponent(mindBody1ShinkeiProJyusin);
@@ -916,4 +915,72 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1HasMondai.setSelectedIndex(2);
   }
 
+    protected ACGroupBox getHintContainer() {
+        if (hintContainer == null) {
+            hintContainer = new ACGroupBox();
+            hintContainer.setVisible(false);
+            hintContainer.setLayout(new BorderLayout());
+            addHintContainer();
+        }
+        return hintContainer;
+    }
+
+    protected void addHintContainer() {
+        hintContainer.add(getHintArea(), BorderLayout.CENTER);
+    }
+
+    protected IkenshoHintContainer getHintArea() {
+        if (hintArea == null) {
+            hintArea = new IkenshoHintContainer();
+        }
+        return hintArea;
+    }
+    protected void addJiritsuGroup() {
+        getJiritsuGroup().add(getSyougaiRoujinJiritsu(),
+                VRLayout.FLOW_INSETLINE_RETURN);
+        getJiritsuGroup().add(getChihouRoujinJiritsu(),
+                VRLayout.FLOW_INSETLINE_RETURN);
+    }
+    
+    
+    protected VRPanel getMindBody1ChihouJiritsuHelpPanel(){
+        if(mindBody1ChihouJiritsuHelpPanel==null){
+            mindBody1ChihouJiritsuHelpPanel = new VRPanel();
+            addMindBody1ChihouJiritsuHelpPanel();
+        }
+      return mindBody1ChihouJiritsuHelpPanel;
+    }
+    protected void addMindBody1ChihouJiritsuHelpPanel(){
+        getMindBody1ChihouJiritsuHelpPanel().add(getMindBody1JiritsuClear(), null);
+        getMindBody1ChihouJiritsuHelpPanel().add(getChihouJiritsuHelp(), null);
+    }
+    
+    protected ACButton getMindBody1JiritsuClear(){
+        if(mindBody1JiritsuClear==null){
+            mindBody1JiritsuClear = new ACButton();
+            mindBody1JiritsuClear.setMargin(new Insets(0,0,0,0));
+            mindBody1JiritsuClear.setText("クリア");
+            mindBody1JiritsuClear.setToolTipText("「日常生活の自立度等について」の全項目の選択を解除します。");
+            mindBody1JiritsuClear.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+                    getMindBody1SyougaiJiritsu().setSelectedIndex(getMindBody1SyougaiJiritsu().getNoSelectIndex());
+                  getMindBody1ChihouJiritsu().setSelectedIndex(getMindBody1ChihouJiritsu().
+                                                          getNoSelectIndex());
+                }
+              });
+        }
+      return mindBody1JiritsuClear;
+    }
+
+    protected VRPanel getMindBody1SyougaiJiritsuHelpPanel(){
+        if(mindBody1SyougaiJiritsuHelpPanel==null){
+            mindBody1SyougaiJiritsuHelpPanel = new VRPanel();
+            addMindBody1SyougaiJiritsuHelpPanel();
+        }
+      return mindBody1SyougaiJiritsuHelpPanel;
+    }
+    protected void addMindBody1SyougaiJiritsuHelpPanel(){
+        getMindBody1SyougaiJiritsuHelpPanel().add(getSyougaiJiritsuHelp(), null);
+    }
+    
 }

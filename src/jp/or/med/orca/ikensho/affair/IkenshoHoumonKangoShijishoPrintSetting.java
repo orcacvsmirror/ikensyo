@@ -14,12 +14,15 @@ import java.util.Date;
 import javax.swing.JPanel;
 import javax.swing.JRadioButton;
 
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
@@ -417,16 +420,55 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
         //2008/3/6 H.Tanaka Del end
         IkenshoCommon.addString(pd, "Grid4.h1.w2", sb.toString());
 
-        // 傷病治療状態
-        IkenshoCommon.addString(pd, data, "MT_STS", "Grid6.h1.w2");
 
+        //2009/01/09 [Tozo Tanaka] Replace - begin
+//        // 傷病治療状態
+//        IkenshoCommon.addString(pd, data, "MT_STS", "Grid6.h1.w2");
+//        // 投与中の薬剤の用法・用量
+//        addMedicine(pd, data, "1", "Grid7.h1.w4");
+//        addMedicine(pd, data, "2", "Grid7.h1.w2");
+//        addMedicine(pd, data, "3", "Grid7.h2.w4");
+//        addMedicine(pd, data, "4", "Grid7.h2.w2");
+//        addMedicine(pd, data, "5", "Grid7.h3.w4");
+//        addMedicine(pd, data, "6", "Grid7.h3.w2");
+
+        // 傷病治療状態
+        ACChotarouXMLUtilities.setValue(pd, "Grid6.h1.w2",
+                getInsertionLineSeparatorToStringOnByte(ACCastUtilities.toString(data
+                        .get("MT_STS")), 100));
+        
         // 投与中の薬剤の用法・用量
-        addMedicine(pd, data, "1", "Grid7.h1.w4");
-        addMedicine(pd, data, "2", "Grid7.h1.w2");
-        addMedicine(pd, data, "3", "Grid7.h2.w4");
-        addMedicine(pd, data, "4", "Grid7.h2.w2");
-        addMedicine(pd, data, "5", "Grid7.h3.w4");
-        addMedicine(pd, data, "6", "Grid7.h3.w2");
+        if (!(
+                IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE7", data)) && 
+                IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE8", data)) &&
+                IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE7", data)) && 
+                IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE8", data)) &&
+                IkenshoCommon.isNullText(VRBindPathParser.get("UNIT7", data)) &&
+                IkenshoCommon.isNullText(VRBindPathParser.get("UNIT8", data)) &&
+                IkenshoCommon.isNullText(VRBindPathParser.get("USAGE7", data)) && 
+                IkenshoCommon.isNullText(VRBindPathParser.get("USAGE8", data)) 
+                ) &&
+                (getMedicineViewCount()>6)) {
+            //薬剤7か薬剤8が入力されている場合
+            addMedicine(pd, data, "1", "sickMedicines8.h1.w4");
+            addMedicine(pd, data, "2", "sickMedicines8.h1.w2");
+            addMedicine(pd, data, "3", "sickMedicines8.h2.w4");
+            addMedicine(pd, data, "4", "sickMedicines8.h2.w2");
+            addMedicine(pd, data, "5", "sickMedicines8.h3.w4");
+            addMedicine(pd, data, "6", "sickMedicines8.h3.w2");
+            addMedicine(pd, data, "7", "sickMedicines8.h4.w4");
+            addMedicine(pd, data, "8", "sickMedicines8.h4.w2");
+            pd.addAttribute("Grid7", "Visible", "FALSE");
+        }else{
+            addMedicine(pd, data, "1", "Grid7.h1.w4");
+            addMedicine(pd, data, "2", "Grid7.h1.w2");
+            addMedicine(pd, data, "3", "Grid7.h2.w4");
+            addMedicine(pd, data, "4", "Grid7.h2.w2");
+            addMedicine(pd, data, "5", "Grid7.h3.w4");
+            addMedicine(pd, data, "6", "Grid7.h3.w2");
+            pd.addAttribute("sickMedicines8", "Visible", "FALSE");
+        }
+        //2009/01/09 [Tozo Tanaka] Replace - end
 
         // 寝たきり度
         IkenshoCommon.addSelection(pd, data, "NETAKIRI", new String[] {
@@ -520,6 +562,14 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
             }
             break;
         }
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 add begin 平成21年4月法改正対応
+        //褥瘡の深さ：NPUAP分類
+        IkenshoCommon.addSelection(pd, data, "JOKUSOU_NPUAP", new String[] {
+                "Shape55", "Shape56" }, -1);
+        //褥瘡の深さ：DESIGN分類
+        IkenshoCommon.addSelection(pd, data, "JOKUSOU_DESIGN", new String[] {
+                "Shape57", "Shape58", "Shape59" }, -1);
+        // [ID:0000463][Tozo TANAKA] 2009/03/20 add end
 
         // 装着・使用医療機器等
         // 自動腹膜灌流装置
@@ -816,4 +866,63 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
             this.add(item, VRLayout.FLOW_RETURN);
         }
     }
+    
+    //2009/01/21 [Tozo Tanaka] Add - begin
+    protected static int getMedicineViewCount() {
+        int ikenshoCount = 6;
+        int shijishoCount = ikenshoCount;
+        try {
+            if (ACFrame.getInstance().hasProperty(
+                    "DocumentSetting/MedicineViewCount")
+                    && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
+                            "DocumentSetting/MedicineViewCount"), 6) == 8) {
+                ikenshoCount = 8;
+            }
+
+            shijishoCount = ikenshoCount;
+            if (ACFrame
+                    .getInstance()
+                    .hasProperty(
+                            "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6")
+                    && ACCastUtilities
+                            .toBoolean(
+                                    ACFrame
+                                            .getInstance()
+                                            .getProperty(
+                                                    "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6"),
+                                    false)) {
+                // 指示書設定を優先
+                shijishoCount = 6;
+            }
+
+        } catch (Exception e) {
+        }
+        return shijishoCount;
+    }
+    /**
+     * 指定された文字数で改行した文字列を返します。
+     * @param chr 改行対象となる文字列
+     * @param byteIndex 改行基準バイト数
+     * @return 改行文字を挿入した文字列
+     */
+    public static String getInsertionLineSeparatorToStringOnByte(String chr, int byteIndex){
+        String[] slCharacter = ACTextUtilities.separateLineWrapOnByte(chr,byteIndex);
+        
+        StringBuffer sbCharacter = new StringBuffer();
+
+        for (int i = 0; i < slCharacter.length; i++) {
+            sbCharacter.append(slCharacter[i]);
+            //最終行である場合は改行コードを追加しない
+            if (i != slCharacter.length - 1) {
+                //改行コードを追加する
+                sbCharacter.append(ACConstants.LINE_SEPARATOR);
+            }
+        }
+
+        String insertionLineSeparatorString = sbCharacter.toString();
+        
+        return insertionLineSeparatorString;
+    }
+    //2009/01/21 [Tozo Tanaka] Add - end}
+    
 }

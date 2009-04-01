@@ -947,6 +947,9 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(",COMMON_IKN_SIS.BIRTHDAY");
         sb.append(",COMMON_IKN_SIS.AGE");
         sb.append(",COMMON_IKN_SIS.SEX");
+        //2009/01/16 [Tozo Tanaka] Add - begin★薬剤名増暫定隠ぺい
+//        sb.append(",(COALESCE(COMMON_IKN_SIS.MEDICINE7,'') || COALESCE(COMMON_IKN_SIS.MEDICINE8,'') || COALESCE(COMMON_IKN_SIS.DOSAGE7,'') || COALESCE(COMMON_IKN_SIS.DOSAGE8,'') || COALESCE(COMMON_IKN_SIS.UNIT7,'') || COALESCE(COMMON_IKN_SIS.UNIT8,'') || COALESCE(COMMON_IKN_SIS.USAGE7,'') || COALESCE(COMMON_IKN_SIS.USAGE8,'')) AS MEDICINE_6OVER");
+        //2009/01/16 [Tozo Tanaka] Add - end★薬剤名増暫定隠ぺい
         sb.append(",IKN_ORIGIN.INSURER_NO");
         sb.append(",IKN_ORIGIN.INSURED_NO");
         sb.append(",IKN_ORIGIN.REQ_NO");
@@ -996,6 +999,21 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         }
     }
 
+    //2009/01/21 [Tozo Tanaka] Add - begin
+    protected int getMedicineViewCount() {
+          try {
+              if (ACFrame.getInstance().hasProperty(
+                      "DocumentSetting/MedicineViewCount")
+                      && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
+                              "DocumentSetting/MedicineViewCount"), 6) == 8) {
+                  return 8;
+              }
+          } catch (Exception e) {
+          }      
+        return 6;
+    }
+    //2009/01/21 [Tozo Tanaka] Add - end
+    
     /**
      * テーブル列を生成します。
      *
@@ -2163,6 +2181,11 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         VRCSVFile cvs = new VRCSVFile(file.getPath()); // CSV生成
         iwf.setVisible(true); // プログレスバー表示
 
+        // 2009/01/21[Tozo Tanaka] : add begin
+        //薬剤7か薬剤8が入力されている場合
+        boolean isMedicineViewCountOver6 = getMedicineViewCount()>6;
+        // 2009/01/21[Tozo Tanaka] : add end
+        
         // CSV出力処理
         for (int i = 0; i < max; i++) {
             VRMap tmp = (VRMap) data.getData(i);
@@ -2178,7 +2201,10 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             // 行生成
             ArrayList row = new ArrayList();
             // 001:FormatVersion
-            row.add("1.1");
+	        // 2009/02/06[Tozo Tanaka] : replace begin
+            //row.add("1.1");
+            row.add("1.2");
+	        // 2009/02/06[Tozo Tanaka] : replace end
             // 002:SoftName
             row.add(softName);
             // 003:タイムスタンプ
@@ -2373,6 +2399,28 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
                 sbBuf.append(getDataString(map, "UNIT6") + " ");
                 sbBuf.append(getDataString(map, "USAGE6") + "");
             }
+            // 2009/01/09[Tozo Tanaka] : add begin
+            if (isMedicineViewCountOver6) {
+                //薬剤7か薬剤8が入力されている場合
+                if ((getDataString(map, "MEDICINE7").length()
+                        + getDataString(map, "DOSAGE7").length()
+                        + getDataString(map, "UNIT7").length()
+                        + getDataString(map, "USAGE7").length()
+                        + getDataString(map, "MEDICINE8").length()
+                        + getDataString(map, "DOSAGE8").length()
+                        + getDataString(map, "UNIT8").length() + getDataString(map,
+                        "USAGE8").length()) > 0) {
+                    sbBuf.append(getDataString(map, "MEDICINE7") + " ");
+                    sbBuf.append(getDataString(map, "DOSAGE7"));
+                    sbBuf.append(getDataString(map, "UNIT7") + " ");
+                    sbBuf.append(getDataString(map, "USAGE7") + " / ");
+                    sbBuf.append(getDataString(map, "MEDICINE8") + " ");
+                    sbBuf.append(getDataString(map, "DOSAGE8"));
+                    sbBuf.append(getDataString(map, "UNIT8") + " ");
+                    sbBuf.append(getDataString(map, "USAGE8") + "");
+                }
+            }
+            // 2009/01/09[Tozo Tanaka] : add end
             if (sbBuf.length() > 0) {
                 sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // 最後の0x0Bを削除
             }
@@ -2781,6 +2829,10 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             sbBuf.append(getUnderlinedCheckValue(getDataString(map,
                     "IGAKUTEKIKANRI_OTHER"), getDataString(map,
                     "IGAKUTEKIKANRI_OTHER_UL")));
+            // 2009/02/03 [Tozo Tanaka] Add - begin
+            sbBuf.append(getUnderlinedCheckValue(getDataString(map,
+                    "HOUMON_SODAN"), getDataString(map, "HOUMON_SODAN_UL")));
+            // 2009/02/03 [Tozo Tanaka] Add - end
             row.add(sbBuf.toString());
             // 107:医学的管理の必要性・その他
             row.add(getDataString(map, "IGAKUTEKIKANRI_OTHER_NM"));
@@ -2922,7 +2974,12 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 //		iwf.setVisible(true); // プログレスバー表示
 //		// debug end
 
-		// CSV出力処理
+        // 2009/01/21[Tozo Tanaka] : add begin
+        // 薬剤7か薬剤8が入力されている場合
+        boolean isMedicineViewCountOver6 = getMedicineViewCount() > 6;
+        // 2009/01/21[Tozo Tanaka] : add end
+
+        // CSV出力処理
 		for (int i = 0; i < max; i++) {
 			 VRMap tmp = (VRMap) data.getData(i);
 			 String insuredNo =
@@ -3160,6 +3217,28 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 				sbBuf.append(getDataString(map, "UNIT6") + " ");
 				sbBuf.append(getDataString(map, "USAGE6") + "");
 			}
+            // 2009/01/09[Tozo Tanaka] : add begin
+            if (isMedicineViewCountOver6) {
+                // 薬剤7か薬剤8が入力されている場合
+                if ((getDataString(map, "MEDICINE7").length()
+                        + getDataString(map, "DOSAGE7").length()
+                        + getDataString(map, "UNIT7").length()
+                        + getDataString(map, "USAGE7").length()
+                        + getDataString(map, "MEDICINE8").length()
+                        + getDataString(map, "DOSAGE8").length()
+                        + getDataString(map, "UNIT8").length() + getDataString(
+                        map, "USAGE8").length()) > 0) {
+                    sbBuf.append(getDataString(map, "MEDICINE7") + " ");
+                    sbBuf.append(getDataString(map, "DOSAGE7"));
+                    sbBuf.append(getDataString(map, "UNIT7") + " ");
+                    sbBuf.append(getDataString(map, "USAGE7") + " / ");
+                    sbBuf.append(getDataString(map, "MEDICINE8") + " ");
+                    sbBuf.append(getDataString(map, "DOSAGE8"));
+                    sbBuf.append(getDataString(map, "UNIT8") + " ");
+                    sbBuf.append(getDataString(map, "USAGE8") + "");
+                }
+            }
+            // 2009/01/09[Tozo Tanaka] : add end
 			if (sbBuf.length() > 0) {
 				sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // 最後の0x0Bを削除
 			}
@@ -3969,6 +4048,16 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(",COMMON_IKN_SIS.DOSAGE6");
         sb.append(",COMMON_IKN_SIS.UNIT6");
         sb.append(",COMMON_IKN_SIS.USAGE6");
+        // 2009/01/09[Tozo Tanaka] : add begin★薬剤名増暫定隠ぺい
+//        sb.append(",COMMON_IKN_SIS.MEDICINE7");
+//        sb.append(",COMMON_IKN_SIS.DOSAGE7");
+//        sb.append(",COMMON_IKN_SIS.UNIT7");
+//        sb.append(",COMMON_IKN_SIS.USAGE7");
+//        sb.append(",COMMON_IKN_SIS.MEDICINE8");
+//        sb.append(",COMMON_IKN_SIS.DOSAGE8");
+//        sb.append(",COMMON_IKN_SIS.UNIT8");
+//        sb.append(",COMMON_IKN_SIS.USAGE8");
+        // 2009/01/09[Tozo Tanaka] : add end★薬剤名増暫定隠ぺい
         sb.append(",COMMON_IKN_SIS.TNT_KNR");
         sb.append(",COMMON_IKN_SIS.CHU_JOU_EIYOU");
         sb.append(",COMMON_IKN_SIS.TOUSEKI");
@@ -4087,6 +4176,10 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(",IKN_ORIGIN.HOUMON_SINRYOU_UL");
         sb.append(",IKN_ORIGIN.HOUMON_KANGO");
         sb.append(",IKN_ORIGIN.HOUMON_KANGO_UL");
+        // 2009/02/03 [Tozo Tanaka] Add - begin
+        sb.append(",IKN_ORIGIN.HOUMON_SODAN");
+        sb.append(",IKN_ORIGIN.HOUMON_SODAN_UL");
+        // 2009/02/03 [Tozo Tanaka] Add - end
         sb.append(",IKN_ORIGIN.HOUMONSIKA_SINRYOU");
         sb.append(",IKN_ORIGIN.HOUMONSIKA_SINRYOU_UL");
         sb.append(",IKN_ORIGIN.HOUMONYAKUZAI_KANRISIDOU");
@@ -4236,6 +4329,16 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(", COMMON_IKN_SIS.DOSAGE6");
         sb.append(", COMMON_IKN_SIS.UNIT6");
         sb.append(", COMMON_IKN_SIS.USAGE6");
+        // 2009/01/09[Tozo Tanaka] : add begin★薬剤名増暫定隠ぺい
+//        sb.append(", COMMON_IKN_SIS.MEDICINE7");
+//        sb.append(", COMMON_IKN_SIS.DOSAGE7");
+//        sb.append(", COMMON_IKN_SIS.UNIT7");
+//        sb.append(", COMMON_IKN_SIS.USAGE7");
+//        sb.append(", COMMON_IKN_SIS.MEDICINE8");
+//        sb.append(", COMMON_IKN_SIS.DOSAGE8");
+//        sb.append(", COMMON_IKN_SIS.UNIT8");
+//        sb.append(", COMMON_IKN_SIS.USAGE8");
+        // 2009/01/09[Tozo Tanaka] : add end★薬剤名増暫定隠ぺい
         sb.append(", COMMON_IKN_SIS.TNT_KNR");
         sb.append(", COMMON_IKN_SIS.CHU_JOU_EIYOU");
         sb.append(", COMMON_IKN_SIS.TOUSEKI");

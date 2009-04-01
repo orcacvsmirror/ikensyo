@@ -119,8 +119,13 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
         kanrenPnl3.add(miKbnGrp, VRLayout.FLOW_RETURN);
         kaisetushaNmContainer.setText("開設者氏名");
         kaisetushaNmContainer.add(kaisetushaNm, null);
-        kaisetushaNm.setColumns(15);
-        kaisetushaNm.setMaxLength(15);
+        // 2009/01/06 [Mizuki Tsutsumi] : change begin
+        // 開設者氏名、振込先名義人文字数拡張
+        //kaisetushaNm.setColumns(15);
+        //kaisetushaNm.setMaxLength(15);
+        kaisetushaNm.setColumns(50);
+        kaisetushaNm.setMaxLength(50);
+        // 2009/01/06 [Mizuki Tsutsumi] : change end
         kaisetushaNm.setIMEMode(InputSubset.KANJI);
         kaisetushaNm.setBindPath("KAISETUSHA_NM");
 
@@ -163,8 +168,13 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
 
         furikomiMeigiContainer.setText("振込先名義人");
         furikomiMeigiContainer.add(furikomiMeigi, null);
-        furikomiMeigi.setColumns(15);
-        furikomiMeigi.setMaxLength(15);
+        // 2009/01/06 [Mizuki Tsutsumi] : change begin
+        // 開設者氏名、振込先名義人文字数拡張
+        //furikomiMeigi.setColumns(15);
+        //furikomiMeigi.setMaxLength(15);
+        furikomiMeigi.setColumns(50);
+        furikomiMeigi.setMaxLength(50);
+        // 2009/01/06 [Mizuki Tsutsumi] : change end
         furikomiMeigi.setIMEMode(InputSubset.KANJI);
         furikomiMeigi.setBindPath("FURIKOMI_MEIGI");
 

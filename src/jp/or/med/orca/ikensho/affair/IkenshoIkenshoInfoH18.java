@@ -15,6 +15,9 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
      * コンストラクタです。
      */
     public IkenshoIkenshoInfoH18() {
+    	// 2009/01/05 [Mizuki Tsutsumi] : add begin
+    	buttons.setBackToMainMenuVisible(true); //メインメニューへ戻るボタンを表示する
+    	// 2009/01/05 [Mizuki Tsutsumi] : end begin
     }
 
     protected void doReplaceGraphicsCommand(IkenshoFirebirdDBManager dbm)

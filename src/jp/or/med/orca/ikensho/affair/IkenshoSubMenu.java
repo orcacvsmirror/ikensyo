@@ -37,6 +37,7 @@ public class IkenshoSubMenu extends IkenshoDialog {
     public static final int SUB_SETTING_DB = 21;
     public static final int SUB_SETTING_TAX = SUB_SETTING_DB + 1;
     public static final int SUB_SETTING_PDF = SUB_SETTING_DB + 2;
+    public static final int SUB_SETTING_OTHER = SUB_SETTING_DB + 3;
 
     private int pushedButton = SUB_CLOSED;
 
@@ -282,6 +283,9 @@ public class IkenshoSubMenu extends IkenshoDialog {
         ACMainMenuButton db = new ACMainMenuButton();
         ACMainMenuButton tax = new ACMainMenuButton();
         ACMainMenuButton pdf = new ACMainMenuButton();
+        //2009/01/07 [Tozo Tanaka] Add - begin
+        ACMainMenuButton other = new ACMainMenuButton();
+        //2009/01/07 [Tozo Tanaka] Add - end
 
         //データベース設定
         db.setText("データベース設定(D)");
@@ -333,6 +337,22 @@ public class IkenshoSubMenu extends IkenshoDialog {
           //MacでなければPDF設定を追加する
           contentPane.add(pdf, VRLayout.NORTH);
         }
+        
+        //2009/01/07 [Tozo Tanaka] Add - begin★薬剤名増暫定隠ぺい
+//        //その他の設定
+//        other.setText("その他の設定(O)");
+//        other.setMnemonic('O');
+//        other.setToolTipText("その他の設定を行います。");
+//        other.setIcon(new ImageIcon(getClass().getClassLoader().getResource("jp/or/med/orca/ikensho/images/menu/menuicon_04.png")));
+//        other.addActionListener(new java.awt.event.ActionListener() {
+//            public void actionPerformed(java.awt.event.ActionEvent e) {
+//                pushedButton = SUB_SETTING_OTHER;
+//                closeWindow();
+//            }
+//        });
+//        contentPane.add(other, VRLayout.NORTH);
+        //2009/01/07 [Tozo Tanaka] Add - end★薬剤名増暫定隠ぺい
+        
         contentPane.add(close, VRLayout.NORTH);
     }
 

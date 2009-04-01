@@ -19,6 +19,7 @@ import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.component.table.ACTableColumn;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.text.ACSQLSafeStringFormat;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
@@ -51,6 +52,7 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
     private ACTextField input = new ACTextField();
     private ACButton up = new ACButton();
     private ACButton down = new ACButton();
+    private ACButton sortAsc = new ACButton();
     private ACButton add = new ACButton();
     private ACButton edit = new ACButton();
     private ACButton delete = new ACButton();
@@ -67,6 +69,10 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
     // properties
     public static final int DISEASE = 0;
     public static final int TEIKEIBUN = 1;
+    // 2009/01/06 [Mizuki Tsutsumi] : 薬剤名ソート対応 add begin
+    public static final int TKB_KBN_YAKUZAIMEI_SHUJII_IKENSHO = 2;
+    public static final int TKB_KBN_YAKUZAIMEI_ISHI_IKENSHO = 61;
+    // 2009/01/06 [Mizuki Tsutsumi] : add end
     private int tableNo;
     private int kubun;
     private VRArrayList rows;
@@ -364,11 +370,52 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
             }
         });
         
+        // 2009/01/06 [Mizuki Tsutsumi] : 薬剤名ソート対応 add begin
+        sortAsc.addActionListener(new ActionListener() {
+        	public void actionPerformed(ActionEvent e) {
+        		////////// ソート処理 //////////
+        		VRArrayList srcs = (VRArrayList)rows.clone(); //現在のデータを退避
+        		int size = srcs.size(); //大きさを取得
+        		
+        		VRMap srcMap;
+        		String srcText;
+        		VRMap destMap;
+        		String destText;
+        		boolean appended;
+        		
+        		rows.clear(); //データクリア
+        		rows.add(srcs.get(0)); //最初の項目を追加
+        		
+        		for (int s = 1; s < size; s++) {
+        			appended = false;
+        			srcMap = (VRMap)srcs.get(s);
+        			srcText = ACCastUtilities.toString(srcMap.get("TEIKEIBUN"),"");
+        			
+        			for (int r = 0; r < rows.size(); r++) {
+        				destMap = (VRMap)rows.get(r);
+        				destText = ACCastUtilities.toString(destMap.get("TEIKEIBUN"),"");
+        				
+        				if (srcText.compareToIgnoreCase(destText) < 0) { //辞書的な大小比較
+        					rows.add(r, srcs.get(s));
+        					appended = true;
+        					break;
+        				}
+        			}
+        			
+        			if (!appended) {
+        				rows.add(srcs.get(s));
+        			}
+        		}
+
+        		// 後処理
+                modified = true;
+        	}
+        });
+        // 2009/01/06 [Mizuki Tsutsumi] : add end
         
        // 2007/10/05 [Masahiko Higuchi] 2007年度対応 Addition - begin
         addEvents();
        // 2007/10/05 [Masahiko Higuchi] Addition - begin
-        
     }
 
     /**
@@ -434,6 +481,13 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
         clients.add(mover, BorderLayout.EAST);
         mover.add(up, VRLayout.FLOW_RETURN);
         mover.add(down, VRLayout.FLOW_RETURN);
+        //2009/01/06 [Mizuki Tsutsumi] : 薬剤名ソート対応 add begin
+        if (tableNo == TEIKEIBUN) {
+            if (kubun == TKB_KBN_YAKUZAIMEI_SHUJII_IKENSHO || kubun == TKB_KBN_YAKUZAIMEI_ISHI_IKENSHO) {
+                mover.add(sortAsc, VRLayout.FLOW_RETURN);
+            }
+        }
+        // 2009/01/06 [Mizuki Tsutsumi] : add end
         clients.add(table, BorderLayout.CENTER);
 
         // 上部の注意書き
@@ -453,7 +507,13 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
         up.setMnemonic('P');
         down.setText("下へ(N)");
         down.setMnemonic('N');
+        // 2009/01/06 [Mizuki Tsutsumi] : 薬剤名ソート対応 add begin
+        sortAsc.setText("名前順(B)");
+        sortAsc.setMnemonic('B');
+        sortAsc.setToolTipText("項目を名前順に並べ替えます。");
+        // 2009/01/06 [Mizuki Tsutsumi] : add end
 
+        
         // ボタン名の設定
         add.setText("追加(A)");
         add.setMnemonic('A');

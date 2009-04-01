@@ -698,6 +698,10 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(",TUUSHO_REHA_UL");
         sb.append(",TANKI_NYUSHO_RYOUYOU");
         sb.append(",TANKI_NYUSHO_RYOUYOU_UL");
+        // 2009/02/03 [Tozo Tanaka] Add - begin
+        sb.append(",HOUMON_SODAN");
+        sb.append(",HOUMON_SODAN_UL");
+        // 2009/02/03 [Tozo Tanaka] Add - end
         sb.append(",HOUMONSIKA_SINRYOU");
         sb.append(",HOUMONSIKA_SINRYOU_UL");
         sb.append(",HOUMONSIKA_EISEISIDOU");
@@ -875,6 +879,12 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeNumber("TANKI_NYUSHO_RYOUYOU", originalData));
         sb.append(",");
         sb.append(getDBSafeNumber("TANKI_NYUSHO_RYOUYOU_UL", originalData));
+        // 2009/02/03 [Tozo Tanaka] Add - begin
+        sb.append(",");
+        sb.append(getDBSafeNumber("HOUMON_SODAN", originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumber("HOUMON_SODAN_UL", originalData));
+        // 2009/02/03 [Tozo Tanaka] Add - end
         sb.append(",");
         sb.append(getDBSafeNumber("HOUMONSIKA_SINRYOU", originalData));
         sb.append(",");
@@ -1242,6 +1252,12 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeNumber("TANKI_NYUSHO_RYOUYOU", originalData));
         sb.append(",TANKI_NYUSHO_RYOUYOU_UL = ");
         sb.append(getDBSafeNumber("TANKI_NYUSHO_RYOUYOU_UL", originalData));
+        // 2009/02/03 [Tozo Tanaka] Add - begin
+        sb.append(",HOUMON_SODAN = ");
+        sb.append(getDBSafeNumber("HOUMON_SODAN", originalData));
+        sb.append(",HOUMON_SODAN_UL = ");
+        sb.append(getDBSafeNumber("HOUMON_SODAN_UL", originalData));
+        // 2009/02/03 [Tozo Tanaka] Add - end
         sb.append(",HOUMONSIKA_SINRYOU = ");
         sb.append(getDBSafeNumber("HOUMONSIKA_SINRYOU", originalData));
         sb.append(",HOUMONSIKA_SINRYOU_UL = ");
@@ -1433,6 +1449,14 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeNumber("XRAY_SHASIN_SINDAN", originalData));
         sb.append(",XRAY_FILM = ");
         sb.append(getDBSafeNumber("XRAY_FILM", originalData));
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(",XRAY_DIGITAL_MANAGEMENT = ");
+        sb.append(getDBSafeNumber("XRAY_DIGITAL_MANAGEMENT", originalData));
+        sb.append(",XRAY_DIGITAL_FILM = ");
+        sb.append(getDBSafeNumber("XRAY_DIGITAL_FILM", originalData));
+        sb.append(",XRAY_DIGITAL_IMAGING = ");
+        sb.append(getDBSafeNumber("XRAY_DIGITAL_IMAGING", originalData));
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(",XRAY_TEKIYOU  = ");
         sb.append(getDBSafeString("XRAY_TEKIYOU", originalData));
         sb.append(",BLD_SAISHU = ");
@@ -1491,6 +1515,14 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeNumber("EXP_XRAY_SS", originalData));
         sb.append(",EXP_XRAY_FILM = ");
         sb.append(getDBSafeNumber("EXP_XRAY_FILM", originalData));
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(",EXP_XRAY_DIGITAL_MANAGEMENT = ");
+        sb.append(getDBSafeNumber("EXP_XRAY_DIGITAL_MANAGEMENT", originalData));
+        sb.append(",EXP_XRAY_DIGITAL_FILM = ");
+        sb.append(getDBSafeNumber("EXP_XRAY_DIGITAL_FILM", originalData));
+        sb.append(",EXP_XRAY_DIGITAL_IMAGING = ");
+        sb.append(getDBSafeNumber("EXP_XRAY_DIGITAL_IMAGING", originalData));
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(",TAX = ");
         sb.append(getDBSafeNumber("TAX", originalData));
         sb.append(",OUTPUT_PATTERN = ");
@@ -1608,6 +1640,11 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(",XRAY_TANJUN_SATUEI");
         sb.append(",XRAY_SHASIN_SINDAN");
         sb.append(",XRAY_FILM");
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(",XRAY_DIGITAL_MANAGEMENT");
+        sb.append(",XRAY_DIGITAL_FILM");
+        sb.append(",XRAY_DIGITAL_IMAGING");
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(",XRAY_TEKIYOU");
         sb.append(",BLD_SAISHU");
         sb.append(",BLD_IPPAN_MASHOU_KETUEKI");
@@ -1634,6 +1671,11 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(",EXP_XRAY_TS");
         sb.append(",EXP_XRAY_SS");
         sb.append(",EXP_XRAY_FILM");
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(",EXP_XRAY_DIGITAL_MANAGEMENT");
+        sb.append(",EXP_XRAY_DIGITAL_FILM");
+        sb.append(",EXP_XRAY_DIGITAL_IMAGING");
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(",TAX");
         sb.append(",OUTPUT_PATTERN");
         sb.append(",ISS_INSURER_NO");
@@ -1687,6 +1729,14 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeNumber("XRAY_SHASIN_SINDAN", originalData));
         sb.append(",");
         sb.append(getDBSafeNumber("XRAY_FILM", originalData));
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(",");
+        sb.append(getDBSafeNumber("XRAY_DIGITAL_MANAGEMENT", originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumber("XRAY_DIGITAL_FILM", originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumber("XRAY_DIGITAL_IMAGING", originalData));
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(",");
         sb.append(getDBSafeString("XRAY_TEKIYOU", originalData));
         sb.append(",");
@@ -1745,6 +1795,14 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeNumber("EXP_XRAY_SS", originalData));
         sb.append(",");
         sb.append(getDBSafeNumber("EXP_XRAY_FILM", originalData));
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(",");
+        sb.append(getDBSafeNumber("EXP_XRAY_DIGITAL_MANAGEMENT", originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumber("EXP_XRAY_DIGITAL_FILM", originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumber("EXP_XRAY_DIGITAL_IMAGING", originalData));
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(",");
         sb.append(getDBSafeNumber("TAX", originalData));
         sb.append(",");

@@ -11,7 +11,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
-import java.net.BindException;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -30,18 +29,18 @@ import javax.swing.event.DocumentListener;
 
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACOneDecimalDoubleTextField;
 import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.event.ACFollowDisabledItemListener;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
-import jp.nichicom.vr.bind.event.VRBindEvent;
-import jp.nichicom.vr.bind.event.VRBindEventListener;
 import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
@@ -84,16 +83,27 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
     private ACButton cancel = new ACButton();
     private ACButton ok = new ACButton();
     private ACButton reset = new ACButton();
-    private VRPanel points = new VRPanel();
-    private VRPanel pointsLeft = new VRPanel();
-    private VRPanel pointsRight = new VRPanel();
+    // 2009/01/13 [Tozo Tanaka] Replace - begin
+//    private VRPanel points = new VRPanel();
+//    private VRPanel pointsLeft = new VRPanel();
+//    private VRPanel pointsRight = new VRPanel();
+    private ACPanel points = new ACPanel();
+    private ACPanel pointsLeft = new ACPanel();
+    private ACPanel pointsRight = new ACPanel();
+    private VRLabel[] pointsSpacer = { new VRLabel(" "), new VRLabel(" "),
+            new VRLabel(" "), new VRLabel(" "), new VRLabel(" "),
+            new VRLabel(" "), new VRLabel(" "), new VRLabel(" "),
+            new VRLabel(" "), new VRLabel(" ") };
+    // 2009/01/13 [Tozo Tanaka] Replace - end
 
     private VRPanel calcRoot = new VRPanel();
     private GridBagLayout calcRootLayout = new GridBagLayout();
-    private VRLayout pointsLayout = new VRLayout();
-    private GridBagLayout pointsLeftLayout = new GridBagLayout();
-    private GridBagLayout pointsRightLayout = new GridBagLayout();
-    private VRLabel pointsRightSpacer1 = new VRLabel();
+    // 2009/01/13 [Tozo Tanaka] Delete - begin
+//    private VRLayout pointsLayout = new VRLayout();
+//    private GridBagLayout pointsLeftLayout = new GridBagLayout();
+//    private GridBagLayout pointsRightLayout = new GridBagLayout();
+//    private VRLabel pointsRightSpacer1 = new VRLabel();
+    // 2009/01/13 [Tozo Tanaka] Delete - end
     private ACIntegerCheckBox xrayFilm = new ACIntegerCheckBox();
     private ACIntegerCheckBox bloodBasic = new ACIntegerCheckBox();
     private ACIntegerCheckBox bloodBasicTest = new ACIntegerCheckBox();
@@ -136,6 +146,27 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
     private VRPanel xrayFilmPoints = new VRPanel();
     private ACOneDecimalDoubleTextField xrayFilmPoint = new ACOneDecimalDoubleTextField();
     private VRLabel xrayFilmPointUnit = new VRLabel();
+
+    // 2009/01/06 [Tozo Tanaka] Add - begin
+    // デジタル撮影の場合：フィルムを算定する場合：画像記録用フィルム(大角)
+    private ACIntegerCheckBox xrayDigitalFilm = new ACIntegerCheckBox();
+    private VRPanel xrayDigitalFilmPoints = new VRPanel();
+    private ACOneDecimalDoubleTextField xrayDigitalFilmPoint = new ACOneDecimalDoubleTextField();
+    private VRLabel xrayDigitalFilmPointUnit = new VRLabel();
+
+    // デジタル撮影の場合：フィルムを算定する場合：デジタル映像化処理加算
+    private ACIntegerCheckBox xrayDigitalImaging = new ACIntegerCheckBox();
+    private VRPanel xrayDigitalImagingPoints = new VRPanel();
+    private ACOneDecimalDoubleTextField xrayDigitalImagingPoint = new ACOneDecimalDoubleTextField();
+    private VRLabel xrayDigitalImagingPointUnit = new VRLabel();
+
+    // デジタル撮影の場合：フィルムレスの場合：電子画像管理加算
+    private ACIntegerCheckBox xrayDigitalImageManagement = new ACIntegerCheckBox();
+    private VRPanel xrayDigitalImageManagementPoints = new VRPanel();
+    private ACOneDecimalDoubleTextField xrayDigitalImageManagementPoint = new ACOneDecimalDoubleTextField();
+    private VRLabel xrayDigitalImageManagementPointUnit = new VRLabel();
+    // 2009/01/06 [Tozo Tanaka] Add - end
+
     private VRLabel category = new VRLabel();
     private VRLabel point = new VRLabel();
     private VRLabel summary = new VRLabel();
@@ -193,8 +224,14 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
     protected IkenshoTreeFollowChecker bloodChemistryChecker = new IkenshoTreeFollowChecker(
             bloodChemistry, new JCheckBox[] { bloodChemistryTest,
                     seikagakuTestCost });
+    //2009/01/13 [Tozo Tanaka] Replace - begin
+//    protected IkenshoTreeFollowChecker xrayChecker = new IkenshoTreeFollowChecker(
+//            xray, new JCheckBox[] { xrayBasic, xrayPhotoCheck, xrayFilm});
     protected IkenshoTreeFollowChecker xrayChecker = new IkenshoTreeFollowChecker(
-            xray, new JCheckBox[] { xrayBasic, xrayPhotoCheck, xrayFilm });
+            xray, new JCheckBox[] { xrayBasic, xrayPhotoCheck, xrayFilm, xrayDigitalImageManagement, xrayDigitalFilm, xrayDigitalImaging },
+            new JCheckBox[] { xrayBasic, xrayPhotoCheck, xrayFilm, }
+            );
+    //2009/01/13 [Tozo Tanaka] Replace - begin
     protected VRMap defaultInsure;
     protected VRMap pointMap = new VRHashMap();
     protected HashMap checkItemListenerMap = new HashMap();
@@ -573,17 +610,113 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
                 new JCheckBox[] { nyouTest },
                 new JTextField[] { nyouTestPoint }, new String[] { "" },
                 calcNyoTestPoint, calcNyoTestSummary);
+        // 2009/01/09[Tozo Tanaka] : replace begin
+        // addCheckItemListenerMap(pointMap, new String[] { "EXP_XRAY_TS",
+        // "EXP_XRAY_SS", "EXP_XRAY_FILM" }, new JCheckBox[] { xrayBasic,
+        // xrayPhotoCheck, xrayFilm }, new JTextField[] { xrayBasicPoint,
+        // xrayPhotoCheckPoint, xrayFilmPoint }, new String[] {
+        // xrayBasic.getText(), xrayPhotoCheck.getText(),
+        // xrayFilm.getText() }, calcXRayPoint, calcXRaySummary);
         addCheckItemListenerMap(pointMap, new String[] { "EXP_XRAY_TS",
-                "EXP_XRAY_SS", "EXP_XRAY_FILM" }, new JCheckBox[] { xrayBasic,
-                xrayPhotoCheck, xrayFilm }, new JTextField[] { xrayBasicPoint,
-                xrayPhotoCheckPoint, xrayFilmPoint }, new String[] {
-                xrayBasic.getText(), xrayPhotoCheck.getText(),
-                xrayFilm.getText() }, calcXRayPoint, calcXRaySummary);
+                "EXP_XRAY_SS", "EXP_XRAY_FILM", "EXP_XRAY_DIGITAL_MANAGEMENT",
+                "EXP_XRAY_DIGITAL_FILM", "EXP_XRAY_DIGITAL_IMAGING" },
+                new JCheckBox[] { xrayBasic, xrayPhotoCheck, xrayFilm,
+                        xrayDigitalImageManagement, xrayDigitalFilm,
+                        xrayDigitalImaging }, new JTextField[] {
+                        xrayBasicPoint, xrayPhotoCheckPoint, xrayFilmPoint,
+                        xrayDigitalImageManagementPoint, xrayDigitalFilmPoint,
+                        xrayDigitalImagingPoint }, new String[] {
+                        xrayBasic.getText(), xrayPhotoCheck.getText(),
+                        xrayFilm.getText(),
+                        xrayDigitalImageManagement.getText(),
+                        xrayDigitalFilm.getText(),
+                        xrayDigitalImaging.getText(), }, calcXRayPoint,
+                calcXRaySummary);
+        
+        xrayFilm.addItemListener(new IkenshoExclusionDisabledItemListener(
+                new JComponent[] { xrayDigitalImageManagement, xrayDigitalFilm,
+                        xrayDigitalImaging }));
+        xrayDigitalImageManagement.addItemListener(new IkenshoExclusionDisabledItemListener(
+                new JComponent[] { xrayFilm, xrayDigitalFilm,
+                        xrayDigitalImaging }));
+        xrayDigitalFilm.addItemListener(new IkenshoExclusionDisabledItemListener(
+                new JComponent[] { xrayFilm, xrayDigitalImageManagement },
+                        new JCheckBox[] { xrayDigitalImaging }));
+        xrayDigitalImaging.addItemListener(new IkenshoExclusionDisabledItemListener(
+                new JComponent[] { xrayFilm, xrayDigitalImageManagement },
+                        new JCheckBox[] { xrayDigitalFilm }));
+        
+//        xrayDigitalFilm.addItemListener(new IkenshoFollowCheckItemListener(
+//                new JCheckBox[] { xrayDigitalImaging }));
+//        xrayDigitalImaging.addItemListener(new IkenshoFollowCheckItemListener(
+//                new JCheckBox[] { xrayDigitalFilm }));
+        // 2009/01/09[Tozo Tanaka] : replace end
+
         bloodChemistryTest.addItemListener(new ACFollowDisabledItemListener(
                 new JComponent[] { bloodChemistryTestPointChange }));
 
     }
 
+    // 2009/01/13[Tozo Tanaka] : add begin
+    protected class IkenshoExclusionDisabledItemListener implements ItemListener{
+        private JComponent[] disableTargets;
+        private JCheckBox[] followTargets;
+        public IkenshoExclusionDisabledItemListener(JComponent[] disableTargets) {
+            this.disableTargets = disableTargets;
+        }
+        public IkenshoExclusionDisabledItemListener(JComponent[] disableTargets, JCheckBox[] followTargets) {
+            this.disableTargets = disableTargets;
+            this.followTargets = followTargets;
+        }
+     
+        public void itemStateChanged(ItemEvent e) {
+            boolean enabled;
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                enabled = false;
+            } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+                enabled = true;
+                if(followTargets!=null){
+                    for(int i=0; i<followTargets.length; i++){
+                        if(followTargets[i].isSelected()){
+                            //連動するチェックのいずれか一つにまだチェックがついていたら、無効状態を解除しない
+                            return;
+                        }
+                    }
+                }
+            } else {
+                return;
+            }
+            if (disableTargets != null) {
+                int end = disableTargets.length;
+                for (int i = 0; i < end; i++) {
+                    disableTargets[i].setEnabled(enabled);
+                }
+            }
+        }
+        
+    }
+    protected class IkenshoFollowCheckItemListener implements ItemListener{
+        private JCheckBox[] followTargets;
+        public IkenshoFollowCheckItemListener(JCheckBox[] followTargets) {
+            this.followTargets = followTargets;
+        }
+     
+        public void itemStateChanged(ItemEvent e) {
+            if (e.getStateChange() == ItemEvent.SELECTED) {
+                if(followTargets!=null){
+                    for(int i=0; i<followTargets.length; i++){
+                        if(!followTargets[i].isSelected()){
+                            //連動するチェックに未選択のものがあれば、選択状態にする
+                            followTargets[i].setSelected(true);
+                        }
+                    }
+                }
+            }
+        }
+        
+    }
+    // 2009/01/13[Tozo Tanaka] : add end
+    
     public void calcCost() {
         JTextField[] totalPoints = new JTextField[] { firstTestPoint,
                 calcXRayPoint, calcBloodBasicPoint, calcBloodChemistryPoint,
@@ -689,11 +822,12 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         if (VRBindPathParser.has("DR_ADD_IT", source)) {
             // 電子化加算点数をdoubleの値として保持する
             // 2006/02/07[Tozo Tanaka] : replace begin
-            //if (ACCastUtilities.toInt(VRBindPathParser.get("DR_ADD_IT", source)) == 1){
+            // if (ACCastUtilities.toInt(VRBindPathParser.get("DR_ADD_IT",
+            // source)) == 1){
             if (IkenshoCommon.canAddIT(formatKubun, ACCastUtilities
                     .toInt(VRBindPathParser.get("DR_ADD_IT", source)) == 1,
                     source)) {
-            // 2006/02/07[Tozo Tanaka] : replace end
+                // 2006/02/07[Tozo Tanaka] : replace end
                 double addIT = ACCastUtilities.toDouble(source
                         .getData("SHOSIN_ADD_IT"), 0);
                 double shoshinHos = ACCastUtilities.toDouble(source
@@ -719,13 +853,13 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
                 firstTestPoint.setText("0");
             }
         }
-        
-        //2006/09/09 [Tozo Tanaka] : remove begin
-//        //2006/09/07 [Tozo Tanaka] : add begin
-//        source.put("NEW_DR_ADD_IT", source.get("DR_ADD_IT"));
-//        //2006/09/07 [Tozo Tanaka] : add end
-        //2006/09/09 [Tozo Tanaka] : remove end
-        
+
+        // 2006/09/09 [Tozo Tanaka] : remove begin
+        // //2006/09/07 [Tozo Tanaka] : add begin
+        // source.put("NEW_DR_ADD_IT", source.get("DR_ADD_IT"));
+        // //2006/09/07 [Tozo Tanaka] : add end
+        // 2006/09/09 [Tozo Tanaka] : remove end
+
     }
 
     /**
@@ -765,7 +899,10 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
      */
     private void init() {
         // ウィンドウのサイズ
-        setSize(new Dimension(770, 590));
+        // 2009/01/06 [Tozo Tanaka] Replace - begin
+        setSize(new Dimension(770, getHeight()));
+        // setSize(new Dimension(770, 590));
+        // 2009/01/06 [Tozo Tanaka] Replace - end
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();
@@ -830,10 +967,12 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         reset.setMnemonic('T');
         reset.setText("請求先・点数再設定(T)");
         calcRoot.setLayout(calcRootLayout);
-        points.setLayout(pointsLayout);
-        pointsRight.setLayout(pointsRightLayout);
-        pointsLeft.setLayout(pointsLeftLayout);
-        pointsRightSpacer1.setPreferredSize(new Dimension(100, 70));
+        // 2009/01/13 [Tozo Tanaka] Delete - begin
+//        points.setLayout(pointsLayout);
+//        pointsRight.setLayout(pointsRightLayout);
+//        pointsLeft.setLayout(pointsLeftLayout);
+//        pointsRightSpacer1.setPreferredSize(new Dimension(100, 70));
+        // 2009/01/13 [Tozo Tanaka] Delete - end
         rootLayout.setVgap(0);
         points.add(pointsRight, VRLayout.EAST);
         points.add(pointsLeft, VRLayout.WEST);
@@ -913,6 +1052,43 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         xrayFilmPoint.setColumns(7);
         xrayFilmPoint.setHorizontalAlignment(SwingConstants.RIGHT);
         xrayFilmPointUnit.setText("点");
+
+        // 2009/01/06 [Tozo Tanaka] Add - begin
+        // デジタル撮影の場合：フィルムレスの場合：電子画像管理加算
+        xrayDigitalImageManagement.setText("電子画像管理加算");
+        xrayDigitalImageManagement.setBindPath("XRAY_DIGITAL_MANAGEMENT");
+        xrayDigitalImageManagementPoint.setEditable(false);
+        xrayDigitalImageManagementPoint.setColumns(7);
+        xrayDigitalImageManagementPoint
+                .setHorizontalAlignment(SwingConstants.RIGHT);
+        xrayDigitalImageManagementPointUnit.setText("点");
+
+        // デジタル撮影の場合：フィルムを算定する場合：画像記録用フィルム(大角)
+        xrayDigitalFilm.setText("画像記録用フィルム(大角)");
+        xrayDigitalFilm.setBindPath("XRAY_DIGITAL_FILM");
+        xrayDigitalFilmPoint.setEditable(false);
+        xrayDigitalFilmPoint.setColumns(7);
+        xrayDigitalFilmPoint.setHorizontalAlignment(SwingConstants.RIGHT);
+        xrayDigitalFilmPointUnit.setText("点");
+
+        // デジタル撮影の場合：フィルムを算定する場合：デジタル映像化処理加算
+        xrayDigitalImaging.setText("デジタル映像化処理加算");
+        xrayDigitalImaging.setBindPath("XRAY_DIGITAL_IMAGING");
+        xrayDigitalImagingPoint.setEditable(false);
+        xrayDigitalImagingPoint.setColumns(7);
+        xrayDigitalImagingPoint.setHorizontalAlignment(SwingConstants.RIGHT);
+        xrayDigitalImagingPointUnit.setText("点");
+
+        xrayDigitalFilmPoints.add(xrayDigitalFilmPoint, null);
+        xrayDigitalFilmPoints.add(xrayDigitalFilmPointUnit, null);
+        xrayDigitalImagingPoints.add(xrayDigitalImagingPoint, null);
+        xrayDigitalImagingPoints.add(xrayDigitalImagingPointUnit, null);
+        xrayDigitalImageManagementPoints.add(xrayDigitalImageManagementPoint,
+                null);
+        xrayDigitalImageManagementPoints.add(
+                xrayDigitalImageManagementPointUnit, null);
+        // 2009/01/06 [Tozo Tanaka] Add - end
+
         category.setText("内訳");
         category.setOpaque(true);
         category.setHorizontalAlignment(SwingConstants.CENTER);
@@ -1036,7 +1212,9 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         fdOutputKubun.setBindPath("FD_OUTPUT_UMU");
         ikenshoCharge.setBindPath("IKN_CHARGE");
         shoshin.setBindPath("SHOSIN");
-        pointsRightSpacer1.setText(" ");
+        // 2009/01/13 [Tozo Tanaka] Delete - begin
+//        pointsRightSpacer1.setText(" ");
+        // 2009/01/13 [Tozo Tanaka] Delete - end
         hiddenParameters.add(shoshin, null);
         hiddenParameters.add(ikenshoCharge, null);
         hiddenParameters.add(fdOutputKubun, null);
@@ -1045,78 +1223,171 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         bloodBasicTestPoints.add(bloodBasicTestPointUnit, null);
         ketsuekigakuTestCostPoints.add(ketsuekigakuTestCostPoint, null);
         ketsuekigakuTestCostPoints.add(ketsuekigakuTestCostPointUnit, null);
-        pointsLeft.add(bloodChemistryTestPoints, new GridBagConstraints(2, 5,
-                1, 1, 100.0, 100.0, GridBagConstraints.WEST,
-                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(ketsuekigakuTestCostPoints, new GridBagConstraints(2, 3,
-                1, 1, 100.0, 100.0, GridBagConstraints.WEST,
-                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(bloodBasicTestPoints, new GridBagConstraints(2, 2, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(bloodSaishu, new GridBagConstraints(0, 0, 2, 1, 100.0,
-                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(bloodBasic, new GridBagConstraints(0, 1, 2, 1, 100.0,
-                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(bloodBasicTest, new GridBagConstraints(1, 2, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(ketsuekigakuTestCost, new GridBagConstraints(1, 3, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(bloodChemistry, new GridBagConstraints(0, 4, 2, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(bloodChemistryTest, new GridBagConstraints(1, 5, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(seikagakuTestCost, new GridBagConstraints(1, 6, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(bloodBasicSpacer, new GridBagConstraints(0, 2, 1, 2,
-                0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(bloodSaishuPoints, new GridBagConstraints(2, 0, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsLeft.add(seikagakuTestCostPoints, new GridBagConstraints(2, 6, 1,
-                1, 100.0, 100.0, GridBagConstraints.WEST,
-                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(xrayBasicPoints, new GridBagConstraints(2, 2, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(nyouTest, new GridBagConstraints(0, 0, 2, 1, 100.0,
-                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(xray, new GridBagConstraints(0, 1, 2, 1, 100.0, 100.0,
-                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
-                        0, 0, 0), 0, 0));
-        pointsRight.add(xrayBasic, new GridBagConstraints(1, 2, 1, 1, 100.0,
-                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(xrayPhotoCheck, new GridBagConstraints(1, 3, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(xrayFilm, new GridBagConstraints(1, 4, 1, 1, 100.0,
-                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(xraySpacer, new GridBagConstraints(0, 2, 1, 3, 0.0,
-                0.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(xrayPhotoCheckPoints, new GridBagConstraints(2, 3, 1,
-                1, 100.0, 100.0, GridBagConstraints.WEST,
-                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(xrayFilmPoints, new GridBagConstraints(2, 4, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(nyouTestPoints, new GridBagConstraints(2, 0, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
-                new Insets(0, 0, 0, 0), 0, 0));
-        pointsRight.add(pointsRightSpacer1, new GridBagConstraints(0, 5, 3, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
-                new Insets(0, 0, 0, 0), 0, 0));
+        // 2009/01/13 [Tozo Tanaka] Replace - begin
+//        pointsLeft.add(bloodChemistryTestPoints, new GridBagConstraints(2, 5,
+//                1, 1, 100.0, 100.0, GridBagConstraints.WEST,
+//                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(ketsuekigakuTestCostPoints, new GridBagConstraints(2, 3,
+//                1, 1, 100.0, 100.0, GridBagConstraints.WEST,
+//                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(bloodBasicTestPoints, new GridBagConstraints(2, 2, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(bloodSaishu, new GridBagConstraints(0, 0, 2, 1, 100.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(bloodBasic, new GridBagConstraints(0, 1, 2, 1, 100.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(bloodBasicTest, new GridBagConstraints(1, 2, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(ketsuekigakuTestCost, new GridBagConstraints(1, 3, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(bloodChemistry, new GridBagConstraints(0, 4, 2, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(bloodChemistryTest, new GridBagConstraints(1, 5, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(seikagakuTestCost, new GridBagConstraints(1, 6, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(bloodBasicSpacer, new GridBagConstraints(0, 2, 1, 2,
+//                0.0, 0.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(bloodSaishuPoints, new GridBagConstraints(2, 0, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsLeft.add(seikagakuTestCostPoints, new GridBagConstraints(2, 6, 1,
+//                1, 100.0, 100.0, GridBagConstraints.WEST,
+//                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(xrayBasicPoints, new GridBagConstraints(2, 2, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(nyouTest, new GridBagConstraints(0, 0, 2, 1, 100.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(xray, new GridBagConstraints(0, 1, 2, 1, 100.0, 100.0,
+//                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
+//                        0, 0, 0), 0, 0));
+//        pointsRight.add(xrayBasic, new GridBagConstraints(1, 2, 1, 1, 100.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(xrayPhotoCheck, new GridBagConstraints(1, 3, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(xrayFilm, new GridBagConstraints(1, 4, 1, 1, 100.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(xraySpacer, new GridBagConstraints(0, 2, 1, 3, 0.0,
+//                0.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(xrayPhotoCheckPoints, new GridBagConstraints(2, 3, 1,
+//                1, 100.0, 100.0, GridBagConstraints.WEST,
+//                GridBagConstraints.NONE, new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(xrayFilmPoints, new GridBagConstraints(2, 4, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(nyouTestPoints, new GridBagConstraints(2, 0, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.NONE,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        pointsRight.add(pointsRightSpacer1, new GridBagConstraints(0, 5, 3, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+        pointsLeft.setAutoWrap(false);
+        pointsRight.setAutoWrap(false);
+        pointsLeft.setHgrid(0);
+        pointsLeft.setHgap(0);
+        pointsRight.setHgrid(0);
+        pointsRight.setHgap(0);
+        //チェックボックスのサイズを規定
+        Dimension checkSpaceDimension = new Dimension(20, 10);
+        for(int i=0; i<pointsSpacer.length; i++){
+            pointsSpacer[i].setPreferredSize(checkSpaceDimension);
+        }
+        Dimension nyouTestDimension = nyouTest.getPreferredSize();
+        Dimension checkMinDimension = new Dimension((int) Math.max(200,
+                nyouTestDimension.getWidth() + 20), (int) Math.max(19,
+                nyouTestDimension.getHeight()));
+        ACIntegerCheckBox[] checks = new ACIntegerCheckBox[] { bloodSaishu,
+                bloodBasic, bloodChemistry, nyouTest, xray, };
+        for (int i = 0; i < checks.length; i++) {
+            checks[i].setMinimumSize(checkMinDimension);
+            checks[i].setPreferredSize(checkMinDimension);
+        }
+        checkMinDimension = new Dimension(
+                (int) (checkMinDimension.getWidth() - checkSpaceDimension.getWidth()),
+                (int) checkMinDimension.getHeight());
+        checks = new ACIntegerCheckBox[] { bloodBasicTest,
+                ketsuekigakuTestCost, bloodChemistryTest, seikagakuTestCost,
+                xrayBasic, xrayPhotoCheck, xrayFilm,
+                xrayDigitalImageManagement, xrayDigitalFilm,
+                xrayDigitalImaging, };
+        for (int i = 0; i < checks.length; i++) {
+            checks[i].setMinimumSize(checkMinDimension);
+            checks[i].setPreferredSize(checkMinDimension);
+        }
+        
+        int pointsSpacerIndex = 0;
+        //血液採取(静脈)
+        pointsLeft.add(bloodSaishu, VRLayout.FLOW);
+        pointsLeft.add(bloodSaishuPoints, VRLayout.FLOW_RETURN);
+        //血液一般検査
+        pointsLeft.add(bloodBasic, VRLayout.FLOW_RETURN);
+        //血液一般検査＞末梢血液一般検査
+        pointsLeft.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsLeft.add(bloodBasicTest, VRLayout.FLOW);
+        pointsLeft.add(bloodBasicTestPoints, VRLayout.FLOW_RETURN);
+        //血液一般検査＞血液学的検査判断料
+        pointsLeft.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsLeft.add(ketsuekigakuTestCost, VRLayout.FLOW);
+        pointsLeft.add(ketsuekigakuTestCostPoints, VRLayout.FLOW_RETURN);
+        //血液化学検査
+        pointsLeft.add(bloodChemistry, VRLayout.FLOW_RETURN);
+        //血液化学検査＞血液化学検査
+        pointsLeft.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsLeft.add(bloodChemistryTest, VRLayout.FLOW);
+        pointsLeft.add(bloodChemistryTestPoints, VRLayout.FLOW_RETURN);
+        //血液化学検査＞生化学的検査(I)判断料
+        pointsLeft.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsLeft.add(seikagakuTestCost, VRLayout.FLOW);
+        pointsLeft.add(seikagakuTestCostPoints, VRLayout.FLOW_RETURN);
+
+        //尿中一般物質定性半定量検査
+//        pointsLeft.add(nyouTest, VRLayout.FLOW);
+//        pointsLeft.add(nyouTestPoints, VRLayout.FLOW_RETURN);
+        pointsRight.add(nyouTest, VRLayout.FLOW);
+        pointsRight.add(nyouTestPoints, VRLayout.FLOW_RETURN);
+        
+        //胸部単純X線撮影
+        pointsRight.add(xray, VRLayout.FLOW_RETURN);
+        //胸部単純X線撮影＞単純撮影
+        pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsRight.add(xrayBasic, VRLayout.FLOW);
+        pointsRight.add(xrayBasicPoints, VRLayout.FLOW_RETURN);
+        //胸部単純X線撮影＞写真診断(胸部)
+        pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsRight.add(xrayPhotoCheck, VRLayout.FLOW);
+        pointsRight.add(xrayPhotoCheckPoints, VRLayout.FLOW_RETURN);
+        //胸部単純X線撮影＞フィルム(大角)
+        pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsRight.add(xrayFilm, VRLayout.FLOW);
+        pointsRight.add(xrayFilmPoints, VRLayout.FLOW_RETURN);
+        //胸部単純X線撮影＞電子画像管理加算
+        pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsRight.add(xrayDigitalImageManagement, VRLayout.FLOW);
+        pointsRight.add(xrayDigitalImageManagementPoints, VRLayout.FLOW_RETURN);
+        //胸部単純X線撮影＞画像記録用フィルム(大角)
+        pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsRight.add(xrayDigitalFilm, VRLayout.FLOW);
+        pointsRight.add(xrayDigitalFilmPoints, VRLayout.FLOW_RETURN);
+        //胸部単純X線撮影＞デジタル映像化処理加算
+        pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsRight.add(xrayDigitalImaging, VRLayout.FLOW);
+        pointsRight.add(xrayDigitalImagingPoints, VRLayout.FLOW_RETURN);
+        // 2009/01/13 [Tozo Tanaka] Replace - end
 
         seikagakuTestCostPoints.add(seikagakuTestCostPoint, null);
         seikagakuTestCostPoints.add(seikagakuTestCostPointUnit, null);
@@ -1145,13 +1416,90 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         toConsultationPanelLayout.setAutoWrap(false);
         toConsultationPanelLayout.setHgap(0);
         toConsultationPanel.setLayout(toConsultationPanelLayout);
+        
+        // 2009/01/13 [Tozo Tanaka] Replace - begin
+//        calcRoot.add(category, new GridBagConstraints(0, 0, 3, 1, 30.0, 100.0,
+//                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
+//                        0, 0, 0), 0, 0));
+//        calcRoot.add(point, new GridBagConstraints(3, 0, 1, 1, 100.0, 100.0,
+//                GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
+//                        0, 0, 0, 0), 0, 0));
+//        calcRoot.add(summary, new GridBagConstraints(4, 0, 3, 1, 100.0, 100.0,
+//                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
+//                        0, 0, 0), 0, 0));
+//        calcRoot.add(calcXRay, new GridBagConstraints(1, 2, 2, 1, 20.0, 100.0,
+//                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
+//                        0, 0, 0), 0, 0));
+//        calcRoot.add(calcBloodBasic, new GridBagConstraints(1, 3, 2, 1, 20.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcBloodChemistry, new GridBagConstraints(1, 4, 2, 1,
+//                20.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcNyoTest, new GridBagConstraints(1, 5, 2, 1, 20.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcCheckTotal, new GridBagConstraints(0, 6, 3, 1, 30.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcCheckTotalCostMessage, new GridBagConstraints(4, 6, 1,
+//                1, 100.0, 100.0, GridBagConstraints.WEST,
+//                GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(spaceType, new GridBagConstraints(2, 1, 1, 1, 10.0, 100.0,
+//                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
+//                        0, 0, 0), 0, 0));
+//        calcRoot.add(calcXRayPoint, new GridBagConstraints(3, 2, 1, 1, 100.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcBloodBasicPoint, new GridBagConstraints(3, 3, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcBloodChemistryPoint, new GridBagConstraints(3, 4, 1,
+//                1, 100.0, 100.0, GridBagConstraints.WEST,
+//                GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcCheckTotalPoint, new GridBagConstraints(3, 6, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(firstTestSummary, new GridBagConstraints(4, 1, 3, 1,
+//                300.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcCheckTotalCost, new GridBagConstraints(5, 6, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(firstTest, new GridBagConstraints(0, 1, 2, 1, 20.0, 100.0,
+//                GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
+//                        0, 0, 0), 0, 0));
+//        calcRoot.add(firstTestPoint, new GridBagConstraints(3, 1, 1, 1, 100.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 3));
+//        calcRoot.add(calcNyoTestPoint, new GridBagConstraints(3, 5, 1, 1,
+//                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcCheckTotalCostUnit, new GridBagConstraints(6, 6, 1, 1,
+//                10.0, 100.0, GridBagConstraints.CENTER,
+//                GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcXRaySummary, new GridBagConstraints(4, 2, 3, 1, 300.0,
+//                100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcBloodBasicSummary, new GridBagConstraints(4, 3, 3, 1,
+//                300.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcBloodChemistrySummary, new GridBagConstraints(4, 4, 3,
+//                1, 300.0, 100.0, GridBagConstraints.WEST,
+//                GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcNyoTestSummary, new GridBagConstraints(4, 5, 3, 1,
+//                300.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));
+//        calcRoot.add(calcCheckMessages, new GridBagConstraints(0, 2, 1, 4, 0.0,
+//                0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
+//                new Insets(0, 0, 0, 0), 0, 0));        
         calcRoot.add(category, new GridBagConstraints(0, 0, 3, 1, 30.0, 100.0,
                 GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
                         0, 0, 0), 0, 0));
-        calcRoot.add(point, new GridBagConstraints(3, 0, 1, 1, 100.0, 100.0,
+        calcRoot.add(point, new GridBagConstraints(3, 0, 1, 1, 200.0, 100.0,
                 GridBagConstraints.CENTER, GridBagConstraints.BOTH, new Insets(
                         0, 0, 0, 0), 0, 0));
-        calcRoot.add(summary, new GridBagConstraints(4, 0, 3, 1, 100.0, 100.0,
+        calcRoot.add(summary, new GridBagConstraints(4, 0, 3, 1, 2000.0, 100.0,
                 GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
                         0, 0, 0), 0, 0));
         calcRoot.add(calcXRay, new GridBagConstraints(1, 2, 2, 1, 20.0, 100.0,
@@ -1175,20 +1523,20 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         calcRoot.add(spaceType, new GridBagConstraints(2, 1, 1, 1, 10.0, 100.0,
                 GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
                         0, 0, 0), 0, 0));
-        calcRoot.add(calcXRayPoint, new GridBagConstraints(3, 2, 1, 1, 100.0,
+        calcRoot.add(calcXRayPoint, new GridBagConstraints(3, 2, 1, 1, 200.0,
                 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(calcBloodBasicPoint, new GridBagConstraints(3, 3, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                200.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(calcBloodChemistryPoint, new GridBagConstraints(3, 4, 1,
-                1, 100.0, 100.0, GridBagConstraints.WEST,
+                1, 200.0, 100.0, GridBagConstraints.WEST,
                 GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(calcCheckTotalPoint, new GridBagConstraints(3, 6, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                200.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(firstTestSummary, new GridBagConstraints(4, 1, 3, 1,
-                300.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                2000.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(calcCheckTotalCost, new GridBagConstraints(5, 6, 1, 1,
                 100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
@@ -1196,30 +1544,31 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         calcRoot.add(firstTest, new GridBagConstraints(0, 1, 2, 1, 20.0, 100.0,
                 GridBagConstraints.WEST, GridBagConstraints.BOTH, new Insets(0,
                         0, 0, 0), 0, 0));
-        calcRoot.add(firstTestPoint, new GridBagConstraints(3, 1, 1, 1, 100.0,
+        calcRoot.add(firstTestPoint, new GridBagConstraints(3, 1, 1, 1, 200.0,
                 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 3));
         calcRoot.add(calcNyoTestPoint, new GridBagConstraints(3, 5, 1, 1,
-                100.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                200.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(calcCheckTotalCostUnit, new GridBagConstraints(6, 6, 1, 1,
                 10.0, 100.0, GridBagConstraints.CENTER,
                 GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
-        calcRoot.add(calcXRaySummary, new GridBagConstraints(4, 2, 3, 1, 300.0,
+        calcRoot.add(calcXRaySummary, new GridBagConstraints(4, 2, 3, 1, 2000.0,
                 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(calcBloodBasicSummary, new GridBagConstraints(4, 3, 3, 1,
-                300.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                2000.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(calcBloodChemistrySummary, new GridBagConstraints(4, 4, 3,
-                1, 300.0, 100.0, GridBagConstraints.WEST,
+                1, 2000.0, 100.0, GridBagConstraints.WEST,
                 GridBagConstraints.BOTH, new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(calcNyoTestSummary, new GridBagConstraints(4, 5, 3, 1,
-                300.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
+                2000.0, 100.0, GridBagConstraints.WEST, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
         calcRoot.add(calcCheckMessages, new GridBagConstraints(0, 2, 1, 4, 0.0,
                 0.0, GridBagConstraints.CENTER, GridBagConstraints.BOTH,
                 new Insets(0, 0, 0, 0), 0, 0));
+        // 2009/01/13 [Tozo Tanaka] Replace - end
         calcCheckMessages.add(calcCheckMessage1, BorderLayout.NORTH);
         calcCheckMessages.add(calcCheckMessage2, BorderLayout.SOUTH);
         root.add(hiddenParameters, null);
@@ -1275,7 +1624,23 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
             }
 
         }
+        
+        //2009/01/13 [Tozo Tanaka] Add - begin
+        public IkenshoTreeFollowChecker(JCheckBox parent, JCheckBox[] children, JCheckBox[] parentCheckedFollowChildren) {
+            IkenshoTreeFollowChildrenListener childrenListener = new IkenshoTreeFollowChildrenListener(
+                    parent, children);
+            IkenshoTreeFollowPatientListener parentListener = new IkenshoTreeFollowPatientListener(
+                    parent, children, parentCheckedFollowChildren);
 
+            parent.addItemListener(parentListener);
+            int end = children.length;
+            for (int i = 0; i < end; i++) {
+                children[i].addItemListener(childrenListener);
+            }
+
+        }
+        //2009/01/13 [Tozo Tanaka] Add - end
+        
         protected class IkenshoTreeFollowChildrenListener implements
                 ItemListener {
             private JCheckBox parent;
@@ -1321,10 +1686,46 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
             }
         }
 
+        //2009/01/13 [Tozo Tanaka] Replace - begin
+//        protected class IkenshoTreeFollowPatientListener implements
+//                ItemListener {
+//            private JCheckBox parent;
+//            private JCheckBox[] children;
+//
+//            public IkenshoTreeFollowPatientListener(JCheckBox parent,
+//                    JCheckBox[] children) {
+//                this.parent = parent;
+//                this.children = children;
+//            }
+//
+//            public void itemStateChanged(ItemEvent e) {
+//                boolean select;
+//                if (e.getStateChange() == ItemEvent.SELECTED) {
+//                    select = true;
+//                    if (!parent.isFocusOwner()) {
+//                        return;
+//                    }
+//                } else if (e.getStateChange() == ItemEvent.DESELECTED) {
+//                    select = false;
+//                } else {
+//                    return;
+//                }
+//                if (children != null) {
+//                    // 子を追随
+//                    int end = children.length;
+//                    for (int i = 0; i < end; i++) {
+//                        if (children[i].isSelected() != select) {
+//                            children[i].setSelected(select);
+//                        }
+//                    }
+//                }
+//            }
+//        }
         protected class IkenshoTreeFollowPatientListener implements
                 ItemListener {
             private JCheckBox parent;
             private JCheckBox[] children;
+            private JCheckBox[] parentCheckedFollowChildren;
 
             public IkenshoTreeFollowPatientListener(JCheckBox parent,
                     JCheckBox[] children) {
@@ -1332,29 +1733,44 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
                 this.children = children;
             }
 
+            public IkenshoTreeFollowPatientListener(JCheckBox parent,
+                    JCheckBox[] children, JCheckBox[] parentCheckedFollowChildren) {
+                this.parent = parent;
+                this.children = children;
+                this.parentCheckedFollowChildren = parentCheckedFollowChildren;
+            }
+
             public void itemStateChanged(ItemEvent e) {
                 boolean select;
+                JCheckBox[] targetChildren = null;
                 if (e.getStateChange() == ItemEvent.SELECTED) {
                     select = true;
                     if (!parent.isFocusOwner()) {
                         return;
                     }
+                    if(parentCheckedFollowChildren!=null){
+                        targetChildren = parentCheckedFollowChildren;
+                    }else{
+                        targetChildren = children;
+                    }
                 } else if (e.getStateChange() == ItemEvent.DESELECTED) {
                     select = false;
+                    targetChildren = children;
                 } else {
                     return;
                 }
-                if (children != null) {
+                if (targetChildren != null) {
                     // 子を追随
-                    int end = children.length;
+                    int end = targetChildren.length;
                     for (int i = 0; i < end; i++) {
-                        if (children[i].isSelected() != select) {
-                            children[i].setSelected(select);
+                        if (targetChildren[i].isSelected() != select) {
+                            targetChildren[i].setSelected(select);
                         }
                     }
                 }
             }
         }
+        //2009/01/13 [Tozo Tanaka] Replace - end
 
     }
 

@@ -52,7 +52,7 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
     private ACLabelContainer organJigyoushoNos = new ACLabelContainer();
     private ACLabelContainer organBankNames = new ACLabelContainer();
     private VRLabel organJigyoushoNoAbstraction = new VRLabel();
-    private VRLabel organBankOfficeNameSpacer = new VRLabel();
+    //private VRLabel organBankOfficeNameSpacer = new VRLabel();
     private ACTextField organType = new ACTextField();
     private ACParentHesesPanelContainer organDoctorNos = new ACParentHesesPanelContainer();
     private ACLabelContainer organTypes = new ACLabelContainer();
@@ -529,103 +529,120 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
     }
 
     private void jbInit() throws Exception {
-
+    	  // 2009/01/06 [Mizuki Tsutsumi] : edit begin
+    	////////// コントロール初期化 //////////
+    	//医師番号
+        organDoctorNos.setBeginText("（医師番号");
         organDoctorNo.setBindPath("DR_NO");
         organDoctorNo.setColumns(10);
         organDoctorNo.setEditable(false);
-        organBankAccountNo.setBindPath("BANK_KOUZA_NO");
-        organBankAccountNo.setColumns(25);
-        organBankAccountNo.setEditable(false);
-        organBankAccountTypes.setText("口座種類");
-        organBankAccountType
-                .setFormat(IkenshoConstants.FORMAT_BANK_ACCOUNT_TYPE);
-        organBankUser.setEditable(false);
-        organBankUser.setColumns(15);
-        organBankUser.setBindPath("FURIKOMI_MEIGI");
-        organBankLayout.setFitHLast(true);
-        organBankLayout.setAutoWrap(false);
-        organBankAccountNos.setText("口座番号");
-        organBankUsers.setText("名義人");
+        organDoctorNos.add(organDoctorNo, null);
+
+        
+        //開設者氏名
         organOpeners.setText("開設者氏名");
-        organBankAccountType.setEditable(false);
-        organBankAccountType.setBindPath("BANK_KOUZA_KIND");
-        organJigyoushoNo.setPreferredSize(new Dimension(130, 19));
-        organJigyoushoNo.setEditable(true);
-        organJigyoushoNo.setMaxLength(10);
-        organJigyoushoNo.setBindPath("JIGYOUSHA_NO");
-        organBankGroup.setLayout(organBankLayout);
-        organBankGroup.setText("振込先情報");
-        organBankOffice.setPreferredSize(new Dimension(131, 20));
-        organBankOffice.setEditable(false);
-        organBankOffice.setColumns(25);
-        organBankOffice.setBindPath("BANK_SITEN_NM");
         organOpener.setEditable(false);
         organOpener.setColumns(20);
         organOpener.setBindPath("KAISETUSHA_NM");
-        organJigyoushoNos.setText("事業所番号");
-        organJigyoushoNosLayout.setHgap(2);
-        organJigyoushoNosLayout.setAutoWrap(false);
-        organJigyoushoNos.setLayout(organJigyoushoNosLayout);
-        organBankNames.setText("金融機関名");
-        organJigyoushoNoAbstraction.setText("←事業所番号を選択するには保険者を選択してください。");
-        organJigyoushoNoAbstraction
-                .setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
+        organOpeners.add(organOpener, null);
+        
+        //診療所・病院区分
+        organTypes.setText("診療所・病院区分");
         organType.setEditable(false);
         organType.setColumns(20);
         organType.setBindPath("MI_KBN");
         organType.setFormat(IkenshoConstants.FORMAT_SHINRYOUJYO_TYPE);
-        organDoctorNos.setBeginText("（医師番号");
-        organTypes.setText("診療所・病院区分");
-        organBankOffices.setText("支店名");
-        organBankName.setEditable(false);
-        organBankName.setColumns(25);
-        organBankName.setBindPath("BANK_NM");
+        organTypes.add(organType, null);
+
+        //事業所番号
+        organJigyoushoNosLayout.setHgap(2);
+        organJigyoushoNosLayout.setAutoWrap(false);
+        organJigyoushoNos.setText("事業所番号");
+        organJigyoushoNos.setLayout(organJigyoushoNosLayout);
+        organJigyoushoNo.setPreferredSize(new Dimension(130, 19));
+        organJigyoushoNo.setEditable(true);
+        organJigyoushoNo.setMaxLength(10);
+        organJigyoushoNo.setBindPath("JIGYOUSHA_NO");
+        organJigyoushoNos.add(organJigyoushoNo, VRLayout.FLOW);
+        
+        organJigyoushoNoAbstractions.setLayout(new BorderLayout());
+        organJigyoushoNoAbstraction.setText("←事業所番号を選択するには保険者を選択してください。");
+        organJigyoushoNoAbstraction.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
         organJigyoushoNoRegistAbstraction1
                 .setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
         organJigyoushoNoRegistAbstraction1
                 .setText("←該当する保険者についての事業所番号が登録されていません。");
-        organJigyoushoNoAbstractions.setLayout(new BorderLayout());
         organJigyoushoNoRegistAbstraction2
                 .setText("[メインメニュー]-[医療機関情報登録/更新]にて登録してください。");
         organJigyoushoNoRegistAbstraction2
                 .setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
-        getDoctorNameContainer().add(organDoctorNos, BorderLayout.EAST);
-        organDoctorNos.add(organDoctorNo, null);
-
-        organOpeners.add(organOpener, null);
-        organTypes.add(organType, null);
-
-        organBankGroup.add(organBankNames, VRLayout.FLOW_INSETLINE);
-        organBankNames.add(organBankName, null);
-        organBankGroup.add(organBankUsers, VRLayout.FLOW_INSETLINE_RETURN);
-        organBankUsers.add(organBankUser, null);
-        organBankGroup.add(organBankOffices, VRLayout.FLOW_INSETLINE);
-        organBankOffices.add(organBankOffice, null);
-        organBankGroup.add(organBankOfficeNameSpacer,
-                VRLayout.FLOW_INSETLINE_RETURN);
-        organBankGroup.add(organBankAccountNos, VRLayout.FLOW_INSETLINE);
-        organBankAccountNos.add(organBankAccountNo, null);
-        organBankGroup.add(organBankAccountTypes,
-                VRLayout.FLOW_INSETLINE_RETURN);
-        organBankAccountTypes.add(organBankAccountType, null);
-
-        organJigyoushoNos.add(organJigyoushoNo, VRLayout.FLOW);
+        organJigyoushoNoAbstractions.add(organJigyoushoNoAbstraction, BorderLayout.CENTER);
+        organJigyoushoNoAbstractions.add(organJigyoushoNoRegistAbstraction1, BorderLayout.NORTH);
+        organJigyoushoNoAbstractions.add(organJigyoushoNoRegistAbstraction2, BorderLayout.SOUTH);
         organJigyoushoNos.add(organJigyoushoNoAbstractions, VRLayout.FLOW);
-        organJigyoushoNoAbstractions.add(organJigyoushoNoAbstraction,
-                BorderLayout.CENTER);
-        organJigyoushoNoAbstractions.add(organJigyoushoNoRegistAbstraction1,
-                BorderLayout.NORTH);
-        organJigyoushoNoAbstractions.add(organJigyoushoNoRegistAbstraction2,
-                BorderLayout.SOUTH);
 
-        getFollowDoctorContainer().add(organOpeners, VRLayout.FLOW_INSETLINE);
+        
+        //========== 振込先情報 ==========
+        organBankLayout.setFitHLast(true);
+        organBankLayout.setAutoWrap(false);
+        organBankGroup.setLayout(organBankLayout);
+        organBankGroup.setText("振込先情報");
+
+        //金融機関名
+        organBankNames.setText("金融機関名");
+        organBankName.setEditable(false);
+        organBankName.setColumns(25);
+        organBankName.setBindPath("BANK_NM");
+        organBankNames.add(organBankName, null);
+
+        //支店名
+        organBankOffices.setText("支店名");
+        organBankOffice.setPreferredSize(new Dimension(131, 20));
+        organBankOffice.setEditable(false);
+        organBankOffice.setColumns(25);
+        organBankOffice.setBindPath("BANK_SITEN_NM");
+        organBankOffices.add(organBankOffice, null);
+
+        //名義人
+        organBankUsers.setText("名義人");
+        organBankUser.setEditable(false);
+        organBankUser.setColumns(15);
+        organBankUser.setBindPath("FURIKOMI_MEIGI");
+        organBankUsers.add(organBankUser, null);
+
+        //口座番号
+        organBankAccountNos.setText("口座番号");
+        organBankAccountNo.setBindPath("BANK_KOUZA_NO");
+        organBankAccountNo.setColumns(25);
+        organBankAccountNo.setEditable(false);
+        organBankAccountNos.add(organBankAccountNo, null);
+        
+        //口座種類
+        organBankAccountTypes.setText("口座種類");
+        organBankAccountType.setFormat(IkenshoConstants.FORMAT_BANK_ACCOUNT_TYPE);
+        organBankAccountType.setEditable(false);
+        organBankAccountType.setBindPath("BANK_KOUZA_KIND");
+        organBankAccountTypes.add(organBankAccountType, null);
+    	//==============================
+        
+        //////////// コントロールの配置 //////////
+        getDoctorNameContainer().add(organDoctorNos, BorderLayout.EAST);
+
+        getFollowDoctorContainer().add(organOpeners, VRLayout.FLOW_INSETLINE_RETURN);
         getFollowDoctorContainer().add(organTypes, VRLayout.FLOW_INSETLINE);
-        getFollowDoctorContainer().add(organTypeSpacer,
-                VRLayout.FLOW_INSETLINE_RETURN);
-        getFollowDoctorContainer().add(organJigyoushoNos,
-                VRLayout.FLOW_INSETLINE_RETURN);
+        getFollowDoctorContainer().add(organTypeSpacer, VRLayout.FLOW_INSETLINE_RETURN);
+        getFollowDoctorContainer().add(organJigyoushoNos, VRLayout.FLOW_INSETLINE_RETURN);
         getFollowDoctorContainer().add(organBankGroup, VRLayout.FLOW_RETURN);
 
+        //振込先情報
+        organBankGroup.add(organBankNames, VRLayout.FLOW_INSETLINE_RETURN);
+        organBankGroup.add(organBankOffices, VRLayout.FLOW_INSETLINE_RETURN);
+        //organBankGroup.add(organBankOfficeNameSpacer, VRLayout.FLOW_INSETLINE_RETURN);
+        organBankGroup.add(organBankUsers, VRLayout.FLOW_INSETLINE_RETURN);
+        organBankGroup.add(organBankAccountNos, VRLayout.FLOW_INSETLINE);
+        organBankGroup.add(organBankAccountTypes, VRLayout.FLOW_INSETLINE_RETURN);
+        // 2009/01/06 [Mizuki Tsutsumi] : edit end
+        
         //電子化加算対象の事業所であるか
         doctorAddIT.setVisible(false);
         doctorAddIT.setBindPath("DR_ADD_IT");

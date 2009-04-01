@@ -94,6 +94,8 @@ public interface IkenshoConstants {
       "jp/or/med/orca/ikensho/images/icon/pix24/btn_01.png";
   public static final String BUTTON_IMAGE_PATH_RIGHT =
       "jp/or/med/orca/ikensho/images/icon/pix24/btn_02.png";
+  public static final String BUTTON_IMAGE_PATH_BACK_TO_MAIN_MENU =
+      "jp/or/med/orca/ikensho/images/icon/pix24/btn_101.png"; //ÉÅÉCÉìÉÅÉjÉÖÅ[Ç…ñﬂÇÈ //2009/01/06 [Mizuki Tsutsumi] : add
 
   public static final String BUTTON_IMAGE_PATH_OK =
       "jp/or/med/orca/ikensho/images/icon/pix24/btn_27.png";

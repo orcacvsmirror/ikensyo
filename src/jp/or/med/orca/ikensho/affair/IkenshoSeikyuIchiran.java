@@ -2052,6 +2052,20 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                 point = point.add(new BigDecimal(
                         getString("EXP_XRAY_FILM", map)));
             }
+            // 2009/01/09[Tozo Tanaka] : add begin
+            if (getString("XRAY_DIGITAL_MANAGEMENT", map).equals("1")) {
+                point = point.add(new BigDecimal(
+                        getString("EXP_XRAY_DIGITAL_MANAGEMENT", map)));
+            }
+            if (getString("XRAY_DIGITAL_FILM", map).equals("1")) {
+                point = point.add(new BigDecimal(
+                        getString("EXP_XRAY_DIGITAL_FILM", map)));
+            }
+            if (getString("XRAY_DIGITAL_IMAGING", map).equals("1")) {
+                point = point.add(new BigDecimal(
+                        getString("EXP_XRAY_DIGITAL_IMAGING", map)));
+            }
+            // 2009/01/09[Tozo Tanaka] : add end
             if (point.compareTo(new BigDecimal("0")) != 0) {
                 // ì_êî
                 IkenshoCommon.addString(pd, "costList1.xray.point", point
@@ -2313,6 +2327,17 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         if (getString("XRAY_FILM", map).equals("1")) {
             total = total.add(new BigDecimal(getString("EXP_XRAY_FILM", map)));
         }
+        // 2009/01/09[Tozo Tanaka] : add begin
+        if (getString("XRAY_DIGITAL_MANAGEMENT", map).equals("1")) {
+            total = total.add(new BigDecimal(getString("EXP_XRAY_DIGITAL_MANAGEMENT", map)));
+        }
+        if (getString("XRAY_DIGITAL_FILM", map).equals("1")) {
+            total = total.add(new BigDecimal(getString("EXP_XRAY_DIGITAL_FILM", map)));
+        }
+        if (getString("XRAY_DIGITAL_IMAGING", map).equals("1")) {
+            total = total.add(new BigDecimal(getString("EXP_XRAY_DIGITAL_IMAGING", map)));
+        }
+        // 2009/01/09[Tozo Tanaka] : add end
         return total;
     }
 
@@ -2562,6 +2587,11 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         sb.append(" ,IKN_BILL.XRAY_TANJUN_SATUEI");
         sb.append(" ,IKN_BILL.XRAY_SHASIN_SINDAN");
         sb.append(" ,IKN_BILL.XRAY_FILM");
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(" ,IKN_BILL.XRAY_DIGITAL_MANAGEMENT");
+        sb.append(" ,IKN_BILL.XRAY_DIGITAL_FILM");
+        sb.append(" ,IKN_BILL.XRAY_DIGITAL_IMAGING");
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(" ,IKN_BILL.XRAY_TEKIYOU");
         sb.append(" ,IKN_BILL.EXP_KS");
         sb.append(" ,IKN_BILL.EXP_KIK_MKI");
@@ -2572,6 +2602,11 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         sb.append(" ,IKN_BILL.EXP_XRAY_TS");
         sb.append(" ,IKN_BILL.EXP_XRAY_SS");
         sb.append(" ,IKN_BILL.EXP_XRAY_FILM");
+        // 2009/01/09[Tozo Tanaka] : add begin
+        sb.append(" ,IKN_BILL.EXP_XRAY_DIGITAL_MANAGEMENT");
+        sb.append(" ,IKN_BILL.EXP_XRAY_DIGITAL_FILM");
+        sb.append(" ,IKN_BILL.EXP_XRAY_DIGITAL_IMAGING");
+        // 2009/01/09[Tozo Tanaka] : add end
         sb.append(" ,IKN_BILL.ISS_INSURER_NO");
         sb.append(" ,IKN_BILL.ISS_INSURER_NM");
         sb.append(" ,IKN_BILL.SKS_INSURER_NM");

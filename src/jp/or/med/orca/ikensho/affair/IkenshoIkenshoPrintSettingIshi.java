@@ -306,39 +306,94 @@ public class IkenshoIkenshoPrintSettingIshi extends
 				"ShojoAntei", "ShojoFuantei", "ShojoFumei" }, -1,
 				"INSECURE_CONDITION", "ShojoFuanteiJokyo", 2);
 
-		// 傷病治療状態
-		IkenshoCommon.addString(pd, data, "MT_STS", "ShobyoKeika");
-
-		// 薬剤
-		for (int i = 0; i < 3; i++) {
-			for (int j = 0; j < 2; j++) {
-				StringBuffer sb = new StringBuffer();
-				String text;
-				String index = ACCastUtilities.toString(i * 2 + j + 1);
-				text = (String) VRBindPathParser.get("MEDICINE" + index, data);
-				if (!IkenshoCommon.isNullText(text)) {
-					sb.append(text);
-					sb.append(" ");
-				}
-				text = (String) VRBindPathParser.get("DOSAGE" + index, data);
-				if (!IkenshoCommon.isNullText(text)) {
-					sb.append(text);
-				}
-				text = (String) VRBindPathParser.get("UNIT" + index, data);
-				if (!IkenshoCommon.isNullText(text)) {
-					sb.append(text);
-				}
-				text = (String) VRBindPathParser.get("USAGE" + index, data);
-				if (!IkenshoCommon.isNullText(text)) {
-					sb.append(" ");
-					sb.append(text);
-				}
-				if (sb.length() > 0) {
-					IkenshoCommon.addString(pd, "Grid9.h" + (i + 1) + ".w"
-							+ (j + 1), sb.toString());
-				}
-			}
-		}
+        //2009/01/09 [Tozo Tanaka] Replace - begin
+//		// 傷病治療状態
+//		IkenshoCommon.addString(pd, data, "MT_STS", "ShobyoKeika");
+//
+//		// 薬剤
+//		for (int i = 0; i < 3; i++) {
+//			for (int j = 0; j < 2; j++) {
+//				StringBuffer sb = new StringBuffer();
+//				String text;
+//				String index = ACCastUtilities.toString(i * 2 + j + 1);
+//				text = (String) VRBindPathParser.get("MEDICINE" + index, data);
+//				if (!IkenshoCommon.isNullText(text)) {
+//					sb.append(text);
+//					sb.append(" ");
+//				}
+//				text = (String) VRBindPathParser.get("DOSAGE" + index, data);
+//				if (!IkenshoCommon.isNullText(text)) {
+//					sb.append(text);
+//				}
+//				text = (String) VRBindPathParser.get("UNIT" + index, data);
+//				if (!IkenshoCommon.isNullText(text)) {
+//					sb.append(text);
+//				}
+//				text = (String) VRBindPathParser.get("USAGE" + index, data);
+//				if (!IkenshoCommon.isNullText(text)) {
+//					sb.append(" ");
+//					sb.append(text);
+//				}
+//				if (sb.length() > 0) {
+//					IkenshoCommon.addString(pd, "Grid9.h" + (i + 1) + ".w"
+//							+ (j + 1), sb.toString());
+//				}
+//			}
+//		}
+        //傷病治療状態
+        ACChotarouXMLUtilities.setValue(pd, "ShobyoKeika",
+                getInsertionLineSeparatorToStringOnByte(ACCastUtilities.toString(data
+                        .get("MT_STS")), 100));
+        
+        //薬剤
+        String sickMedicinesGridName = "Grid9";
+        int sickMedicinesRows = 3;
+        if (!(
+                IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE7", data)) && 
+                IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE8", data)) &&
+                IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE7", data)) &&
+                IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE8", data)) &&
+                IkenshoCommon.isNullText(VRBindPathParser.get("UNIT7", data)) &&
+                IkenshoCommon.isNullText(VRBindPathParser.get("UNIT8", data)) &&
+                IkenshoCommon.isNullText(VRBindPathParser.get("USAGE7", data)) && 
+                IkenshoCommon.isNullText(VRBindPathParser.get("USAGE8", data))
+                ) &&
+                (getMedicineViewCount()>6)) {
+            //薬剤7か薬剤8が入力されている場合
+            sickMedicinesGridName = "sickMedicines8";
+            sickMedicinesRows = 4;
+        }
+        
+        for (int i = 0; i < sickMedicinesRows; i++) {
+            for (int j = 0; j < 2; j++) {
+                StringBuffer sb = new StringBuffer();
+                String text;
+                String index = ACCastUtilities.toString(i * 2 + j + 1);
+                text = (String) VRBindPathParser.get("MEDICINE" + index, data);
+                if (!IkenshoCommon.isNullText(text)) {
+                    sb.append(text);
+                    sb.append(" ");
+                }
+                text = (String) VRBindPathParser.get("DOSAGE" + index, data);
+                if (!IkenshoCommon.isNullText(text)) {
+                    sb.append(text);
+                }
+                text = (String) VRBindPathParser.get("UNIT" + index, data);
+                if (!IkenshoCommon.isNullText(text)) {
+                    sb.append(text);
+                }
+                text = (String) VRBindPathParser.get("USAGE" + index, data);
+                if (!IkenshoCommon.isNullText(text)) {
+                    sb.append(" ");
+                    sb.append(text);
+                }
+                if (sb.length() > 0) {
+                    IkenshoCommon.addString(pd, sickMedicinesGridName+".h" + (i + 1) + ".w"
+                            + (j + 1), sb.toString());
+                }
+            }
+        }
+        //2009/01/09 [Tozo Tanaka] Replace - end
 
 		// -----------------------------------------------------
 		// 特別な医療（現在、定期的に、あるいは頻回に受けている医療）

@@ -4,7 +4,12 @@ import java.awt.HeadlessException;
 import java.util.ArrayList;
 import java.util.Date;
 
+import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRMap;
@@ -260,11 +265,64 @@ public class IkenshoIkenshoPrintSettingH18
                                "Shape26", "Shape27"}
                                , -1, "INSECURE_CONDITION", "Label12", 2);
 
+    //2009/01/09 [Tozo Tanaka] Replace - begin
+//    //傷病治療状態
+//    IkenshoCommon.addString(pd, data, "MT_STS", "Label3");
+//
+//    //薬剤
+//    for (int i = 0; i < 3; i++) {
+//        for (int j = 0; j < 2; j++) {
+//          StringBuffer sb = new StringBuffer();
+//          String text;
+//          String index = String.valueOf(i * 2 + j + 1);
+//          text = (String) VRBindPathParser.get("MEDICINE" + index, data);
+//          if (!IkenshoCommon.isNullText(text)) {
+//            sb.append(text);
+//            sb.append(" ");
+//          }
+//          text = (String) VRBindPathParser.get("DOSAGE" + index, data);
+//          if (!IkenshoCommon.isNullText(text)) {
+//            sb.append(text);
+//          }
+//          text = (String) VRBindPathParser.get("UNIT" + index, data);
+//          if (!IkenshoCommon.isNullText(text)) {
+//            sb.append(text);
+//          }
+//          text = (String) VRBindPathParser.get("USAGE" + index, data);
+//          if (!IkenshoCommon.isNullText(text)) {
+//            sb.append(" ");
+//            sb.append(text);
+//          }
+//          if (sb.length() > 0) {
+//            IkenshoCommon.addString(pd, "Grid9.h" + (i + 1) + ".w" + (j + 1), sb.toString());
+//          }
+//        }
+//      }
     //傷病治療状態
-    IkenshoCommon.addString(pd, data, "MT_STS", "Label3");
-
+    ACChotarouXMLUtilities.setValue(pd, "Label3",
+            getInsertionLineSeparatorToStringOnByte(ACCastUtilities.toString(data
+                    .get("MT_STS")), 100));
+    
     //薬剤
-    for (int i = 0; i < 3; i++) {
+    String sickMedicinesGridName = "Grid9";
+    int sickMedicinesRows = 3;
+    if (!(
+            IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE7", data)) && 
+            IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE8", data)) &&
+            IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE7", data)) &&
+            IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE8", data)) &&
+            IkenshoCommon.isNullText(VRBindPathParser.get("UNIT7", data)) &&
+            IkenshoCommon.isNullText(VRBindPathParser.get("UNIT8", data)) &&
+            IkenshoCommon.isNullText(VRBindPathParser.get("USAGE7", data)) && 
+            IkenshoCommon.isNullText(VRBindPathParser.get("USAGE8", data)) 
+            )&&
+            (getMedicineViewCount()>6)) {
+        //薬剤7か薬剤8が入力されている場合
+        sickMedicinesGridName = "sickMedicines8";
+        sickMedicinesRows = 4;
+    }
+    
+    for (int i = 0; i < sickMedicinesRows; i++) {
       for (int j = 0; j < 2; j++) {
         StringBuffer sb = new StringBuffer();
         String text;
@@ -288,10 +346,12 @@ public class IkenshoIkenshoPrintSettingH18
           sb.append(text);
         }
         if (sb.length() > 0) {
-          IkenshoCommon.addString(pd, "Grid9.h" + (i + 1) + ".w" + (j + 1), sb.toString());
+          IkenshoCommon.addString(pd, sickMedicinesGridName+".h" + (i + 1) + ".w" + (j + 1), sb.toString());
         }
       }
     }
+    //2009/01/09 [Tozo Tanaka] Replace - end
+    
     //点滴管理
     IkenshoCommon.addCheck(pd, data, "TNT_KNR", "Shape31", 1);
     //中心静脈栄養
@@ -883,6 +943,12 @@ public class IkenshoIkenshoPrintSettingH18
     IkenshoCommon.addCheck(pd, data, "HOUMON_KANGO", "Shape99", 1);
     //訪問看護下線
     IkenshoCommon.addCheck(pd, data, "HOUMON_KANGO_UL", "Shape124", 1);
+    // 2009/02/03 [Tozo Tanaka] Add - begin
+    //看護職員の訪問による相談・支援
+    IkenshoCommon.addCheck(pd, data, "HOUMON_SODAN", "HOUMON_SODAN", 1);
+    //看護職員の訪問による相談・支援下線
+    IkenshoCommon.addCheck(pd, data, "HOUMON_SODAN_UL", "HOUMON_SODAN_UL", 1);
+    // 2009/02/03 [Tozo Tanaka] Add - end
     //訪問歯科診療
     IkenshoCommon.addCheck(pd, data, "HOUMONSIKA_SINRYOU", "Shape100", 1);
     //訪問歯科診療下線
@@ -1006,4 +1072,45 @@ public class IkenshoIkenshoPrintSettingH18
   protected int getFormatType(){
       return IkenshoConstants.IKENSHO_LOW_H18;
   }
+  
+
+  //2009/01/21 [Tozo Tanaka] Add - begin
+  protected static int getMedicineViewCount() {
+      try {
+          if (ACFrame.getInstance().hasProperty(
+                  "DocumentSetting/MedicineViewCount")
+                  && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
+                          "DocumentSetting/MedicineViewCount"), 6) == 8) {
+              return 8;
+          }
+      } catch (Exception e) {
+      }      
+    return 6;
+  }
+  /**
+   * 指定された文字数で改行した文字列を返します。
+   * @param chr 改行対象となる文字列
+   * @param byteIndex 改行基準バイト数
+   * @return 改行文字を挿入した文字列
+   */
+  public static String getInsertionLineSeparatorToStringOnByte(String chr, int byteIndex){
+      String[] slCharacter = ACTextUtilities.separateLineWrapOnByte(chr,byteIndex);
+      
+      StringBuffer sbCharacter = new StringBuffer();
+
+      for (int i = 0; i < slCharacter.length; i++) {
+          sbCharacter.append(slCharacter[i]);
+          //最終行である場合は改行コードを追加しない
+          if (i != slCharacter.length - 1) {
+              //改行コードを追加する
+              sbCharacter.append(ACConstants.LINE_SEPARATOR);
+          }
+      }
+
+      String insertionLineSeparatorString = sbCharacter.toString();
+      
+      return insertionLineSeparatorString;
+  }
+  //2009/01/21 [Tozo Tanaka] Add - end
+  
 }

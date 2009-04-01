@@ -1,5 +1,6 @@
 package jp.or.med.orca.ikensho.affair;
 
+import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
@@ -68,32 +69,56 @@ public class IkenshoHoumonKangoShijishoSick extends IkenshoDocumentAffairSick {
                 IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
         getSickMedicineName(5).setOptionComboBoxParameters("薬剤名",
                 IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
+        //2009/01/06 [Tozo Tanaka] Add - begin
+        getSickMedicineName(6).setOptionComboBoxParameters("薬剤名",
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
+        getSickMedicineName(7).setOptionComboBoxParameters("薬剤名",
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
+        //2009/01/06 [Tozo Tanaka] Add - end
 
         // コンボ連動設定
         getSickMedicineName(0).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineName(1),
                         getSickMedicineName(2), getSickMedicineName(3),
-                        getSickMedicineName(4), getSickMedicineName(5) });
+                        getSickMedicineName(4), getSickMedicineName(5),
+                        getSickMedicineName(6), getSickMedicineName(7) });
         getSickMedicineName(1).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineName(0),
                         getSickMedicineName(2), getSickMedicineName(3),
-                        getSickMedicineName(4), getSickMedicineName(5) });
+                        getSickMedicineName(4), getSickMedicineName(5),
+                        getSickMedicineName(6), getSickMedicineName(7) });
         getSickMedicineName(2).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineName(0),
                         getSickMedicineName(1), getSickMedicineName(3),
-                        getSickMedicineName(4), getSickMedicineName(5) });
+                        getSickMedicineName(4), getSickMedicineName(5),
+                        getSickMedicineName(6), getSickMedicineName(7) });
         getSickMedicineName(3).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineName(0),
                         getSickMedicineName(1), getSickMedicineName(2),
-                        getSickMedicineName(4), getSickMedicineName(5) });
+                        getSickMedicineName(4), getSickMedicineName(5),
+                        getSickMedicineName(6), getSickMedicineName(7) });
         getSickMedicineName(4).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineName(0),
                         getSickMedicineName(1), getSickMedicineName(2),
-                        getSickMedicineName(3), getSickMedicineName(5) });
+                        getSickMedicineName(3), getSickMedicineName(5),
+                        getSickMedicineName(6), getSickMedicineName(7) });
         getSickMedicineName(5).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineName(0),
                         getSickMedicineName(1), getSickMedicineName(2),
-                        getSickMedicineName(3), getSickMedicineName(4) });
+                        getSickMedicineName(3), getSickMedicineName(4),
+                        getSickMedicineName(6), getSickMedicineName(7) });
+        //2009/01/06 [Tozo Tanaka] Add - begin
+        getSickMedicineName(6).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineName(0),
+                        getSickMedicineName(1), getSickMedicineName(2),
+                        getSickMedicineName(3), getSickMedicineName(4),
+                        getSickMedicineName(5), getSickMedicineName(7) });
+        getSickMedicineName(7).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineName(0),
+                        getSickMedicineName(1), getSickMedicineName(2),
+                        getSickMedicineName(3), getSickMedicineName(4),
+                        getSickMedicineName(5), getSickMedicineName(6) });
+        //2009/01/06 [Tozo Tanaka] Add - end
 
         getSickMedicineDosageUnit(0).setOptionComboBoxParameters("用量単位",
                 IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
@@ -107,6 +132,12 @@ public class IkenshoHoumonKangoShijishoSick extends IkenshoDocumentAffairSick {
                 IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
         getSickMedicineDosageUnit(5).setOptionComboBoxParameters("用量単位",
                 IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
+        //2009/01/06 [Tozo Tanaka] Add - begin
+        getSickMedicineDosageUnit(6).setOptionComboBoxParameters("用量単位",
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
+        getSickMedicineDosageUnit(7).setOptionComboBoxParameters("用量単位",
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
+        //2009/01/06 [Tozo Tanaka] Add - end
 
         // 連動コンボの登録
         getSickMedicineDosageUnit(0).addInterlockComboComponents(
@@ -114,37 +145,67 @@ public class IkenshoHoumonKangoShijishoSick extends IkenshoDocumentAffairSick {
                         getSickMedicineDosageUnit(2),
                         getSickMedicineDosageUnit(3),
                         getSickMedicineDosageUnit(4),
-                        getSickMedicineDosageUnit(5) });
+                        getSickMedicineDosageUnit(5),
+                        getSickMedicineDosageUnit(6),
+                        getSickMedicineDosageUnit(7) });
         getSickMedicineDosageUnit(1).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
                         getSickMedicineDosageUnit(2),
                         getSickMedicineDosageUnit(3),
                         getSickMedicineDosageUnit(4),
-                        getSickMedicineDosageUnit(5) });
+                        getSickMedicineDosageUnit(5),
+                        getSickMedicineDosageUnit(6),
+                        getSickMedicineDosageUnit(7) });
         getSickMedicineDosageUnit(2).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
                         getSickMedicineDosageUnit(1),
                         getSickMedicineDosageUnit(3),
                         getSickMedicineDosageUnit(4),
-                        getSickMedicineDosageUnit(5) });
+                        getSickMedicineDosageUnit(5),
+                        getSickMedicineDosageUnit(6),
+                        getSickMedicineDosageUnit(7) });
         getSickMedicineDosageUnit(3).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
                         getSickMedicineDosageUnit(1),
                         getSickMedicineDosageUnit(2),
                         getSickMedicineDosageUnit(4),
-                        getSickMedicineDosageUnit(5) });
+                        getSickMedicineDosageUnit(5),
+                        getSickMedicineDosageUnit(6),
+                        getSickMedicineDosageUnit(7) });
         getSickMedicineDosageUnit(4).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
                         getSickMedicineDosageUnit(1),
                         getSickMedicineDosageUnit(2),
                         getSickMedicineDosageUnit(3),
-                        getSickMedicineDosageUnit(5) });
+                        getSickMedicineDosageUnit(5),
+                        getSickMedicineDosageUnit(6),
+                        getSickMedicineDosageUnit(7) });
         getSickMedicineDosageUnit(5).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
                         getSickMedicineDosageUnit(1),
                         getSickMedicineDosageUnit(2),
                         getSickMedicineDosageUnit(3),
-                        getSickMedicineDosageUnit(4) });
+                        getSickMedicineDosageUnit(4),
+                        getSickMedicineDosageUnit(6),
+                        getSickMedicineDosageUnit(7) });
+        //2009/01/06 [Tozo Tanaka] Add - begin
+        getSickMedicineDosageUnit(6).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
+                        getSickMedicineDosageUnit(1),
+                        getSickMedicineDosageUnit(2),
+                        getSickMedicineDosageUnit(3),
+                        getSickMedicineDosageUnit(4),
+                        getSickMedicineDosageUnit(5),
+                        getSickMedicineDosageUnit(7) });
+        getSickMedicineDosageUnit(7).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
+                        getSickMedicineDosageUnit(1),
+                        getSickMedicineDosageUnit(2),
+                        getSickMedicineDosageUnit(3),
+                        getSickMedicineDosageUnit(4),
+                        getSickMedicineDosageUnit(5),
+                        getSickMedicineDosageUnit(6) });
+        //2009/01/06 [Tozo Tanaka] Add - end
 
         getSickMedicineUsage(0).setOptionComboBoxParameters("用法",
                 IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
@@ -158,31 +219,69 @@ public class IkenshoHoumonKangoShijishoSick extends IkenshoDocumentAffairSick {
                 IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
         getSickMedicineUsage(5).setOptionComboBoxParameters("用法",
                 IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
+        //2009/01/06 [Tozo Tanaka] Add - begin
+        getSickMedicineUsage(6).setOptionComboBoxParameters("用法",
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
+        getSickMedicineUsage(7).setOptionComboBoxParameters("用法",
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
+        //2009/01/06 [Tozo Tanaka] Add - end
+        
         // 連動コンボの登録
         getSickMedicineUsage(0).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineUsage(1),
                         getSickMedicineUsage(2), getSickMedicineUsage(3),
-                        getSickMedicineUsage(4), getSickMedicineUsage(5) });
+                        getSickMedicineUsage(4), getSickMedicineUsage(5),
+                        getSickMedicineUsage(6), getSickMedicineUsage(7) });
         getSickMedicineUsage(1).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
                         getSickMedicineUsage(2), getSickMedicineUsage(3),
-                        getSickMedicineUsage(4), getSickMedicineUsage(5) });
+                        getSickMedicineUsage(4), getSickMedicineUsage(5),
+                        getSickMedicineUsage(6), getSickMedicineUsage(7) });
         getSickMedicineUsage(2).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
                         getSickMedicineUsage(1), getSickMedicineUsage(3),
-                        getSickMedicineUsage(4), getSickMedicineUsage(5) });
+                        getSickMedicineUsage(4), getSickMedicineUsage(5),
+                        getSickMedicineUsage(6), getSickMedicineUsage(7) });
         getSickMedicineUsage(3).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
                         getSickMedicineUsage(1), getSickMedicineUsage(2),
-                        getSickMedicineUsage(4), getSickMedicineUsage(5) });
+                        getSickMedicineUsage(4), getSickMedicineUsage(5),
+                        getSickMedicineUsage(6), getSickMedicineUsage(7) });
         getSickMedicineUsage(4).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
                         getSickMedicineUsage(1), getSickMedicineUsage(2),
-                        getSickMedicineUsage(3), getSickMedicineUsage(5) });
+                        getSickMedicineUsage(3), getSickMedicineUsage(5),
+                        getSickMedicineUsage(6), getSickMedicineUsage(7) });
         getSickMedicineUsage(5).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
                         getSickMedicineUsage(1), getSickMedicineUsage(2),
-                        getSickMedicineUsage(3), getSickMedicineUsage(4) });
+                        getSickMedicineUsage(3), getSickMedicineUsage(4),
+                        getSickMedicineUsage(6), getSickMedicineUsage(7) });
+        //2009/01/06 [Tozo Tanaka] Add - begin
+        getSickMedicineUsage(6).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
+                        getSickMedicineUsage(1), getSickMedicineUsage(2),
+                        getSickMedicineUsage(3), getSickMedicineUsage(4),
+                        getSickMedicineUsage(5), getSickMedicineUsage(7) });
+        getSickMedicineUsage(7).addInterlockComboComponents(
+                new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
+                        getSickMedicineUsage(1), getSickMedicineUsage(2),
+                        getSickMedicineUsage(3), getSickMedicineUsage(4),
+                        getSickMedicineUsage(5), getSickMedicineUsage(6) });
+        //2009/01/06 [Tozo Tanaka] Add - end
     }
+  
+  //2009/01/08 [Tozo Tanaka] Add - begin
+  protected String getSickProgressName(){
+      return "傷病の経過";
+  }
+  
+  protected void setSickProgressContaierText(int maxLength){
+      getSickProgresss().setText(
+              getSickProgressName() + IkenshoConstants.LINE_SEPARATOR + "（" + maxLength
+                        + "文字" + IkenshoConstants.LINE_SEPARATOR + "または"
+                        + IkenshoConstants.LINE_SEPARATOR + "5行以内）");
+  }
+  //2009/01/08 [Tozo Tanaka] Add - end
   
 }
