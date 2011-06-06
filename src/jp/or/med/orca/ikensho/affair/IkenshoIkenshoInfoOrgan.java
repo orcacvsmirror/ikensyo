@@ -688,17 +688,20 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
                         double addIT = info.getBill().getShosinAddIT();
                         double shosinHos = info.getBill().getShosinHospital();
                         double shosinSin = info.getBill().getShosinSinryoujo();
-                        if (oldDoctorIsAddIt) {
-                            // 元は電子化加算あり→電子化加算なし
-                            // 初診点数から選択している保険者の電子化加算点数を減算する
-                            shosinHos -= addIT;
-                            shosinSin -= addIT;
-                        } else {
-                            // 元は電子化加算なし→電子化加算あり
-                            // 初診点数に選択している保険者の電子化加算点数を減算する
-                            shosinHos += addIT;
-                            shosinSin += addIT;
-                        }
+                        // [ID:0000601][Masahiko Higuchi] 2010/02 del begin 診療報酬単価の変更対応
+                        // 電子化加算の処理は削除
+//                        if (oldDoctorIsAddIt) {
+//                            // 元は電子化加算あり→電子化加算なし
+//                            // 初診点数から選択している保険者の電子化加算点数を減算する
+//                            shosinHos -= addIT;
+//                            shosinSin -= addIT;
+//                        } else {
+//                            // 元は電子化加算なし→電子化加算あり
+//                            // 初診点数に選択している保険者の電子化加算点数を減算する
+//                            shosinHos += addIT;
+//                            shosinSin += addIT;
+//                        }
+                        // [ID:0000601][Masahiko Higuchi] 2010/02 del end
                         info.getBill().setShosinHospital(shosinHos);
                         info.getBill().setShosinSinryoujo(shosinSin);
                     }

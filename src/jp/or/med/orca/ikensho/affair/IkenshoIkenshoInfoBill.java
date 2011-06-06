@@ -70,7 +70,13 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
   private IkenshoInitialNegativeIntegerTextField xrayDigitalFilm = new IkenshoInitialNegativeIntegerTextField();
   private IkenshoInitialNegativeIntegerTextField xrayDigitalImaging = new IkenshoInitialNegativeIntegerTextField();
   // 2009/01/09[Tozo Tanaka] : add end
-
+  
+  // [ID:0000601][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+  // 単純撮影（デジタル）の追加
+  private ACOneDecimalDoubleTextField expXrayTsDigital = new ACOneDecimalDoubleTextField();
+  private IkenshoInitialNegativeIntegerTextField xrayTsDigital = new IkenshoInitialNegativeIntegerTextField();
+  // [ID:0000601][Masahiko Higuchi] 2010/02 add end
+  
   /**
    * 検査点数グループを返します。
    * @return 検査点数グループ
@@ -230,6 +236,13 @@ public class IkenshoIkenshoInfoBill extends IkenshoTabbableChildAffairContainer 
     ikenshoGroupBox2.add(xrayDigitalFilm, null);
     ikenshoGroupBox2.add(xrayDigitalImaging, null);
     // 2009/01/09[Tozo Tanaka] : add end
+    
+    // [ID:0000601][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+    expXrayTsDigital.setBindPath("EXP_XRAY_TS_DIGITAL");
+    xrayTsDigital.setBindPath("XRAY_TANJUN_SATUEI_DIGITAL");
+    ikenshoGroupBox2.add(xrayTsDigital, null);
+    ikenshoGroupBox3.add(expXrayTsDigital, null);
+    // [ID:0000601][Masahiko Higuchi] 2010/02 add end
  
   }
 

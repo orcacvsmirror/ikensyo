@@ -111,6 +111,9 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
         kanrenPnl2.add(furikomiMeigiContainer, VRLayout.FLOW_INSETLINE);
         kanrenPnl2.add(drNoPnl, VRLayout.FLOW_RETURN);
         kanrenPnl2.add(addItCheck, VRLayout.FLOW_RETURN);
+        // [ID:0000602][Masahiko Higuchi] 2010/02 del begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+        addItCheck.setVisible(false);
+        // [ID:0000602][Masahiko Higuchi] 2010/02 del end
 
         VRLayout kanrenPnl3Layout = new VRLayout();
         kanrenPnl3Layout.setLabelMargin(122);

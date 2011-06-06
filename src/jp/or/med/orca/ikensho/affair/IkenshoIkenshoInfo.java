@@ -1400,6 +1400,13 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeNumberNullToZero("SHOSIN_ADD_IT_TYPE",originalData));
         // Addition - end
         
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+        sb.append(",XRAY_TANJUN_SATUEI_DIGITAL = ");
+        sb.append(getDBSafeNumber("XRAY_TANJUN_SATUEI_DIGITAL", originalData));
+        sb.append(",EXP_XRAY_TS_DIGITAL = ");
+        sb.append(getDBSafeNumber("EXP_XRAY_TS_DIGITAL", originalData));
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add end
+        
     }
     
     
@@ -1587,6 +1594,11 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         // Addition - begin [Masahiko Higuchi]
         sb.append(" ,SHOSIN_ADD_IT_TYPE");
         // Addition - end
+        
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+        sb.append(" ,XRAY_TANJUN_SATUEI_DIGITAL");
+        sb.append(" ,EXP_XRAY_TS_DIGITAL");
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add end
     }
     
     /**
@@ -1606,6 +1618,14 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
         sb.append(",");
         sb.append(getDBSafeNumberNullToZero("SHOSIN_ADD_IT_TYPE",originalData));
         // Addition - end
+        
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+        sb.append(",");
+        sb.append(getDBSafeNumberNullToZero("XRAY_TANJUN_SATUEI_DIGITAL",originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumberNullToZero("EXP_XRAY_TS_DIGITAL",originalData));
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add end
+        
     }
     
 

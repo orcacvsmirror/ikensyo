@@ -201,6 +201,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
     private ACTextField expXrayDigitalImageManagement = new ACTextField();
     private JLabel expXrayDigitalImageManagementUnit = new JLabel();
     //2009/01/06 [Tozo Tanaka] Add - end
+    // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+    // 単純撮影（デジタル）
+    protected ACLabelContainer expXrayTsDigitalContainer = new ACLabelContainer();
+    protected ACTextField expXrayTsDigital = new ACTextField();
+    protected JLabel expXrayTsUnitDigital = new JLabel();
+    // [ID:0000600][Masahiko Higuchi] 2010/02 add end
     
     //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
     private ACGroupBox kindPrintGrp = new ACGroupBox();
@@ -678,6 +684,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 VRLayout.FLOW_INSETLINE_RETURN);
         shosinTextPnl.add(shosinAddItContainer,
                 VRLayout.FLOW_INSETLINE_RETURN);
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        shosinAddItContainer.setVisible(false);
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add end
         shosinSinryoujoContainer.setText("診療所");
         shosinSinryoujoContainer.setLayout(new BorderLayout());
         shosinSinryoujoContainer.add(shosinSinryoujo, BorderLayout.CENTER);
@@ -725,6 +734,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         addITType.setText("電子化加算は医師意見書でのみ算定する");
         addITType.setSelected(true);
         shosinTextPnl.add(addITType,VRLayout.FLOW_RETURN);
+        // [ID:0000600][Masahiko Higuchi] 2010/02 del begin 診療報酬単価の変更対応
+        addITType.setVisible(false);
+        // [ID:0000600][Masahiko Higuchi] 2010/02 del end
         //shosinGrp.add(addITType, BorderLayout.SOUTH);
         // 2006/09/07[Tozo Tanaka] : add end
 
@@ -818,6 +830,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 VRLayout.FLOW_INSETLINE_RETURN);
         sinsatuPointsRightPnl.add(expXrayTsContainer,
                 VRLayout.FLOW_INSETLINE_RETURN);
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応 
+        // 単純撮影（デジタル）
+        sinsatuPointsRightPnl.add(expXrayTsDigitalContainer,
+                VRLayout.FLOW_INSETLINE_RETURN);
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add end
         sinsatuPointsRightPnl.add(expXraySsContainer,
                 VRLayout.FLOW_INSETLINE_RETURN);
         sinsatuPointsRightPnl.add(expXrayFilmContainer,
@@ -835,7 +852,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expNitk.setHorizontalAlignment(JTextField.RIGHT);
         expNitk.setBindPath("EXP_NITK");
         expNitkUnit.setText("点");
-        expXrayTsContainer.setText("単純撮影");
+        // [ID:0000600][Masahiko Higuchi] 2010/02 edit begin 診療報酬単価の変更対応
+        expXrayTsContainer.setText("単純撮影(アナログ)");
+        // [ID:0000600][Masahiko Higuchi] 2010/02 edit end
         expXrayTsContainer.setLayout(new BorderLayout());
         expXrayTsContainer.add(expXrayTs, BorderLayout.CENTER);
         expXrayTsContainer.add(expXrayTsUnit, BorderLayout.EAST);
@@ -881,6 +900,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 VRLayout.FLOW_INSETLINE_RETURN);
         sinsatuPointsRight2Pnl.add(expXrayDigitalImagingContainer,
                 VRLayout.FLOW_INSETLINE_RETURN);
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        expXrayDigitalImagingContainer.setVisible(false);
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add end
         
         //デジタル撮影の場合：フィルムレスの場合：電子画像管理加算
         expXrayDigitalImageManagementContainer.setText("電子画像管理加算");
@@ -925,13 +947,29 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         expXrayDigitalImagingUnit.setText("点");
         //2009/01/06 [Tozo Tanaka] Add - end
         
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        // 単純撮影（デジタル）
+        expXrayTsDigitalContainer.setText("単純撮影(デジタル)");
+        expXrayTsDigitalContainer.setLayout(new BorderLayout());
+        expXrayTsDigitalContainer.add(expXrayTsDigital, BorderLayout.CENTER);
+        expXrayTsDigitalContainer.add(expXrayTsUnitDigital, BorderLayout.EAST);
+        expXrayTsDigital.setIMEMode(InputSubset.LATIN_DIGITS);
+        expXrayTsDigital.setFormat(new ACOneDecimalDoubleFormat());
+        expXrayTsDigital.setCharType(new VRCharType("DOUBLE1", DOUBLE_INPUT_PERSER));
+        expXrayTsDigital.setColumns(4);
+        expXrayTsDigital.setMaxLength(6);
+        expXrayTsDigital.setHorizontalAlignment(JTextField.RIGHT);
+        expXrayTsDigital.setBindPath("EXP_XRAY_TS_DIGITAL");
+        expXrayTsUnitDigital.setText("点");
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add end
+        
         // 戻すボタン
         rollBackPnl.setLayout(new VRLayout());
         rollBackPnl.add(rollBack, VRLayout.EAST);
         insurerNmContainer.add(insurerNmField, java.awt.BorderLayout.CENTER);
-        // 2008/02/25 [Masahiko_Higuchi] edit - begin V3.0.6 平成20年度診療報酬単価変更対応
-        rollBack.setText("H20年診療報酬単価(D)");
-        // 2008/02/25 [Masahiko_Higuchi] edit - end
+        //[ID:0000600][Masahiko Higuchi] 2010/02 edit begin 診療報酬単価の変更対応
+        rollBack.setText("H22年診療報酬単価(D)");
+        //[ID:0000600][Masahiko Higuchi] 2010/02 edit end
         rollBack.setMnemonic('D');
     }
 
@@ -1060,12 +1098,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         // 初期診療報酬単価に戻す
         rollBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // 2008/02/25 [Masahiko_Higuchi] edit - begin V3.0.6 平成20年度診療報酬単価変更対応
+                // [ID:0000600][Masahiko Higuchi] 2010/02 edit begin 診療報酬単価の変更対応
                 int result = ACMessageBox.show(
-                        "意見書作成料／診察・検査費用点数に"+ ACConstants.LINE_SEPARATOR + "H20年診療報酬単価を設定します。よろしいですか？",
+                        "意見書作成料／診察・検査費用点数に"+ ACConstants.LINE_SEPARATOR + "H22年診療報酬単価を設定します。よろしいですか？",
                         ACMessageBox.BUTTON_OKCANCEL,
                         ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
-                // 2008/02/25 [Masahiko_Higuchi] edit - end
+                // [ID:0000600][Masahiko Higuchi] 2010/02 edit end
                 if (result == ACMessageBox.RESULT_OK) {
                     try {
                         loadMKingakuTensu();
@@ -1357,6 +1395,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sb.append(" EXP_XRAY_DIGITAL_FILM,");
         sb.append(" EXP_XRAY_DIGITAL_IMAGING,");
         // 2009/01/09[Tozo Tanaka] : add end
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        sb.append(" EXP_XRAY_TS_DIGITAL,");
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add end
         sb.append(" LAST_TIME");
         sb.append(" FROM");
         sb.append(" M_KINGAKU_TENSU");
@@ -1366,29 +1407,54 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         VRMap kingakuTensuData;
         if (kingakuTensuArray.getDataSize() > 0) { // DB上にデータ有
             kingakuTensuData = (VRMap) kingakuTensuArray.getData();
-            // 平成18年度検査費用点数 
-            // 2006/06/20
-            // Addition - [Masahiko Higuchi]
-            // 2008/02/25 [Masahiko_Higuchi] edit - begin V3.0.6 平成20年度診療報酬単価変更対応
-            kingakuTensuData.put("EXP_KS",new Double(11.0)); // 血液採取(静脈)
-            kingakuTensuData.put("EXP_KIK_MKI",new Double(22.0)); // 末梢血液一般検査
+//            // 平成18年度検査費用点数 
+//            // 2006/06/20
+//            // Addition - [Masahiko Higuchi]
+//            // 2008/02/25 [Masahiko_Higuchi] edit - begin V3.0.6 平成20年度診療報酬単価変更対応
+//            kingakuTensuData.put("EXP_KS",new Double(11.0)); // 血液採取(静脈)
+//            kingakuTensuData.put("EXP_KIK_MKI",new Double(22.0)); // 末梢血液一般検査
+//            kingakuTensuData.put("EXP_KIK_KEKK",new Double(125.0)); // 血液学的検査判断料
+//            kingakuTensuData.put("EXP_KKK_KKK",new Double(129.0)); // 血液化学検査(10項目以上)
+//            kingakuTensuData.put("EXP_KKK_SKK",new Double(144.0)); // 生化学的検査(I)判断料
+//            kingakuTensuData.put("EXP_NITK",new Double(26.0)); // 尿中一般物質定性判定量検査
+//            // 2008/02/25 [Masahiko_Higuchi] edit - end
+//            kingakuTensuData.put("EXP_XRAY_TS",new Double(65.0)); // 単純撮影
+//            kingakuTensuData.put("EXP_XRAY_SS",new Double(85.0)); // 写真診断(胸部)
+//            kingakuTensuData.put("EXP_XRAY_FILM",new Double(13.0));// フィルム(大角)
+//            // 2009/01/09[Tozo Tanaka] : add begin
+//            kingakuTensuData.put("EXP_XRAY_DIGITAL_MANAGEMENT",new Double(60.0));// 電子画像管理加算
+//            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(24.1));// 画像記録用フィルム(大角)
+//            kingakuTensuData.put("EXP_XRAY_DIGITAL_IMAGING",new Double(15.0));// デジタル映像化処理加算
+//            // 2009/01/09[Tozo Tanaka] : add end
+//            kingakuTensuData.put("SHOSIN_SINRYOUJO", new Double(270.0)); // 初診料(診療所)
+//            kingakuTensuData.put("SHOSIN_HOSPITAL", new Double(270.0)); // 初診料(病院)
+//            kingakuTensuData.put("SHOSIN_ADD_IT", new Double(3.0)); // 電子化加算
+//            // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+//            kingakuTensuData.put("EXP_XRAY_TS_DIGITAL", new Double(68.0)); // 単純撮影（デジタル） 
+//            // [ID:0000600][Masahiko Higuchi] 2010/02 add end
+
+            // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+            // Ikensyo.jarを差し戻して過去の請求書作成を行う場合を想定しているため、ソース内で点数を記載
+            // 可読性が落ちたのでまとめて転記
+            kingakuTensuData.put("EXP_KS",new Double(13.0)); // 血液採取(静脈)
+            kingakuTensuData.put("EXP_KIK_MKI",new Double(21.0)); // 末梢血液一般検査
             kingakuTensuData.put("EXP_KIK_KEKK",new Double(125.0)); // 血液学的検査判断料
-            kingakuTensuData.put("EXP_KKK_KKK",new Double(129.0)); // 血液化学検査(10項目以上)
+            kingakuTensuData.put("EXP_KKK_KKK",new Double(123.0)); // 血液化学検査(10項目以上)
             kingakuTensuData.put("EXP_KKK_SKK",new Double(144.0)); // 生化学的検査(I)判断料
             kingakuTensuData.put("EXP_NITK",new Double(26.0)); // 尿中一般物質定性判定量検査
-            // 2008/02/25 [Masahiko_Higuchi] edit - end
-            kingakuTensuData.put("EXP_XRAY_TS",new Double(65.0)); // 単純撮影
+            kingakuTensuData.put("EXP_XRAY_TS",new Double(60.0)); // 単純撮影（アナログ）
+            kingakuTensuData.put("EXP_XRAY_TS_DIGITAL", new Double(68.0)); // 単純撮影（デジタル）
             kingakuTensuData.put("EXP_XRAY_SS",new Double(85.0)); // 写真診断(胸部)
-            kingakuTensuData.put("EXP_XRAY_FILM",new Double(13.0));// フィルム(大角)
-            // 2009/01/09[Tozo Tanaka] : add begin
-            kingakuTensuData.put("EXP_XRAY_DIGITAL_MANAGEMENT",new Double(60.0));// 電子画像管理加算
-            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(24.1));// 画像記録用フィルム(大角)
-            kingakuTensuData.put("EXP_XRAY_DIGITAL_IMAGING",new Double(15.0));// デジタル映像化処理加算
-            // 2009/01/09[Tozo Tanaka] : add end
+            kingakuTensuData.put("EXP_XRAY_FILM",new Double(11));// フィルム(大角)
+            kingakuTensuData.put("EXP_XRAY_DIGITAL_MANAGEMENT",new Double(57.0));// 電子画像管理加算
+            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(22));// 画像記録用フィルム(大角)
             kingakuTensuData.put("SHOSIN_SINRYOUJO", new Double(270.0)); // 初診料(診療所)
             kingakuTensuData.put("SHOSIN_HOSPITAL", new Double(270.0)); // 初診料(病院)
-
-            kingakuTensuData.put("SHOSIN_ADD_IT", new Double(3.0)); // 電子化加算
+            // 削除項目 値は0で設定
+            kingakuTensuData.put("EXP_XRAY_DIGITAL_IMAGING",new Double(0.0));// デジタル映像化処理加算
+            kingakuTensuData.put("SHOSIN_ADD_IT", new Double(0.0)); // 電子化加算
+            // [ID:0000600][Masahiko Higuchi] 2010/02 add end
+            
         } else {
             kingakuTensuData = (VRMap) pointsGrp.createSource(); // DB上にデータ無
         }
@@ -1449,6 +1515,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sb.append(" EXP_XRAY_DIGITAL_FILM,");
         sb.append(" EXP_XRAY_DIGITAL_IMAGING,");
         // 2009/01/09[Tozo Tanaka] : add end
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        sb.append(" EXP_XRAY_TS_DIGITAL,");
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add end
         sb.append(" SOUKATUHYOU_PRT,");
         sb.append(" MEISAI_KIND,");
         sb.append(" FURIKOMISAKI_PRT,");
@@ -1609,7 +1678,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 String EXP_XRAY_DIGITAL_FILM = getDBSafeNumber("EXP_XRAY_DIGITAL_FILM", insurerData);
                 String EXP_XRAY_DIGITAL_IMAGING = getDBSafeNumber("EXP_XRAY_DIGITAL_IMAGING", insurerData);
                 // 2009/01/09[Tozo Tanaka] : add end
-
+                // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+                String EXP_XRAY_TS_DIGITAL = getDBSafeNumber("EXP_XRAY_TS_DIGITAL", insurerData);
+                // [ID:0000600][Masahiko Higuchi] 2010/02 add end
                 // パッシブチェック / トランザクション開始
                 if (isUpdate) {
                     // 更新時
@@ -1681,6 +1752,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(",EXP_XRAY_DIGITAL_FILM=" + EXP_XRAY_DIGITAL_FILM);
                     sb.append(",EXP_XRAY_DIGITAL_IMAGING=" + EXP_XRAY_DIGITAL_IMAGING);
                     // 2009/01/09[Tozo Tanaka] : add end
+//                  [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+                    sb.append(",EXP_XRAY_TS_DIGITAL=" + EXP_XRAY_TS_DIGITAL);
+//                  [ID:0000600][Masahiko Higuchi] 2010/02 add end
                     sb.append(",SOUKATUHYOU_PRT=" + SOUKATUHYOU_PRT);
                     sb.append(",MEISAI_KIND=" + MEISAI_KIND);
                     sb.append(",FURIKOMISAKI_PRT=" + FURIKOMISAKI_PRT);
@@ -1741,6 +1815,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(" EXP_XRAY_DIGITAL_FILM,");
                     sb.append(" EXP_XRAY_DIGITAL_IMAGING,");
                     // 2009/01/09[Tozo Tanaka] : add end
+                    // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+                    sb.append(" EXP_XRAY_TS_DIGITAL,");
+                    // [ID:0000600][Masahiko Higuchi] 2010/02 add end
                     sb.append(" SOUKATUHYOU_PRT,");
                     sb.append(" MEISAI_KIND,");
                     sb.append(" FURIKOMISAKI_PRT,");
@@ -1792,6 +1869,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append("," + EXP_XRAY_DIGITAL_FILM);
                     sb.append("," + EXP_XRAY_DIGITAL_IMAGING);
                     // 2009/01/09[Tozo Tanaka] : add end
+                    // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+                    sb.append("," + EXP_XRAY_TS_DIGITAL);
+                    // [ID:0000600][Masahiko Higuchi] 2010/02 add end
                     sb.append("," + SOUKATUHYOU_PRT);
                     sb.append("," + MEISAI_KIND);
                     sb.append("," + FURIKOMISAKI_PRT);
@@ -2175,10 +2255,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         if (!isValidPattern(pat, 1, shosinHospital, msg)) {
             return false;
         }
-        // 電子化加算入力チェック
-        if (!isValidPattern(pat, 1, shosinAddIt, msg)) {
-            return false;
-        }
+        // [ID:0000600][Masahiko Higuchi] 2010/02 del begin 診療報酬単価の変更対応
+//        // 電子化加算入力チェック
+//        if (!isValidPattern(pat, 1, shosinAddIt, msg)) {
+//            return false;
+//        }
+        // [ID:0000600][Masahiko Higuchi] 2010/02 del end
         // 血液採取(静脈)入力チェック
         if (!isValidPattern(pat, 1, expKs, msg)) {
             return false;
@@ -2215,6 +2297,19 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         if (!isValidPattern(pat, 1, expXrayFilm, msg)) {
             return false;
         }
+        
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        // 単純撮影（デジタル）入力チェック
+        if (!isValidPattern(pat, 1, expXrayTsDigital, msg)) {
+            return false;
+        }
+        if (!isValidPattern(pat, 1, expXrayDigitalFilm, msg)) {
+            return false;
+        }
+        if (!isValidPattern(pat, 1, expXrayDigitalImageManagement, msg)) {
+            return false;
+        }
+        // [ID:0000600][Masahiko Higuchi] 2010/02 add end
 
         return true;
     }

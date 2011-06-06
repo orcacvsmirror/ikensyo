@@ -27,11 +27,15 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import org.apache.xalan.trace.SelectionEvent;
+
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACOneDecimalDoubleTextField;
+import jp.nichicom.ac.component.ACRadioButtonItem;
 import jp.nichicom.ac.component.ACTextField;
+import jp.nichicom.ac.component.ACValueArrayRadioButtonGroup;
 import jp.nichicom.ac.component.event.ACFollowDisabledItemListener;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
@@ -39,6 +43,7 @@ import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.ac.util.adapter.ACListModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
 import jp.nichicom.vr.component.VRLabel;
@@ -166,7 +171,14 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
     private ACOneDecimalDoubleTextField xrayDigitalImageManagementPoint = new ACOneDecimalDoubleTextField();
     private VRLabel xrayDigitalImageManagementPointUnit = new VRLabel();
     // 2009/01/06 [Tozo Tanaka] Add - end
-
+    
+    // [ID:0000601][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+    private ACIntegerCheckBox xrayDigital = new ACIntegerCheckBox();
+    private VRPanel xrayDigitalPoints = new VRPanel();
+    private ACOneDecimalDoubleTextField xrayDigitalPoint = new ACOneDecimalDoubleTextField();
+    private VRLabel xrayDigitalPointUnit = new VRLabel();
+    // [ID:0000601][Masahiko Higuchi] 2010/02 add end
+    
     private VRLabel category = new VRLabel();
     private VRLabel point = new VRLabel();
     private VRLabel summary = new VRLabel();
@@ -227,10 +239,13 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
     //2009/01/13 [Tozo Tanaka] Replace - begin
 //    protected IkenshoTreeFollowChecker xrayChecker = new IkenshoTreeFollowChecker(
 //            xray, new JCheckBox[] { xrayBasic, xrayPhotoCheck, xrayFilm});
+    // [ID:0000601][Masahiko Higuchi] 2010/02 edit begin 診療報酬単価の変更対応
     protected IkenshoTreeFollowChecker xrayChecker = new IkenshoTreeFollowChecker(
-            xray, new JCheckBox[] { xrayBasic, xrayPhotoCheck, xrayFilm, xrayDigitalImageManagement, xrayDigitalFilm, xrayDigitalImaging },
-            new JCheckBox[] { xrayBasic, xrayPhotoCheck, xrayFilm, }
-            );
+            xray, new JCheckBox[] { xrayBasic, xrayDigital, xrayPhotoCheck,
+                    xrayFilm, xrayDigitalImageManagement, xrayDigitalFilm,
+                    xrayDigitalImaging }, new JCheckBox[] { xrayBasic,
+                    xrayPhotoCheck, xrayFilm, });
+    // [ID:0000601][Masahiko Higuchi] 2010/02 edit end
     //2009/01/13 [Tozo Tanaka] Replace - begin
     protected VRMap defaultInsure;
     protected VRMap pointMap = new VRHashMap();
@@ -489,6 +504,11 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
                         ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL) == ACMessageBox.RESULT_OK) {
                     try {
                         // 適用前のデータを退避
+                        // [ID:0000601][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+                        // ソースの取得前に削除となったデジタル映像化処理加算は除外
+                        xrayDigitalImaging.setSelected(false);
+                        // [ID:0000601][Masahiko Higuchi] 2010/02 add end
+                        
                         VRBindSource old = calcRoot.getSource();
                         VRBindSource tmp = (VRBindSource) calcRoot
                                 .createSource();
@@ -498,7 +518,7 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
 
                         useDefaultPoint();
                         followBind();
-
+                        
                         // 2006/08/03 TODO
                         // useDefaultPoint()内で取得したSHOSIN_TAISHOUチェックの値を保持する。
                         // 同時に現在の点数で再計算した値を表示する。
@@ -617,34 +637,51 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         // xrayPhotoCheckPoint, xrayFilmPoint }, new String[] {
         // xrayBasic.getText(), xrayPhotoCheck.getText(),
         // xrayFilm.getText() }, calcXRayPoint, calcXRaySummary);
+        // [ID:0000601][Masahiko Higuchi] 2010/02 edit begin 診療報酬単価の変更対応
         addCheckItemListenerMap(pointMap, new String[] { "EXP_XRAY_TS",
-                "EXP_XRAY_SS", "EXP_XRAY_FILM", "EXP_XRAY_DIGITAL_MANAGEMENT",
-                "EXP_XRAY_DIGITAL_FILM", "EXP_XRAY_DIGITAL_IMAGING" },
-                new JCheckBox[] { xrayBasic, xrayPhotoCheck, xrayFilm,
-                        xrayDigitalImageManagement, xrayDigitalFilm,
+                "EXP_XRAY_TS_DIGITAL", "EXP_XRAY_SS", "EXP_XRAY_FILM",
+                "EXP_XRAY_DIGITAL_MANAGEMENT", "EXP_XRAY_DIGITAL_FILM",
+                "EXP_XRAY_DIGITAL_IMAGING" },
+                new JCheckBox[] { xrayBasic, xrayDigital, xrayPhotoCheck,
+                        xrayFilm, xrayDigitalImageManagement, xrayDigitalFilm,
                         xrayDigitalImaging }, new JTextField[] {
-                        xrayBasicPoint, xrayPhotoCheckPoint, xrayFilmPoint,
-                        xrayDigitalImageManagementPoint, xrayDigitalFilmPoint,
-                        xrayDigitalImagingPoint }, new String[] {
-                        xrayBasic.getText(), xrayPhotoCheck.getText(),
-                        xrayFilm.getText(),
+                        xrayBasicPoint, xrayDigitalPoint, xrayPhotoCheckPoint,
+                        xrayFilmPoint, xrayDigitalImageManagementPoint,
+                        xrayDigitalFilmPoint, xrayDigitalImagingPoint },
+                new String[] { xrayBasic.getText(), xrayDigital.getText(),
+                        xrayPhotoCheck.getText(), xrayFilm.getText(),
                         xrayDigitalImageManagement.getText(),
                         xrayDigitalFilm.getText(),
                         xrayDigitalImaging.getText(), }, calcXRayPoint,
                 calcXRaySummary);
-        
+//            xrayFilm.addItemListener(new IkenshoExclusionDisabledItemListener(
+//                    new JComponent[] { xrayDigitalImageManagement, xrayDigitalFilm,
+//                            xrayDigitalImaging }));
+//            xrayDigitalImageManagement.addItemListener(new IkenshoExclusionDisabledItemListener(
+//                    new JComponent[] { xrayFilm, xrayDigitalFilm,
+//                            xrayDigitalImaging }));
+//            xrayDigitalFilm.addItemListener(new IkenshoExclusionDisabledItemListener(
+//                    new JComponent[] { xrayFilm, xrayDigitalImageManagement },
+//                            new JCheckBox[] { xrayDigitalImaging }));
+//            xrayDigitalImaging.addItemListener(new IkenshoExclusionDisabledItemListener(
+//                    new JComponent[] { xrayFilm, xrayDigitalImageManagement },
+//                            new JCheckBox[] { xrayDigitalFilm }));
         xrayFilm.addItemListener(new IkenshoExclusionDisabledItemListener(
-                new JComponent[] { xrayDigitalImageManagement, xrayDigitalFilm,
-                        xrayDigitalImaging }));
+                new JComponent[] { xrayDigitalImageManagement, xrayDigitalFilm }));
         xrayDigitalImageManagement.addItemListener(new IkenshoExclusionDisabledItemListener(
-                new JComponent[] { xrayFilm, xrayDigitalFilm,
-                        xrayDigitalImaging }));
+                new JComponent[] { xrayFilm, xrayDigitalFilm }));
         xrayDigitalFilm.addItemListener(new IkenshoExclusionDisabledItemListener(
                 new JComponent[] { xrayFilm, xrayDigitalImageManagement },
-                        new JCheckBox[] { xrayDigitalImaging }));
-        xrayDigitalImaging.addItemListener(new IkenshoExclusionDisabledItemListener(
-                new JComponent[] { xrayFilm, xrayDigitalImageManagement },
-                        new JCheckBox[] { xrayDigitalFilm }));
+                        new JCheckBox[] { }));
+        // [ID:0000601][Masahiko Higuchi] 2010/02 edit end
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        xrayBasic.addItemListener(new IkenshoExclusionDisabledItemListener(
+                new JComponent[] { xrayDigital},
+                        new JCheckBox[] {}));        
+        xrayDigital.addItemListener(new IkenshoExclusionDisabledItemListener(
+                new JComponent[] { xrayBasic},
+                        new JCheckBox[] {}));
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add end
         
 //        xrayDigitalFilm.addItemListener(new IkenshoFollowCheckItemListener(
 //                new JCheckBox[] { xrayDigitalImaging }));
@@ -835,8 +872,12 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
                 double shoshinSin = ACCastUtilities.toDouble(source
                         .getData("SHOSIN_SINRYOUJO"), 0);
 
-                double shoshinHosAdd = shoshinHos += addIT;
-                double shoshinSinAdd = shoshinSin += addIT;
+              // [ID:0000601][Masahiko Higuchi] 2010/02 edit begin 診療報酬単価の変更対応
+//                double shoshinHosAdd = shoshinHos += addIT;
+//                double shoshinSinAdd = shoshinSin += addIT;
+              double shoshinHosAdd = shoshinHos;
+              double shoshinSinAdd = shoshinSin;
+              // [ID:0000601][Masahiko Higuchi] 2010/02 edit end
 
                 source.setData("SHOSIN_HOSPITAL", new Double(shoshinHosAdd));
                 source.setData("SHOSIN_SINRYOUJO", new Double(shoshinSinAdd));
@@ -993,7 +1034,10 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         nyouTest.setBindPath("NYO_KENSA");
         xray.setText("胸部単純X線撮影");
         xray.setBindPath("");
-        xrayBasic.setText("単純撮影");
+        // [ID:0000601][Masahiko Higuchi] 2010/02 edit begin 診療報酬単価の変更対応
+        //xrayBasic.setText("単純撮影");
+        xrayBasic.setText("単純撮影(アナログ)");
+        // [ID:0000601][Masahiko Higuchi] 2010/02 edit begin 診療報酬単価の変更対応
         xrayBasic.setBindPath("XRAY_TANJUN_SATUEI");
         xrayPhotoCheck.setText("写真診断(胸部)");
         xrayPhotoCheck.setBindPath("XRAY_SHASIN_SINDAN");
@@ -1089,6 +1133,19 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
                 xrayDigitalImageManagementPointUnit, null);
         // 2009/01/06 [Tozo Tanaka] Add - end
 
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        // 単純撮影（デジタル）
+        xrayDigital.setText("単純撮影(デジタル)");
+        xrayDigital.setBindPath("XRAY_TANJUN_SATUEI_DIGITAL");
+        xrayDigitalPoint.setEditable(false);
+        xrayDigitalPoint.setColumns(7);
+        xrayDigitalPoint.setHorizontalAlignment(SwingConstants.RIGHT);
+        xrayDigitalPointUnit.setText("点");
+        // コンポーネント配置
+        xrayDigitalPoints.add(xrayDigitalPoint, null);
+        xrayDigitalPoints.add(xrayDigitalPointUnit, null);
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add end
+        
         category.setText("内訳");
         category.setOpaque(true);
         category.setHorizontalAlignment(SwingConstants.CENTER);
@@ -1320,11 +1377,13 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         checkMinDimension = new Dimension(
                 (int) (checkMinDimension.getWidth() - checkSpaceDimension.getWidth()),
                 (int) checkMinDimension.getHeight());
+        // [ID:0000601][Masahiko Higuchi] 2010/02 edit begin 診療報酬単価の変更対応
         checks = new ACIntegerCheckBox[] { bloodBasicTest,
                 ketsuekigakuTestCost, bloodChemistryTest, seikagakuTestCost,
-                xrayBasic, xrayPhotoCheck, xrayFilm,
+                xrayBasic, xrayDigital, xrayPhotoCheck, xrayFilm,
                 xrayDigitalImageManagement, xrayDigitalFilm,
                 xrayDigitalImaging, };
+        // [ID:0000601][Masahiko Higuchi] 2010/02 edit end
         for (int i = 0; i < checks.length; i++) {
             checks[i].setMinimumSize(checkMinDimension);
             checks[i].setPreferredSize(checkMinDimension);
@@ -1367,6 +1426,12 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
         pointsRight.add(xrayBasic, VRLayout.FLOW);
         pointsRight.add(xrayBasicPoints, VRLayout.FLOW_RETURN);
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        //胸部単純X線撮影＞単純撮影(デジタル）
+        pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        pointsRight.add(xrayDigital, VRLayout.FLOW);
+        pointsRight.add(xrayDigitalPoints, VRLayout.FLOW_RETURN);
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add end
         //胸部単純X線撮影＞写真診断(胸部)
         pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
         pointsRight.add(xrayPhotoCheck, VRLayout.FLOW);
@@ -1384,9 +1449,17 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         pointsRight.add(xrayDigitalFilm, VRLayout.FLOW);
         pointsRight.add(xrayDigitalFilmPoints, VRLayout.FLOW_RETURN);
         //胸部単純X線撮影＞デジタル映像化処理加算
-        pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        // [ID:0000601][Masahiko Higuchi] 2010/02 del begin 診療報酬単価の変更対応
+        // このスペースがあるとMacで見切れるのでAddしない
+        //pointsRight.add(pointsSpacer[pointsSpacerIndex++], VRLayout.FLOW);
+        // [ID:0000601][Masahiko Higuchi] 2010/02 del end
         pointsRight.add(xrayDigitalImaging, VRLayout.FLOW);
         pointsRight.add(xrayDigitalImagingPoints, VRLayout.FLOW_RETURN);
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add begin 診療報酬単価の変更対応
+        // 非表示化
+        xrayDigitalImaging.setVisible(false);
+        xrayDigitalImagingPoints.setVisible(false);
+        // [ID:0000601][Masahiko Higuchi] 2010/02 add end
         // 2009/01/13 [Tozo Tanaka] Replace - end
 
         seikagakuTestCostPoints.add(seikagakuTestCostPoint, null);

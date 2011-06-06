@@ -2098,6 +2098,12 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                         getString("EXP_XRAY_DIGITAL_IMAGING", map)));
             }
             // 2009/01/09[Tozo Tanaka] : add end
+            // [ID:0000603][Masahiko Higuchi] 2010/03 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+            if (getString("XRAY_TANJUN_SATUEI_DIGITAL", map).equals("1")) {
+                point = point.add(new BigDecimal(
+                        getString("EXP_XRAY_TS_DIGITAL", map)));
+            }
+            // [ID:0000603][Masahiko Higuchi] 2010/03 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
             if (point.compareTo(new BigDecimal("0")) != 0) {
                 // “_”
                 IkenshoCommon.addString(pd, "costList1.xray.point", point
@@ -2377,6 +2383,11 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             total = total.add(new BigDecimal(getString("EXP_XRAY_DIGITAL_IMAGING", map)));
         }
         // 2009/01/09[Tozo Tanaka] : add end
+        // [ID:0000603][Masahiko Higuchi] 2010/03 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+        if (getString("XRAY_TANJUN_SATUEI_DIGITAL", map).equals("1")) {
+            total = total.add(new BigDecimal(getString("EXP_XRAY_TS_DIGITAL", map)));
+        }
+        // [ID:0000603][Masahiko Higuchi] 2010/03 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
         return total;
     }
 
@@ -2624,6 +2635,9 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         sb.append(" ,IKN_BILL.NYO_KENSA");
         sb.append(" ,IKN_BILL.NYO_KENSA_TEKIYOU");
         sb.append(" ,IKN_BILL.XRAY_TANJUN_SATUEI");
+        // [ID:0000603][Masahiko Higuchi] 2010/03 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+        sb.append(" ,IKN_BILL.XRAY_TANJUN_SATUEI_DIGITAL");
+        // [ID:0000603][Masahiko Higuchi] 2010/03 add end
         sb.append(" ,IKN_BILL.XRAY_SHASIN_SINDAN");
         sb.append(" ,IKN_BILL.XRAY_FILM");
         // 2009/01/09[Tozo Tanaka] : add begin
@@ -2639,6 +2653,9 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         sb.append(" ,IKN_BILL.EXP_KKK_SKK");
         sb.append(" ,IKN_BILL.EXP_NITK");
         sb.append(" ,IKN_BILL.EXP_XRAY_TS");
+        // [ID:0000603][Masahiko Higuchi] 2010/03 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+        sb.append(" ,IKN_BILL.EXP_XRAY_TS_DIGITAL");
+        // [ID:0000603][Masahiko Higuchi] 2010/03 add end
         sb.append(" ,IKN_BILL.EXP_XRAY_SS");
         sb.append(" ,IKN_BILL.EXP_XRAY_FILM");
         // 2009/01/09[Tozo Tanaka] : add begin
