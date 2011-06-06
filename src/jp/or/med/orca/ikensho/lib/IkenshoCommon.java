@@ -342,6 +342,11 @@ public class IkenshoCommon {
     /** 医師意見書-特記事項 */
     public static final int TEIKEI_ISHI_MENTION_NAME = 67;
     
+    // [ID:0000518][Tozo TANAKA] 2009/09/04 add begin 【2009年度対応：特記事項一覧】特定疾病項目の編集を可能とする 
+    /** 特定疾病 */
+    public static final int TEIKEI_SPECIFIED_DISEASE_NAME = 68;
+    // [ID:0000518][Tozo TANAKA] 2009/09/04 add end 【2009年度対応：特記事項一覧】特定疾病項目の編集を可能とする 
+
 	/**
 	 * 最新文書該当なし
 	 */

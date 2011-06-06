@@ -74,8 +74,12 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
     private JLabel title = new JLabel();
 
     private VRPanel menus = new VRPanel();
+//  [ID:0000514][Tozo TANAKA] 2009/09/16 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    private ACMainMenuButton ikenshoShijisho = new ACMainMenuButton(
+//            "「主治医意見書・医師意見書・訪問看護指示書」"+ACConstants.LINE_SEPARATOR+"　作成／編集(K)");
     private ACMainMenuButton ikenshoShijisho = new ACMainMenuButton(
-            "「主治医意見書・医師意見書・訪問看護指示書」"+ACConstants.LINE_SEPARATOR+"　作成／編集(K)");
+            "「主治医意見書・医師意見書・（特別）訪問看護指示書」"+ACConstants.LINE_SEPARATOR+"　作成／編集(K)");
+//  [ID:0000514][Tozo TANAKA] 2009/09/16 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     private ACMainMenuButton seikyuusho = new ACMainMenuButton("「請求書」発行(V)");
     private ACMainMenuButton basic = new ACMainMenuButton("基礎データ登録(B)");
     private ACMainMenuButton other = new ACMainMenuButton("その他の機能(O)");

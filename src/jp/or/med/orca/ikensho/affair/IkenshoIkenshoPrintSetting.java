@@ -41,7 +41,10 @@ import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
 
     private VRPanel contents = new VRPanel();
-    private ACGroupBox printOptionGroup = new ACGroupBox();
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+//    private ACGroupBox printOptionGroup = new ACGroupBox();
+    protected ACGroupBox printOptionGroup;
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
     private VRPanel billPrintPanel = new VRPanel();
     private ACGroupBox billPrintGroup = new ACGroupBox();
     private ACGroupBox csvGroup = new ACGroupBox();
@@ -80,14 +83,23 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
     private VRLayout billPrintPanelLayout = new VRLayout();
     private VRLayout billPanelLayout = new VRLayout();
     private ACIntegerCheckBox printPageHeader = new ACIntegerCheckBox();
-    private ACGroupBox pageHeaderGroup = new ACGroupBox();
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+    //private ACGroupBox pageHeaderGroup = new ACGroupBox();
+    protected ACGroupBox pageHeaderGroup;
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
     private ACLabelContainer printPageHeaders = new ACLabelContainer();
     private ACLabelContainer secondHeaders = new ACLabelContainer();
     private ACIntegerCheckBox printSecondHeader = new ACIntegerCheckBox();
-    private ACGroupBox secondHeaderGroup = new ACGroupBox();
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+//    private ACGroupBox secondHeaderGroup = new ACGroupBox();
+    protected ACGroupBox secondHeaderGroup;
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
     private ACLabelContainer doctorNames = new ACLabelContainer();
     private ACIntegerCheckBox printDoctorName = new ACIntegerCheckBox();
-    private ACGroupBox doctorNameGroup = new ACGroupBox();
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+//    private ACGroupBox doctorNameGroup = new ACGroupBox();
+    protected ACGroupBox doctorNameGroup;
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
     private VRLayout printOptionGroupLayout = new VRLayout();
     private ACButton ok = new ACButton();
     private ACButton cancel = new ACButton();
@@ -100,7 +112,10 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
     private VRLabel billPrintNoSaveAlert1 = new VRLabel();
     private VRPanel csvSubmitAlerts = new VRPanel();
     private VRLabel csvSubmitNoSaveAlert = new VRLabel();
-    private VRLabel csvSubmitHiHokensyaUnselectAlert = new VRLabel();
+    // [ID:0000555][Tozo TANAKA] 2009/09/28 replace begin y2009”N“x‘Î‰žF’Ç‰ÁˆÄŒzˆãŽtˆÓŒ©‘‚ÌŽó‹‹ŽÒ”Ô†‘Î‰ž
+//    private VRLabel csvSubmitHiHokensyaUnselectAlert = new VRLabel();
+    protected VRLabel csvSubmitHiHokensyaUnselectAlert = new VRLabel();
+    // [ID:0000555][Tozo TANAKA] 2009/09/28 replace end y2009”N“x‘Î‰žF’Ç‰ÁˆÄŒzˆãŽtˆÓŒ©‘‚ÌŽó‹‹ŽÒ”Ô†‘Î‰ž
     private VRLabel billDetailPrintDateUnit = new VRLabel();
     private ACParentHesesPanelContainer toCreateCostHeses = new ACParentHesesPanelContainer();
     private ACParentHesesPanelContainer billPatternHeses = new ACParentHesesPanelContainer();
@@ -445,12 +460,16 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
             IkenshoCommon.showExceptionMessage(ex);
             return false;
         }
-
+        
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+        beforeShow();
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+        
         setVisible(true);
         // show();
         return printed;
     }
-
+    
     /**
      * ƒRƒ“ƒXƒgƒ‰ƒNƒ^‚Å‚·B
      * 
@@ -577,6 +596,7 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
      */
     protected static void printIkenshoHeader(ACChotarouXMLWriter pd,
             VRMap data, Date printDate) throws Exception {
+        
         // •Åƒwƒbƒ_(•ÛŒ¯ŽÒE”í•ÛŒ¯ŽÒ”Ô†)
         if (((Integer) VRBindPathParser.get("HEADER_OUTPUT_UMU1", data))
                 .intValue() == 1) {
@@ -584,13 +604,27 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
                     "INSURER_NO", data))) {
                 // •ÛŒ¯ŽÒ”Ô†
                 IkenshoCommon.addString(pd, data, "INSURER_NO", "INSURER_NO");
+            } else {
+                // [ID:0000516][Masahiko Higuchi] 2009/09 add begin ƒwƒbƒ_‚Ì•\Ž¦‘Î‰ž
+                ACChotarouXMLUtilities.setVisible(pd, "INSURER_NO_LABEL", false);
+                // [ID:0000516][Masahiko Higuchi] 2009/09 add end
             }
+            
             if (!IkenshoCommon.isNullText((String) VRBindPathParser.get(
                     "INSURED_NO", data))) {
                 // ”í•ÛŒ¯ŽÒ”Ô†
                 IkenshoCommon.addString(pd, data, "INSURED_NO", "INSURED_NO");
+            } else {
+                // [ID:0000516][Masahiko Higuchi] 2009/09 add begin ƒwƒbƒ_‚Ì•\Ž¦‘Î‰ž
+                ACChotarouXMLUtilities.setVisible(pd, "INSURERD_NO_LABEL", false);
+                // [ID:0000516][Masahiko Higuchi] 2009/09 add end
             }
+            
         } else {
+            // [ID:0000516][Masahiko Higuchi] 2009/09 add begin ƒwƒbƒ_‚Ì•\Ž¦‘Î‰ž
+            ACChotarouXMLUtilities.setVisible(pd, "INSURER_NO_LABEL", false);
+            ACChotarouXMLUtilities.setVisible(pd, "INSURERD_NO_LABEL", false);
+            // [ID:0000516][Masahiko Higuchi] 2009/09 add end
             pd.addAttribute("CORNER_BLOCK", "Visible", "FALSE");
             // IkenshoCommon.addString(pd, "CORNER_BLOCK", "");
         }
@@ -598,6 +632,10 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
             // “úŽž•ª•b
             IkenshoCommon.addString(pd, "FD_OUTPUT_TIME", VRDateParser.format(
                     printDate, "ddHHmmss"));
+        } else {
+            // [ID:0000516][Masahiko Higuchi] 2009/09 add begin ƒwƒbƒ_‚Ì•\Ž¦‘Î‰ž
+            ACChotarouXMLUtilities.setVisible(pd, "FD_OUTPUT_TIME_LABEL", false);
+            // [ID:0000516][Masahiko Higuchi] 2009/09 add end
         }
     }
 
@@ -1494,14 +1532,24 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
             if ((text.length() >= 8) && (text.indexOf("0000”N") < 0)) {
                 Date date = VRDateParser.parse(text.replaceAll("00ŒŽ", "01ŒŽ")
                         + "01“ú");
-                IkenshoCommon.addString(pd, "Grid18.h1.w" + wPos, VRDateParser
+                //[ID:0000515][Tozo TANAKA] 2009/09/16 replace begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž   
+//                IkenshoCommon.addString(pd, "Grid18.h1.w" + wPos, VRDateParser
+//                        .format(date, "ggg"));
+//                IkenshoCommon.addString(pd, "Grid18.h1.w" + (wPos + 2),
+//                        VRDateParser.format(date, "ee"));
+//                if (text.indexOf("00ŒŽ") < 0) {
+//                    IkenshoCommon.addString(pd, "Grid18.h1.w" + (wPos + 5),
+//                            text.substring(5, 7));
+//                }
+                IkenshoCommon.addString(pd, tag + wPos, VRDateParser
                         .format(date, "ggg"));
-                IkenshoCommon.addString(pd, "Grid18.h1.w" + (wPos + 2),
+                IkenshoCommon.addString(pd, tag + (wPos + 2),
                         VRDateParser.format(date, "ee"));
                 if (text.indexOf("00ŒŽ") < 0) {
-                    IkenshoCommon.addString(pd, "Grid18.h1.w" + (wPos + 5),
+                    IkenshoCommon.addString(pd, tag + (wPos + 5),
                             text.substring(5, 7));
                 }
+                //[ID:0000515][Tozo TANAKA] 2009/09/16 replace end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž   
             }
         }
     }
@@ -1812,7 +1860,12 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
      */
     private void init() {
         // ƒEƒBƒ“ƒhƒE‚ÌƒTƒCƒY
-        setSize(new Dimension(700, 420));
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+//        setSize(new Dimension(700, 420));
+        setPackSize();
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+        
+        
         // ƒEƒBƒ“ƒhƒE‚ð’†‰›‚É”z’u
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();
@@ -1845,11 +1898,18 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
         printOptionGroupLayout.setFitHLast(true);
         printOptionGroupLayout.setFitVLast(true);
         printOptionGroupLayout.setAutoWrap(false);
-        printOptionGroup.setLayout(printOptionGroupLayout);
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+//        printOptionGroup.setLayout(printOptionGroupLayout);
+//        ((VRLayout) billDetailPrintDateHeses.getLayout()).setAutoWrap(false);
+//
+//        this.setTitle("uŽåŽ¡ˆãˆÓŒ©‘vˆóüÝ’è");
+//        printOptionGroup.setText("uŽåŽ¡ˆãˆÓŒ©‘vˆóüƒIƒvƒVƒ‡ƒ“");
+        getPrintOptionGroup().setLayout(printOptionGroupLayout);
         ((VRLayout) billDetailPrintDateHeses.getLayout()).setAutoWrap(false);
 
         this.setTitle("uŽåŽ¡ˆãˆÓŒ©‘vˆóüÝ’è");
-        printOptionGroup.setText("uŽåŽ¡ˆãˆÓŒ©‘vˆóüƒIƒvƒVƒ‡ƒ“");
+        getPrintOptionGroup().setText("uŽåŽ¡ˆãˆÓŒ©‘vˆóüƒIƒvƒVƒ‡ƒ“");
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
         billPrintGroup.setText("¿‹‘ˆóüiuŽåŽ¡ˆãˆÓŒ©‘v‚Æ“¯Žž‚Éj");
         csvGroup.setText("CSVƒtƒ@ƒCƒ‹‚Å‚ÌuŽåŽ¡ˆãˆÓŒ©‘v‚Ì’ño");
         billPrint.setEnabled(false);
@@ -1908,16 +1968,28 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
 
         printPageHeader.setText("ˆóü‚·‚é");
         printPageHeader.setBindPath("HEADER_OUTPUT_UMU1");
-        pageHeaderGroup.setText("•Åƒwƒbƒ_(•ÛŒ¯ŽÒE”í•ÛŒ¯ŽÒ”Ô†)");
-        pageHeaderGroup.setLayout(new BorderLayout());
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+//        pageHeaderGroup.setText("•Åƒwƒbƒ_(•ÛŒ¯ŽÒE”í•ÛŒ¯ŽÒ”Ô†)");
+//        pageHeaderGroup.setLayout(new BorderLayout());
+        getPageHeaderGroup().setText("•Åƒwƒbƒ_(•ÛŒ¯ŽÒE”í•ÛŒ¯ŽÒ”Ô†)");
+        getPageHeaderGroup().setLayout(new BorderLayout());
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
         printSecondHeader.setText("ˆóü‚·‚é");
         printSecondHeader.setBindPath("HEADER_OUTPUT_UMU2");
-        secondHeaderGroup.setText("‚Q•Å–Úƒwƒbƒ_(Ž–¼A‹L“ü“ú)");
-        secondHeaderGroup.setLayout(new BorderLayout());
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+//        secondHeaderGroup.setText("‚Q•Å–Úƒwƒbƒ_(Ž–¼A‹L“ü“ú)");
+//        secondHeaderGroup.setLayout(new BorderLayout());
+//        printDoctorName.setText("ˆóü‚·‚é");
+//        printDoctorName.setBindPath("DR_NM_OUTPUT_UMU");
+//        doctorNameGroup.setText("ˆãŽtŽ–¼");
+//        doctorNameGroup.setLayout(new BorderLayout());
+        getSecondHeaderGroup().setText("‚Q•Å–Úƒwƒbƒ_(Ž–¼A‹L“ü“ú)");
+        getSecondHeaderGroup().setLayout(new BorderLayout());
         printDoctorName.setText("ˆóü‚·‚é");
         printDoctorName.setBindPath("DR_NM_OUTPUT_UMU");
-        doctorNameGroup.setText("ˆãŽtŽ–¼");
-        doctorNameGroup.setLayout(new BorderLayout());
+        getDoctorNameGroup().setText("ˆãŽtŽ–¼");
+        getDoctorNameGroup().setLayout(new BorderLayout());
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
         ok.setMnemonic('O');
         ok.setText("ˆóü(O)");
         cancel.setText("ƒLƒƒƒ“ƒZƒ‹(C)");
@@ -1987,15 +2059,24 @@ toCheckCosts.add(toCheckCostHead, null);
         billPatternHeses.add(toCheckCost, null);
         billPatterns.add(billPattern, null);
         this.getContentPane().add(contents, BorderLayout.CENTER);
-        contents.add(printOptionGroup, VRLayout.NORTH);
-        printOptionGroup.add(doctorNameGroup, VRLayout.CLIENT);
-        doctorNameGroup.add(doctorNames, BorderLayout.WEST);
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+//        contents.add(printOptionGroup, VRLayout.NORTH);
+//        printOptionGroup.add(doctorNameGroup, VRLayout.CLIENT);
+//        doctorNameGroup.add(doctorNames, BorderLayout.WEST);
+//        doctorNames.add(printDoctorName, null);
+//        printOptionGroup.add(secondHeaderGroup, VRLayout.CLIENT);
+//        secondHeaderGroup.add(secondHeaders, BorderLayout.WEST);
+//        secondHeaders.add(printSecondHeader, null);
+//        printOptionGroup.add(pageHeaderGroup, VRLayout.CLIENT);
+//        pageHeaderGroup.add(printPageHeaders, BorderLayout.WEST);
+        contents.add(getPrintOptionGroup(), VRLayout.NORTH);
+        getDoctorNameGroup().add(doctorNames, BorderLayout.WEST);
         doctorNames.add(printDoctorName, null);
-        printOptionGroup.add(secondHeaderGroup, VRLayout.CLIENT);
-        secondHeaderGroup.add(secondHeaders, BorderLayout.WEST);
+        getSecondHeaderGroup().add(secondHeaders, BorderLayout.WEST);
         secondHeaders.add(printSecondHeader, null);
-        printOptionGroup.add(pageHeaderGroup, VRLayout.CLIENT);
-        pageHeaderGroup.add(printPageHeaders, BorderLayout.WEST);
+        getPageHeaderGroup().add(printPageHeaders, BorderLayout.WEST);
+        addPrintOptionGroup();
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
         printPageHeaders.add(printPageHeader, null);
         contents.add(billPrintPanel, VRLayout.NORTH);
         contents.add(billPatternGroup, VRLayout.NORTH);
@@ -2072,6 +2153,11 @@ toCheckCosts.add(toCheckCostHead, null);
      * GroupBoxwuŽåŽ¡ˆãˆÓŒ©‘vˆóüƒIƒvƒVƒ‡ƒ“xGetter 
      */
     protected ACGroupBox getPrintOptionGroup(){
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+        if(printOptionGroup==null){
+            printOptionGroup = new ACGroupBox();
+        }
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
     	return this.printOptionGroup;
     }
     
@@ -2112,5 +2198,58 @@ toCheckCosts.add(toCheckCostHead, null);
     protected int getFormatType(){
         return IkenshoConstants.IKENSHO_LOW_DEFAULT;
     }
+
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+    protected void addPrintOptionGroup(){
+      getPrintOptionGroup().add(getDoctorNameGroup(), VRLayout.CLIENT);
+      getPrintOptionGroup().add(getSecondHeaderGroup(), VRLayout.CLIENT);
+      getPrintOptionGroup().add(getPageHeaderGroup(), VRLayout.CLIENT);
+    }
+
+    /**
+     * doctorNameGroup ‚ð•Ô‚µ‚Ü‚·B
+     * @return doctorNameGroup
+     */
+    protected ACGroupBox getDoctorNameGroup() {
+        if(doctorNameGroup==null){
+            doctorNameGroup = new ACGroupBox();
+        }
+        return doctorNameGroup;
+    }
+
+    /**
+     * secondHeaderGroup ‚ð•Ô‚µ‚Ü‚·B
+     * @return secondHeaderGroup
+     */
+    protected ACGroupBox getSecondHeaderGroup() {
+        if(secondHeaderGroup==null){
+            secondHeaderGroup = new ACGroupBox();
+        }
+        return secondHeaderGroup;
+    }
+
+    /**
+     * pageHeaderGroup ‚ð•Ô‚µ‚Ü‚·B
+     * @return pageHeaderGroup
+     */
+    protected ACGroupBox getPageHeaderGroup() {
+        if(pageHeaderGroup==null){
+            pageHeaderGroup = new ACGroupBox();
+        }
+        return pageHeaderGroup;
+    }
     
+    protected void setPackSize(){
+        setSize(new Dimension(700, 420));
+    }
+
+    /**
+     * •\Ž¦’¼‘O‚Ìˆ—‚ðoverride‚µ‚ÄŽÀ‘•‚µ‚Ü‚·B
+     */
+    protected void beforeShow(){
+        
+    }
+
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end y2009”N“x‘Î‰žFŽåŽ¡ˆãˆÓŒ©‘zŽs’¬‘º“ÆŽ©€–Ú‚ÌˆóŽš‚É‘Î‰ž 
+
 }

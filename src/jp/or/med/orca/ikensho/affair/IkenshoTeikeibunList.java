@@ -220,22 +220,25 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
      */
     private void createDataH18() {
         data = new VRArrayList();
-
-        data.add(createRow(IkenshoCommon.TEIKEI_SICK_NAME, 30, "1-(1)", "", "", "診断名", "疾病名"));
-
+        // [ID:0000518][Masahiko Higuchi] 2009/09/04 replace begin 【2009年度対応：特記事項一覧】一覧の表示の見直し
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_NAME, 30, "1-(1)", "●", "", "診断名", "疾病名"));
+        // [ID:0000518][Masahiko Higuchi] 2009/09/04 replace end
         data.add(createRow(IkenshoCommon.TEIKEI_ISHI_SICK_NAME, 30, "", "", "1-(1)", "診断名", "疾病名"));
-
+        // [ID:0000518][Tozo TANAKA] 2009/09/04 add begin 【2009年度対応：特記事項一覧】特定疾病項目の編集を可能とする 
+        data.add(createRow(IkenshoCommon.TEIKEI_SPECIFIED_DISEASE_NAME, 30, "●", "●", "", "特定疾病", "特定疾病"));
+        // [ID:0000518][Tozo TANAKA] 2009/09/04 add end 【2009年度対応：特記事項一覧】特定疾病項目の編集を可能とする 
         data.add(createRow(IkenshoCommon.TEIKEI_INSECURE_CONDITION_NAME, 30, "1-(2)", "", "1-(2)", "症状としての安定性", "「不安定」とした場合の具体的状況"));
-        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_NAME, 12, "1-(3)", "", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "薬剤名"));
-        
+        // [ID:0000518][Masahiko Higuchi] 2009/09/04 replace begin 【2009年度対応：特記事項一覧】一覧の表示の見直し
+        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_NAME, 12, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "薬剤名"));
+        // [ID:0000518][Masahiko Higuchi] 2009/09/04 replace end
         data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "薬剤名"));
-
-        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT,  4, "1-(3)", "", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "用量単位"));
-
+        // [ID:0000518][Masahiko Higuchi] 2009/09/04 replace begin 【2009年度対応：特記事項一覧】一覧の表示の見直し
+        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT,  4, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "用量単位"));
+        // [ID:0000518][Masahiko Higuchi] 2009/09/04 replace end
         data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT,  4, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "用量単位"));
-
-        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10, "1-(3)", "", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "用法"));
-
+        // [ID:0000518][Masahiko Higuchi] 2009/09/04 replace begin 【2009年度対応：特記事項一覧】一覧の表示の見直し
+        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "用法"));
+        // [ID:0000518][Masahiko Higuchi] 2009/09/04 replace End
         data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "用法"));
 
         data.add(createRow(IkenshoCommon.TEIKEI_MIND_SICK_NAME, 30, "3-(4)", "", "3-(2)", "その他の精神・神経症状", "精神・神経症状"));
@@ -329,6 +332,7 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
 //        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_INFECTION_NAME, 30, "", "", "4-(3)", "感染症の有無", "有の場合"));
 ////        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MENTION_NAME, 50, "", "", "5", "その他特記すべき事項", "その他特記すべき事項"));
 
+
     }
 
     /**
@@ -394,11 +398,25 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
         //Rowの取得～DLG表示
         VRMap row = (VRMap)data.getData(table.getSelectedModelRow());
         int selectedTkbKbn = Integer.parseInt(row.getData("TKB_KBN").toString());
+
+        // [ID:0000518][Tozo TANAKA] 2009/09/04 replace begin 【2009年度対応：特記事項一覧】特定疾病項目の編集を可能とする 
+//        IkenshoTeikeibunEdit dlg = new IkenshoTeikeibunEdit(
+//                row.getData("ITEM").toString(),
+//                IkenshoTeikeibunEdit.TEIKEIBUN,
+//                selectedTkbKbn,
+//                Integer.parseInt(row.getData("LENGTH").toString()));
+        int tableNo = IkenshoTeikeibunEdit.TEIKEIBUN;
+        if(selectedTkbKbn==IkenshoCommon.TEIKEI_SPECIFIED_DISEASE_NAME){
+            tableNo = IkenshoTeikeibunEdit.DISEASE;
+            selectedTkbKbn = 0;
+        }
         IkenshoTeikeibunEdit dlg = new IkenshoTeikeibunEdit(
-            row.getData("ITEM").toString(),
-            IkenshoTeikeibunEdit.TEIKEIBUN,
-            selectedTkbKbn,
-            Integer.parseInt(row.getData("LENGTH").toString()));
+                row.getData("ITEM").toString(),
+                tableNo,
+                selectedTkbKbn,
+                Integer.parseInt(row.getData("LENGTH").toString()));
+        // [ID:0000518][Tozo TANAKA] 2009/09/04 replace begin 【2009年度対応：特記事項一覧】特定疾病項目の編集を可能とする 
+        
         
         //2006/08/10 Tozo TANAKA add-begin 両意見書への同時追加対応のため
         int otherDocKbn = -1;

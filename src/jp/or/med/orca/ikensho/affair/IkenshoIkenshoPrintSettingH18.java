@@ -1,18 +1,26 @@
 package jp.or.med.orca.ikensho.affair;
 
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Date;
 
 import jp.nichicom.ac.ACConstants;
-import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
+import jp.nichicom.ac.component.ACIntegerCheckBox;
+import jp.nichicom.ac.container.ACGroupBox;
+import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.text.parsers.VRDateParser;
+import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
+import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.picture.IkenshoHumanPicture;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
@@ -20,7 +28,13 @@ import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoIkenshoPrintSettingH18
     extends IkenshoIkenshoPrintSetting {
-  /**
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
+    protected ACIntegerCheckBox patientCareState;
+    protected ACLabelContainer patientCareStateContainer;
+    protected ACGroupBox patientCareStateGroup;
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
+    
+ /**
    * コンストラクタです。
    * @param data 印刷データ
    * @param picture 全身図
@@ -46,6 +60,12 @@ public class IkenshoIkenshoPrintSettingH18
   protected void callPrintIkensho(ACChotarouXMLWriter pd, String formatName,
                                   VRMap data, Date printDate) throws
       Exception {
+      //[ID:0000515][Tozo TANAKA] 2009/09/16 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
+      if(!patientCareState.isEnabled() || !patientCareState.isSelected()){
+          data.put("KIND", ACCastUtilities.toInteger(0));
+      }
+      //[ID:0000515][Tozo TANAKA] 2009/09/16 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
+      
       IkenshoIkenshoPrintSettingH18.printIkensho(pd, formatName, data, printDate);
   }
 
@@ -53,6 +73,12 @@ public class IkenshoIkenshoPrintSettingH18
                                        VRMap data, Date printDate,
                                        byte[] imageBytes) throws
       Exception {
+      //[ID:0000515][Tozo TANAKA] 2009/09/16 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
+      if(!patientCareState.isEnabled() || !patientCareState.isSelected()){
+          data.put("KIND", ACCastUtilities.toInteger(0));
+      }
+      //[ID:0000515][Tozo TANAKA] 2009/09/16 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
+      
       IkenshoIkenshoPrintSettingH18.printIkensho2(pd, formatName, data, printDate,
                                                 imageBytes);
   }
@@ -665,6 +691,26 @@ public class IkenshoIkenshoPrintSettingH18
         pd.addAttribute("Shape103", "Visible", "FALSE");
         pd.addAttribute("Shape104", "Visible", "FALSE");
     }
+    
+    
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応   
+    //施設在宅区分
+    switch(ACCastUtilities.toInt(VRBindPathParser.get("KIND", data) , 0)){
+    case 1:
+        //在宅
+        IkenshoCommon.addString(pd, "Label113", "在宅");
+        break;
+    case 2:
+        //施設
+        IkenshoCommon.addString(pd, "Label113", "施設");
+        break;
+    default:
+        //施設在宅区分を隠す
+        pd.addAttribute("Label113", "Visible", "FALSE");
+        break;
+    }
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応   
+    
 
     pd.endPageEdit();
 
@@ -1191,6 +1237,65 @@ public class IkenshoIkenshoPrintSettingH18
                                , -1, "KANSENSHOU_NM", "Grid16.h1.w5", 1);
 
     sb = new StringBuffer();
+    
+    
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
+    int nameLineOffset = 0;
+    String[] nameOfHasegawas = new String[]{"Grid27","Grid18"};
+    String[] nameOfInstitutions = new String[]{"Grid28","Grid20","Grid19"};
+    //介護の必要度の変化
+    switch(ACCastUtilities.toInt(VRBindPathParser.get("KAIGO_HITSUYODO_HENKA", data) , 0)){
+    case 1:
+        //減少
+        //1行目の長谷川式を隠す
+        pd.addAttribute("Grid27", "Visible", "FALSE");
+        //1行目の施設選択を隠す
+        pd.addAttribute("Grid28", "Visible", "FALSE");
+        //不要なチェックを隠す
+        pd.addAttribute("Label97", "Visible", "FALSE");
+        pd.addAttribute("Label98", "Visible", "FALSE");
+        //入力特記事項の開始を1行下げる
+        sb.append(IkenshoConstants.LINE_SEPARATOR);
+        nameLineOffset++;
+        break;
+    case 2:
+        //変化なし
+        //1行目の長谷川式を隠す
+        pd.addAttribute("Grid27", "Visible", "FALSE");
+        //1行目の施設選択を隠す
+        pd.addAttribute("Grid28", "Visible", "FALSE");
+        //不要なチェックを隠す
+        pd.addAttribute("Label96", "Visible", "FALSE");
+        pd.addAttribute("Label98", "Visible", "FALSE");
+        //入力特記事項の開始を1行下げる
+        sb.append(IkenshoConstants.LINE_SEPARATOR);
+        nameLineOffset++;
+        break;
+    case 3:
+        //増加
+        //1行目の長谷川式を隠す
+        pd.addAttribute("Grid27", "Visible", "FALSE");
+        //1行目の施設選択を隠す
+        pd.addAttribute("Grid28", "Visible", "FALSE");
+        //不要なチェックを隠す
+        pd.addAttribute("Label96", "Visible", "FALSE");
+        pd.addAttribute("Label97", "Visible", "FALSE");
+        //入力特記事項の開始を1行下げる
+        sb.append(IkenshoConstants.LINE_SEPARATOR);
+        nameLineOffset++;
+        break;
+    default:
+        //介護の必要度の変化を隠す
+        pd.addAttribute("Grid14", "Visible", "FALSE");
+        pd.addAttribute("Label96", "Visible", "FALSE");
+        pd.addAttribute("Label97", "Visible", "FALSE");
+        pd.addAttribute("Label98", "Visible", "FALSE");
+        break;
+    }
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応   
+    
+    
+    
     String institutionGrid;
     String hasePoint = String.valueOf(VRBindPathParser.get("HASE_SCORE", data));
     String haseDate = String.valueOf(VRBindPathParser.get("HASE_SCR_DT", data));
@@ -1198,27 +1303,56 @@ public class IkenshoIkenshoPrintSettingH18
         "P_HASE_SCORE", data));
     String haseDatePreview = String.valueOf(VRBindPathParser.get(
         "P_HASE_SCR_DT", data));
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応   
+//    if (! ("".equals(hasePoint) && "0000年00月".equals(haseDate) &&
+//           "".equals(hasePointPreview) && "0000年00月".equals(haseDatePreview))) {
+//      //長谷川式点数
+//      IkenshoCommon.addString(pd, data, "HASE_SCORE", "Grid18.h1.w3");
+//      //長谷川式日付
+//      addHasegawaDate(pd, data, "HASE_SCR_DT", "Grid18.h1.w", 6);
+//      //長谷川式前回点数
+//      IkenshoCommon.addString(pd, data, "P_HASE_SCORE", "Grid18.h1.w17");
+//      //長谷川式日付
+//      addHasegawaDate(pd, data, "P_HASE_SCR_DT", "Grid18.h1.w", 21);
+//
+//      //1行目の施設選択を隠す
+//      pd.addAttribute("Grid20", "Visible", "FALSE");
+//      institutionGrid = "Grid19";
+//      sb.append(IkenshoConstants.LINE_SEPARATOR);
+//    }
+//    else {
+//      institutionGrid = "Grid20";
+//      pd.addAttribute("Grid19", "Visible", "FALSE");
+//      pd.addAttribute("Grid18", "Visible", "FALSE");
+//    }
     if (! ("".equals(hasePoint) && "0000年00月".equals(haseDate) &&
-           "".equals(hasePointPreview) && "0000年00月".equals(haseDatePreview))) {
-      //長谷川式点数
-      IkenshoCommon.addString(pd, data, "HASE_SCORE", "Grid18.h1.w3");
-      //長谷川式日付
-      addHasegawaDate(pd, data, "HASE_SCR_DT", "Grid18.h1.w", 6);
-      //長谷川式前回点数
-      IkenshoCommon.addString(pd, data, "P_HASE_SCORE", "Grid18.h1.w17");
-      //長谷川式日付
-      addHasegawaDate(pd, data, "P_HASE_SCR_DT", "Grid18.h1.w", 21);
+            "".equals(hasePointPreview) && "0000年00月".equals(haseDatePreview))) {
+       String gridName =  nameOfHasegawas[nameLineOffset];
+        
+       //長谷川式点数
+       IkenshoCommon.addString(pd, data, "HASE_SCORE", gridName+".h1.w3");
+       //長谷川式日付
+       addHasegawaDate(pd, data, "HASE_SCR_DT", gridName+".h1.w", 6);
+       //長谷川式前回点数
+       IkenshoCommon.addString(pd, data, "P_HASE_SCORE", gridName+".h1.w17");
+       //長谷川式日付
+       addHasegawaDate(pd, data, "P_HASE_SCR_DT", gridName+".h1.w", 21);
 
-      //1行目の施設選択を隠す
-      pd.addAttribute("Grid20", "Visible", "FALSE");
-      institutionGrid = "Grid19";
-      sb.append(IkenshoConstants.LINE_SEPARATOR);
+       //当該行の施設選択を隠す
+       pd.addAttribute(nameOfInstitutions[nameLineOffset], "Visible", "FALSE");
+
+       //入力特記事項の開始を1行下げる
+       sb.append(IkenshoConstants.LINE_SEPARATOR);
+       nameLineOffset++;
     }
-    else {
-      institutionGrid = "Grid20";
-      pd.addAttribute("Grid19", "Visible", "FALSE");
-      pd.addAttribute("Grid18", "Visible", "FALSE");
+    
+    //当該行以降の長谷川式を隠す
+    for(int i=nameLineOffset; i<nameOfHasegawas.length; i++){
+       pd.addAttribute(nameOfHasegawas[i], "Visible", "FALSE");
     }
+    
+    institutionGrid = nameOfInstitutions[nameLineOffset];
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応   
 
     String institution1 = String.valueOf(VRBindPathParser.get("INST_SEL_PR1",
         data));
@@ -1228,15 +1362,75 @@ public class IkenshoIkenshoPrintSettingH18
                               institutionGrid + ".h1.w6");
       IkenshoCommon.addString(pd, data, "INST_SEL_PR2",
                               institutionGrid + ".h1.w10");
+      //[ID:0000515][Tozo TANAKA] 2009/09/11 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+      if(ACTextUtilities.isNullText(VRBindPathParser.get("INST_SEL_PR2",data))){
+          //施設2が指定なしなら「2.」に空白を送る
+          IkenshoCommon.addString(pd, institutionGrid + ".h1.w7", "");
+      }
+      //[ID:0000515][Tozo TANAKA] 2009/09/11 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応   
+      
+      //入力特記事項の開始を1行下げる
       sb.append(IkenshoConstants.LINE_SEPARATOR);
+      nameLineOffset++;
     }
-    else {
-      pd.addAttribute(institutionGrid, "Visible", "FALSE");
+    
+    //当該行以降の施設選択を隠す
+    for(int i=nameLineOffset; i<nameOfInstitutions.length; i++){
+       pd.addAttribute(nameOfInstitutions[i], "Visible", "FALSE");
     }
+    
+    if(nameLineOffset >= 1 && nameLineOffset <= 2){
+        //市町村独自項目1から2個なら特記事項までの行間を空ける
+        sb.append(IkenshoConstants.LINE_SEPARATOR);
+    }
+    
     //特記事項
     sb.append(String.valueOf(VRBindPathParser.get("IKN_TOKKI", data)));
-    IkenshoCommon.addString(pd, "Grid17.h1.w1", sb.toString());
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応   
+    //IkenshoCommon.addString(pd, "Grid17.h1.w1", sb.toString());
+    IkenshoCommon.addString(pd, "Grid17.h1.w1", ACTextUtilities
+            .concatLineWrap(ACTextUtilities
+                    .separateLineWrapOnByte(sb.toString(), 94)));
+    
+    //要介護認定結果の情報提供を希望
+    switch(ACCastUtilities.toInt(VRBindPathParser.get("NINTEI_JOHO_KIBO", data) , 0)){
+    case 1:
+        //する
+        pd.addAttribute("Label95", "Visible", "FALSE");
+        break;
+    case 2:
+        //しない
+        pd.addAttribute("Label94", "Visible", "FALSE");
+        break;
+    default:
+        //要介護認定結果の情報提供希望を隠す
+        pd.addAttribute("Grid26", "Visible", "FALSE");
+        pd.addAttribute("Label94", "Visible", "FALSE");
+        pd.addAttribute("Label95", "Visible", "FALSE");
+        break;
+    }
+    
+    
+    //施設在宅区分
+    switch(ACCastUtilities.toInt(VRBindPathParser.get("KIND", data) , 0)){
+    case 1:
+        //在宅
+        IkenshoCommon.addString(pd, "Label113", "在宅");
+        break;
+    case 2:
+        //施設
+        IkenshoCommon.addString(pd, "Label113", "施設");
+        break;
+    default:
+        //施設在宅区分を隠す
+        pd.addAttribute("Label113", "Visible", "FALSE");
+        break;
+    }
+    
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応   
 
+    
+    
     pd.endPageEdit();
   }
   
@@ -1287,5 +1481,79 @@ public class IkenshoIkenshoPrintSettingH18
       return insertionLineSeparatorString;
   }
   //2009/01/21 [Tozo Tanaka] Add - end
+  
+  
+  //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
+  /**
+     * patientCareState を返します。
+     * @return patientCareState
+     */
+    protected ACIntegerCheckBox getPatientCareState() {
+        if(patientCareState==null){
+            patientCareState = new ACIntegerCheckBox();
+        }
+        return patientCareState;
+    }
+
+    /**
+     * patientCareStateContainer を返します。
+     * @return patientCareStateContainer
+     */
+    protected ACLabelContainer getPatientCareStateContainer() {
+        if(patientCareStateContainer==null){
+            patientCareStateContainer = new ACLabelContainer();
+        }
+        return patientCareStateContainer;
+    }
+    
+    /**
+     * patientCareStateGroup を返します。
+     * @return patientCareStateGroup
+     */
+    protected ACGroupBox getPatientCareStateGroup() {
+        if(patientCareStateGroup==null){
+            patientCareStateGroup = new ACGroupBox();
+        }
+        return patientCareStateGroup;
+    }
+
+    protected void addPrintOptionGroup(){
+        getPrintOptionGroup().add(getDoctorNameGroup(), VRLayout.CLIENT);
+        getPrintOptionGroup().add(getSecondHeaderGroup(), VRLayout.CLIENT);
+        getPrintOptionGroup().add(getPageHeaderGroup(), VRLayout.CLIENT);
+        getPrintOptionGroup().add(getPatientCareStateGroup(), VRLayout.SOUTH);
+    }
+    
+    protected void initComponent(){
+        super.initComponent();
+        getPatientCareState().setBindPath("PATIENT_KAIGO_STATE");
+        getPatientCareState().setText("印刷する");
+        getPatientCareStateContainer().add(getPatientCareState());
+        getPatientCareStateGroup().setText("頁ヘッダ(在宅・施設区分)");
+        getPatientCareStateGroup().add(getPatientCareStateContainer());
+    }
+    
+    protected void setPackSize(){
+        setSize(new Dimension(700, 450));
+    }
+    
+    protected void beforeShow(){
+        try {
+            // バインド
+            
+            getPatientCareState().setSelected(
+                    ACCastUtilities.toInt(VRBindPathParser.get(
+                            "KIND_OUTPUT_UMU", source), 0) > 0);
+            
+            getPatientCareState().setEnabled(
+                    ACCastUtilities.toInt(VRBindPathParser.get("KIND", source),
+                            0) > 0);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        
+    }
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
+
   
 }

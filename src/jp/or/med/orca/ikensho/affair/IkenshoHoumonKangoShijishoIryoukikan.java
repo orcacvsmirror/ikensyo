@@ -25,27 +25,40 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoHoumonKangoShijishoIryoukikan
     extends IkenshoDocumentAffairOrgan {
-  private JLabel iryoukikanHeader = new JLabel();
-  private ACLabelContainer kinkyuRenrakuContainer = new ACLabelContainer();
-  private ACTextField kinkyuRenraku = new ACTextField();
-  private ACLabelContainer fuzaijiTaiouContainer = new ACLabelContainer();
-  private ACTextField fuzaijiTaiou = new ACTextField();
+//[ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//  private JLabel iryoukikanHeader = new JLabel();
+//  private ACLabelContainer kinkyuRenrakuContainer = new ACLabelContainer();
+//  private ACTextField kinkyuRenraku = new ACTextField();
+//  private ACLabelContainer fuzaijiTaiouContainer = new ACLabelContainer();
+//  private ACTextField fuzaijiTaiou = new ACTextField();
+    protected JLabel iryoukikanHeader;
+  protected ACLabelContainer kinkyuRenrakuContainer;
+  protected ACTextField kinkyuRenraku = new ACTextField();
+  protected ACLabelContainer fuzaijiTaiouContainer;
+  protected ACTextField fuzaijiTaiou = new ACTextField();
+//[ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
   private VRPanel otherStationPnl = new VRPanel();
   private VRPanel otherStationSubPnl = new VRPanel();
   private ACLabelContainer otherStationNmContainer = new ACLabelContainer();
   private ACComboBox stationName = new ACComboBox();
   private JLabel otherStationNmCaption = new JLabel();
-  private ACLabelContainer otherStationSijiUmuContainer = new ACLabelContainer();
+//[ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//  private ACLabelContainer otherStationSijiUmuContainer = new ACLabelContainer();
+  protected ACLabelContainer otherStationSijiUmuContainer = new ACLabelContainer();
+//[ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
   private ACClearableRadioButtonGroup otherStationSiji = new
       ACClearableRadioButtonGroup();
-  private ACLabelContainer otherStationSijiContainer = new ACLabelContainer();
+//[ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//  private ACLabelContainer otherStationSijiContainer = new ACLabelContainer();
+  protected ACLabelContainer otherStationSijiContainer = new ACLabelContainer();
+//[ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
   private ACComboBox otherStationName = new ACComboBox();
   private JLabel otherStationSijiCaption = new JLabel();
   private VRPanel stationContainer = new VRPanel();
 
 
 
-  public VRMap createSourceInnerBindComponent() {
+public VRMap createSourceInnerBindComponent() {
     VRMap map = super.createSourceInnerBindComponent();
     map.setData("OTHER_STATION_SIJI", new Integer(1));
 
@@ -141,9 +154,12 @@ public class IkenshoHoumonKangoShijishoIryoukikan
     getContentsGroup().add(stationContainer, VRLayout.NORTH);
     stationContainer.setLayout(new VRLayout());
 
-    getFollowDoctorContainer().add(iryoukikanHeader, VRLayout.NORTH);
-    getFollowDoctorContainer().add(kinkyuRenrakuContainer, VRLayout.FLOW_INSETLINE_RETURN);
-    getFollowDoctorContainer().add(fuzaijiTaiouContainer, VRLayout.FLOW_INSETLINE_RETURN);
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    getFollowDoctorContainer().add(iryoukikanHeader, VRLayout.NORTH);
+//    getFollowDoctorContainer().add(kinkyuRenrakuContainer, VRLayout.FLOW_INSETLINE_RETURN);
+//    getFollowDoctorContainer().add(fuzaijiTaiouContainer, VRLayout.FLOW_INSETLINE_RETURN);
+    addFollowDoctorContainer();
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     stationContainer.add(otherStationPnl, VRLayout.FLOW_INSETLINE_RETURN);
 
 
@@ -159,16 +175,25 @@ public class IkenshoHoumonKangoShijishoIryoukikan
     otherStationSubPnl.add(otherStationSijiContainer,
                            VRLayout.FLOW_INSETLINE_RETURN);
     //医療機関 / Grp / header
-    iryoukikanHeader.setText("以上のとおり、指定訪問看護の実施を指示いたします。");
     //緊急時の連絡先
-    kinkyuRenrakuContainer.setText("緊急時の連絡先");
-    kinkyuRenrakuContainer.add(kinkyuRenraku, null);
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    iryoukikanHeader.setText("以上のとおり、指定訪問看護の実施を指示いたします。");
+//    kinkyuRenrakuContainer.setText("緊急時の連絡先");
+//    kinkyuRenrakuContainer.add(kinkyuRenraku, null);
+    getIryoukikanHeader().setText("以上のとおり、指定訪問看護の実施を指示いたします。");
+    getKinkyuRenrakuContainer().setText("緊急時の連絡先");
+    getKinkyuRenrakuContainer().add(kinkyuRenraku, null);
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     kinkyuRenraku.setColumns(40);
     kinkyuRenraku.setEditable(false);
     kinkyuRenraku.setBindPath("KINKYU_RENRAKU");
     //不在時の対応法
-    fuzaijiTaiouContainer.setText("不在時の対応法");
-    fuzaijiTaiouContainer.add(fuzaijiTaiou, null);
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    fuzaijiTaiouContainer.setText("不在時の対応法");
+//    fuzaijiTaiouContainer.add(fuzaijiTaiou, null);
+    getFuzaijiTaiouContainer().setText("不在時の対応法");
+    getFuzaijiTaiouContainer().add(fuzaijiTaiou, null);
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     fuzaijiTaiou.setColumns(40);
     fuzaijiTaiou.setEditable(false);
     fuzaijiTaiou.setBindPath("FUZAIJI_TAIOU");
@@ -199,4 +224,50 @@ public class IkenshoHoumonKangoShijishoIryoukikan
     otherStationName.setBindPath("OTHER_STATION_NM");
     otherStationSijiCaption.setText("殿");
   }
+  
+//[ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+  /**
+   * iryoukikanHeader を返します。
+   * @return iryoukikanHeader
+   */
+  protected JLabel getIryoukikanHeader() {
+      if(iryoukikanHeader==null){
+          iryoukikanHeader = new JLabel();
+      }
+      return iryoukikanHeader;
+  }
+
+/**
+ * fuzaijiTaiouContainer を返します。
+ * @return fuzaijiTaiouContainer
+ */
+protected ACLabelContainer getFuzaijiTaiouContainer() {
+    if(fuzaijiTaiouContainer==null){
+        fuzaijiTaiouContainer = new ACLabelContainer();
+    }
+    return fuzaijiTaiouContainer;
+}
+
+/**
+ * kinkyuRenrakuContainer を返します。
+ * @return kinkyuRenrakuContainer
+ */
+protected ACLabelContainer getKinkyuRenrakuContainer() {
+    if(kinkyuRenrakuContainer==null){
+        kinkyuRenrakuContainer = new ACLabelContainer();
+    }
+    return kinkyuRenrakuContainer;
+}
+
+/**
+ * followDoctorContainerへの追加を定義します。
+ */
+protected void addFollowDoctorContainer(){
+    getFollowDoctorContainer().add(getIryoukikanHeader(), VRLayout.NORTH);
+    getFollowDoctorContainer().add(getKinkyuRenrakuContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+    getFollowDoctorContainer().add(getFuzaijiTaiouContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+}
+
+//[ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+
 }

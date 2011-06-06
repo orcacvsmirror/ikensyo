@@ -147,7 +147,9 @@ public class IkenshoHoumonKangoStationJouhouShousai extends IkenshoAffairContain
        nm.setBindPath("MI_NM");
        nm.setIMEMode(InputSubset.KANJI);
 
-       coloredLabel.setText("「訪問看護指示書」に印刷される項目");
+       // [ID:0000514][Masahiko Higuchi] 2009/09/25 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+       coloredLabel.setText("「（特別）訪問看護指示書」に印刷される項目");
+       // [ID:0000514][Masahiko Higuchi] 2009/09/25 replace end
        coloredLabel.setForeground(new Color(0x003300));
 
        //郵便番号

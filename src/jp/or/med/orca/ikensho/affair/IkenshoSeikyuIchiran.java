@@ -417,8 +417,10 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                                 new ACTableColumn(3, 50, "年齢",
                                         SwingConstants.RIGHT,
                                         tableCellRenderer, null),
-                                new ACTableColumn(4, 90, "被保険者番号",
+                                // [ID:0000515] [Masahiko Higuchi] replace begin 2009年度対応：要望 医師医見書の帳票印字修正
+                                new ACTableColumn(4, 160, "被保険者番号／受給者番号",
                                         tableCellRenderer, null),
+                                // [ID:0000515] [Masahiko Higuchi] replace end
                                 new ACTableColumn(5, 150, "医師氏名",
                                         tableCellRenderer, null),
                                 new ACTableColumn(6, 110, "作成依頼日",
@@ -565,9 +567,12 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                 return;
             }
         }
-
+        // [ID:0000515] [Masahiko Higuchi] replace begin 2009年度対応：要望 医師医見書の帳票印字修正
+//        if (ACMessageBox.showOkCancel("請求対象意見書一覧の印刷",
+//                "一覧表を出力してもよろしいですか？\n（被保険者番号順に印刷されます）", "印刷(O)", 'O') != ACMessageBox.RESULT_OK) {
         if (ACMessageBox.showOkCancel("請求対象意見書一覧の印刷",
-                "一覧表を出力してもよろしいですか？\n（被保険者番号順に印刷されます）", "印刷(O)", 'O') != ACMessageBox.RESULT_OK) {
+                "一覧表を出力してもよろしいですか？\n（被保険者番号／受給者番号順に印刷されます）", "印刷(O)", 'O') != ACMessageBox.RESULT_OK) {
+        // [ID:0000515] [Masahiko Higuchi] replace end
             return;
         }
         // 印刷実行
@@ -1451,17 +1456,37 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                         seikyuPrtSet.toCheckCost.getText() + "　様");
             }
 
+            // [ID:0000515] [Masahiko Higuchi] add begin 2009年度対応：要望 医師医見書の帳票印字修正
+            String noTitle = " 被保険者番号";
+            String nameTitle = " 被保険者氏名";
+            switch(formatType){
+            case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
+                //医師意見書の場合はタイトルを変更
+                noTitle = " 受給者番号";
+                nameTitle = " 申請者氏名";
+                break;
+            }
+            // [ID:0000515] [Masahiko Higuchi] add end 2009年度対応：要望 医師医見書の帳票印字修正
+            
             for (pageRow = 0; (pageRow < 12) && (row < endRow + 1); pageRow++, row++) {
                 VRMap map = (VRMap) seikyuData.getData(row - 1);
                 // 被保険者番号
                 IkenshoCommon.addString(pd, getHeader(pageRow * 6 + 1) + ".w3",
                         getString("INSURED_NO", map));
+                // [ID:0000515] [Masahiko Higuchi] add begin 2009年度対応：要望 医師医見書の帳票印字修正
+                IkenshoCommon.addString(pd, getHeader(pageRow * 6 + 1) + ".w2",
+                        noTitle);                
+                // [ID:0000515] [Masahiko Higuchi] add end 2009年度対応：要望 医師医見書の帳票印字修正
                 // ふりがな
                 IkenshoCommon.addString(pd, getHeader(pageRow * 6 + 4) + ".w3",
                         getString("PATIENT_KN", map));
                 // 被保険者氏名
                 IkenshoCommon.addString(pd, getHeader(pageRow * 6 + 5) + ".w3",
                         getString("PATIENT_NM", map));
+                // [ID:0000515] [Masahiko Higuchi] add begin 2009年度対応：要望 医師医見書の帳票印字修正
+                IkenshoCommon.addString(pd, getHeader(pageRow * 6 + 5) + ".w2",
+                        nameTitle);
+                // [ID:0000515] [Masahiko Higuchi] add end 2009年度対応：要望 医師医見書の帳票印字修正
                 // 意見書作成日
                 IkenshoCommon.addString(pd, getHeader(pageRow * 6 + 1) + ".w5",
                         IkenshoConstants.FORMAT_ERA_YMD.format(map
@@ -1533,6 +1558,13 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                         "Visible", "FALSE");
                 pd.addAttribute("sinki" + Integer.toString(pageRow + 1),
                         "Visible", "FALSE");
+                // [ID:0000515] [Masahiko Higuchi] add begin 2009年度対応：要望 医師医見書の帳票印字修正
+                // 帳票名称を補正する
+                IkenshoCommon.addString(pd, getHeader(pageRow * 6 + 1) + ".w2",
+                        noTitle);
+                IkenshoCommon.addString(pd, getHeader(pageRow * 6 + 5) + ".w2",
+                        nameTitle);
+                // [ID:0000515] [Masahiko Higuchi] add end 2009年度対応：要望 医師医見書の帳票印字修正
             }
             // ページ番号
             IkenshoCommon.addString(pd, "pageNo", Integer.toString(i + 1));
@@ -2194,6 +2226,13 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
             //医師意見書の場合はタイトルを変更
             IkenshoCommon.addString(pd, "lblTitle", "医師意見書作成料請求(明細)書");
+            // [ID:0000515] [Masahiko Higuchi] add begin 2009年度対応：要望 医師医見書の帳票印字修正
+            IkenshoCommon.addString(pd, "hiyokensya.h1.w1", "申"
+                    + IkenshoConstants.LINE_SEPARATOR + "請"
+                    + IkenshoConstants.LINE_SEPARATOR + "者");
+            IkenshoCommon.addString(pd, "hiyokensya.h1.w2", "受給者"
+                    + IkenshoConstants.LINE_SEPARATOR + "番号");            
+            // [ID:0000515] [Masahiko Higuchi] add end 2009年度対応：要望 医師医見書の帳票印字修正
             break;
         }
         

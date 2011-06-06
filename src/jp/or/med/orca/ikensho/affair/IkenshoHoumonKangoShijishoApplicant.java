@@ -28,18 +28,22 @@ public class IkenshoHoumonKangoShijishoApplicant
   private ACIntegerCheckBox houmonSijiSyo = new ACIntegerCheckBox();
   private ACIntegerCheckBox tentekiSijiSyo = new ACIntegerCheckBox();
   private ACGroupBox sijiKikan = new ACGroupBox();
-  private ACLabelContainer sijiKikanContainer = new ACLabelContainer();
-  private IkenshoEraDateTextField sijiKikanFrom = new IkenshoEraDateTextField();
-  private JLabel sijiKikanSep = new JLabel();
-  private IkenshoEraDateTextField sijiKikanTo = new IkenshoEraDateTextField();
-  private ACButton sijiKikanClear = new ACButton();
+  // [ID:0000514][Masahiko Higuchi] 2009/09/08 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+  protected ACLabelContainer sijiKikanContainer = new ACLabelContainer();
+  protected IkenshoEraDateTextField sijiKikanFrom = new IkenshoEraDateTextField();
+  protected JLabel sijiKikanSep = new JLabel();
+  protected IkenshoEraDateTextField sijiKikanTo = new IkenshoEraDateTextField();
+  protected ACButton sijiKikanClear = new ACButton();
+  // [ID:0000514][Masahiko Higuchi] 2009/09/08 replace end
   private ACGroupBox tenteki = new ACGroupBox();
   private ACLabelContainer tentekiContainer = new ACLabelContainer();
   private IkenshoEraDateTextField tentekiFrom = new IkenshoEraDateTextField();
   private JLabel tentekiSep = new JLabel();
   private IkenshoEraDateTextField tentekiTo = new IkenshoEraDateTextField();
   private ACButton tentekiClear = new ACButton();
-  private ACGroupBox youkaigoJoukyouGrp = new ACGroupBox();
+  // [ID:0000514][Masahiko Higuchi] 2009/09/08 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+  protected ACGroupBox youkaigoJoukyouGrp = new ACGroupBox();
+  // [ID:0000514][Masahiko Higuchi] 2009/09/08 replace end
   private ACLabelContainer youkaigoJoukyouContainer = new ACLabelContainer();
   private ACValueArrayRadioButtonGroup youkaigoJoukyou = new ACValueArrayRadioButtonGroup();
   private ACGroupBox hiddenGroup = new ACGroupBox();
@@ -47,11 +51,12 @@ public class IkenshoHoumonKangoShijishoApplicant
   private ACIntegerCheckBox validSpan = new ACIntegerCheckBox();
   private ACIntegerCheckBox kangoKubun = new ACIntegerCheckBox();
   private ACTextField shyoubyouChiryouJyoutaiOther = new ACTextField();
-  private ACLabelContainer sijiKikanFroms = new ACLabelContainer();
-  private ACLabelContainer sijiKikanTos = new ACLabelContainer();
+  // [ID:0000514][Masahiko Higuchi] 2009/09/08 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+  protected ACLabelContainer sijiKikanFroms = new ACLabelContainer();
+  protected ACLabelContainer sijiKikanTos = new ACLabelContainer();
+  // [ID:0000514][Masahiko Higuchi] 2009/09/08 replace end
   private ACLabelContainer tentekiFroms = new ACLabelContainer();
   private ACLabelContainer tentekiTos = new ACLabelContainer();
-
 
   public boolean noControlError() throws Exception {
      //エラーチェック
@@ -71,7 +76,10 @@ public class IkenshoHoumonKangoShijishoApplicant
      }
 
      if(!(houmonSijiSyo.isSelected() || tentekiSijiSyo.isSelected())){
-       ACMessageBox.show("指示書種類、「訪問看護指示書」、または「在宅患者訪問点滴注射指示書」を\n選択してください。");
+         // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//       ACMessageBox.show("指示書種類、「訪問看護指示書」、または「在宅患者訪問点滴注射指示書」を\n選択してください。");
+         ACMessageBox.show("指示書種類、「"+getHoumonSijiSyoText()+"」、または「"+getTentekiSijiSyoText()+"」を\n選択してください。");
+       // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
        houmonSijiSyo.requestFocus();
        return false;
      }
@@ -272,14 +280,24 @@ public class IkenshoHoumonKangoShijishoApplicant
     sijishoKindContainer.setLayout(sijishoKindContainerLayout);
     sijishoKindContainer.add(houmonSijiSyo, VRLayout.FLOW);
     sijishoKindContainer.add(tentekiSijiSyo, VRLayout.FLOW);
-    houmonSijiSyo.setText("訪問看護指示書");
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    houmonSijiSyo.setText("訪問看護指示書");
+//    houmonSijiSyo.setBindPath("HOUMON_SIJISYO");
+//    tentekiSijiSyo.setText("在宅患者訪問点滴注射指示書");
+//    tentekiSijiSyo.setBindPath("TENTEKI_SIJISYO");
+    houmonSijiSyo.setText(getHoumonSijiSyoText());
     houmonSijiSyo.setBindPath("HOUMON_SIJISYO");
-    tentekiSijiSyo.setText("在宅患者訪問点滴注射指示書");
+    tentekiSijiSyo.setText(getTentekiSijiSyoText());
     tentekiSijiSyo.setBindPath("TENTEKI_SIJISYO");
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+    
     //患者 / 訪問看護指示期間
     sijiKikan.setLayout(new BorderLayout());
     sijiKikan.add(sijiKikanContainer);
-    sijiKikanContainer.setText("訪問看護指示期間");
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    sijiKikanContainer.setText("訪問看護指示期間");
+    sijiKikanContainer.setText(getSijiKikanContainerText());
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     sijiKikanContainer.setLayout(new VRLayout());
     sijiKikanContainer.setFocusForeground(IkenshoConstants.
                                             COLOR_BACK_PANEL_FOREGROUND);
@@ -307,16 +325,22 @@ public class IkenshoHoumonKangoShijishoApplicant
     sijiKikanTo.setBindPath("SIJI_KIKAN_TO");
     sijiKikanClear.setText("日付消去(C)");
     sijiKikanClear.setMnemonic('C');
-    sijiKikanContainer.add(sijiKikanFroms, VRLayout.FLOW);
+    // [ID:0000514][Masahiko Higuchi] 2009/09/08 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能 TODO
+    // sijiKikanContainer.add(sijiKikanFroms, VRLayout.FLOW);
     sijiKikanFroms.add(sijiKikanFrom, null);
-    sijiKikanContainer.add(sijiKikanSep, VRLayout.FLOW);
-    sijiKikanContainer.add(sijiKikanTos, VRLayout.FLOW);
+    // sijiKikanContainer.add(sijiKikanSep, VRLayout.FLOW);
+    // sijiKikanContainer.add(sijiKikanTos, VRLayout.FLOW);
     sijiKikanTos.add(sijiKikanTo, null);
-    sijiKikanContainer.add(sijiKikanClear, VRLayout.FLOW);
+    // sijiKikanContainer.add(sijiKikanClear, VRLayout.FLOW);
+    addSijiKikanContainer();
+    // [ID:0000514][Masahiko Higuchi] 2009/09/08 replace end
     //患者 / 点滴注射指示期間
     tenteki.setLayout(new BorderLayout());
     tenteki.add(tentekiContainer);
-    tentekiContainer.setText("点滴注射指示期間");
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    tentekiContainer.setText("点滴注射指示期間");
+    tentekiContainer.setText(getTentekiContainerText());
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     tentekiContainer.setLayout(new VRLayout());
     tentekiContainer.setFocusForeground(IkenshoConstants.
                                             COLOR_BACK_PANEL_FOREGROUND);
@@ -375,4 +399,51 @@ public class IkenshoHoumonKangoShijishoApplicant
                                       "５　）"}))));
 
   }
+
+  // [ID:0000514][Tozo TANAKA] 2009/09/07 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+    /**
+     * houmonSijiSyoに設定するText を返します。
+     * @return houmonSijiSyoに設定するText
+     */
+    protected String getHoumonSijiSyoText() {
+        return "訪問看護指示書";
+    }
+
+    /**
+     * tentekiSijiSyoに設定するText を返します。
+     * @return tentekiSijiSyoに設定するText
+     */
+    protected String getTentekiSijiSyoText() {
+        return "在宅患者訪問点滴注射指示書";
+    }
+
+    /**
+     * sijiKikanContainerに設定するText を返します。
+     * @return sijiKikanContainerに設定するText
+     */
+    protected String getSijiKikanContainerText() {
+        return "訪問看護指示期間";
+    }
+
+    /**
+     * tentekiContainerに設定するText を返します。
+     * @return tentekiContainerに設定するText
+     */
+    protected String getTentekiContainerText() {
+        return "点滴注射指示期間";
+    }
+    
+    /**
+     * 訪問看護指示期間コンテナにコンポーネントを追加します。
+     *
+     */
+    protected void addSijiKikanContainer() {
+        sijiKikanContainer.add(sijiKikanFroms, VRLayout.FLOW);
+        sijiKikanContainer.add(sijiKikanSep, VRLayout.FLOW);
+        sijiKikanContainer.add(sijiKikanTos, VRLayout.FLOW);
+        sijiKikanContainer.add(sijiKikanClear, VRLayout.FLOW);
+    }
+
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+  
 }

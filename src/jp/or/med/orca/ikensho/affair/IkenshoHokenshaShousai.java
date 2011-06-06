@@ -34,6 +34,7 @@ import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACOneDecimalDoubleFormat;
 import jp.nichicom.ac.util.ACMessageBox;
@@ -48,6 +49,8 @@ import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
+import jp.or.med.orca.ikensho.sql.IkenshoInsurerBridgeFirebirdDBManager;
+import jp.or.med.orca.ikensho.util.IkenshoInsurerRelation;
 import jp.or.med.orca.ikensho.util.IkenshoSnapshot;
 
 public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
@@ -198,7 +201,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
     private ACTextField expXrayDigitalImageManagement = new ACTextField();
     private JLabel expXrayDigitalImageManagementUnit = new JLabel();
     //2009/01/06 [Tozo Tanaka] Add - end
-
+    
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+    private ACGroupBox kindPrintGrp = new ACGroupBox();
+    private ACIntegerCheckBox kindPrint = new ACIntegerCheckBox();
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
     
     private ACLabelContainer insurertypeContainer = new ACLabelContainer();
     private ACClearableRadioButtonGroup insurerTypes = new ACClearableRadioButtonGroup();
@@ -220,6 +227,21 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             "INSURER", new String[] { "INSURER_NO","INSURER_TYPE" },
             new Format[] { IkenshoConstants.FORMAT_PASSIVE_STRING, IkenshoConstants.FORMAT_PASSIVE_STRING },
             "LAST_TIME", "LAST_TIME");
+    
+    // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+    // 保険者マスタDB
+    private IkenshoInsurerBridgeFirebirdDBManager masterInsurerDbm;
+    // 接続の可否
+    private boolean insurerDbmConnect = false;
+    // 保険者選択ボタン
+    private ACButton insurerSelectButton = new ACButton();
+    private ACButton insurerSelectButtonIkensyo = new ACButton();
+    private ACButton insurerSelectButtonKensa = new ACButton();
+    // 変換クラス
+    private IkenshoInsurerRelation insurerRelation;
+    private IkenshoInsurerRelation insurerRelationIkensyo;
+    private IkenshoInsurerRelation insurerRelationKensa;
+    // [ID:0000513][Masahiko Higuchi] 2009/09 add end
 
     private static final String DOUBLE_INPUT_PERSER = "(\\d+)|((\\d+)(\\.\\d{0,1}))";
 
@@ -261,7 +283,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
 
         tab1North.setLayout(new VRLayout());
         tab1North.add(insurerNmContainer, VRLayout.FLOW_INSETLINE_RETURN);
+        
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
         tab1North.add(insurerNoContainer, VRLayout.FLOW_INSETLINE);
+        tab1North.add(insurerSelectButton, VRLayout.FLOW_INSETLINE_RETURN);
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add end
 
         tab1North.add(insurertypeContainer, VRLayout.FLOW_INSETLINE_RETURN);
         tab1North.add(insurerInfo, VRLayout.FLOW_INSETLINE_RETURN);
@@ -284,6 +310,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         insurerNoField.setIMEMode(InputSubset.LATIN_DIGITS);
         insurerNoField.setCharType(VRCharType.ONLY_DIGIT);
         insurerNoField.setBindPath("INSURER_NO");
+        
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+        // 保険者選択
+        insurerSelectButton.setText("保険者選択(I)");
+        insurerSelectButton.setMnemonic('I');
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add end
 
         //保険者区分
         insurertypeContainer.setText("保険者区分");
@@ -323,16 +355,27 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         seikyusakiPanel.setLayout(seikyusakiLayout);
         seikyusakiPanel.add(issInsurerNmContainer, VRLayout.FLOW);
         seikyusakiPanel.add(issInsurerNoContainer, VRLayout.FLOW);
-        seikyusakiPanel.add(issInsurerSame, VRLayout.FLOW_RETURN);
-
+        
+        // [ID:0000513][Masahiko Higuchi] 2009/09 edit begin 2009年度対応
+        //seikyusakiPanel.add(issInsurerSame, VRLayout.FLOW_RETURN);
+        seikyusakiPanel.add(issInsurerSame, VRLayout.FLOW);
+        // ボタンを追加
+        seikyusakiPanel.add(insurerSelectButtonIkensyo, VRLayout.FLOW_RETURN);
+        // [ID:0000513][Masahiko Higuchi] 2009/09 edit end
+        
         issInsurerNmContainer.setText("名称");
         issInsurerNmContainer.setLayout(new BorderLayout());
         issInsurerNmContainer.add(issInsurerNm);
-        issInsurerNm.setColumns(40);
+        
+        // [ID:0000513][Masahiko Higuchi] 2009/09 edit begin 2009年度対応
+        //issInsurerNm.setColumns(40);
+        issInsurerNm.setColumns(23);
+        // [ID:0000513][Masahiko Higuchi] 2009/09 edit end
+        
         issInsurerNm.setMaxLength(40);
         issInsurerNm.setIMEMode(InputSubset.KANJI);
         issInsurerNm.setBindPath("ISS_INSURER_NM");
-
+        
         issInsurerNoContainer.setText("保険者番号");
         issInsurerNoContainer.setLayout(new BorderLayout());
         issInsurerNoContainer.add(issInsurerNo);
@@ -345,6 +388,11 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         issInsurerSame.setText("依頼元と同一(C)");
         issInsurerSame.setMnemonic('C');
 
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+        insurerSelectButtonIkensyo.setText("保険者選択(J)");
+        insurerSelectButtonIkensyo.setMnemonic('J');
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add end
+        
         // 意見書請求先・総括書
         soukatuhyouGrp.setLayout(new VRLayout());
         soukatuhyouGrp.setText("総括書(複数患者分の請求書を同時作成する場合の表紙)");
@@ -390,12 +438,22 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         seikyusakiPanel2.setLayout(seikyusakiLayout2);
         seikyusakiPanel2.add(sksInsurerNmContainer, VRLayout.FLOW);
         seikyusakiPanel2.add(sksInsurerNoContainer, VRLayout.FLOW);
-        seikyusakiPanel2.add(sksInsurerSame, VRLayout.FLOW_RETURN);
+        
+        // [ID:0000513][Masahiko Higuchi] 2009/09 edit begin 2009年度対応
+        //seikyusakiPanel2.add(sksInsurerSame, VRLayout.FLOW_RETURN);
+        seikyusakiPanel2.add(sksInsurerSame, VRLayout.FLOW);
+        seikyusakiPanel2.add(insurerSelectButtonKensa, VRLayout.FLOW_RETURN);
+        // [ID:0000513][Masahiko Higuchi] 2009/09 edit end
 
         sksInsurerNmContainer.setText("名称");
         sksInsurerNmContainer.setLayout(new BorderLayout());
         sksInsurerNmContainer.add(sksInsurerNm);
-        sksInsurerNm.setColumns(40);
+        
+        // [ID:0000513][Masahiko Higuchi] 2009/09 edit begin 2009年度対応
+        //sksInsurerNm.setColumns(40);
+        sksInsurerNm.setColumns(23);
+        // [ID:0000513][Masahiko Higuchi] 2009/09 edit end
+        
         sksInsurerNm.setMaxLength(40);
         sksInsurerNm.setIMEMode(InputSubset.KANJI);
         sksInsurerNm.setBindPath("SKS_INSURER_NM");
@@ -408,10 +466,16 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sksInsurerNo.setIMEMode(InputSubset.LATIN_DIGITS);
         sksInsurerNo.setCharType(VRCharType.ONLY_DIGIT);
         sksInsurerNo.setBindPath("SKS_INSURER_NO");
-
+        
         sksInsurerSame.setText("依頼元と同一(P)");
         sksInsurerSame.setMnemonic('P');
 
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+        insurerSelectButtonKensa.setText("保険者選択(K)");
+        insurerSelectButtonKensa.setMnemonic('K');
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add end
+        
+        
         // 意見書請求先・総括書
         soukatuhyouGrp2.setText("総括書(複数患者分の請求書を同時作成する場合の表紙)");
         soukatuhyouGrp2.setLayout(new VRLayout());
@@ -471,9 +535,21 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         printOptionGrp.setText("「主治医意見書」「医師意見書」印刷オプション");
         printOptionGrp.setForeground(Color.BLUE);
         printOptionGrp.setLayout(new VRLayout());
-        printOptionGrp.add(drNameGrp, VRLayout.CLIENT);
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+//        printOptionGrp.add(drNameGrp, VRLayout.CLIENT);
+//        printOptionGrp.add(pageHeaderPrintGrp, VRLayout.CLIENT);
+//        printOptionGrp.add(pageHeaderPrintGrp2, VRLayout.CLIENT);
+        printOptionGrp.add(drNameGrp, VRLayout.WEST);
         printOptionGrp.add(pageHeaderPrintGrp, VRLayout.CLIENT);
+        printOptionGrp.add(kindPrintGrp, VRLayout.CLIENT);
         printOptionGrp.add(pageHeaderPrintGrp2, VRLayout.CLIENT);
+        // 在宅・施設区分
+        kindPrintGrp.setText("頁ヘッダ(在宅・施設区分)");
+        kindPrintGrp.setLayout(new BorderLayout());
+        kindPrintGrp.add(kindPrint);
+        kindPrint.setText("印刷する");
+        kindPrint.setBindPath("KIND_OUTPUT_UMU");
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応  
         // 医師氏名
         drNameGrp.setText("医師氏名");
         drNameGrp.setLayout(new BorderLayout());
@@ -933,6 +1009,43 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 loadMKingakuTensu();
             }
 
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+            setInsurerDbmConnect(false);
+            // 接続成功時のみ
+            if(getMasterInsurerDbm() != null && getMasterInsurerDbm().canConnect()) {
+                // フラグを接続済みに
+                setInsurerDbmConnect(true);
+                // 新規モード
+                // リレーション設定を追加
+                // 変換あり＋チェックあり
+                setInsurerRelation(new IkenshoInsurerRelation(
+                        getMasterInsurerDbm(), insurerNoField,
+                        insurerNmField, true, true, true, true));
+                setInsurerRelationIkensyo(new IkenshoInsurerRelation(
+                        getMasterInsurerDbm(), issInsurerNo, issInsurerNm,
+                        true, true, true, true));
+                setInsurerRelationKensa(new IkenshoInsurerRelation(
+                        getMasterInsurerDbm(), sksInsurerNo, sksInsurerNm,
+                        true, true, true, true));
+                // 画面状態制御
+                insurerSelectButton.setEnabled(true);
+                // チェックを走らせる
+                getInsurerRelation().checkInsurerNo();
+                getInsurerRelation().checkInsurerName();
+                getInsurerRelationIkensyo().checkInsurerNo();
+                getInsurerRelationIkensyo().checkInsurerName();
+                getInsurerRelationKensa().checkInsurerNo();
+                getInsurerRelationKensa().checkInsurerName();
+                // 再描画
+                revalidate();
+                repaint();                
+
+            } else {
+                // 接続できていないので無効に
+                insurerSelectButton.setEnabled(false);
+            }
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add end
+            
             // 請求パターン内のEnabledの設定
             setseikyuPatternEnabled();
 
@@ -968,6 +1081,19 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             public void actionPerformed(ActionEvent e) {
                 issInsurerNm.setText(insurerNmField.getText());
                 issInsurerNo.setText(insurerNoField.getText());
+                // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+                if(getInsurerRelationIkensyo() != null) {
+                    try {
+                        getInsurerRelationIkensyo().checkInsurerNo();
+                        getInsurerRelationIkensyo().checkInsurerName();
+                        
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    revalidate();
+                    repaint();
+                }
+                // [ID:0000513][Masahiko Higuchi] 2009/09 add end
             }
         });
 
@@ -976,6 +1102,19 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             public void actionPerformed(ActionEvent e) {
                 sksInsurerNm.setText(insurerNmField.getText());
                 sksInsurerNo.setText(insurerNoField.getText());
+                // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+                if(getInsurerRelationKensa() != null) {
+                    try {
+                        getInsurerRelationKensa().checkInsurerNo();
+                        getInsurerRelationKensa().checkInsurerName();
+                        
+                    } catch (Exception ex) {
+                        ex.printStackTrace();
+                    }
+                    revalidate();
+                    repaint();
+                }
+                // [ID:0000513][Masahiko Higuchi] 2009/09 add end
             }
         });
 
@@ -999,6 +1138,116 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                 setSoukatuhyouValue(soukatuhyou2, soukatuhyouPrint2);
             }
         });
+        
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+        insurerSelectButton.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    // 保険者選択画面を生成する。
+                    IkenshoInsurerSelect insurerSelectDialog = new IkenshoInsurerSelect();
+                    VRMap selectData = insurerSelectDialog.showModal(getMasterInsurerDbm());
+                    // 選択されていない場合
+                    if(selectData == null) {
+                        return;
+                    }
+                    // ×ボタン対策
+                    if(selectData.isEmpty()) {
+                        return;
+                    }
+                    // 保険者番号
+                    insurerNoField.setText(
+                            ACCastUtilities.toString(VRBindPathParser.get("INSURER_NO",
+                                    selectData), ""));
+                    // 保険者名称
+                    insurerNmField.setText(
+                            ACCastUtilities.toString(VRBindPathParser.get("INSURER_NAME",
+                                    selectData), ""));
+                    getInsurerRelation().validDataNo(insurerNoField,
+                            insurerNoField.getText());
+                    getInsurerRelation().validDataName(insurerNmField,
+                            insurerNmField.getText());
+                    revalidate();
+                    repaint();
+                } catch(Exception ex) {
+                    // エラー
+                    ex.printStackTrace();
+                }
+            }            
+        });
+
+        // 意見書作成料の請求先保険者選択
+        insurerSelectButtonIkensyo.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    // 保険者選択画面を生成する。
+                    IkenshoInsurerSelect insurerSelectDialog = new IkenshoInsurerSelect();
+                    VRMap selectData = insurerSelectDialog.showModal(getMasterInsurerDbm());
+                    // 選択されていない場合
+                    if(selectData == null) {
+                        return;
+                    }
+                    // ×ボタン対策
+                    if(selectData.isEmpty()) {
+                        return;
+                    }
+                    // 保険者番号
+                    issInsurerNo.setText(
+                            ACCastUtilities.toString(VRBindPathParser.get("INSURER_NO",
+                                    selectData), ""));
+                    // 保険者名称
+                    issInsurerNm.setText(
+                            ACCastUtilities.toString(VRBindPathParser.get("INSURER_NAME",
+                                    selectData), ""));
+                    getInsurerRelationIkensyo().validDataNo(issInsurerNo,
+                            issInsurerNo.getText());
+                    getInsurerRelationIkensyo().validDataName(issInsurerNm,
+                            issInsurerNm.getText());
+                    revalidate();
+                    repaint();
+                } catch(Exception ex) {
+                    // エラー
+                    ex.printStackTrace();
+                }
+            }            
+        });
+        
+        // 検査費用点数の請求先保険者
+        insurerSelectButtonKensa.addActionListener(new ActionListener() {
+            public void actionPerformed(ActionEvent e) {
+                try{
+                    // 保険者選択画面を生成する。
+                    IkenshoInsurerSelect insurerSelectDialog = new IkenshoInsurerSelect();
+                    VRMap selectData = insurerSelectDialog.showModal(getMasterInsurerDbm());
+                    // 選択されていない場合
+                    if(selectData == null) {
+                        return;
+                    }
+                    // ×ボタン対策
+                    if(selectData.isEmpty()) {
+                        return;
+                    }
+                    // 保険者番号
+                    sksInsurerNo.setText(
+                            ACCastUtilities.toString(VRBindPathParser.get("INSURER_NO",
+                                    selectData), ""));
+                    // 保険者名称
+                    sksInsurerNm.setText(
+                            ACCastUtilities.toString(VRBindPathParser.get("INSURER_NAME",
+                                    selectData), ""));
+                    getInsurerRelationKensa().validDataNo(sksInsurerNo,
+                            sksInsurerNo.getText());
+                    getInsurerRelationKensa().validDataName(sksInsurerNm,
+                            sksInsurerNm.getText());
+                    revalidate();
+                    repaint();
+                } catch(Exception ex) {
+                    // エラー
+                    ex.printStackTrace();
+                }
+            }            
+        });
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add end
+
     }
 
     public ACAffairButtonBar getButtonBar() {
@@ -1169,6 +1418,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         sb.append(" DR_NM_OUTPUT_UMU,");
         sb.append(" HEADER_OUTPUT_UMU1,");
         sb.append(" HEADER_OUTPUT_UMU2,");
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+        sb.append(" KIND_OUTPUT_UMU,");
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
         sb.append(" ISS_INSURER_NO,");
         sb.append(" ISS_INSURER_NM,");
         sb.append(" SKS_INSURER_NO,");
@@ -1242,7 +1494,10 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
      */
     private boolean doUpdate() throws Exception {
         // 入力チェック
-        if (isValidInput()) {
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+        if (isValidInput() && isValidSave()) {
+        // [ID:0000513][Masahiko Higuchi] 2009/09 add end
+
             String msg = "";
 
             // update
@@ -1390,6 +1645,10 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(",DR_NM_OUTPUT_UMU=" + DR_NM_OUTPUT_UMU);
                     sb.append(",HEADER_OUTPUT_UMU1=" + HEADER_OUTPUT_UMU1);
                     sb.append(",HEADER_OUTPUT_UMU2=" + HEADER_OUTPUT_UMU2);
+                    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+                    sb.append(",KIND_OUTPUT_UMU="
+                            + getDBSafeNumber("KIND_OUTPUT_UMU", insurerData));
+                    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
                     sb.append(",ISS_INSURER_NO=" + ISS_INSURER_NO);
                     sb.append(",ISS_INSURER_NM=" + ISS_INSURER_NM);
                     sb.append(",SKS_INSURER_NO=" + SKS_INSURER_NO);
@@ -1451,6 +1710,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append(" DR_NM_OUTPUT_UMU,");
                     sb.append(" HEADER_OUTPUT_UMU1,");
                     sb.append(" HEADER_OUTPUT_UMU2,");
+                    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+                    sb.append(" KIND_OUTPUT_UMU,");
+                    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
                     sb.append(" ISS_INSURER_NO,");
                     sb.append(" ISS_INSURER_NM,");
                     sb.append(" SKS_INSURER_NO,");
@@ -1499,6 +1761,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
                     sb.append("," + DR_NM_OUTPUT_UMU);
                     sb.append("," + HEADER_OUTPUT_UMU1);
                     sb.append("," + HEADER_OUTPUT_UMU2);
+                    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+                    sb.append("," + getDBSafeNumber("KIND_OUTPUT_UMU", insurerData));
+                    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
                     sb.append("," + ISS_INSURER_NO);
                     sb.append("," + ISS_INSURER_NM);
                     sb.append("," + SKS_INSURER_NO);
@@ -2088,18 +2353,27 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             issGrp.setText("意見書作成料／診察・検査費用請求先");
             setIssGrpEnabled(true);
             setSksGrpEnabled(false);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 保険者番号選択
+            setSeikyuPatternInsurerSelectButtonState(true , false);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add end
             break;
 
         case 2: // 「意見書作成料(1枚)・検査料(1枚)」
             issGrp.setText("意見書作成料請求先");
             setIssGrpEnabled(true);
             setSksGrpEnabled(true);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 保険者番号選択
+            setSeikyuPatternInsurerSelectButtonState(true , true);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add end
             break;
 
         case 3: // 「意見書作成料のみ」
             issGrp.setText("意見書作成料請求先");
             setIssGrpEnabled(true);
             setSksGrpEnabled(false);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 保険者番号選択
+            setSeikyuPatternInsurerSelectButtonState(true , false);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add end
             break;
 
         case 4: // 「検査料のみ」
@@ -2107,11 +2381,17 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             // issGrp.setText("意見書作成料請求先");
             setIssGrpEnabled(false);
             setSksGrpEnabled(true);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 保険者番号選択
+            setSeikyuPatternInsurerSelectButtonState(false , true);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add end
             break;
 
         default:
             setIssGrpEnabled(false);
             setSksGrpEnabled(false);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 保険者番号選択
+            setSeikyuPatternInsurerSelectButtonState(false , false);
+            // [ID:0000513][Masahiko Higuchi] 2009/09 add end
             break;
         }
     }
@@ -2206,4 +2486,207 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             break;
         }
     }
+    
+    // [ID:0000513][Masahiko Higuchi] 2009/09 add begin 2009年度対応
+    /**
+     * 保存前妥当性確認
+     * 
+     * @return
+     * @throws Exception
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public boolean isValidSave() throws Exception {
+        boolean isSkip = false;
+        // 保険者番号の入力チェック
+        if (isInsurerDbmConnect()) {
+            // 文言の確定
+            String msgType = "";
+            if(!isUpdate) {
+                msgType = "登録";
+            } else {
+                msgType = "更新";
+            }
+            // 確認
+            if (!isSkip && insurerNoField.isEnabled()
+                    && !getInsurerRelation().isValidInsurer()) {
+                if (!showWarningMessageBox("入力されている保険者番号、もしくは保険者名称に誤りがある可能性があります。"
+                        + ACConstants.LINE_SEPARATOR + msgType +"してもよろしいですか？")) {
+                    getInsurerRelation().checkInsurerNo();
+                    getInsurerRelation().checkInsurerName();
+                    return false;
+                }
+                // 警告されたがスルーした場合
+                isSkip = true;
+            }
+            
+            if (!isSkip && issInsurerNo.isEnabled()
+                    && !getInsurerRelationIkensyo().isValidInsurer()) {
+                if (!showWarningMessageBox("入力されている保険者番号、もしくは保険者名称に誤りがある可能性があります。"
+                        + ACConstants.LINE_SEPARATOR +  msgType + "してもよろしいですか？")) {
+                    getInsurerRelationIkensyo().checkInsurerNo();
+                    getInsurerRelationIkensyo().checkInsurerName();
+                    return false;
+                }
+                // 警告されたがスルーした場合
+                isSkip = true;
+            }
+            
+            if (!isSkip && sksInsurerNo.isEnabled()
+                    && !getInsurerRelationKensa().isValidInsurer()) {
+                if (!showWarningMessageBox("入力されている保険者番号、もしくは保険者名称に誤りがある可能性があります。"
+                        + ACConstants.LINE_SEPARATOR +  msgType + "してもよろしいですか？")) {
+                    getInsurerRelationKensa().checkInsurerNo();
+                    getInsurerRelationKensa().checkInsurerName();
+                    return false;
+                }
+                // 警告されたがスルーした場合
+                isSkip = true;
+            }
+            
+        }
+        
+        return true;
+    }
+    
+    /**
+     * 保険者選択ボタンの状態制御処理
+     * 
+     * @param issEnabled
+     * @param sksEnabled
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public void setSeikyuPatternInsurerSelectButtonState(boolean issEnabled, boolean sksEnabled) {
+        // 接続状態で画面状態制御を変更
+        if(isInsurerDbmConnect()) {
+            // 接続できている場合
+            // その他はチェック状態により制御
+            insurerSelectButtonIkensyo.setEnabled(issEnabled);
+            insurerSelectButtonKensa.setEnabled(sksEnabled);
+        } else {
+            // 接続できていない場合
+            insurerSelectButton.setEnabled(false);
+            insurerSelectButtonIkensyo.setEnabled(false);
+            insurerSelectButtonKensa.setEnabled(false);
+        }
+        
+        
+    }
+    /**
+     * 保険者番号マスタデーターベースを取得します。
+     * 
+     * @return
+     * @throws Exception
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public IkenshoInsurerBridgeFirebirdDBManager getMasterInsurerDbm() throws Exception {
+        if(masterInsurerDbm == null) {
+            masterInsurerDbm = new IkenshoInsurerBridgeFirebirdDBManager();
+        }
+        return masterInsurerDbm;
+    }
+
+    /**
+     * 保険者番号マスタデータベースを設定します。
+     * 
+     * @param masterInsurerDbm
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public void setMasterInsurerDbm(IkenshoInsurerBridgeFirebirdDBManager masterInsurerDbm) {
+        this.masterInsurerDbm = masterInsurerDbm;
+    }
+    
+    /**
+     * 保険者マスタの接続可否を返却します。
+     * 
+     * @return
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public boolean isInsurerDbmConnect() {
+        return insurerDbmConnect;
+    }
+
+    /**
+     * 保険者マスタの接続可否を設定します。
+     * 
+     * @param insurerDbmConnect
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public void setInsurerDbmConnect(boolean insurerDbmConnet) {
+        this.insurerDbmConnect = insurerDbmConnet;
+    }
+    
+    /**
+     * 保険者変換クラスを返却します。
+     * 
+     * @return
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public IkenshoInsurerRelation getInsurerRelation() {
+        return insurerRelation;
+    }
+
+    /**
+     * 保険者変換クラスを設定します。
+     * 
+     * @param insurerRelation
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public void setInsurerRelation(IkenshoInsurerRelation insurerRelation) {
+        this.insurerRelation = insurerRelation;
+    }
+    
+    /**
+     * 保険者変換クラスを返却します。
+     * 
+     * @return
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public IkenshoInsurerRelation getInsurerRelationIkensyo() {
+        return insurerRelationIkensyo;
+    }
+
+    /**
+     * 保険者変換クラスを設定します。
+     * 
+     * @param insurerRelationIkensyo
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public void setInsurerRelationIkensyo(
+            IkenshoInsurerRelation insurerRelationIkensyo) {
+        this.insurerRelationIkensyo = insurerRelationIkensyo;
+    }
+
+    /**
+     * 保険者変換クラスを返却します。
+     * 
+     * @return
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public IkenshoInsurerRelation getInsurerRelationKensa() {
+        return insurerRelationKensa;
+    }
+
+    /**
+     * 保険者変換クラスを設定します。
+     * 
+     * @param insurerRelationKensa
+     * @author Masahiko Higuchi
+     * @since V3.1.0
+     */
+    public void setInsurerRelationKensa(IkenshoInsurerRelation insurerRelationKensa) {
+        this.insurerRelationKensa = insurerRelationKensa;
+    }
+
+
 }

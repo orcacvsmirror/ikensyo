@@ -1070,14 +1070,26 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
                 new ACTableColumn(3, 32, "年齢", SwingConstants.RIGHT,
                         IkenshoConstants.FORMAT_NOW_AGE, tableCellRenderer,
                         null),
-                new ACTableColumn(4, 100, "被保険者番号", tableCellRenderer, null),
+                // [ID:0000515] [Masahiko Higuchi] replace begin 2009年度対応：要望 医師医見書の帳票印字修正
+                new ACTableColumn(4, 160, "被保険者番号／受給者番号", tableCellRenderer,
+                        null),
+                // [ID:0000515] [Masahiko Higuchi] replace begin 2009年度対応：要望 医師医見書の帳票印字修正
                 new ACTableColumn(5, 120, "作成依頼日",
                         IkenshoConstants.FORMAT_ERA_YMD, tableCellRenderer,
                         null),
                 new ACTableColumn(6, 120, "意見書記入日",
                         IkenshoConstants.FORMAT_ERA_YMD, tableCellRenderer,
                         null) }));
-
+        //[ID:0000515][Tozo TANAKA] 2009/09/17 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+        //最後のセルは最低幅を強制的に確保する。
+        table.getColumnModel().getColumn(
+                table.getColumnModel().getColumnCount() - 1)
+                .setMinWidth(
+                        table.getColumnModel().getColumn(
+                                table.getColumnModel().getColumnCount() - 1)
+                                .getWidth());
+        //[ID:0000515][Tozo TANAKA] 2009/09/17 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応   
+        
         // レンダラの設定
         // table.getTable().setDefaultRenderer(Object.class, tableCellRenderer);
         table.setDefaultRenderer(Object.class, tableCellRenderer);
@@ -2090,7 +2102,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             if (pr.length() > 0) {
                 pr += "";
             }
-            // 2006/06/22 TODO
+            // 2006/06/22 
             // CRLF - 置換対応
             // Reeplace - begin [Masahiko Higuchi]
             
@@ -2948,6 +2960,27 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             row.add(getDataString(map, "KANSENSHOU_NM"));
             // 121:その他特記すべき事項
             sbBuf = new StringBuffer();
+            // [ID:0000515][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+            String kaigoHituyodoHenka = getDataString(map, "KAIGO_HITSUYODO_HENKA");
+            if (!"".equals(kaigoHituyodoHenka)
+                    && !"0".equals(kaigoHituyodoHenka)) {
+                String userSelectState = "";
+                sbBuf.append("前回の要介護度における主治医意見書作成時点と比較して『介護の必要度』が  ");
+                if("1".equals(kaigoHituyodoHenka)) {
+                    userSelectState = "減少";
+                } else if("2".equals(kaigoHituyodoHenka)) {
+                    userSelectState = "変化なし";
+                } else if("3".equals(kaigoHituyodoHenka)) {
+                    userSelectState = "増加";
+                }
+                sbBuf.append(userSelectState);
+            }
+            String hitu = sbBuf.toString();
+            if (hitu.length() > 0) {
+                hitu += "";
+            }
+            // [ID:0000515][Masahiko Higuchi] 2009/09/16 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+            sbBuf = new StringBuffer();
             if (getDataString(map, "HASE_SCORE").length() > 0) {
                 sbBuf.append("長谷川式 = ");
                 sbBuf.append(getDataString(map, "HASE_SCORE"));
@@ -2984,12 +3017,16 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
                 pr += "";
             }
             
+            // [ID:0000515][Masahiko Higuchi] 2009/09/16 replace begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
             // 2006/06/22
             // CRLF - 置換対応
             // Replace - begin [Masahiko Higuchi]
-            row.add(hase + pr
-                    + (getDataString(map, "IKN_TOKKI").replaceAll("\r\n",VT)).replaceAll("\n", VT));
+//            row.add(hase + pr
+//                    + (getDataString(map, "IKN_TOKKI").replaceAll("\r\n",VT)).replaceAll("\n", VT));
+           row.add(hitu + hase + pr
+           + (getDataString(map, "IKN_TOKKI").replaceAll("\r\n",VT)).replaceAll("\n", VT));
             // Replace - end
+            // [ID:0000515][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
             
             // 1レコード追加
             cvs.addRow(row);
@@ -4390,6 +4427,12 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(",IKN_ORIGIN.INST_SEL_PR1");
         sb.append(",IKN_ORIGIN.INST_SEL_PR2");
         sb.append(",IKN_ORIGIN.IKN_TOKKI");
+        // [ID:0000515][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+        // 追加項目
+        sb.append(",KAIGO_HITSUYODO_HENKA");
+        // 使わないが念のため
+        sb.append(",NINTEI_JOHO_KIBO");
+        // [ID:0000515][Masahiko Higuchi] 2009/09/16 add end
         sb.append(" FROM");
         sb.append(" COMMON_IKN_SIS,IKN_ORIGIN,IKN_BILL");
         sb.append(" WHERE");

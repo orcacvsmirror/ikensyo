@@ -1,11 +1,15 @@
 package jp.or.med.orca.ikensho.affair;
 
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.or.med.orca.ikensho.IkenshoConstants;
-import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
 import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
+import jp.or.med.orca.ikensho.component.IkenshoShijishoFieldLoadButton;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -16,6 +20,9 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
  * @author Masahiko Higuchi
  */
 public class IkenshoHoumonKangoShijishoSick2 extends IkenshoDocumentAffairSick {
+    // [ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+    protected IkenshoShijishoFieldLoadButton recentLoad = new IkenshoShijishoFieldLoadButton();
+    // [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
 
     public IkenshoHoumonKangoShijishoSick2() {
         try {
@@ -31,8 +38,37 @@ public class IkenshoHoumonKangoShijishoSick2 extends IkenshoDocumentAffairSick {
      */
     private void jbInit() throws Exception {
         getTitle().setText("現在の状態（続き）");
-        getSickProgresss().setText("傷病の経過");
-        getSickMedicineValueWarning().setText("傷病の経過は 250文字 または 5行以内 しか印刷されません。");
+//      [ID:0000514][Tozo TANAKA] 2009/09/11 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        getSickProgresss().setText("傷病の経過");
+//        getSickMedicineValueWarning().setText("傷病の経過は 250文字 または 5行以内 しか印刷されません。");
+        getSickProgresss().setText(
+                "症状・" + ACConstants.LINE_SEPARATOR + "治療"
+                        + ACConstants.LINE_SEPARATOR + "状態");
+        getSickMedicineValueWarning().setText(
+                getSickProgressName() + "は 250文字 または 5行以内 しか印刷されません。");
+//      [ID:0000514][Tozo TANAKA] 2009/09/11 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+
+        // [ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+        recentLoad.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                String data=recentLoad.getRecentData();
+                if(data != null){
+                    String oldText = getSickProgress().getText();
+                    int max=getSickProgress().getMaxLength() - oldText.length();
+                    if(max>0){
+                        if(max<data.length()){
+                            data = data.substring(0, max);
+                        }
+                        getSickProgress().setText(oldText+data);
+                    }
+                }
+            }
+        });
+        getSickProgresss().setHgap(0);
+        getSickProgresss().add(recentLoad);
+        getProgressGroup().setText(getSickProgressName()+"及び投与中の薬剤の用法・用量");
+        // [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+
     }
 
     /**
@@ -254,10 +290,29 @@ public class IkenshoHoumonKangoShijishoSick2 extends IkenshoDocumentAffairSick {
                         getSickMedicineUsage(1), getSickMedicineUsage(2),
                         getSickMedicineUsage(3), getSickMedicineUsage(4),
                         getSickMedicineUsage(5), getSickMedicineUsage(6) });
+        
+        
+//      [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+
+        recentLoad.setLoadRecentSetting(
+                dbm,
+                getMasterAffair().getPatientNo(),
+                "TOKUBETSU_SHOJO_SHUSO",
+                "1",
+                "読込(L)",
+                'L',
+                "最新の特別訪問看護指示書に登録した「症状・主訴」を読み込みます。" + ACConstants.LINE_SEPARATOR
+                        + "よろしいですか？");
+        
+// [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        
     }
 
     protected String getSickProgressName() {
-        return "傷病の経過";
+//      [ID:0000514][Tozo TANAKA] 2009/09/11 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        return "傷病の経過";
+        return "症状・治療状態";
+//      [ID:0000514][Tozo TANAKA] 2009/09/11 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     }
 
     /**
@@ -323,7 +378,10 @@ public class IkenshoHoumonKangoShijishoSick2 extends IkenshoDocumentAffairSick {
     }
 
     protected String getSickMedicineValueWarningText(int inputedCharCount, int inputedLineCount){
-        return "傷病の経過は 250文字 または 5行以内 しか印刷されません。";
+//      [ID:0000514][Tozo TANAKA] 2009/09/11 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        return "傷病の経過は 250文字 または 5行以内 しか印刷されません。";
+        return getSickProgressName() + "は 250文字 または 5行以内 しか印刷されません。";
+//      [ID:0000514][Tozo TANAKA] 2009/09/11 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     }
 
     // [ID:0000438][Tozo TANAKA] 2009/06/02 add end 【主治医医見書・医師医見書】薬剤名テキストの追加

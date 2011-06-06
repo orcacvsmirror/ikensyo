@@ -55,7 +55,7 @@ public class IkenshoIkenshoInfoPrintParameter {
   private String nowMode;
   private boolean typeChanged;
   private boolean notMostNewDocument;
-
+  
   /**
    * コンストラクタです。
    */

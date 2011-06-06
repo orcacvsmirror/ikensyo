@@ -28,6 +28,7 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRTableModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.IkenshoACTextArea;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -43,7 +44,10 @@ public class IkenshoExtraSpecialNoteDialog
   private VRPanel insertPnl = new VRPanel();
   private ACButton insert = new ACButton();
 //  private JScrollPane editAreaScr = new JScrollPane();
-  private ACTextArea editArea = new ACTextArea();
+  // [ID:0000514][Tozo TANAKA] 2009/09/24 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//  private ACTextArea editArea = new ACTextArea();
+  private IkenshoACTextArea editArea = new IkenshoACTextArea();
+  // [ID:0000514][Tozo TANAKA] 2009/09/24 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
   private VRPanel footerPnl = new VRPanel();
   private VRLabel footerCaption1 = new VRLabel();
   private VRLabel footerCaption2 = new VRLabel();
@@ -123,8 +127,12 @@ public class IkenshoExtraSpecialNoteDialog
                              maxRow + "行以内）");
 //      editArea.setUseMaxRows(true);
       editArea.setMaxLength(maxLength);
-      editArea.setRows(maxRow);
-      editArea.setMaxRows(editArea.getRows());
+      // [ID:0000514][Tozo TANAKA] 2009/09/24 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//      editArea.setRows(maxRow);
+//      editArea.setMaxRows(editArea.getRows());
+      editArea.setRows(maxRow+1);
+      editArea.setMaxRows(maxRow);
+      // [ID:0000514][Tozo TANAKA] 2009/09/24 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
       editArea.setColumns(maxColumn);
     }else{
       footerCaption2.setText("（最大" + String.valueOf(maxLength) + "文字）");

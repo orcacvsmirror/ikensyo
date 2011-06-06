@@ -12,7 +12,6 @@ import java.util.Arrays;
 import java.util.Date;
 
 import javax.swing.JPanel;
-import javax.swing.JRadioButton;
 
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACButton;
@@ -31,19 +30,30 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.IkenshoVirticalRadioButtonGroup;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 
 /** <HEAD_IKENSYO> */
 public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
-    private JPanel contentPane = new JPanel();
-    private VRPanel contents = new VRPanel();
-    private ACGroupBox styleGroup = new ACGroupBox();
-    private ACClearableRadioButtonGroup style = new ACClearableRadioButtonGroup();
-    private ACGroupBox sendToGroup = new ACGroupBox();
-    private IkenshoVirticalRadioButtonGroup sendTo = new IkenshoVirticalRadioButtonGroup();
-    private VRPanel buttons = new VRPanel();
-    private ACButton ok = new ACButton();
-    private ACButton cancel = new ACButton();
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    private JPanel contentPane = new JPanel();
+//    private VRPanel contents = new VRPanel();
+//    private ACGroupBox styleGroup = new ACGroupBox();
+//    private ACClearableRadioButtonGroup style = new ACClearableRadioButtonGroup();
+//    private ACGroupBox sendToGroup = new ACGroupBox();
+//    private IkenshoVirticalRadioButtonGroup sendTo = new IkenshoVirticalRadioButtonGroup();
+//    private VRPanel buttons = new VRPanel();
+//    private ACButton ok = new ACButton();
+//    private ACButton cancel = new ACButton();
+    private VRPanel contents;
+    private ACGroupBox styleGroup;
+    private ACClearableRadioButtonGroup style;
+    private ACGroupBox sendToGroup;
+    private IkenshoVirticalRadioButtonGroup sendTo;
+    private VRPanel buttons;
+    private ACButton ok;
+    private ACButton cancel;
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 
     protected boolean printed = false;
     protected VRMap source;
@@ -811,40 +821,76 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
     }
 
     private void jbInit() throws Exception {
-        contentPane = (JPanel) this.getContentPane();
-        contentPane.add(contents);
+        // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        contentPane = (JPanel) this.getContentPane();
+//        contentPane.add(contents);
+//
+//        contents.setLayout(new VRLayout());
+//        contents.add(styleGroup, VRLayout.NORTH);
+//        contents.add(sendToGroup, VRLayout.NORTH);
+//        contents.add(buttons, VRLayout.NORTH);
+//
+//        // 帳票様式
+//        styleGroup.setText("帳票様式（老人保健施設以外の施設は「医療機関他」を選択してください）");
+//        styleGroup.setLayout(new BorderLayout());
+//        styleGroup.add(style, BorderLayout.CENTER);
+//        VRLayout styleLayout = new VRLayout();
+//        styleLayout.setAutoWrap(false);
+//        style.setLayout(styleLayout);
+//        style.setUseClearButton(false);
+//        style.setModel(new VRListModelAdapter(new VRArrayList(Arrays
+//                .asList(new String[] { "医療機関他", "老人保健施設" }))));
+//        style.setSelectedIndex(1);
+//
+//        // 宛先となる訪問看護ステーション
+//        sendToGroup.setText("宛先となる訪問看護ステーションを選択してください。（複数選択時のみ選択可能）");
+//        sendToGroup.setLayout(new VRLayout());
+//        sendToGroup.add(sendTo, VRLayout.CLIENT);
+//        sendTo.setUseClearButton(false);
+//
+//        // 下部ボタン
+//        buttons.setLayout(new VRLayout());
+//        buttons.add(cancel, VRLayout.EAST);
+//        buttons.add(ok, VRLayout.EAST);
+//        ok.setText("印刷(O)");
+//        ok.setMnemonic('O');
+//        cancel.setText("キャンセル(C)");
+//        cancel.setMnemonic('C');
+        
+        ((JPanel) this.getContentPane()).add(getContents());
 
-        contents.setLayout(new VRLayout());
-        contents.add(styleGroup, VRLayout.NORTH);
-        contents.add(sendToGroup, VRLayout.NORTH);
-        contents.add(buttons, VRLayout.NORTH);
+        getContents().setLayout(new VRLayout());
+        getContents().add(getStyleGroup(), VRLayout.NORTH);
+        getContents().add(getSendToGroup(), VRLayout.NORTH);
+        getContents().add(getButtons(), VRLayout.NORTH);
 
         // 帳票様式
-        styleGroup.setText("帳票様式（老人保健施設以外の施設は「医療機関他」を選択してください）");
-        styleGroup.setLayout(new BorderLayout());
-        styleGroup.add(style, BorderLayout.CENTER);
+        getStyleGroup().setText("帳票様式（老人保健施設以外の施設は「医療機関他」を選択してください）");
+        getStyleGroup().setLayout(new BorderLayout());
+        getStyleGroup().add(getStyle(), BorderLayout.CENTER);
         VRLayout styleLayout = new VRLayout();
         styleLayout.setAutoWrap(false);
-        style.setLayout(styleLayout);
-        style.setUseClearButton(false);
-        style.setModel(new VRListModelAdapter(new VRArrayList(Arrays
+        getStyle().setLayout(styleLayout);
+        getStyle().setUseClearButton(false);
+        getStyle().setModel(new VRListModelAdapter(new VRArrayList(Arrays
                 .asList(new String[] { "医療機関他", "老人保健施設" }))));
-        style.setSelectedIndex(1);
+        getStyle().setSelectedIndex(1);
 
         // 宛先となる訪問看護ステーション
-        sendToGroup.setText("宛先となる訪問看護ステーションを選択してください。（複数選択時のみ選択可能）");
-        sendToGroup.setLayout(new VRLayout());
-        sendToGroup.add(sendTo, VRLayout.CLIENT);
-        sendTo.setUseClearButton(false);
+        getSendToGroup().setText("宛先となる訪問看護ステーションを選択してください。（複数選択時のみ選択可能）");
+        getSendToGroup().setLayout(new VRLayout());
+        getSendToGroup().add(getSendTo(), VRLayout.CLIENT);
+        getSendTo().setUseClearButton(false);
 
         // 下部ボタン
-        buttons.setLayout(new VRLayout());
-        buttons.add(cancel, VRLayout.EAST);
-        buttons.add(ok, VRLayout.EAST);
-        ok.setText("印刷(O)");
-        ok.setMnemonic('O');
-        cancel.setText("キャンセル(C)");
-        cancel.setMnemonic('C');
+        getButtons().setLayout(new VRLayout());
+        getButtons().add(getCancel(), VRLayout.EAST);
+        getButtons().add(getOk(), VRLayout.EAST);
+        getOk().setText("印刷(O)");
+        getOk().setMnemonic('O');
+        getCancel().setText("キャンセル(C)");
+        getCancel().setMnemonic('C');
+        // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     }
 
     /**
@@ -878,17 +924,107 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
         this.dispose();
     }
 
-    private class IkenshoVirticalRadioButtonGroup extends
-            ACClearableRadioButtonGroup {
-        public IkenshoVirticalRadioButtonGroup() {
-            super();
-            setLayout(new VRLayout());
-        }
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    private class IkenshoVirticalRadioButtonGroup extends
+//            ACClearableRadioButtonGroup {
+//        public IkenshoVirticalRadioButtonGroup() {
+//            super();
+//            setLayout(new VRLayout());
+//        }
+//
+//        protected void addRadioButton(JRadioButton item) {
+//            this.add(item, VRLayout.FLOW_RETURN);
+//        }
+//    }
 
-        protected void addRadioButton(JRadioButton item) {
-            this.add(item, VRLayout.FLOW_RETURN);
+    /**
+     * buttons を返します。
+     * @return buttons
+     */
+    protected VRPanel getButtons() {
+        if(buttons==null){
+            buttons = new VRPanel();
         }
+        return buttons;
     }
+
+    /**
+     * cancel を返します。
+     * @return cancel
+     */
+    protected ACButton getCancel() {
+        if(cancel==null){
+            cancel = new ACButton();
+        }
+        return cancel;
+    }
+
+    /**
+     * contents を返します。
+     * @return contents
+     */
+    protected VRPanel getContents() {
+        if(contents==null){
+            contents = new VRPanel();
+        }
+        return contents;
+    }
+
+    /**
+     * ok を返します。
+     * @return ok
+     */
+    protected ACButton getOk() {
+        if(ok==null){
+            ok = new ACButton();
+        }
+        return ok;
+    }
+
+    /**
+     * sendTo を返します。
+     * @return sendTo
+     */
+    protected IkenshoVirticalRadioButtonGroup getSendTo() {
+        if(sendTo==null){
+            sendTo = new IkenshoVirticalRadioButtonGroup();
+        }
+        return sendTo;
+    }
+
+    /**
+     * sendToGroup を返します。
+     * @return sendToGroup
+     */
+    protected ACGroupBox getSendToGroup() {
+        if(sendToGroup==null){
+            sendToGroup = new ACGroupBox();
+        }
+        return sendToGroup;
+    }
+
+    /**
+     * style を返します。
+     * @return style
+     */
+    protected ACClearableRadioButtonGroup getStyle() {
+        if(style==null){
+            style = new ACClearableRadioButtonGroup();
+        }
+        return style;
+    }
+
+    /**
+     * styleGroup を返します。
+     * @return styleGroup
+     */
+    protected ACGroupBox getStyleGroup() {
+        if(styleGroup==null){
+            styleGroup = new ACGroupBox();
+        }
+        return styleGroup;
+    }
+    // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     
     //2009/01/21 [Tozo Tanaka] Add - begin
     protected static int getMedicineViewCount() {
@@ -950,5 +1086,5 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
         return insertionLineSeparatorString;
     }
     //2009/01/21 [Tozo Tanaka] Add - end}
-    
+
 }

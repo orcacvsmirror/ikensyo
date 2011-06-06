@@ -99,6 +99,11 @@ public class IP001001 extends IP001001Event {
         case 12:
             fileName = "IkenshoShien2.xml";
             break;
+        // [ID:0000514][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+        case 13:
+            fileName = "SpecialShijisho.xml";
+            break;
+        // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
         }
 
         ACFrameEventProcesser processer = ACFrame.getInstance()
@@ -146,6 +151,10 @@ public class IP001001 extends IP001001Event {
                 formatIndex = 0;
             } else if (fileName.endsWith("newikensho2.xml")) {
                 formatIndex = 1;
+                // [ID:0000514][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+            } else if ("specialshijisho.xml".equals(fileName)) {
+                formatIndex = 13;
+            // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
             } else if (fileName.endsWith("shijisho.xml")) {
                 formatIndex = 2;
             } else if (fileName.endsWith("shijishob.xml")) {

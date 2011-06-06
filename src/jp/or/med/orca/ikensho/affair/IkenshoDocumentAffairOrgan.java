@@ -63,7 +63,10 @@ public class IkenshoDocumentAffairOrgan extends
     private IkenshoDocumentTabTitleLabel organTitle = new IkenshoDocumentTabTitleLabel();
     private ACButton showAddOrgan = new ACButton();
     private VRLabel zipSpacer = new VRLabel();
-    private ACLabelContainer addresss = new ACLabelContainer();
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    private ACLabelContainer addresss = new ACLabelContainer();
+    protected ACLabelContainer addresss;
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     private ACLabelContainer organizationNames = new ACLabelContainer();
     private ACLabelContainer tels = new ACLabelContainer();
     private VRLayout organGroupLayout = new VRLayout();
@@ -513,10 +516,17 @@ public class IkenshoDocumentAffairOrgan extends
         showAddOrgan.setToolTipText("「医療機関情報詳細」画面を表示します。");
         showAddOrgan.setMnemonic('D');
         showAddOrgan.setText("医療機関登録(D)");
-        addresss.setText("所在地");
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        addresss.setText("所在地");
+        getOrganizationAddressContainer().setText("所在地");
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         organizationNames.setText("医療機関名");
         tels.setText("電話番号");
-        organGroupLayout.setFitHLast(true);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        organGroupLayout.setFitHLast(true);
+        organizationName.setColumns(30);
+        address.setColumns(45);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         miCelTel.setBindPathArea("MI_CEL_TEL1");
         miCelTel.setBindPathNumber("MI_CEL_TEL2");
         miCelTel.setEditable(false);
@@ -532,7 +542,11 @@ public class IkenshoDocumentAffairOrgan extends
         miCelTels.add(miCelTel, null);
         organizationNames.add(organizationName, null);
         zips.add(zip, null);
-        addresss.add(address, null);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//      addresss.add(address, null);
+      getOrganizationAddressContainer().add(address, null);
+//    [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        
         tels.add(tel, null);
         faxs.add(fax, null);
 
@@ -552,7 +566,10 @@ public class IkenshoDocumentAffairOrgan extends
                 VRLayout.FLOW_INSETLINE_RETURN);
         followDoctorContainer.add(zips, VRLayout.FLOW_INSETLINE);
         followDoctorContainer.add(zipSpacer, VRLayout.FLOW_INSETLINE_RETURN);
-        followDoctorContainer.add(addresss, VRLayout.FLOW_INSETLINE_RETURN);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        followDoctorContainer.add(addresss, VRLayout.FLOW_INSETLINE_RETURN);
+        followDoctorContainer.add(getOrganizationAddressContainer(), VRLayout.FLOW_INSETLINE_RETURN);
+//    [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         followDoctorContainer.add(tels, VRLayout.FLOW_INSETLINE);
         followDoctorContainer.add(telSpacer, VRLayout.FLOW_INSETLINE_RETURN);
 
@@ -576,5 +593,18 @@ public class IkenshoDocumentAffairOrgan extends
     public ACTextField getOrganizationName(){
         return organizationName;
     }
+
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+    /**
+     * 医療機関所在地コンテナを返します。
+     * @return 医療機関所在地コンテナ
+     */
+    protected ACLabelContainer getOrganizationAddressContainer(){
+        if(addresss==null){
+            addresss = new ACLabelContainer();
+        }
+        return addresss;
+    }
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 
 }

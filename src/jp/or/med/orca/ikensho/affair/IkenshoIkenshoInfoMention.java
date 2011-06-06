@@ -47,6 +47,7 @@ import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRHashMapArrayToConstKeyArrayAdapter;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.IkenshoACTextArea;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
 import jp.or.med.orca.ikensho.component.IkenshoEraDateTextField;
 import jp.or.med.orca.ikensho.component.IkenshoInitialNegativeIntegerTextField;
@@ -83,7 +84,10 @@ public class IkenshoIkenshoInfoMention extends
     private ACLabelContainer mentionSendDates = new ACLabelContainer();
     private VRLabel mentionHasegawa1Tail = new VRLabel();
     private IkenshoEraDateTextField mentionCreateDate = new IkenshoEraDateTextField();
-    private ACTextArea mentionTokki = new ACTextArea();
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//    private ACTextArea mentionTokki = new ACTextArea();
+    private IkenshoACTextArea mentionTokki;
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     private ACButton mentionAddHokensha = new ACButton();
     private VRLabel mentionHasegawa2Tail = new VRLabel();
     private ACLabelContainer mentionShinseiDates = new ACLabelContainer();
@@ -134,6 +138,9 @@ public class IkenshoIkenshoInfoMention extends
     private IkenshoInitialNegativeIntegerTextField s1112 = new IkenshoInitialNegativeIntegerTextField();
     private IkenshoInitialNegativeIntegerTextField s1113 = new IkenshoInitialNegativeIntegerTextField();
     private IkenshoInitialNegativeIntegerTextField s1114 = new IkenshoInitialNegativeIntegerTextField();
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+    private IkenshoInitialNegativeIntegerTextField kindOutputUmu = new IkenshoInitialNegativeIntegerTextField();
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
     private ACGroupBox ikenshoGroupBox1 = new ACGroupBox();
     private ACTextField insurerName = new ACTextField();
     
@@ -514,9 +521,14 @@ public class IkenshoIkenshoInfoMention extends
 
         if (!IkenshoCommon.isNullText(mentionHiHokenNo.getText())) {
             if (mentionHiHokenNo.getText().length() < 10) {
-                if (ACMessageBox.show("被保険者番号が10桁入力されていません。\nよろしいですか？",
+                // [ID:0000555][Tozo TANAKA] 2009/09/14 replace begin 【2009年度対応：追加案件】医師意見書の受給者番号対応                
+//                if (ACMessageBox.show("被保険者番号が10桁入力されていません。\nよろしいですか？",
+//                        ACMessageBox.BUTTON_OKCANCEL,
+//                        ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL) != ACMessageBox.RESULT_OK) {
+                if (ACMessageBox.show(getInsuredNoText()+"が10桁入力されていません。\nよろしいですか？",
                         ACMessageBox.BUTTON_OKCANCEL,
                         ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_CANCEL) != ACMessageBox.RESULT_OK) {
+                    // [ID:0000555][Tozo TANAKA] 2009/09/14 replace end 【2009年度対応：追加案件】医師意見書の受給者番号対応                    
                     mentionHiHokenNo.requestFocus();
                     return false;
                 }
@@ -590,10 +602,16 @@ public class IkenshoIkenshoInfoMention extends
      * @return 特記事項用の定型文ダイアログ
      */
     protected IkenshoExtraSpecialNoteDialog createMentionTeikeibunKubun(){
+        // [ID:0000514][Tozo TANAKA] 2009/09/24 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        return new IkenshoExtraSpecialNoteDialog(
+//                "その他特記すべき事項",
+//                IkenshoCommon.TEIKEI_MENTION_NAME, 400, 100, 8,
+//                50);
         return new IkenshoExtraSpecialNoteDialog(
                 "その他特記すべき事項",
-                IkenshoCommon.TEIKEI_MENTION_NAME, 400, 100, 8,
+                IkenshoCommon.TEIKEI_MENTION_NAME, getMentionTokki().getMaxLength(), getMentionTokki().getColumns(), getMentionTokki().getMaxRows(),
                 50);
+        // [ID:0000514][Tozo TANAKA] 2009/09/24 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     }
 
     /**
@@ -1213,15 +1231,25 @@ public class IkenshoIkenshoInfoMention extends
         mentionHasegawa1Tail.setText("点");
         mentionCreateDate.setBindPath("REQ_DT");
         mentionCreateDate.setAgeVisible(false);
-        mentionTokki.setColumns(100);
-        mentionTokki.setLineWrap(true);
-        mentionTokki.setRows(8);
-        mentionTokki.setBindPath("IKN_TOKKI");
-        mentionTokki.setMaxLength(400);
         // mentionTokki.setMaxColumns(100);
         // mentionTokki.setUseMaxRows(true);
-        mentionTokki.setMaxRows(mentionTokki.getRows());
-        mentionTokki.setIMEMode(InputSubset.KANJI);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        mentionTokki.setColumns(100);
+//        mentionTokki.setLineWrap(true);
+//        mentionTokki.setRows(8);
+//        mentionTokki.setBindPath("IKN_TOKKI");
+//        mentionTokki.setMaxLength(400);
+//        mentionTokki.setMaxRows(mentionTokki.getRows());
+//        mentionTokki.setIMEMode(InputSubset.KANJI);
+        getMentionTokki().setColumns(100);
+        getMentionTokki().setLineWrap(true);
+        getMentionTokki().setRows(8);
+        getMentionTokki().setBindPath("IKN_TOKKI");
+        getMentionTokki().setMaxLength(400);
+        getMentionTokki().setMaxRows(8);
+        getMentionTokki().setRows(9);
+        getMentionTokki().setIMEMode(InputSubset.KANJI);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         mentionAddHokensha.setToolTipText("「保険者登録」画面を表示します。");
         mentionAddHokensha.setMnemonic('H');
         mentionAddHokensha.setText("保険者登録(H)");
@@ -1244,12 +1272,20 @@ public class IkenshoIkenshoInfoMention extends
         mentionSendDate.setAgeVisible(false);
 
         String osName = System.getProperty("os.name");
+        // [ID:0000555][Tozo TANAKA] 2009/09/14 replace begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+//        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
+//            // Macは"桁数表示を削る"
+//            mentionHiHokenNos.setText("被保険者番号");
+//        } else {
+//            mentionHiHokenNos.setText("被保険者番号（英数10桁）");
+//        }
         if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
             // Macは"桁数表示を削る"
-            mentionHiHokenNos.setText("被保険者番号");
+            mentionHiHokenNos.setText(getInsuredNoText());
         } else {
-            mentionHiHokenNos.setText("被保険者番号（英数10桁）");
+            mentionHiHokenNos.setText(getInsuredNoText()+"（英数10桁）");
         }
+        // [ID:0000555][Tozo TANAKA] 2009/09/14 replace end 【2009年度対応：追加案件】医師意見書の受給者番号対応
 
         mentionHiHokenNos.setContentAreaFilled(true);
         mentionTitle.setText("５．その他特記すべき事項");
@@ -1270,7 +1306,10 @@ public class IkenshoIkenshoInfoMention extends
         mentionTokkiAbstraction1.setAutoWrap(true);
         mentionTokkiAbstraction1
                 .setText("要介護認定に必要な医学的な意見等を記載して下さい。なお、専門医等に別途意見を求めた場合はその内容、結果も記載して下さい。");
-        mentionTokkiAbstraction3.setText("（400文字または8行以内）");
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        mentionTokkiAbstraction3.setText("（400文字または8行以内）");
+        mentionTokkiAbstraction3.setText("（400文字または9行以内）");
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         mentionTokkiAbstraction3
                 .setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
         mentionHasegawaDays2.setChildFocusedOwner(false);
@@ -1292,6 +1331,10 @@ public class IkenshoIkenshoInfoMention extends
         s1112.setBindPath("MEISAI_KIND");
         s1113.setBindPath("SOUKATUHYOU_PRT");
         s1114.setBindPath("SOUKATU_FURIKOMI_PRT");
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+        kindOutputUmu.setBindPath("KIND_OUTPUT_UMU");
+        insureParameters.add(kindOutputUmu, null);
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
         ikenshoGroupBox1.setText("String");
         insurerName.setBindPath("INSURER_NM");
         mentionInsurersLayout.setHgap(0);
@@ -1530,4 +1573,21 @@ public class IkenshoIkenshoInfoMention extends
     public ACComboBox getMentionHokenName(){
         return mentionHokenName;
     }
+    /**
+     * mentionTokki を返します。
+     * @return mentionTokki
+     */
+    protected IkenshoACTextArea getMentionTokki() {
+        if(mentionTokki==null){
+            mentionTokki = new IkenshoACTextArea();
+        }
+        return mentionTokki;
+    }
+    
+    // [ID:0000555][Tozo TANAKA] 2009/09/14 add begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+    protected String getInsuredNoText(){
+        return "被保険者番号";
+    }
+    // [ID:0000555][Tozo TANAKA] 2009/09/14 add end 【2009年度対応：追加案件】医師意見書の受給者番号対応
+    
  }

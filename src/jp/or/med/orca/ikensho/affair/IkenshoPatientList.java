@@ -167,13 +167,20 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         // 2007/10/15 [Masahiko Higuchi] Replace - begin
         // 2006/07/05
         // 医師意見書対応
-        // 医師意見書最終記入年月日表示用のカラムを追加
-        // Addition - begin [Masahiko Higuchi]
+        // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        // 医師意見書最終記入年月日表示用のカラムを追加
+//        // Addition - begin [Masahiko Higuchi]
+//        setTableModelAdapter(new ACTableModelAdapter(data, new String[] {
+//                "CHART_NO","PATIENT_NM", "PATIENT_KN", "SEX", "BIRTHDAY",
+//                "IKN_ORIGIN_KINYU_DT", "SIS_ORIGIN_KINYU_DT", "KOUSIN_DT",
+//                "DELETE_FLAG","IKN_ORIGIN_KINYU_DT_ISHI","SHOW_FLAG","BIRTHDAY","PATIENT_NO" }));
+//        // Addition - end
         setTableModelAdapter(new ACTableModelAdapter(data, new String[] {
                 "CHART_NO","PATIENT_NM", "PATIENT_KN", "SEX", "BIRTHDAY",
                 "IKN_ORIGIN_KINYU_DT", "SIS_ORIGIN_KINYU_DT", "KOUSIN_DT",
-                "DELETE_FLAG","IKN_ORIGIN_KINYU_DT_ISHI","SHOW_FLAG","BIRTHDAY","PATIENT_NO" }));
-        // Addition - end
+                "DELETE_FLAG","IKN_ORIGIN_KINYU_DT_ISHI","SHOW_FLAG","BIRTHDAY","PATIENT_NO",
+                "SIS_ORIGIN_KINYU_DT_TOKUBETSU"}));
+        // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         table.setModel(getTableModelAdapter());
 
         table.setColumnModel(new VRTableColumnModel(new ACTableColumn[] {
@@ -200,6 +207,10 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
                         // Addition - end
                 new ACTableColumn(6, 120, "最新指示書記入日",
                         IkenshoConstants.FORMAT_ERA_YMD),
+                // [ID:0000514][Tozo TANAKA] 2009/09/07 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+                new ACTableColumn(13, 140, "最新特別指示書記入日",
+                        IkenshoConstants.FORMAT_ERA_YMD),
+                // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
                 new ACTableColumn(7, 120, "最終更新日",
                         IkenshoConstants.FORMAT_ERA_HMS), }));
         // 2007/10/15 [Masahiko Higuchi] Replace - end
@@ -588,6 +599,18 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
                             IkenshoConstants.FORMAT_ERA_YMD.format(isiIkensho));
                 }
                 // Addition - end
+                
+                // [ID:0000514][Tozo TANAKA] 2009/09/07 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+                Object tokubetsuShijisho = VRBindPathParser.get(
+                        "SIS_ORIGIN_KINYU_DT_TOKUBETSU", map);
+                if (tokubetsuShijisho != null) {
+                    // ★帳票定義体次第
+                    IkenshoCommon.addString(pd, "table.h" + index + ".w11",
+                            IkenshoConstants.FORMAT_ERA_YMD
+                                    .format(tokubetsuShijisho));
+                }
+                // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+                
             }
             pd.endPageEdit();
         }
@@ -774,10 +797,30 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
             param.putAll((VRMap) data.getData(row));
             param.setData("AFFAIR_MODE", IkenshoConstants.AFFAIR_MODE_INSERT);
 
-            ACAffairInfo affair = new ACAffairInfo(
-                    IkenshoHoumonKangoShijisho.class.getName(), param,
-                    "訪問看護指示書");
-            ACFrame.getInstance().next(affair);
+            
+            // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//            ACAffairInfo affair = new ACAffairInfo(
+//                    IkenshoHoumonKangoShijisho.class.getName(), param,
+//                    "訪問看護指示書");
+            ACAffairInfo affair = null;
+             switch (ACMessageBox.showYesNoCancel("作成する指示書の種類を選択してください。",
+                    "訪問看護指示書(H)", 'H', "特別訪問看護指示書(T)", 'T')) {
+             case ACMessageBox.RESULT_YES:
+                 affair = new ACAffairInfo(
+                       IkenshoHoumonKangoShijisho.class.getName(), param,
+                       "訪問看護指示書");
+                 break;
+             case ACMessageBox.RESULT_NO:
+                 affair = new ACAffairInfo(
+                         IkenshoTokubetsuHoumonKangoShijisho.class.getName(), param,
+                         "特別訪問看護指示書");
+                 break;
+             default:
+                 return;
+             }
+             // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+             ACFrame.getInstance().next(affair);
+
         }
     }
 
@@ -1175,7 +1218,10 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
             reportCombo.setColumns(8);
             reportCombo.setBlankItem("");
             reportCombo.setBlankable(true);
-            reportCombo.setModel(new String[]{"主治医意見書","医師意見書","訪問看護指示書"});
+            // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+            //reportCombo.setModel(new String[]{"主治医意見書","医師意見書","訪問看護指示書"});
+            reportCombo.setModel(new String[]{"主治医意見書","医師意見書","訪問看護指示書","特別訪問看護指示書"});
+            // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         } 
         return reportCombo;
     }
@@ -1558,6 +1604,11 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
             case 3: // 訪問看護指示書
                 keyParam.setData("SIS_ORIGIN_KINYU_DT",new Boolean(true));
                 break;
+            // [ID:0000514][Tozo TANAKA] 2009/09/07 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+            case 4: // 特別訪問看護指示書
+                keyParam.setData("SIS_ORIGIN_KINYU_DT_TOKUBETSU",new Boolean(true));
+                break;
+            // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         }
         
         // 最新記入日
@@ -1618,6 +1669,11 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
         sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_KINYU_DT,");
         sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_CREATE_DT,");
         sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_LAST_TIME,");
+        // [ID:0000514][Tozo TANAKA] 2009/09/07 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_FORMAT_KBN,");
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_KINYU_DT_TOKUBETSU,");
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_MAX_EDA_TOKUBETSU,");
+        // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         sb.append(" PATIENT.LAST_TIME");
         sb.append(" FROM");
         sb
@@ -1813,6 +1869,24 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
                         sb.append(" SIS_ORIGIN_KINYU_DT <= ");
                         sb.append(getDBSafeDate("KINYU_DT_TO",sqlParam));
                     }     
+                    // [ID:0000514][Tozo TANAKA] 2009/09/07 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+                }else if(sqlParam.containsKey("SIS_ORIGIN_KINYU_DT_TOKUBETSU")){
+                        sb.append(" AND");
+                        sb.append(" SIS_ORIGIN_KINYU_DT_TOKUBETSU IS NOT NULL");
+                        // 最新記入日（開始）
+                        if(sqlParam.containsKey("KINYU_DT_FROM")){
+                            sb.append(" AND");
+                            sb.append(" SIS_ORIGIN_KINYU_DT_TOKUBETSU >= ");
+                            sb.append(getDBSafeDate("KINYU_DT_FROM",sqlParam));
+                        }
+                        // 最新記入日（終了）
+                        if(sqlParam.containsKey("KINYU_DT_TO")){
+                            sb.append(" AND");
+                            sb.append(" SIS_ORIGIN_KINYU_DT_TOKUBETSU <= ");
+                            sb.append(getDBSafeDate("KINYU_DT_TO",sqlParam));
+                        }     
+                    
+                    // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
                     
                 }else{
                 // 何も選択されていない場合（帳票種類）
@@ -1842,6 +1916,12 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
                     // 訪問看護指示書の日付条件句作成
                     buildDateWhere(sb,sqlParam,dayFrom,dayTo,"SIS_ORIGIN_KINYU_DT");
 
+                    // [ID:0000514][Tozo TANAKA] 2009/09/15 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+                    sb.append(" OR");
+                    // 特別訪問看護指示書の日付条件句作成
+                    buildDateWhere(sb,sqlParam,dayFrom,dayTo,"SIS_ORIGIN_KINYU_DT_TOKUBETSU");
+                    // [ID:0000514][Tozo TANAKA] 2009/09/15 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+                    
                     sb.append(")");
                 }
             }

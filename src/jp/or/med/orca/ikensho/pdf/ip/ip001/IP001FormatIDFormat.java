@@ -52,6 +52,10 @@ public class IP001FormatIDFormat extends Format {
                 newID = 0;
             } else if (fileName.endsWith("newikensho2.xml")) {
                 newID = 1;
+//              [ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+            } else if ("specialshijisho.xml".equals(fileName)) {
+                newID = 13;
+//              [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能 
             } else if (fileName.endsWith("shijisho.xml")) {
                 newID = 2;
             } else if (fileName.endsWith("shijishob.xml")) {
@@ -73,7 +77,7 @@ public class IP001FormatIDFormat extends Format {
             } else if (fileName.endsWith("ikenshoshien1.xml")) {
                 newID = 11;
             } else if (fileName.endsWith("ikenshoshien2.xml")) {
-                newID = 12;
+                newID = 12; 
             }
         }
         setFormatType(newID);
@@ -126,6 +130,11 @@ public class IP001FormatIDFormat extends Format {
         case 12://医師意見書2ページ目
             obj = formatIkenshoShien2(code, obj);
             break;
+//          [ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        case 13://特別訪問看護指示書
+            obj = formatTokubetsuShijisho(code, obj);
+            break;
+//          [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         }
 
         toAppendTo.append(obj);
@@ -228,6 +237,12 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid8.h1.w3".equals(code)) obj = "発症年月日1　「発症年月日」";
         else if ("Grid8.h2.w3".equals(code)) obj = "発症年月日2　「発症年月日」";
         else if ("Grid8.h3.w3".equals(code)) obj = "発症年月日3　「発症年月日」";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 add begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+        else if ("INSURER_NO_LABEL".equals(code)) obj = "保険者番号 見出し";
+        else if ("INSURERD_NO_LABEL".equals(code)) obj = "被保険者番号 見出し";
+        else if ("FD_OUTPUT_TIME_LABEL".equals(code)) obj = "作成日時 見出し";
+        else if ("Label113".equals(code)) obj = "在宅・施設区分";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 add end 【2009年度対応：追加案件】医師意見書の受給者番号対応
         else if ("INSURED_NO".equals(code)) obj = "被保険者番号";
         else if ("INSURER_NO".equals(code)) obj = "保険者番号";
         else if ("Grid6.h2.w1".equals(code)) obj = "意見書作成回数　「(２) 意見書作成回数」";
@@ -314,6 +329,36 @@ public class IP001FormatIDFormat extends Format {
         else if ("INSURER_NO".equals(code)) obj = "保険者番号";
         else if ("INSURED_NO".equals(code)) obj = "被保険者番号";
         else if ("FD_OUTPUT_TIME".equals(code)) obj = "タイムスタンプ";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 add begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+        else if ("INSURER_NO_LABEL".equals(code)) obj = "保険者番号 見出し";
+        else if ("INSURERD_NO_LABEL".equals(code)) obj = "被保険者番号 見出し";
+        else if ("FD_OUTPUT_TIME_LABEL".equals(code)) obj = "作成日時 見出し";
+        else if ("Label113".equals(code)) obj = "在宅・施設区分";
+        else if ("Grid14.h1.w2".equals(code)) obj = "５．特記すべき事項・前回の要介護度における主治医意見書作成時点と比較して『介護の必要度』　見出し";
+        else if ("Grid14.h1.w12".equals(code)) obj = "５．特記すべき事項・前回の要介護度　□減少　見出し";
+        else if ("Grid14.h1.w11".equals(code)) obj = "５．特記すべき事項・前回の要介護度　□変化なし　見出し";
+        else if ("Grid14.h1.w10".equals(code)) obj = "５．特記すべき事項・前回の要介護度　□増加　見出し";
+        else if ("Label96".equals(code)) obj = "５．特記すべき事項・前回の要介護度・□減少　／";
+        else if ("Label97".equals(code)) obj = "５．特記すべき事項・前回の要介護度・□変化なし　／";
+        else if ("Label98".equals(code)) obj = "５．特記すべき事項・前回の要介護度・□増加　／";
+        else if ("Grid27.h1.w1".equals(code)) obj = "５．特記すべき事項・｢長谷川式 =｣　見出し";
+        else if ("Grid27.h1.w4".equals(code)) obj = "５．特記すべき事項・｢点 (｣　見出し";
+        else if ("Grid27.h1.w9".equals(code)) obj = "５．特記すべき事項・｢年｣　見出し";
+        else if ("Grid27.h1.w12".equals(code)) obj = "５．特記すべき事項・｢月　)｣　見出し";
+        else if ("Grid27.h1.w14".equals(code)) obj = "５．特記すべき事項・｢(前回｣　見出し";
+        else if ("Grid27.h1.w19".equals(code)) obj = "５．特記すべき事項・前回・｢点 (｣　見出し";
+        else if ("Grid27.h1.w24".equals(code)) obj = "５．特記すべき事項・前回・｢年｣　見出し";
+        else if ("Grid27.h1.w27".equals(code)) obj = "５．特記すべき事項・前回・｢月 ))｣　見出し";
+        else if ("Grid28.h1.w1".equals(code)) obj = "５．特記すべき事項・｢施設選択(優先度)｣・上段・１　見出し";
+        else if ("Grid28.h1.w3".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・上段・１　見出し";
+        else if ("Grid28.h1.w6".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・上段・１　内容";
+        else if ("Grid28.h1.w7".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・上段・２　見出し";
+        else if ("Grid28.h1.w10".equals(code)) obj = "５．特記すべき事項・｢施設選択（優先度）｣・上段・２　内容";
+        else if ("Grid26.h1.w2".equals(code)) obj = "要介護認定結果の情報提供を希望　見出し";
+        else if ("Grid26.h1.w10".equals(code)) obj = "要介護認定結果の情報提供を希望・□する　□しない　見出し";
+        else if ("Label94".equals(code)) obj = "要介護認定結果の情報提供を希望・□する　／";
+        else if ("Label95".equals(code)) obj = "要介護認定結果の情報提供を希望・□しない　／";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 add end 【2009年度対応：追加案件】医師意見書の受給者番号対応
         else if ("Label6".equals(code)) obj = "ページ数";
         else if ("Label7".equals(code)) obj = "「４. 生活機能とサービスに関する意見」　見出し";
         else if ("Label9".equals(code)) obj = "特記すべき事項・「５. 特記すべき事項」　見出し";
@@ -387,24 +432,28 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid25.h1.w1".equals(code)) obj = "（２）栄養・食生活・｢栄養・食生活上の留意点｣　見出し";
         else if ("Grid25.h1.w2".equals(code)) obj = "（２）栄養・食生活　栄養・食生活上の留意点";
         else if ("Grid25.h1.w3".equals(code)) obj = "（２）栄養・食生活・栄養・食生活上の留意点・｢)｣　見出し";
-        else if ("Grid18.h1.w1".equals(code)) obj = "５．特記すべき事項・｢長谷川式 =｣　見出し";
-        else if ("Grid18.h1.w4".equals(code)) obj = "５．特記すべき事項・｢点 (｣　見出し";
-        else if ("Grid18.h1.w9".equals(code)) obj = "５．特記すべき事項・｢年｣　見出し";
-        else if ("Grid18.h1.w12".equals(code)) obj = "５．特記すべき事項・｢月　)｣　見出し";
-        else if ("Grid18.h1.w14".equals(code)) obj = "５．特記すべき事項・｢(前回｣　見出し";
-        else if ("Grid18.h1.w19".equals(code)) obj = "５．特記すべき事項・前回・｢点 (｣　見出し";
-        else if ("Grid18.h1.w24".equals(code)) obj = "５．特記すべき事項・前回・｢年｣　見出し";
-        else if ("Grid18.h1.w27".equals(code)) obj = "５．特記すべき事項・前回・｢月 ))｣　見出し";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 replace begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+        else if ("Grid18.h1.w1".equals(code)) obj = "５．特記すべき事項・｢長谷川式 =｣・中段　見出し";
+        else if ("Grid18.h1.w4".equals(code)) obj = "５．特記すべき事項・｢点 (｣・中段　見出し";
+        else if ("Grid18.h1.w9".equals(code)) obj = "５．特記すべき事項・｢年｣・中段　見出し";
+        else if ("Grid18.h1.w12".equals(code)) obj = "５．特記すべき事項・｢月　)｣・中段　見出し";
+        else if ("Grid18.h1.w14".equals(code)) obj = "５．特記すべき事項・｢(前回｣・中段　見出し";
+        else if ("Grid18.h1.w19".equals(code)) obj = "５．特記すべき事項・前回・｢点 (｣・中段　見出し";
+        else if ("Grid18.h1.w24".equals(code)) obj = "５．特記すべき事項・前回・｢年｣・中段　見出し";
+        else if ("Grid18.h1.w27".equals(code)) obj = "５．特記すべき事項・前回・｢月 ))｣・中段　見出し";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 replace end 【2009年度対応：追加案件】医師意見書の受給者番号対応
         else if ("Grid19.h1.w1".equals(code)) obj = "５．特記すべき事項・｢施設選択(優先度)｣・下段・１　見出し";
         else if ("Grid19.h1.w3".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・下段・１　見出し";
         else if ("Grid19.h1.w6".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・下段・１　内容";
         else if ("Grid19.h1.w7".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・下段・２　見出し";
         else if ("Grid19.h1.w10".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・下段・２　内容";
-        else if ("Grid20.h1.w1".equals(code)) obj = "５．特記すべき事項・｢施設選択(優先度)｣・上段・１　見出し";
-        else if ("Grid20.h1.w3".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・上段・１　見出し";
-        else if ("Grid20.h1.w6".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・上段・１　内容";
-        else if ("Grid20.h1.w7".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・上段・２　見出し";
-        else if ("Grid20.h1.w10".equals(code)) obj = "５．特記すべき事項・｢施設選択（優先度）｣・上段・２　内容";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 replace begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+        else if ("Grid20.h1.w1".equals(code)) obj = "５．特記すべき事項・｢施設選択(優先度)｣・中段・１　見出し";
+        else if ("Grid20.h1.w3".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・中段・１　見出し";
+        else if ("Grid20.h1.w6".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・中段・１　内容";
+        else if ("Grid20.h1.w7".equals(code)) obj = "５．特記すべき事項・施設選択（優先度）・中段・２　見出し";
+        else if ("Grid20.h1.w10".equals(code)) obj = "５．特記すべき事項・｢施設選択（優先度）｣・中段・２　内容";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 replace end 【2009年度対応：追加案件】医師意見書の受給者番号対応
         return obj;
     }
 
@@ -2242,7 +2291,16 @@ public class IP001FormatIDFormat extends Format {
         else if ("Label18".equals(code)) obj = "申請者情報・生年月日「平成」　見出し";
         else if ("PatienBirthHeisei".equals(code)) obj = "申請者情報・生年月日「平成」　○";
         else if ("INSURER_NO".equals(code)) obj = "保険者番号";
-        else if ("INSURED_NO".equals(code)) obj = "被保険者番号";
+        // [ID:0000555][Tozo TANAKA] 2009/09/14 replace begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+//        else if ("INSURED_NO".equals(code)) obj = "被保険者番号";
+        else if ("INSURED_NO".equals(code)) obj = "受給者番号";
+        // [ID:0000555][Tozo TANAKA] 2009/09/14 replace end 【2009年度対応：追加案件】医師意見書の受給者番号対応
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 add begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+        else if ("INSURER_NO_LABEL".equals(code)) obj = "保険者番号 見出し";
+        else if ("INSURERD_NO_LABEL".equals(code)) obj = "受給者番号 見出し";
+        else if ("FD_OUTPUT_TIME_LABEL".equals(code)) obj = "作成日時 見出し";
+        else if ("Label113".equals(code)) obj = "在宅・施設区分";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 add end 【2009年度対応：追加案件】医師意見書の受給者番号対応
         else if ("SeishinShinkeiKiokuShogaiTanki".equals(code)) obj = "３. 心身の状態に関する意見・「(２) 精神･神経症状の有無（短期）」　○";
         else if ("SeishinShinkeiKiokuShogaiChouki".equals(code)) obj = "３. 心身の状態に関する意見・「(２) 精神･神経症状の有無（長期）」　○";
         else if ("ShochiKyuinCount".equals(code)) obj = "２. 特別な医療・「吸引処置　回数」";
@@ -2371,7 +2429,16 @@ public class IP001FormatIDFormat extends Format {
         // 医師意見書2ページ目
         if ("NijikuSeishin".equals(code)) obj = "５. その他特記すべき事項・<精神障害の機能評価>「二軸評価：精神症状」";
         else if ("INSURER_NO".equals(code)) obj = "保険者番号";
-        else if ("INSURED_NO".equals(code)) obj = "被保険者番号";
+        // [ID:0000555][Tozo TANAKA] 2009/09/14 replace begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+//        else if ("INSURED_NO".equals(code)) obj = "被保険者番号";
+        else if ("INSURED_NO".equals(code)) obj = "受給者番号";
+        // [ID:0000555][Tozo TANAKA] 2009/09/14 replace end 【2009年度対応：追加案件】医師意見書の受給者番号対応
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 add begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+        else if ("INSURER_NO_LABEL".equals(code)) obj = "保険者番号 見出し";
+        else if ("INSURERD_NO_LABEL".equals(code)) obj = "受給者番号 見出し";
+        else if ("FD_OUTPUT_TIME_LABEL".equals(code)) obj = "作成日時 見出し";
+        else if ("Label113".equals(code)) obj = "在宅・施設区分";
+        // [ID:0000555][Masahiko Higuchi] 2009/09/17 add end 【2009年度対応：追加案件】医師意見書の受給者番号対応
         else if ("Label7".equals(code)) obj = "「４. サービス利用に関する意見」　見出し";
         else if ("Label9".equals(code)) obj = "「５. その他特記すべき事項」　見出し";
         else if ("KansetsuItamiBui".equals(code)) obj = "３.心身の状態に関する意見・関節の痛み「部位」　部位";
@@ -2422,5 +2489,96 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid2.h1.w11".equals(code)) obj = "申請者情報・生年月日「日」　見出し";
         return obj;
     }
+
+    //  [ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+    /**
+     * 特別訪問看護指示書の定義体IDをフォーマット化します。
+     * @param code コード
+     * @param obj 変換前
+     * @return 変換結果
+     */
+    protected Object formatTokubetsuShijisho(String code, Object obj){
+        if ("TENTEKI".equals(code)) obj = "点滴注射指示内容";
+        else if ("Grid3".equals(code)) obj = "点滴注射指示内容　枠";
+        else if ("Grid3.h2.w1".equals(code)) obj = "点滴注射指示内容　見出し";
+        else if ("SyojoSyusoGrid".equals(code)) obj = "症状・主訴　枠";
+        else if ("SyojoSyusoGrid.h2.w1".equals(code)) obj = "症状・主訴　見出し";
+        else if ("SYOJYO".equals(code)) obj = "症状・主訴";
+        else if ("RyuiShijiGrid".equals(code)) obj = "留意事項及び指示事項　枠";
+        else if ("Label17".equals(code)) obj = "留意事項及び指示事項　見出し";
+//      [ID:0000558][Tozo TANAKA] 2009/10/13 replace begin 【障害】特別指示書の帳票印字文言に誤字  
+//        else if ("Label18".equals(code)) obj = "（注：点滴注射薬の相互作用・福作用についての留意点があれば記載してください。）　見出し";
+        else if ("Label18".equals(code)) obj = "（注：点滴注射薬の相互作用・副作用についての留意点があれば記載してください。）　見出し";
+//      [ID:0000558][Tozo TANAKA] 2009/10/13 replace end 【障害】特別指示書の帳票印字文言に誤字  
+        else if ("RYUI".equals(code)) obj = "留意事項及び指示事項";
+        else if ("Label10".equals(code)) obj = "生年月日・元号　「平」　見出し";
+        else if ("Label8".equals(code)) obj = "生年月日・元号　「大」　見出し";
+        else if ("Label7".equals(code)) obj = "生年月日・元号　「明｣　見出し";
+        else if ("Shape27".equals(code)) obj = "日常生活自立度・寝たきり度　「自立　／」";
+        else if ("Label9".equals(code)) obj = "生年月日・元号　「昭」　見出し";
+        else if ("Shape1".equals(code)) obj = "生年月日・元号　「明」　○";
+        else if ("Shape2".equals(code)) obj = "生年月日・元号　「大」　○";
+        else if ("Shape3".equals(code)) obj = "生年月日・元号　「昭」　○";
+        else if ("Shape4".equals(code)) obj = "生年月日・元号　「平」　○";
+        else if ("Label1".equals(code)) obj = "「上記のとおり、指定訪問看護の実施を指示いたします。」　見出し";
+        else if ("KinyuDateLabell".equals(code)) obj = "作成年月日　「平成  年  月  日」";
+        else if ("Label3".equals(code)) obj = "訪問看護ステーション　「印」　見出し";
+        else if ("IryoKikanLabel".equals(code)) obj = "「医療機関名」　見出し";
+        else if ("Label5".equals(code)) obj = "「医療機関医師氏名」　見出し";
+        else if ("StationNameLabel".equals(code)) obj = "訪問看護ステーション名";
+        else if ("IryoKikanGrid.h1.w2".equals(code)) obj = "医療機関名";
+        else if ("IryoKikanGrid.h2.w1".equals(code)) obj = "「住　　　所」　見出し";
+        else if ("IryoKikanGrid.h2.w2".equals(code)) obj = "医療機関住所";
+        else if ("IryoKikanGrid.h3.w1".equals(code)) obj = "「電　　　話」　見出し";
+        else if ("IryoKikanGrid.h3.w2".equals(code)) obj = "医療機関　電話番号";
+        else if ("IryoKikanGrid.h4.w1".equals(code)) obj = "「（ＦＡＸ）」　見出し";
+        else if ("IryoKikanGrid.h4.w2".equals(code)) obj = "医療機関　ＦＡＸ番号";
+        else if ("IryoKikanGrid.h5.w2".equals(code)) obj = "医療機関医師氏名";
+        else if ("SijiDateGrid".equals(code)) obj = "訪問看護指示期間・点滴注射指示期間　枠";
+        else if ("SijiDateGrid.h1.w14".equals(code)) obj = "「訪問看護指示期間」　見出し";
+        else if ("SijiDateGrid.h1.w2".equals(code)) obj = "訪問看護指示期間　開始年";
+        else if ("SijiDateGrid.h1.w3".equals(code)) obj = "訪問看護指示期間　開始年　見出し";
+        else if ("SijiDateGrid.h1.w4".equals(code)) obj = "訪問看護指示期間　開始月";
+        else if ("SijiDateGrid.h1.w5".equals(code)) obj = "訪問看護指示期間　開始月　見出し";
+        else if ("SijiDateGrid.h1.w6".equals(code)) obj = "訪問看護指示期間　開始日";
+        else if ("SijiDateGrid.h1.w7".equals(code)) obj = "訪問看護指示期間　開始日　見出し";
+        else if ("SijiDateGrid.h1.w8".equals(code)) obj = "訪問看護指示期間　終了年";
+        else if ("SijiDateGrid.h1.w9".equals(code)) obj = "訪問看護指示期間　終了年　見出し";
+        else if ("SijiDateGrid.h1.w10".equals(code)) obj = "訪問看護指示期間　終了月";
+        else if ("SijiDateGrid.h1.w11".equals(code)) obj = "訪問看護指示期間　終了月　見出し";
+        else if ("SijiDateGrid.h1.w12".equals(code)) obj = "訪問看護指示期間　終了日";
+        else if ("SijiDateGrid.h1.w13".equals(code)) obj = "訪問看護指示期間　終了日　見出し";
+        else if ("SijiDateGrid.h2.w14".equals(code)) obj = "「点滴注射指示期間」　見出し";
+        else if ("SijiDateGrid.h2.w2".equals(code)) obj = "点滴注射指示期間　開始年";
+        else if ("SijiDateGrid.h2.w3".equals(code)) obj = "点滴注射指示期間　開始年　見出し";
+        else if ("SijiDateGrid.h2.w4".equals(code)) obj = "点滴注射指示期間　開始月";
+        else if ("SijiDateGrid.h2.w5".equals(code)) obj = "点滴注射指示期間　開始月　見出し";
+        else if ("SijiDateGrid.h2.w6".equals(code)) obj = "点滴注射指示期間　開始日";
+        else if ("SijiDateGrid.h2.w7".equals(code)) obj = "点滴注射指示期間　開始日　見出し";
+        else if ("SijiDateGrid.h2.w8".equals(code)) obj = "点滴注射指示期間　終了年";
+        else if ("SijiDateGrid.h2.w9".equals(code)) obj = "点滴注射指示期間　終了年　見出し";
+        else if ("SijiDateGrid.h2.w10".equals(code)) obj = "点滴注射指示期間　終了月";
+        else if ("SijiDateGrid.h2.w11".equals(code)) obj = "点滴注射指示期間　終了月　見出し";
+        else if ("SijiDateGrid.h2.w12".equals(code)) obj = "点滴注射指示期間　終了日";
+        else if ("SijiDateGrid.h2.w13".equals(code)) obj = "点滴注射指示期間　終了日　見出し";
+        else if ("KanjyaGrid.h1.w1".equals(code)) obj = "「患者氏名」　見出し";
+        else if ("KanjyaGrid.h1.w2".equals(code)) obj = "患者氏名";
+        else if ("KanjyaGrid.h1.w3".equals(code)) obj = "「生年月日」";
+        else if ("KanjyaGrid.h1.w5".equals(code)) obj = "生年月日・年";
+        else if ("KanjyaGrid.h1.w6".equals(code)) obj = "生年月日・年　見出し";
+        else if ("KanjyaGrid.h1.w7".equals(code)) obj = "生年月日・月";
+        else if ("KanjyaGrid.h1.w8".equals(code)) obj = "生年月日・月　見出し";
+        else if ("KanjyaGrid.h1.w9".equals(code)) obj = "生年月日・日";
+        else if ("KanjyaGrid.h1.w10".equals(code)) obj = "生年月日・日　見出し";
+        else if ("KanjyaGrid.h1.w12".equals(code)) obj = "歳）";
+        else if ("Grid4".equals(code)) obj = "「緊急時の連絡先」　枠";
+        else if ("Grid4.h2.w1".equals(code)) obj = "「緊急時の連絡先」　見出し";
+        else if ("KINKYU".equals(code)) obj = "緊急時の連絡先";
+        else if ("TITLE_TOKUBETU".equals(code)) obj = "特別訪問看護指示書　見出し";
+        else if ("TITLE_TENTEKI".equals(code)) obj = "在宅患者訪問点滴注射指示書　見出し";
+        else if ("TITLE_TOKUBETU_TENTEKI".equals(code)) obj = "特別訪問看護指示書・在宅患者訪問点滴注射指示書　見出し";
+        return obj;
+    }
+    //  [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 
 }

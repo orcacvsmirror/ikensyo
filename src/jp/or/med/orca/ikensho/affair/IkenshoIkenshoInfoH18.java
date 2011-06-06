@@ -3,13 +3,19 @@ package jp.or.med.orca.ikensho.affair;
 import java.awt.BorderLayout;
 import java.text.ParseException;
 
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.util.VRArrayList;
+import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
     protected IkenshoIkenshoSeikatsuService1 seikatsuService1;
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+    protected IkenshoIkenshoInfoMentionSpecial mentionSpecial;
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 
     /**
      * コンストラクタです。
@@ -37,7 +43,11 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
         care2 = new IkenshoIkenshoInfoCare2H18();
         mindBody1 = new IkenshoIkenshoInfoMindBody1H18();
         mindBody2 = new IkenshoIkenshoInfoMindBody2H18();
-        mention = new IkenshoIkenshoInfoMentionH18();
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        mention = new IkenshoIkenshoInfoMentionH18();
+        mention = new IkenshoIkenshoInfoMentionClaim();
+        mentionSpecial =  new IkenshoIkenshoInfoMentionSpecial(); 
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         organ = new IkenshoIkenshoInfoOrgan();
         bill = new IkenshoIkenshoInfoBill();
 
@@ -53,7 +63,11 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
         tabs.addTab("生活機能１", seikatsuService1);
         tabs.addTab("生活機能２", care1);
         tabs.addTab("生活機能３", care2);
-        tabs.addTab("特記事項・請求", mention);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        tabs.addTab("特記事項・請求", mention);
+        tabs.addTab("特記事項", mentionSpecial);
+        tabs.addTab("請求", mention);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         tabs.addTab("医療機関", organ);
         tabPanel.add(bill, BorderLayout.SOUTH);
 
@@ -69,6 +83,9 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
         tabArray.add(seikatsuService1);
         tabArray.add(care1);
         tabArray.add(care2);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        tabArray.add(mentionSpecial);
+//      [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         tabArray.add(mention);
         tabArray.add(organ);
         tabArray.add(bill);
@@ -159,6 +176,11 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
         sb.append(",VITAL_FUNCTIONS_OUTLOOK");
         sb.append(",INSECURE_CONDITION");
 
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        sb.append(",KAIGO_HITSUYODO_HENKA");
+        sb.append(",NINTEI_JOHO_KIBO");
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        
     }
 
     protected void appendInsertIkenshoValues(StringBuffer sb)
@@ -258,6 +280,14 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
         IkenshoCommon.addFollowCheckTextInsert(sb, originalData, "SHJ_ANT",
                 new String[] { "INSECURE_CONDITION" }, 2, false);
 
+        
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        sb.append(",");
+        sb.append(getDBSafeNumber("KAIGO_HITSUYODO_HENKA", originalData));
+        sb.append(",");
+        sb.append(getDBSafeNumber("NINTEI_JOHO_KIBO", originalData));
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        
     }
 
     protected void appendUpdateIkenshoStetement(StringBuffer sb)
@@ -353,6 +383,13 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
         // 症状としての安定性を「不安定」とした場合、具体的な状況
         IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "SHJ_ANT",
                 new String[] { "INSECURE_CONDITION" }, 2, false);
+        
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        sb.append(",KAIGO_HITSUYODO_HENKA = ");
+        sb.append(getDBSafeNumber("KAIGO_HITSUYODO_HENKA", originalData));
+        sb.append(",NINTEI_JOHO_KIBO = ");
+        sb.append(getDBSafeNumber("NINTEI_JOHO_KIBO", originalData));
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     }
 
     protected void doSelectBeforeCustomDocument(IkenshoFirebirdDBManager dbm)
@@ -374,6 +411,41 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
                 VRBindPathParser.set("UNDOU", originalData, new Integer(1));
             }
         }
+        
+        // [ID:0000555][Tozo TANAKA] 2009/09/14 add begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
+        if (!getFormatKubun().equals(
+                ACCastUtilities.toString(VRBindPathParser.get("FORMAT_KBN",
+                        originalData)))) {
+            //異なる文書区分間(主治医意見書⇔医師意見書)の引き継ぎにおいてはINSURED_NOを初期化する。
+            VRBindPathParser.set("INSURED_NO", originalData, "");
+        }
+        
+        
+        String patientNo = getPatientNo();
+        if (patientNo != null) {
+            //同種の文書から引き継ぐ
+            StringBuffer sb;
+            sb = new StringBuffer();
+            sb.append("SELECT");
+            sb.append(" INSURED_NO");
+            sb.append(" FROM");
+            sb.append(" IKN_ORIGIN");
+            sb.append(" WHERE");
+            sb.append(" (PATIENT_NO = ");
+            sb.append(patientNo);
+            sb.append(")");
+            sb.append("AND(FORMAT_KBN = ");
+            sb.append(getFormatKubun());
+            sb.append(")");
+            sb.append(" ORDER BY");
+            sb.append(" EDA_NO DESC");
+            VRArrayList array = (VRArrayList) dbm.executeQuery(sb.toString());
+            if (array.size() > 0) {
+                VRMap data = (VRMap) array.getData();
+                originalData.putAll(data);
+            }
+        }
+        //[ID:0000555][Tozo TANAKA] 2009/09/14 add end 【2009年度対応：追加案件】医師意見書の受給者番号対応
 
     }
 

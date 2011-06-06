@@ -1,35 +1,50 @@
 package jp.or.med.orca.ikensho.component;
 
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.im.InputSubset;
+import java.sql.SQLException;
+import java.util.Map;
 
 import javax.swing.JComponent;
 
+import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACTextArea;
+import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.event.ACFollowDisabledItemListener;
+import jp.nichicom.ac.container.ACPanel;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.sql.ACDBManager;
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.component.VRButton;
 import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
+import jp.nichicom.vr.util.VRArrayList;
 import jp.or.med.orca.ikensho.affair.IkenshoExtraSpecialNoteDialog;
 
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
-  private ACTextArea text = new ACTextArea();
+//  private ACTextArea text = new ACTextArea();
+    private IkenshoACTextArea text = new IkenshoACTextArea();
   private VRButton showSelect = new VRButton();
 //  private JScrollPane textScroll = new JScrollPane();
-  private VRPanel buttuns = new VRPanel();
-  private VRLabel title = new VRLabel();
+//[ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+//  private VRPanel buttuns = new VRPanel();
+  protected ACPanel buttuns = new ACPanel();
+//[ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+  private VRLabel title = new ACLabel();
   private VRLabel spacer = new VRLabel();
   private VRPanel titles = new VRPanel();
   private ACIntegerCheckBox check = new ACIntegerCheckBox();
   private int code;
   private String caption;
   private int teikeiMaxLength = 50;
+//[ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+  protected IkenshoShijishoFieldLoadButton loadRecent;
+//[ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 
   /**
    * 本文を取得します。
@@ -297,12 +312,20 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
 
     showSelect.addActionListener(new ActionListener(){
       public void actionPerformed(ActionEvent e) {
-        setText(new IkenshoExtraSpecialNoteDialog(getCaption(), getCode(),
-                                                  getMaxLength(),
-                                                  text.getColumns(),
-                                                  text.getRows(),
-                                                  teikeiMaxLength).showModal(
-            getText()));
+          // [ID:0000514][Tozo TANAKA] 2009/09/24 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        setText(new IkenshoExtraSpecialNoteDialog(getCaption(), getCode(),
+//                                                  getMaxLength(),
+//                                                  text.getColumns(),
+//                                                  text.getRows(),
+//                                                  teikeiMaxLength).showModal(
+//            getText()));
+          setText(new IkenshoExtraSpecialNoteDialog(getCaption(), getCode(),
+                  getMaxLength(),
+                  text.getColumns(),
+                  text.getMaxRows(),
+                  teikeiMaxLength).showModal(
+              getText()));
+        // [ID:0000514][Tozo TANAKA] 2009/09/24 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
       }
     });
 
@@ -336,11 +359,40 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
     this.add(text, VRLayout.FLOW);
 
     //    buttuns.setLayout(new FlowLayout());
-    buttuns.add(showSelect, null);
+    // [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+//    buttuns.add(showSelect, null);
+    buttuns.add(showSelect, VRLayout.FLOW_RETURN);
+    // [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
 //    textScroll.setViewportView(text);
     titles.add(title, BorderLayout.WEST);
     titles.add(check, BorderLayout.CENTER);
+    
+    
+    // [ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+    getLoadRecent().setText("履歴読込");
+    getLoadRecent().addActionListener(new ActionListener(){
+        public void actionPerformed(ActionEvent e) {
+            String data=getLoadRecent().getRecentData();
+            if(data != null){
+                String oldText = text.getText();
+                int max=text.getMaxLength() - oldText.length();
+                if(max>0){
+                    if(max<data.length()){
+                        data = data.substring(0, max);
+                    }
+                    text.setText(oldText + data);
+                }
+            }
+        }
+        
+    });
+    setLoadRecentVisible(false);
+    buttuns.add(getLoadRecent(), VRLayout.FLOW_RETURN);
+    ((VRLayout)buttuns.getLayout()).setHgap(0);
+    ((VRLayout)buttuns.getLayout()).setHgrid(0);
+    // [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
   }
+  
   /**
    * 定型文の最大文字列長を返します。
    * @return 定型文の最大文字列長
@@ -355,4 +407,103 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
   public void setTeikeiMaxLength(int teikeiMaxLength) {
     this.teikeiMaxLength = teikeiMaxLength;
   }
+  
+  // [ID:0000514][Tozo TANAKA] 2009/09/07 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+  /**
+   * 選択ボタンの表示状態を設定します。
+   * @param visible 選択ボタンの表示状態
+   */
+  public void setShowSelectVisible(boolean visible){
+      showSelect.setVisible(visible);
+  }
+  /**
+   * 選択ボタンの表示状態を返します。
+   * @return 選択ボタンの表示状態
+   */
+  public boolean isShowSelectVisible(){
+      return showSelect.isVisible();
+  }
+
+/**
+ * loadRecent を返します。
+ * @return loadRecent
+ */
+protected IkenshoShijishoFieldLoadButton getLoadRecent() {
+    if(loadRecent==null){
+        loadRecent = new IkenshoShijishoFieldLoadButton();
+    }
+    return loadRecent;
+}
+ 
+
+/**
+ * 履歴読込ボタンのテキストを取得します。
+ * @return 履歴読込ボタンのテキスト
+ */
+public String getLoadRecentText(){
+  return getLoadRecent().getText();
+}
+/**
+ * 履歴読込ボタンのテキストを設定します。
+ * @param showSelectText 履歴読込ボタンのテキスト
+ */
+public void setLoadRecentText(String showSelectText){
+  this.getLoadRecent().setText(showSelectText);
+}
+
+/**
+ * 履歴読込ボタンのニーモニックを取得します。
+ * @return 履歴読込ボタンのニーモニック
+ */
+public int getLoadRecentMnemonic(){
+  return getLoadRecent().getMnemonic();
+}
+
+/**
+ * 履歴読込ボタンのニーモニックを設定します。
+ * @param mnemonic 履歴読込ボタンのニーモニック
+ */
+public void setLoadRecentMnemonic(int mnemonic){
+  this.getLoadRecent().setMnemonic(mnemonic);
+}
+
+/**
+ * 履歴読込ボタンの表示状態を返します。
+ * @return 履歴読込ボタンの表示状態
+ */
+public boolean isLoadRecentVisible() {
+    return getLoadRecent().isVisible();
+}
+/**
+ * 履歴読込ボタンの表示状態を設定します。
+ * @param visible 履歴読込ボタンの表示状態
+ */
+public void setLoadRecentVisible(boolean visible) {
+    getLoadRecent().setVisible(visible);
+}
+
+
+
+/**
+ * 履歴読込関連の設定を一括指定します。
+ * 
+ * @param dbm DBマネージャ
+ * @param patientNo 患者番号
+ * @param fieldName フィールド名
+ * @param formatKbn 文書区分
+ * @param text ボタンテキスト
+ * @param mnemonic ボタンニーモニック
+ * @param message 確認メッセージ
+ * @param visible 表示状態
+ */
+    public void setLoadRecentSetting(ACDBManager dbm, String patientNo,
+            String fieldName, String formatKbn, String text, char mnemonic,
+            String message, boolean visible) {
+        getLoadRecent().setLoadRecentSetting(dbm, patientNo, fieldName, formatKbn,
+                text, mnemonic, message);
+        getLoadRecent().setVisible(visible);
+    }
+    
+  // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+  
 }

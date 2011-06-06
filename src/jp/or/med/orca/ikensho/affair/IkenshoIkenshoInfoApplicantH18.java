@@ -1,9 +1,12 @@
 package jp.or.med.orca.ikensho.affair;
 
+import jp.nichicom.ac.component.ACIntegerTextField;
+
 
 
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoIkenshoInfoApplicantH18 extends IkenshoIkenshoInfoApplicant {
+
   /**
    * コンストラクタです。
    */
@@ -17,6 +20,8 @@ public class IkenshoIkenshoInfoApplicantH18 extends IkenshoIkenshoInfoApplicant 
   }
   private void jbInit() throws Exception {
     getAgreeGroup().setText("主治医として、本意見書が介護サービス計画作成に利用されることに");
+
   }
+  
 
 }

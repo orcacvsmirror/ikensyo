@@ -4,6 +4,7 @@
  */
 package jp.or.med.orca.ikensho.affair;
 
+import java.awt.Dimension;
 import java.awt.HeadlessException;
 import java.util.ArrayList;
 import java.util.Date;
@@ -14,6 +15,7 @@ import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
@@ -63,15 +65,30 @@ public class IkenshoIkenshoPrintSettingIshi extends
 		getBillPrintGroup().setText("¿‹‘ˆóüiuˆãtˆÓŒ©‘v‚Æ“¯‚Éj");
 		getCsvGroup().setText("CSVƒtƒ@ƒCƒ‹‚Å‚ÌuˆãtˆÓŒ©‘v‚Ì’ño");
 
+        // [ID:0000555][Tozo TANAKA] 2009/09/14 add begin y2009”N“x‘Î‰F’Ç‰ÁˆÄŒzˆãtˆÓŒ©‘‚Ìó‹‹Ò”Ô†‘Î‰
+        getPageHeaderGroup().setText("•Åƒwƒbƒ_(•ÛŒ¯ÒEó‹‹Ò”Ô†)");
+        csvSubmitHiHokensyaUnselectAlert.setText("ó‹‹Ò”Ô†‚ªİ’è‚³‚ê‚Ä‚¢‚Ü‚¹‚ñB");
+        // [ID:0000555][Tozo TANAKA] 2009/09/14 add end y2009”N“x‘Î‰F’Ç‰ÁˆÄŒzˆãtˆÓŒ©‘‚Ìó‹‹Ò”Ô†‘Î‰
+
 	}
 	protected void callPrintIkensho(ACChotarouXMLWriter pd, String formatName,
 			VRMap data, Date printDate) throws Exception {
+          //[ID:0000515][Tozo TANAKA] 2009/09/16 add begin y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰ 
+          if(!patientCareState.isEnabled() || !patientCareState.isSelected()){
+              data.put("KIND", ACCastUtilities.toInteger(0));
+          }
+          //[ID:0000515][Tozo TANAKA] 2009/09/16 add end y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰ 
 		IkenshoIkenshoPrintSettingIshi.printIkensho(pd, formatName, data,
 				printDate);
 	}
 
     protected void callPrintIkensho2(ACChotarouXMLWriter pd, String formatName,
             VRMap data, Date printDate, byte[] imageBytes) throws Exception {
+        //[ID:0000515][Tozo TANAKA] 2009/09/16 add begin y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰ 
+        if(!patientCareState.isEnabled() || !patientCareState.isSelected()){
+            data.put("KIND", ACCastUtilities.toInteger(0));
+        }
+        //[ID:0000515][Tozo TANAKA] 2009/09/16 add end y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰ 
 
 		IkenshoIkenshoPrintSettingIshi.printIkensho2(pd, formatName, data,
 				printDate, imageBytes);
@@ -780,6 +797,24 @@ public class IkenshoIkenshoPrintSettingIshi extends
 			pd.addAttribute("SeishinShinkeiKiokuShogaiChouki", "Visible", "FALSE");
 			break;
 		}
+        
+        //[ID:0000515][Tozo TANAKA] 2009/09/16 add begin y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰   
+        //{İİ‘î‹æ•ª
+        switch(ACCastUtilities.toInt(VRBindPathParser.get("KIND", data) , 0)){
+        case 1:
+            //İ‘î
+            IkenshoCommon.addString(pd, "Label113", "İ‘î");
+            break;
+        case 2:
+            //{İ
+            IkenshoCommon.addString(pd, "Label113", "{İ");
+            break;
+        default:
+            //{İİ‘î‹æ•ª‚ğ‰B‚·
+            pd.addAttribute("Label113", "Visible", "FALSE");
+            break;
+        }
+        //[ID:0000515][Tozo TANAKA] 2009/09/16 add end y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰   
 
 		pd.endPageEdit();
 
@@ -1392,6 +1427,23 @@ public class IkenshoIkenshoPrintSettingIshi extends
 			pd.addAttribute("SeikatsuHanteiYear", "Visible", "FALSE");
 			pd.addAttribute("SeikatsuHanteiMonth", "Visible", "FALSE");
 		}
+        //[ID:0000515][Tozo TANAKA] 2009/09/16 add begin y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰   
+        //{İİ‘î‹æ•ª
+        switch(ACCastUtilities.toInt(VRBindPathParser.get("KIND", data) , 0)){
+        case 1:
+            //İ‘î
+            IkenshoCommon.addString(pd, "Label113", "İ‘î");
+            break;
+        case 2:
+            //{İ
+            IkenshoCommon.addString(pd, "Label113", "{İ");
+            break;
+        default:
+            //{İİ‘î‹æ•ª‚ğ‰B‚·
+            pd.addAttribute("Label113", "Visible", "FALSE");
+            break;
+        }
+        //[ID:0000515][Tozo TANAKA] 2009/09/16 add end y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰   
 		
 		pd.endPageEdit();
 	    
@@ -1723,5 +1775,18 @@ public class IkenshoIkenshoPrintSettingIshi extends
 //    	}
 //    	
 //    }
+
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add begin y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰ 
+    protected void addPrintOptionGroup(){
+        getPrintOptionGroup().add(getDoctorNameGroup(), VRLayout.CLIENT);
+        getPrintOptionGroup().add(getSecondHeaderGroup(), VRLayout.CLIENT);
+        getPrintOptionGroup().add(getPageHeaderGroup(), VRLayout.CLIENT);
+        getPrintOptionGroup().add(getPatientCareStateGroup(), VRLayout.SOUTH);
+    }
+    
+    protected void setPackSize(){
+        setSize(new Dimension(700, 420));
+    }
+    //[ID:0000515][Tozo TANAKA] 2009/09/10 add end y2009”N“x‘Î‰Få¡ˆãˆÓŒ©‘zs’¬‘º“Æ©€–Ú‚Ìˆóš‚É‘Î‰ 
 
 }

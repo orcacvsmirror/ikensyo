@@ -979,5 +979,12 @@ public class IkenshoIshiIkenshoInfoSpecialMention2 extends
     protected int getFomratKubun(){
       return 2;
     }
+    
+    // [ID:0000555][Tozo TANAKA] 2009/09/14 add begin y2009”N“x‘Î‰F’Ç‰ÁˆÄŒzˆãtˆÓŒ©‘‚Ìó‹‹Ò”Ô†‘Î‰
+    protected String getInsuredNoText(){
+        return "ó‹‹Ò”Ô†";
+    }
+    // [ID:0000555][Tozo TANAKA] 2009/09/14 add end y2009”N“x‘Î‰F’Ç‰ÁˆÄŒzˆãtˆÓŒ©‘‚Ìó‹‹Ò”Ô†‘Î‰
+
 
 }

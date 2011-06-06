@@ -115,6 +115,9 @@ public class IP001001Design extends ACAffairDialog {
   private ACListItem formatIkenshoShien1;
 
   private ACListItem formatIkenshoShien2;
+  // [ID:0000514][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+  private ACListItem formatSpecialShijisho;
+  // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
 
   private ACPanel buttons;
 
@@ -465,6 +468,31 @@ public class IP001001Design extends ACAffairDialog {
 
   }
 
+  // [ID:0000514][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+  /**
+   * 特別指示書を取得します。
+   * @return 特別指示書
+   * @author Masahiko Higuchi
+   */
+  public ACListItem getFormatSpecialShijisho(){
+    if(formatSpecialShijisho==null){
+
+        formatSpecialShijisho = new ACListItem();
+
+        formatSpecialShijisho.setText("特別訪問看護指示書");
+
+        formatSpecialShijisho.setSimpleValueMode(false);
+        formatSpecialShijisho.put(getFormats().getRenderBindPath(), "特別訪問看護指示書");
+        formatSpecialShijisho.put(getFormats().getBindPath(), new Integer(13));
+
+      addFormatSpacialShijisho();
+    }
+    return formatSpecialShijisho;
+
+  }
+  // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
+  
+  
   /**
    * ボタン領域を取得します。
    * @return ボタン領域
@@ -625,6 +653,9 @@ public class IP001001Design extends ACAffairDialog {
     getFormatsModel().add(getFormatIkenshoShien1());
 
     getFormatsModel().add(getFormatIkenshoShien2());
+    // [ID:0000514][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+    getFormatsModel().add(getFormatSpecialShijisho());
+    // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
 
   }
 
@@ -719,6 +750,16 @@ public class IP001001Design extends ACAffairDialog {
 
   }
 
+  // [ID:0000514][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+  /**
+   * 特別指示書に内部項目を追加します。
+   * @author Masahiko Higuchi
+   */
+  protected void addFormatSpacialShijisho(){
+
+  }
+  // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
+  
   /**
    * ボタン領域に内部項目を追加します。
    */

@@ -180,6 +180,10 @@ public class IP001 extends IP001Event {
                 fileName = "主治医意見書1ページ目";
             } else if (fileName.endsWith("newikensho2.xml")) {
                 fileName = "主治医意見書2ページ目";
+//              [ID:0000514][Tozo TANAKA] 2009/09/09 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+            } else if ("specialshijisho.xml".equals(fileName)) {
+                fileName = "特別訪問看護指示書";
+//              [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
             } else if (fileName.endsWith("shijisho.xml")) {
                 fileName = "訪問看護指示書（医療機関）";
             } else if (fileName.endsWith("shijishob.xml")) {
@@ -201,8 +205,7 @@ public class IP001 extends IP001Event {
             } else if (fileName.endsWith("ikenshoshien1.xml")) {
                 fileName = "医師意見書1ページ目";
             } else if (fileName.endsWith("ikenshoshien2.xml")) {
-                fileName = "医師意見書2ページ目";
-
+                fileName = "医師意見書2ページ目";  
             }
             // 変更の有無(modified)をfalseとする。
             setModified(false);

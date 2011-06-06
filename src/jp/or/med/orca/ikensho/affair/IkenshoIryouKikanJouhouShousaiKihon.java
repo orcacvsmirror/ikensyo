@@ -80,7 +80,10 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
         //基本情報1
         kihonPnl1.setLayout(new BorderLayout());
         kihonPnl1.add(note1, BorderLayout.EAST);
-        note1.setText("↓「主治医意見書」「医師医見書」「訪問看護指示書」に印刷される項目");
+//      [ID:0000514][Tozo TANAKA] 2009/09/16 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        note1.setText("↓「主治医意見書」「医師医見書」「訪問看護指示書」に印刷される項目");
+        note1.setText("↓「主治医意見書」「医師医見書」「（特別）訪問看護指示書」に印刷される項目");
+//      [ID:0000514][Tozo TANAKA] 2009/09/16 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         note1.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
 
         //基本情報2
@@ -133,7 +136,10 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
         miCelTelContainer.setText("連絡先(携帯)");
         miCelTelContainer.add(miCelTel, null);
         miCelTel.setBindPath("MI_CEL_TEL1", "MI_CEL_TEL2");
-        note2.setText("↓「訪問看護指示書」に印刷される項目");
+//      [ID:0000514][Tozo TANAKA] 2009/09/16 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        note2.setText("↓「訪問看護指示書」に印刷される項目");
+        note2.setText("↓「（特別）訪問看護指示書」に印刷される項目");
+//      [ID:0000514][Tozo TANAKA] 2009/09/16 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         note2.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
 
         //基本情報4
@@ -182,7 +188,10 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
         miDefault.setText("この医師・医療機関が主として使用します。");
         miDefault.setBindPath("MI_DEFAULT");
         miDefault.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
-        note3.setText("(チェックすると「主治医意見書」「医師医見書」「訪問看護指示書」作成時に予め選択されます)");
+//      [ID:0000514][Tozo TANAKA] 2009/09/16 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        note3.setText("(チェックすると「主治医意見書」「医師医見書」「訪問看護指示書」作成時に予め選択されます)");
+        note3.setText("(チェックすると「主治医意見書」「医師医見書」「（特別）訪問看護指示書」作成時に予め選択されます)");
+//      [ID:0000514][Tozo TANAKA] 2009/09/16 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         note3.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
     }
 

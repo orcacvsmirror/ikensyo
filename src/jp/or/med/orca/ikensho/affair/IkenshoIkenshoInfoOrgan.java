@@ -622,6 +622,9 @@ public class IkenshoIkenshoInfoOrgan extends IkenshoDocumentAffairOrgan {
         organBankAccountType.setFormat(IkenshoConstants.FORMAT_BANK_ACCOUNT_TYPE);
         organBankAccountType.setEditable(false);
         organBankAccountType.setBindPath("BANK_KOUZA_KIND");
+//      [ID:0000514][Tozo TANAKA] 2009/09/11 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        organBankAccountType.setColumns(4);
+//      [ID:0000514][Tozo TANAKA] 2009/09/11 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         organBankAccountTypes.add(organBankAccountType, null);
     	//==============================
         

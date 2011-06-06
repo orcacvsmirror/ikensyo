@@ -39,6 +39,13 @@ public class IkenshoIshiIkenshoInfoSpecialMention1 extends
                 .setText(
                         "障害程度区分認定やサービス利用計画作成に必要な医学的なご意見等をご記載して下さい。なお、専門医等に別途意見を求めた場合はその内容、結果も記載して下さい。（情報提供書や身体障害者申請診断書の写し等を添付して頂いても結構です。）");
         getMentionTokkiMoreAbstraction().setText("");
+        
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        getMentionTokki().setColumns(92);
+        getMentionTokki().setMaxRows(9);
+        getMentionTokki().setRows(10);
+        //[ID:0000514][Tozo TANAKA] 2009/09/10 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+        
         // パネル追加への定義
         addComponent();
     }
@@ -100,10 +107,16 @@ public class IkenshoIshiIkenshoInfoSpecialMention1 extends
 
     
     protected IkenshoExtraSpecialNoteDialog createMentionTeikeibunKubun(){
+        // [ID:0000514][Tozo TANAKA] 2009/09/24 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//        return new IkenshoExtraSpecialNoteDialog(
+//                "その他特記すべき事項",
+//                IkenshoCommon.TEIKEI_ISHI_MENTION_NAME, 400, 100, 8,
+//                50);
         return new IkenshoExtraSpecialNoteDialog(
                 "その他特記すべき事項",
-                IkenshoCommon.TEIKEI_ISHI_MENTION_NAME, 400, 100, 8,
+                IkenshoCommon.TEIKEI_ISHI_MENTION_NAME, getMentionTokki().getMaxLength(), getMentionTokki().getColumns(), getMentionTokki().getMaxRows(),
                 50);
+        // [ID:0000514][Tozo TANAKA] 2009/09/24 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     }
 
 }
