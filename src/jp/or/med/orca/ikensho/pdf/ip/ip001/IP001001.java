@@ -104,6 +104,20 @@ public class IP001001 extends IP001001Event {
             fileName = "SpecialShijisho.xml";
             break;
         // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
+        //[ID:0000639][Shin Fujihara] 2011/03 add begin
+        case 14:
+        	fileName = "Shijisho_M1.xml";
+        	break;
+        case 15:
+        	fileName = "Shijisho_M2.xml";
+        	break;
+        case 16:
+        	fileName = "ShijishoB_M1.xml";
+        	break;
+        case 17:
+        	fileName = "ShijishoB_M2.xml";
+        	break;
+        //[ID:0000639][Shin Fujihara] 2011/03 add end
         }
 
         ACFrameEventProcesser processer = ACFrame.getInstance()
@@ -178,6 +192,17 @@ public class IP001001 extends IP001001Event {
             } else if (fileName.endsWith("ikenshoshien2.xml")) {
                 formatIndex = 12;
             }
+            //[ID:0000639][Shin Fujihara] 2011/03 add begin
+            else if(fileName.equals("shijisho_m1.xml")) {
+            	formatIndex = 14;
+            } else if(fileName.equals("shijisho_m2.xml")) {
+            	formatIndex = 15;
+            } else if(fileName.equals("shijishob_m1.xml")) {
+            	formatIndex = 16;
+            } else if(fileName.equals("shijishob_m2.xml")) {
+            	formatIndex = 17;
+            }
+            //[ID:0000639][Shin Fujihara] 2011/03 add end
         }
         getFormats().setSelectedIndex(formatIndex);
         

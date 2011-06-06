@@ -118,6 +118,14 @@ public class IP001001Design extends ACAffairDialog {
   // [ID:0000514][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
   private ACListItem formatSpecialShijisho;
   // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
+  
+  //[ID:0000639][Shin Fujihara] 2011/03 add begin
+  private ACListItem formatShijisho_M1;
+  private ACListItem formatShijisho_M2;
+
+  private ACListItem formatShijishoB_M1;
+  private ACListItem formatShijishoB_M2;
+  //[ID:0000639][Shin Fujihara] 2011/03 add end
 
   private ACPanel buttons;
 
@@ -492,6 +500,56 @@ public class IP001001Design extends ACAffairDialog {
   }
   // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
   
+  //[ID:0000639][Shin Fujihara] 2011/03 add begin
+  public ACListItem getFormatShijisho_M1(){
+	  if(formatShijisho_M1==null){
+		  formatShijisho_M1 = new ACListItem();
+
+		  formatShijisho_M1.setText("訪問看護指示書（医療機関）1ページ目");
+		  formatShijisho_M1.setSimpleValueMode(false);
+		  formatShijisho_M1.put(getFormats().getRenderBindPath(), "訪問看護指示書（医療機関）1ページ目");
+		  formatShijisho_M1.put(getFormats().getBindPath(), new Integer(14));
+	  }
+	  return formatShijisho_M1;
+  }
+  
+  public ACListItem getFormatShijisho_M2(){
+	  if(formatShijisho_M2==null){
+		  formatShijisho_M2 = new ACListItem();
+
+		  formatShijisho_M2.setText("訪問看護指示書（医療機関）2ページ目");
+		  formatShijisho_M2.setSimpleValueMode(false);
+		  formatShijisho_M2.put(getFormats().getRenderBindPath(), "訪問看護指示書（医療機関）2ページ目");
+		  formatShijisho_M2.put(getFormats().getBindPath(), new Integer(15));
+	  }
+	  return formatShijisho_M2;
+  }
+  
+  public ACListItem getFormatShijishoB_M1(){
+	  if(formatShijishoB_M1==null){
+		  formatShijishoB_M1 = new ACListItem();
+
+		  formatShijishoB_M1.setText("訪問看護指示書（介護老人保健施設）1ページ目");
+		  formatShijishoB_M1.setSimpleValueMode(false);
+		  formatShijishoB_M1.put(getFormats().getRenderBindPath(), "訪問看護指示書（介護老人保健施設）1ページ目");
+		  formatShijishoB_M1.put(getFormats().getBindPath(), new Integer(16));
+	  }
+	  return formatShijishoB_M1;
+  }
+  
+  public ACListItem getFormatShijishoB_M2(){
+	  if(formatShijishoB_M2==null){
+		  formatShijishoB_M2 = new ACListItem();
+
+		  formatShijishoB_M2.setText("訪問看護指示書（介護老人保健施設）2ページ目");
+		  formatShijishoB_M2.setSimpleValueMode(false);
+		  formatShijishoB_M2.put(getFormats().getRenderBindPath(), "訪問看護指示書（介護老人保健施設）2ページ目");
+		  formatShijishoB_M2.put(getFormats().getBindPath(), new Integer(17));
+	  }
+	  return formatShijishoB_M2;
+  }
+  //[ID:0000639][Shin Fujihara] 2011/03 add end
+  
   
   /**
    * ボタン領域を取得します。
@@ -656,6 +714,14 @@ public class IP001001Design extends ACAffairDialog {
     // [ID:0000514][Masahiko Higuchi] 2009/09/16 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
     getFormatsModel().add(getFormatSpecialShijisho());
     // [ID:0000514][Masahiko Higuchi] 2009/09/16 add end
+    
+    //[ID:0000639][Shin Fujihara] 2011/03 add begin
+    getFormatsModel().add(getFormatShijisho_M1());
+    getFormatsModel().add(getFormatShijisho_M2());
+    
+    getFormatsModel().add(getFormatShijishoB_M1());
+    getFormatsModel().add(getFormatShijishoB_M2());
+    //[ID:0000639][Shin Fujihara] 2011/03 add end
 
   }
 

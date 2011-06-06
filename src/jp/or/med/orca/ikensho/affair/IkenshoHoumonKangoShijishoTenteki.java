@@ -37,23 +37,33 @@ public class IkenshoHoumonKangoShijishoTenteki
     tenteki.setShowSelectText("選択(I)");
     tenteki.setCaption("在宅患者訪問点滴注射に関する指示");
     tenteki.setTextBindPath("TENTEKI_SIJI");
-    tenteki.setTitle("在宅患者訪問点滴注射に関する指示（全項目200文字/4行以内）");
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
+    tenteki.setTitle("在宅患者訪問点滴注射に関する指示(全項目{0}文字以上／{1}行以上の入力では、帳票は2枚で印刷されます)(現在 {2}文字 {3}行)");
+    tenteki.setPageBreakLimitProperty(201, 5);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     tenteki.setCheckVisible(false);
     tenteki.setCode(IkenshoCommon.TEIKEI_HOUMON_TENTEKI_CHUSHA);
-    tenteki.setMaxLength(200);
-//    tenteki.setUseMaxRows(true);
-    tenteki.setRows(4);
-    tenteki.setMaxRows(tenteki.getRows());
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
+    tenteki.setMaxLength(250);
+//    tenteki.setRows(4);
+//    tenteki.setMaxRows(tenteki.getRows());
+    tenteki.setMaxRows(5);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     tokki.setCode(IkenshoCommon.TEIKEI_HOUMON_TOKKI);
-    tokki.setMaxLength(200);
-//    tokki.setUseMaxRows(true);
-    tokki.setRows(4);
-    tokki.setMaxRows(tokki.getRows());
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
+    tokki.setMaxLength(500);
+//    tokki.setRows(4);
+//    tokki.setMaxRows(tokki.getRows());
+    tokki.setMaxRows(10);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
     tokki.setShowSelectMnemonic('J');
     tokki.setShowSelectText("選択(J)");
     tokki.setCaption("特記すべき留意事項");
     tokki.setTextBindPath("SIJI_TOKKI");
-    tokki.setTitle("特記すべき留意事項（注：薬の相互作用・副作用についての留意点、薬物アレルギーの既往等あれば記載してください。）");
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
+    tokki.setTitle("特記すべき留意事項（注：薬の相互作用・副作用についての留意点、薬物アレルギーの既往等あれば記載してください）" + ACConstants.LINE_SEPARATOR + "(現在 {2}文字 {3}行)");
+    tokki.setPageBreakLimitProperty(201, 5);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     tokki.setCheckVisible(false);
     // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 //    title.setText("訪問点滴注射・特記すべき留意事項");
@@ -68,9 +78,11 @@ public class IkenshoHoumonKangoShijishoTenteki
     getGroup().add(tokki, VRLayout.NORTH);
     this.add(getTitle(), VRLayout.NORTH);
     this.add(getGroup(), VRLayout.CLIENT);
-    
-    tenteki.setRows(5);
-    tokki.setRows(5);
+
+    //[ID:0000634][Masahiko.higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
+    tenteki.setRows(6);
+    tokki.setRows(11);
+	//[ID:0000634][Masahiko.higuchi] 2011/02/24 replace end
     tenteki.setColumns(100);
     tokki.setColumns(100);
     
@@ -129,5 +141,39 @@ public class IkenshoHoumonKangoShijishoTenteki
     
 // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 
-
+    //[ID:0000635][Shin Fujihara] 2011/02/28 add begin 【2010年度要望対応】
+    // --- Override ---
+    public boolean noControlWarning() throws Exception {
+    	if (getMasterAffair() == null) {
+    		return true;
+    	}
+    	
+    	if (getMasterAffair().getCanUpdateCheckStatus() != IkenshoTabbableAffairContainer.CAN_UPDATE_CHECK_STATUS_PRINT) {
+    		return true;
+    	}
+    	
+    	if (!(getMasterAffair() instanceof IkenshoHoumonKangoShijisho)) {
+    		return true;
+    	}
+    	
+    	IkenshoHoumonKangoShijisho owner = (IkenshoHoumonKangoShijisho)getMasterAffair();
+    	
+    	//在宅患者訪問点滴注射に関する指示
+    	setWarningMessageText(owner, tenteki, "在宅患者訪問点滴注射に関する指示");
+    	//特記すべき留意事項
+    	setWarningMessageText(owner, tokki, "特記すべき留意事項");
+  		
+  		return true;
+    }
+    
+    private void setWarningMessageText(
+    		IkenshoHoumonKangoShijisho owner,
+    		IkenshoHoumonKangoShijishoInstructContainer target,
+    		String contentName) {
+    	
+  		if (target.isPageBreak()) {
+  			owner.setWarningMessage(contentName);
+  		}
+    }
+    //[ID:0000635][Shin Fujihara] 2011/02/28 add end 【2010年度要望対応】
 }

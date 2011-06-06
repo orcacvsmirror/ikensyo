@@ -7,6 +7,7 @@ import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.EventObject;
+import java.util.Iterator;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
@@ -15,6 +16,7 @@ import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
+import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRArrayList;
@@ -211,6 +213,17 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
     }
 
     protected boolean showPrintDialogCustom() throws Exception {
+    	
+    	//[ID:0000635][Shin Fujihara] 2011/02/25 add begin 【2010年度要望対応】
+    	//帳票を改ページするかのフラグを設定して、印刷画面に渡す
+    	//改ページの警告なしならFALSE
+    	if (warningMessage.length() == 0) {
+    		originalData.put("IS_PAGE_BREAK", "FALSE");
+    	} else {
+    		originalData.put("IS_PAGE_BREAK", "TRUE");
+    	}
+        //[ID:0000635][Shin Fujihara] 2011/02/25 add end 【2010年度要望対応】
+    	
         return new IkenshoHoumonKangoShijishoPrintSetting(originalData)
                 .showModal();
     }
@@ -788,6 +801,45 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
         }
         super.doSelect();
     }
-//  [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//  [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+    
+    
+    //[ID:0000635][Shin Fujihara] 2011/02/25 add begin 【2010年度要望対応】
+    private StringBuffer warningMessage = null;
+    public void setWarningMessage(String msg) {
+    	warningMessage.append("・" + msg + IkenshoConstants.LINE_SEPARATOR);
+    }
+    // --- Override ---
+	protected boolean canControlUpdate() throws Exception {
+		// エラーチェック
+		Iterator it = tabArray.iterator();
+		while (it.hasNext()) {
+			IkenshoTabbableChildAffairContainer tab = (IkenshoTabbableChildAffairContainer)it.next();
+			if (!tab.noControlError()) {
+				tabs.setSelectedComponent(tab);
+				return false;
+			}
+		}
+		// 警告チェック
+		warningMessage = new StringBuffer();
+		it = tabArray.iterator();
+		while (it.hasNext()) {
+			IkenshoTabbableChildAffairContainer tab = (IkenshoTabbableChildAffairContainer)it.next();
+			if (!tab.noControlWarning()) {
+				tabs.setSelectedComponent(tab);
+				return false;
+			}
+		}
+		
+		if (warningMessage.length() != 0) {
+			 
+			ACMessageBox.show("以下の項目が1枚印刷の文字数制限を超えているため2枚で出力します。"
+							  + IkenshoConstants.LINE_SEPARATOR
+							  + warningMessage.toString()
+							  + "1枚印刷に収めたい場合は、キャンセルして、入力しなおしてください。");
+		}
 
+		return true;
+	}
+    //[ID:0000635][Shin Fujihara] 2011/02/25 add end 【2010年度要望対応】
 }

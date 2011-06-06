@@ -1455,7 +1455,10 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickProgressGroup.add(getSickProgresss(), VRLayout.NORTH);
     getSickProgresss().setLayout(new VRLayout());
-    getSickProgresss().add(sickProgress, VRLayout.LEFT);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin y2011”N“x‘Î‰F–K–âŠÅŒìw¦‘z’ •[ˆóš•¶š”‚ÌŠg‘å
+    //getSickProgresss().add(sickProgress, VRLayout.LEFT);
+    getSickProgresss().add(getSickProgress(), VRLayout.LEFT);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin y2011”N“x‘Î‰F–K–âŠÅŒìw¦‘z’ •[ˆóš•¶š”‚ÌŠg‘å
     // 2006/07/24 - ˆãtˆÓŒ©‘
     // Replace - begin [Masahiko Higuchi]
         // sickNameGroup.add(sickNames1, VRLayout.FLOW_INSETLINE_RETURN);

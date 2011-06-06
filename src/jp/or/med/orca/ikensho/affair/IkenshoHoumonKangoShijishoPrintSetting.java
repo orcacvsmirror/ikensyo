@@ -13,6 +13,8 @@ import java.util.Date;
 
 import javax.swing.JPanel;
 
+import sun.security.action.GetBooleanAction;
+
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
@@ -57,6 +59,11 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
 
     protected boolean printed = false;
     protected VRMap source;
+    
+    //[ID:0000635][Shin Fujihara] 2011/02/25 add begin 【2010年度要望対応】
+    //改ページが発生しているかの判定フラグ
+    private boolean isPageBreak = false;
+    //[ID:0000635][Shin Fujihara] 2011/02/25 add end 【2010年度要望対応】
 
     /**
      * 医療機関他
@@ -129,6 +136,10 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
             this.source.putAll(data);
             contents.setSource(this.source);
             contents.bindSource();
+            //[ID:0000635][Shin Fujihara] 2011/02/25 add begin 【2010年度要望対応】
+            //引数から、これから印字するデータが改ページが必要かを判定する
+            isPageBreak = ACCastUtilities.toBoolean(data.get("IS_PAGE_BREAK"), false);
+            //[ID:0000635][Shin Fujihara] 2011/02/25 add end 【2010年度要望対応】
         } catch (Exception exception) {
             exception.printStackTrace();
         }
@@ -159,59 +170,54 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
 
             pd.beginPrintEdit();
             int printStyle = style.getSelectedIndex();
-
+            
+            //[ID:0000635][Shin Fujihara] 2011/02/25 edit begin 【2010年度要望対応】
             switch (printStyle) {
             case DOCUMENT_TYPE_ORGAN: // 医療機関
-                ACChotarouXMLUtilities.addFormat(pd, "page1", "Shijisho.xml");
-//                pd.addFormat("page1", ACFrame.getInstance().getExeFolderPath()
-//                        + IkenshoConstants.FILE_SEPARATOR + "format"
-//                        + IkenshoConstants.FILE_SEPARATOR + "Shijisho.xml");
+            	//改ページフラグを参照し、定義体を設定する
+            	if (isPageBreak) {
+            		ACChotarouXMLUtilities.addFormat(pd, "page1", "Shijisho_M1.xml");
+            		ACChotarouXMLUtilities.addFormat(pd, "page2", "Shijisho_M2.xml");
+            	} else {
+            		ACChotarouXMLUtilities.addFormat(pd, "page1", "Shijisho.xml");
+            	}
                 break;
             case DOCUMENT_TYPE_HOKEN_SHISETSU: // 老人保健施設
-                ACChotarouXMLUtilities.addFormat(pd, "page1", "ShijishoB.xml");
-//                pd.addFormat("page1", ACFrame.getInstance().getExeFolderPath()
-//                        + IkenshoConstants.FILE_SEPARATOR + "format"
-//                        + IkenshoConstants.FILE_SEPARATOR + "ShijishoB.xml");
+            	if (isPageBreak) {
+            		ACChotarouXMLUtilities.addFormat(pd, "page1", "ShijishoB_M1.xml");
+            		ACChotarouXMLUtilities.addFormat(pd, "page2", "ShijishoB_M2.xml");
+            	} else {
+            		ACChotarouXMLUtilities.addFormat(pd, "page1", "ShijishoB.xml");
+            	}
                 break;
             default:
                 throw new RuntimeException("想定しない印刷モードが指定されました。");
             }
+            //[ID:0000635][Shin Fujihara] 2011/02/25 edit end 【2010年度要望対応】
 
 
-            String station1 = String.valueOf(VRBindPathParser.get("STATION_NM",
-                    source));
-            String station2 = String.valueOf(VRBindPathParser.get(
-                    "OTHER_STATION_NM", source));
+            String station1 = String.valueOf(VRBindPathParser.get("STATION_NM", source));
+            String station2 = String.valueOf(VRBindPathParser.get("OTHER_STATION_NM", source));
+            
+            //[ID:0000635][Shin Fujihara] 2011/02/25 edit begin 【2010年度要望対応】
             if (sendTo.isEnabled()) {
                 switch (sendTo.getSelectedIndex()) {
                 case 1: // 2枚
-                    printShijisho(pd, "page1", source, station1, station2,
-                            printStyle);
-                    printShijisho(pd, "page1", source, station2, station1,
-                            printStyle);
+                	printShijishoBranch(pd, "page1", source, station1, station2, printStyle);
+                	printShijishoBranch(pd, "page1", source, station2, station1, printStyle);
                     break;
-                // 2006/02/06[Tozo Tanaka] : replace begin
-                // case 2: // 前者のみ
-                // printShijisho(pd, "page1", source, station1, "", printStyle);
-                // break;
-                // case 3: // 後者のみ
-                // printShijisho(pd, "page1", source, station2, "", printStyle);
-                // break;
                 case 2: // 前者のみ
-                    printShijisho(pd, "page1", source, station1, station2,
-                            printStyle);
+                	printShijishoBranch(pd, "page1", source, station1, station2, printStyle);
                     break;
                 case 3: // 後者のみ
-                    printShijisho(pd, "page1", source, station2, station1,
-                            printStyle);
+                	printShijishoBranch(pd, "page1", source, station2, station1, printStyle);
                     break;
-                //2006/02/06[Tozo Tanaka] : replace end
                 }
             } else {
                 // 単一のステーションのみ
-                printShijisho(pd, "page1", source, station1, station2,
-                        printStyle);
+            	printShijishoBranch(pd, "page1", source, station1, station2, printStyle);
             }
+            //[ID:0000635][Shin Fujihara] 2011/02/25 edit end 【2010年度要望対応】
 
             pd.endPrintEdit();
 
@@ -223,6 +229,25 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
 
     }
 
+    //[ID:0000635][Shin Fujihara] 2011/02/25 add begin 【2010年度要望対応】
+    public void printShijishoBranch(ACChotarouXMLWriter pd, String formatName,
+            VRMap data, String stationName1, String stationName2, int printStyle)
+            throws Exception {
+    	
+    	//改ページが発生しているかどうかで、印字に使用するメソッドを切り替える
+    	//改ページアリ
+    	if (isPageBreak) {
+    		printShijishoMulti(pd, data, stationName1, stationName2, printStyle);
+    		
+    	//改ページなし（従来どおりのメソッドを使用）
+    	} else {
+    		printShijisho(pd, formatName, data, stationName1, stationName2, printStyle);
+    	}
+    	
+    }
+    //[ID:0000635][Shin Fujihara] 2011/02/25 add end 【2010年度要望対応】
+    
+    
     /**
      * 指示書を印刷します。
      * 
@@ -237,7 +262,7 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
     public static void printShijisho(ACChotarouXMLWriter pd, String formatName,
             VRMap data, String stationName1, String stationName2, int printStyle)
             throws Exception {
-
+    	
         pd.beginPageEdit(formatName);
 
         String text;
@@ -689,38 +714,45 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
             pd.addAttribute("Shape35", "Visible", "FALSE");
         }
 
+        //[ID:0000635][Shin Fujihara] 2011/03/01 edit begin 【2010年度要望対応】
         // 療養生活指導上の留意事項
-                    
-        IkenshoCommon.addString(pd, data, "RSS_RYUIJIKOU", "Grid10.h2.w2");
+        //IkenshoCommon.addString(pd, data, "RSS_RYUIJIKOU", "Grid10.h2.w2");
+        IkenshoCommon.addString(pd, "Grid10.h2.w2", getLineBreakedString(data.get("RSS_RYUIJIKOU")));
+        
         // リハビリテーション
         if (((Integer) VRBindPathParser.get("REHA_SIJI_UMU", data)).intValue() != 1) {
             pd.addAttribute("Shape46", "Visible", "FALSE");
         } else {
-            IkenshoCommon.addString(pd, data, "REHA_SIJI", "Grid10.h4.w2");
+            //IkenshoCommon.addString(pd, data, "REHA_SIJI", "Grid10.h4.w2");
+            IkenshoCommon.addString(pd, "Grid10.h4.w2", getLineBreakedString(data.get("REHA_SIJI")));
         }
         // 褥瘡
         if (((Integer) VRBindPathParser.get("JOKUSOU_SIJI_UMU", data))
                 .intValue() != 1) {
             pd.addAttribute("Shape45", "Visible", "FALSE");
         } else {
-            IkenshoCommon.addString(pd, data, "JOKUSOU_SIJI", "Grid10.h6.w2");
+            //IkenshoCommon.addString(pd, data, "JOKUSOU_SIJI", "Grid10.h6.w2");
+            IkenshoCommon.addString(pd, "Grid10.h6.w2", getLineBreakedString(data.get("JOKUSOU_SIJI")));
         }
         // 機器等の操作援助
         if (((Integer) VRBindPathParser.get("SOUCHAKU_SIJI_UMU", data))
                 .intValue() != 1) {
             pd.addAttribute("Shape44", "Visible", "FALSE");
         } else {
-            IkenshoCommon.addString(pd, data, "SOUCHAKU_SIJI", "Grid10.h8.w2");
+            //IkenshoCommon.addString(pd, data, "SOUCHAKU_SIJI", "Grid10.h8.w2");
+            IkenshoCommon.addString(pd, "Grid10.h8.w2", getLineBreakedString(data.get("SOUCHAKU_SIJI")));
         }
         // その他
         if (((Integer) VRBindPathParser.get("RYUI_SIJI_UMU", data)).intValue() != 1) {
             pd.addAttribute("Shape47", "Visible", "FALSE");
         } else {
-            IkenshoCommon.addString(pd, data, "RYUI_SIJI", "Grid10.h12.w2");
+            //IkenshoCommon.addString(pd, data, "RYUI_SIJI", "Grid10.h12.w2");
+        	IkenshoCommon.addString(pd, "Grid10.h12.w2", getLineBreakedString(data.get("RYUI_SIJI")));
         }
 
         // 点滴注射指示
-        IkenshoCommon.addString(pd, data, "TENTEKI_SIJI", "Grid10.h10.w1");
+        //IkenshoCommon.addString(pd, data, "TENTEKI_SIJI", "Grid10.h10.w1");
+        IkenshoCommon.addString(pd, "Grid10.h10.w1", getLineBreakedString(data.get("TENTEKI_SIJI")));
 
         // 緊急時の連絡先
         IkenshoCommon.addString(pd, data, "KINKYU_RENRAKU", "Grid11.h1.w2");
@@ -729,7 +761,9 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
         IkenshoCommon.addString(pd, data, "FUZAIJI_TAIOU", "Grid11.h2.w2");
 
         // 特記すべき留意事項
-        IkenshoCommon.addString(pd, data, "SIJI_TOKKI", "Grid12.h2.w1");
+        //IkenshoCommon.addString(pd, data, "SIJI_TOKKI", "Grid12.h2.w1");
+        IkenshoCommon.addString(pd, "Grid12.h2.w1", getLineBreakedString(data.get("SIJI_TOKKI")));
+        //[ID:0000635][Shin Fujihara] 2011/03/01 edit begin 【2010年度要望対応】
 
         // 他の訪問看護ステーションへの指示
         if (((Integer) VRBindPathParser.get("OTHER_STATION_SIJI", data))
@@ -786,6 +820,509 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
         pd.endPageEdit();
 
     }
+    
+    
+    //[ID:0000635][Shin Fujihara] 2011/02/25 add begin 【2010年度要望対応】
+    //指示書を改ページして印字する
+    public static void printShijishoMulti(
+    		ACChotarouXMLWriter pd,  VRMap data, String stationName1, String stationName2, int printStyle)
+            throws Exception {
+    	
+        pd.beginPageEdit("page1");
+
+        String text;
+        StringBuffer sb;
+        
+        if (((Integer) VRBindPathParser.get("HOUMON_SIJISYO", data)).intValue() == -1) {
+            // 訪問看護指示書
+            if (((Integer) VRBindPathParser.get("TENTEKI_SIJISYO", data)).intValue() == -1) {
+                // 訪問点滴注射指示書
+                IkenshoCommon.addString(pd, "title", "訪問看護指示書・在宅患者訪問点滴注射指示書");
+
+            } else {
+                IkenshoCommon.addString(pd, "title", "訪問看護指示書");
+            }
+        } else {
+            // 訪問点滴注射指示書
+            IkenshoCommon.addString(pd, "title", "在宅患者訪問点滴注射指示書");
+        }
+
+        // 氏名
+        IkenshoCommon.addString(pd, data, "PATIENT_NM", "Grid2.h1.w2");
+
+        // 生年月日
+        Date date = (Date) VRBindPathParser.get("BIRTHDAY", data);
+        String era = VRDateParser.format(date, "gg");
+        if ("明".equals(era)) {
+            pd.addAttribute("Shape2", "Visible", "FALSE");
+            pd.addAttribute("Shape3", "Visible", "FALSE");
+            pd.addAttribute("Shape4", "Visible", "FALSE");
+        } else if ("大".equals(era)) {
+            pd.addAttribute("Shape1", "Visible", "FALSE");
+            pd.addAttribute("Shape3", "Visible", "FALSE");
+            pd.addAttribute("Shape4", "Visible", "FALSE");
+        } else if ("昭".equals(era)) {
+            pd.addAttribute("Shape1", "Visible", "FALSE");
+            pd.addAttribute("Shape2", "Visible", "FALSE");
+            pd.addAttribute("Shape4", "Visible", "FALSE");
+        } else if ("平".equals(era)) {
+            pd.addAttribute("Shape1", "Visible", "FALSE");
+            pd.addAttribute("Shape2", "Visible", "FALSE");
+            pd.addAttribute("Shape3", "Visible", "FALSE");
+        } else {
+            pd.addAttribute("Shape1", "Visible", "FALSE");
+            pd.addAttribute("Shape2", "Visible", "FALSE");
+            pd.addAttribute("Shape3", "Visible", "FALSE");
+            pd.addAttribute("Shape4", "Visible", "FALSE");
+        }
+        // 年
+        IkenshoCommon.addString(pd, "Grid2.h1.w5", VRDateParser.format(date,"ee"));
+        // 月
+        IkenshoCommon.addString(pd, "Grid2.h1.w7", VRDateParser.format(date,"MM"));
+        // 日
+        IkenshoCommon.addString(pd, "Grid2.h1.w9", VRDateParser.format(date,"dd"));
+
+        // 年齢
+        IkenshoCommon.addString(pd, data, "AGE", "Grid2.h1.w11");
+
+        // 郵便番号
+        IkenshoCommon.addString(pd, data, "POST_CD", "Grid3.h1.w4");
+        // 住所
+        IkenshoCommon.addString(pd, data, "ADDRESS", "Grid3.h2.w4");
+        // 電話番号
+        IkenshoCommon.addTel(pd, data, "TEL1", "TEL2", "Grid3.h3.w2");
+
+        // 訪問看護指示期間 開始
+        text = String.valueOf(VRBindPathParser.get("SIJI_KIKAN_FROM", data));
+        if (text.indexOf("0000年") < 0) {
+            IkenshoCommon.addString(pd, "Grid1.h1.w1", "（"
+                    + text.substring(0, 2));
+            IkenshoCommon.addString(pd, "Grid1.h1.w2", text.substring(2, 4));
+            if (text.indexOf("00月") < 0) {
+                IkenshoCommon
+                        .addString(pd, "Grid1.h1.w4", text.substring(5, 7));
+                if (text.indexOf("00日") < 0) {
+                    IkenshoCommon.addString(pd, "Grid1.h1.w6", text.substring(
+                            8, 10));
+                }
+            }
+        } else {
+            IkenshoCommon.addString(pd, "Grid1.h1.w1", "（");
+        }
+
+        // 訪問看護指示期間 終了
+        text = String.valueOf(VRBindPathParser.get("SIJI_KIKAN_TO", data));
+        if (text.indexOf("0000年") < 0) {
+            IkenshoCommon.addString(pd, "Grid1.h1.w15", text.substring(0, 2));
+            IkenshoCommon.addString(pd, "Grid1.h1.w8", text.substring(2, 4));
+            if (text.indexOf("00月") < 0) {
+                IkenshoCommon.addString(pd, "Grid1.h1.w10", text
+                        .substring(5, 7));
+                if (text.indexOf("00日") < 0) {
+                    IkenshoCommon.addString(pd, "Grid1.h1.w12", text.substring(
+                            8, 10));
+                }
+            }
+        }
+
+        // 点滴注射指示期間 開始
+        text = String.valueOf(VRBindPathParser.get("TENTEKI_FROM", data));
+        if (text.indexOf("0000年") < 0) {
+            IkenshoCommon.addString(pd, "Grid1.h2.w1", "（"
+                    + text.substring(0, 2));
+            IkenshoCommon.addString(pd, "Grid1.h2.w2", text.substring(2, 4));
+            if (text.indexOf("00月") < 0) {
+                IkenshoCommon
+                        .addString(pd, "Grid1.h2.w4", text.substring(5, 7));
+                if (text.indexOf("00日") < 0) {
+                    IkenshoCommon.addString(pd, "Grid1.h2.w6", text.substring(
+                            8, 10));
+                }
+            }
+        } else {
+            IkenshoCommon.addString(pd, "Grid1.h2.w1", "（");
+        }
+
+        // 点滴注射指示期間 終了
+        text = String.valueOf(VRBindPathParser.get("TENTEKI_TO", data));
+        if (text.indexOf("0000年") < 0) {
+            IkenshoCommon.addString(pd, "Grid1.h2.w15", text.substring(0, 2));
+            IkenshoCommon.addString(pd, "Grid1.h2.w8", text.substring(2, 4));
+            if (text.indexOf("00月") < 0) {
+                IkenshoCommon.addString(pd, "Grid1.h2.w10", text
+                        .substring(5, 7));
+                if (text.indexOf("00日") < 0) {
+                    IkenshoCommon.addString(pd, "Grid1.h2.w12", text.substring(
+                            8, 10));
+                }
+            }
+        }
+
+        // 主たる傷病名
+        sb = new StringBuffer();
+        VRArrayList array = new VRArrayList() ;
+        
+        Object shindanName1 = VRBindPathParser.get("SINDAN_NM1", data);
+        if (!IkenshoCommon.isNullText(shindanName1)){
+        	array.add(String.valueOf(shindanName1));
+        }
+               
+        
+        Object shindanName2 = VRBindPathParser.get("SINDAN_NM2", data);
+        if (!IkenshoCommon.isNullText(shindanName2)){
+        	array.add(String.valueOf(shindanName2));
+        }
+        
+        Object shindanName3 = VRBindPathParser.get("SINDAN_NM3", data);
+        if (!IkenshoCommon.isNullText(shindanName3)){
+        	array.add(String.valueOf(shindanName3));
+        }
+        
+        //arrayの中にデータが入っているかどうか確認
+        if (!array.isEmpty()){
+        	
+         	//主たる傷病が名が１つしか記載されていないの場合、番号は付けない。
+	        if (array.size() == 1){
+	        	sb.append(array.get(0));
+	        }
+	        //主たる傷病名が１つ以上記載されている場合、"（１）"から番号を付ける。
+	        else{
+	        	for (int i=0; i<array.size(); i++){
+	        		switch (i){
+	        		case 0 :
+	        			sb.append("(１)");
+	        			sb.append(array.get(i));
+	        			break;
+	        		case 1 :
+	        			sb.append(" ");
+	        			sb.append("(２)");
+	        			sb.append(array.get(i));
+	        			break;
+	        		case 2 :
+	        			sb.append(" ");
+	        			sb.append("(３)");
+	        			sb.append(array.get(i));
+	        			break;
+	        		}
+	        		
+	        	}
+	        }
+        }
+        IkenshoCommon.addString(pd, "Grid4.h1.w2", sb.toString());
+        
+        //症状･治療状態
+        IkenshoCommon.addString(pd, "lblJyotai", getLineBreakedString(data.get("MT_STS")));
+        
+        // 投与中の薬剤の用法・用量
+        addMedicine(pd, data, "1", "sickMedicines8.h1.w4");
+        addMedicine(pd, data, "2", "sickMedicines8.h1.w2");
+        addMedicine(pd, data, "3", "sickMedicines8.h2.w4");
+        addMedicine(pd, data, "4", "sickMedicines8.h2.w2");
+        addMedicine(pd, data, "5", "sickMedicines8.h3.w4");
+        addMedicine(pd, data, "6", "sickMedicines8.h3.w2");
+        addMedicine(pd, data, "7", "sickMedicines8.h4.w4");
+        addMedicine(pd, data, "8", "sickMedicines8.h4.w2");
+        
+        // 寝たきり度
+        IkenshoCommon.addSelection(pd, data, "NETAKIRI", new String[] {
+                "Shape27", "Shape25", "Shape26", "Shape22", "Shape20",
+                "Shape21", "Shape24", "Shape23", "Shape15" }, -1);
+        // 痴呆の状態
+        IkenshoCommon.addSelection(pd, data, "CHH_STS", new String[] {
+                "Shape28", "Shape17", "Shape18", "Shape13", "Shape11",
+                "Shape12", "Shape16", "Shape14" }, -1);
+
+        // 要介護認定の状況
+        switch (((Integer) VRBindPathParser.get("YOUKAIGO_JOUKYOU", data))
+                .intValue()) {
+        case 1: // 自立
+            pd.addAttribute("Shape49", "Visible", "FALSE");
+            pd.addAttribute("Shape54", "Visible", "FALSE");
+            pd.addAttribute("Shape9", "Visible", "FALSE");
+            pd.addAttribute("Shape51", "Visible", "FALSE");
+            pd.addAttribute("Shape52", "Visible", "FALSE");
+            pd.addAttribute("Shape53", "Visible", "FALSE");
+            break;
+        case 11:// 要支援
+            pd.addAttribute("Shape54", "Visible", "FALSE");
+            pd.addAttribute("Shape9", "Visible", "FALSE");
+            pd.addAttribute("Shape51", "Visible", "FALSE");
+            pd.addAttribute("Shape52", "Visible", "FALSE");
+            pd.addAttribute("Shape53", "Visible", "FALSE");
+            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
+                pd.addAttribute("Shape5", "Visible", "FALSE");
+            }
+            break;
+        case 21:// 要介護1
+            pd.addAttribute("Shape49", "Visible", "FALSE");
+            pd.addAttribute("Shape9", "Visible", "FALSE");
+            pd.addAttribute("Shape51", "Visible", "FALSE");
+            pd.addAttribute("Shape52", "Visible", "FALSE");
+            pd.addAttribute("Shape53", "Visible", "FALSE");
+            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
+                pd.addAttribute("Shape5", "Visible", "FALSE");
+            }
+            break;
+        case 22:// 要介護2
+            pd.addAttribute("Shape49", "Visible", "FALSE");
+            pd.addAttribute("Shape54", "Visible", "FALSE");
+            pd.addAttribute("Shape51", "Visible", "FALSE");
+            pd.addAttribute("Shape52", "Visible", "FALSE");
+            pd.addAttribute("Shape53", "Visible", "FALSE");
+            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
+                pd.addAttribute("Shape5", "Visible", "FALSE");
+            }
+            break;
+        case 23:// 要介護3
+            pd.addAttribute("Shape49", "Visible", "FALSE");
+            pd.addAttribute("Shape54", "Visible", "FALSE");
+            pd.addAttribute("Shape9", "Visible", "FALSE");
+            pd.addAttribute("Shape52", "Visible", "FALSE");
+            pd.addAttribute("Shape53", "Visible", "FALSE");
+            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
+                pd.addAttribute("Shape5", "Visible", "FALSE");
+            }
+            break;
+        case 24:// 要介護4
+            pd.addAttribute("Shape49", "Visible", "FALSE");
+            pd.addAttribute("Shape54", "Visible", "FALSE");
+            pd.addAttribute("Shape9", "Visible", "FALSE");
+            pd.addAttribute("Shape51", "Visible", "FALSE");
+            pd.addAttribute("Shape53", "Visible", "FALSE");
+            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
+                pd.addAttribute("Shape5", "Visible", "FALSE");
+            }
+            break;
+        case 25:// 要介護5
+            pd.addAttribute("Shape49", "Visible", "FALSE");
+            pd.addAttribute("Shape54", "Visible", "FALSE");
+            pd.addAttribute("Shape9", "Visible", "FALSE");
+            pd.addAttribute("Shape51", "Visible", "FALSE");
+            pd.addAttribute("Shape52", "Visible", "FALSE");
+            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
+                pd.addAttribute("Shape5", "Visible", "FALSE");
+            }
+            break;
+        default:
+            pd.addAttribute("Shape49", "Visible", "FALSE");
+            pd.addAttribute("Shape54", "Visible", "FALSE");
+            pd.addAttribute("Shape9", "Visible", "FALSE");
+            pd.addAttribute("Shape51", "Visible", "FALSE");
+            pd.addAttribute("Shape52", "Visible", "FALSE");
+            pd.addAttribute("Shape53", "Visible", "FALSE");
+            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
+                pd.addAttribute("Shape5", "Visible", "FALSE");
+            }
+            break;
+        }
+        //褥瘡の深さ：NPUAP分類
+        IkenshoCommon.addSelection(pd, data, "JOKUSOU_NPUAP", new String[] {
+                "Shape55", "Shape56" }, -1);
+        //褥瘡の深さ：DESIGN分類
+        IkenshoCommon.addSelection(pd, data, "JOKUSOU_DESIGN", new String[] {
+                "Shape57", "Shape58", "Shape59" }, -1);
+
+        // 装着・使用医療機器等
+        // 自動腹膜灌流装置
+        if (((Integer) VRBindPathParser.get("JD_FUKU", data)).intValue() != 1) {
+            pd.addAttribute("Shape36", "Visible", "FALSE");
+        }
+        // 透析液供給装置
+        if (((Integer) VRBindPathParser.get("TOU_KYOUKYU", data)).intValue() != 1) {
+            pd.addAttribute("Shape30", "Visible", "FALSE");
+        }
+        // 酸素療法
+        if (((Integer) VRBindPathParser.get("OX_RYO", data)).intValue() != 1) {
+            pd.addAttribute("Shape50", "Visible", "FALSE");
+        } else {
+            IkenshoCommon.addString(pd, data, "OX_RYO_RYO", "Grid9.h1.w20");
+        }
+        // 吸引機
+        if (((Integer) VRBindPathParser.get("KYUINKI", data)).intValue() != 1) {
+            pd.addAttribute("Shape33", "Visible", "FALSE");
+        }
+        // 中心静脈栄養
+        if (((Integer) VRBindPathParser.get("CHU_JOU_EIYOU", data)).intValue() != 1) {
+            pd.addAttribute("Shape32", "Visible", "FALSE");
+        }
+        // 輸液ポンプ
+        if (((Integer) VRBindPathParser.get("YUEKI_PUMP", data)).intValue() != 1) {
+            pd.addAttribute("Shape31", "Visible", "FALSE");
+        }
+        // 経管栄養
+        if (((Integer) VRBindPathParser.get("KEKN_EIYOU", data)).intValue() != 1) {
+            pd.addAttribute("Shape34", "Visible", "FALSE");
+        } else {
+            IkenshoCommon.addString(pd, data, "KEKN_EIYOU_METHOD",
+                    "Grid9.h3.w23");
+            IkenshoCommon
+                    .addString(pd, data, "KEKN_EIYOU_SIZE", "Grid9.h3.w14");
+            IkenshoCommon.addString(pd, data, "KEKN_EIYOU_CHG", "Grid9.h3.w18");
+        }
+        // 留置カテーテル
+        if (((Integer) VRBindPathParser.get("RYU_CATHETER", data)).intValue() != 1) {
+            pd.addAttribute("Shape42", "Visible", "FALSE");
+        } else {
+            IkenshoCommon.addString(pd, data, "RYU_CAT_SIZE", "Grid9.h4.w7");
+            IkenshoCommon.addString(pd, data, "RYU_CAT_CHG", "Grid9.h4.w18");
+        }
+        // 人工呼吸器
+        if (((Integer) VRBindPathParser.get("JINKOU_KOKYU", data)).intValue() != 1) {
+            pd.addAttribute("Shape41", "Visible", "FALSE");
+        } else {
+            IkenshoCommon.addString(pd, data, "JINKOU_KKY_HOUSIKI",
+                    "Grid9.h5.w23");
+            IkenshoCommon.addString(pd, data, "JINKOU_KKY_SET", "Grid9.h5.w13");
+        }
+        // 気管カニューレ
+        if (((Integer) VRBindPathParser.get("CANNULA", data)).intValue() != 1) {
+            pd.addAttribute("Shape40", "Visible", "FALSE");
+        } else {
+            IkenshoCommon.addString(pd, data, "CANNULA_SIZE", "Grid9.h6.w7");
+        }
+        // ドレーン
+        if (((Integer) VRBindPathParser.get("DOREN", data)).intValue() != 1) {
+            pd.addAttribute("Shape37", "Visible", "FALSE");
+        } else {
+            IkenshoCommon.addString(pd, data, "DOREN_BUI", "Grid9.h6.w17");
+        }
+        // 人工肛門
+        if (((Integer) VRBindPathParser.get("JINKOU_KOUMON", data)).intValue() != 1) {
+            pd.addAttribute("Shape43", "Visible", "FALSE");
+        }
+        // 人工膀胱
+        if (((Integer) VRBindPathParser.get("JINKOU_BOUKOU", data)).intValue() != 1) {
+            pd.addAttribute("Shape38", "Visible", "FALSE");
+        }
+        // その他
+        if (((Integer) VRBindPathParser.get("SOUCHAKU_OTHER_FLAG", data))
+                .intValue() == 1) {
+            Object obj = VRBindPathParser.get("SOUCHAKU_OTHER", data);
+            if (IkenshoCommon.isNullText(obj)) {
+                pd.addAttribute("Shape35", "Visible", "FALSE");
+            } else {
+                IkenshoCommon.addString(pd, "Grid9.h7.w6", String.valueOf(obj));
+            }
+        } else {
+            pd.addAttribute("Shape35", "Visible", "FALSE");
+        }
+
+        
+        //ここで改ページ============================
+        pd.endPageEdit();
+        pd.beginPageEdit("page2");
+        
+        //患者氏名と年齢を再掲
+        IkenshoCommon.addString(pd, data, "PATIENT_NM", "patientData.h1.w1");
+        IkenshoCommon.addString(pd, data, "AGE", "patientData.h1.w3");
+        
+        
+        // 療養生活指導上の留意事項
+        IkenshoCommon.addString(pd, "lblRyoyo", getLineBreakedString(data.get("RSS_RYUIJIKOU")));
+        
+        // リハビリテーション
+        if (((Integer) VRBindPathParser.get("REHA_SIJI_UMU", data)).intValue() != 1) {
+            pd.addAttribute("Shape46", "Visible", "FALSE");
+        } else {
+        	IkenshoCommon.addString(pd, "lblRiha", getLineBreakedString(data.get("REHA_SIJI")));
+        }
+        // 褥瘡
+        if (((Integer) VRBindPathParser.get("JOKUSOU_SIJI_UMU", data))
+                .intValue() != 1) {
+            pd.addAttribute("Shape45", "Visible", "FALSE");
+        } else {
+            IkenshoCommon.addString(pd, "lblJyokusyo", getLineBreakedString(data.get("JOKUSOU_SIJI")));
+        }
+        // 機器等の操作援助
+        if (((Integer) VRBindPathParser.get("SOUCHAKU_SIJI_UMU", data))
+                .intValue() != 1) {
+            pd.addAttribute("Shape44", "Visible", "FALSE");
+        } else {
+            IkenshoCommon.addString(pd, "lblSochaku", getLineBreakedString(data.get("SOUCHAKU_SIJI")));
+        }
+        // その他
+        if (((Integer) VRBindPathParser.get("RYUI_SIJI_UMU", data)).intValue() != 1) {
+            pd.addAttribute("Shape47", "Visible", "FALSE");
+        } else {
+            IkenshoCommon.addString(pd, "lblEtc", getLineBreakedString(data.get("RYUI_SIJI")));
+        }
+
+        // 点滴注射指示
+        IkenshoCommon.addString(pd, "lblZaitaku", getLineBreakedString(data.get("TENTEKI_SIJI")));
+
+        // 緊急時の連絡先
+        IkenshoCommon.addString(pd, data, "KINKYU_RENRAKU", "Grid11.h1.w2");
+
+        // 不在時の対応法
+        IkenshoCommon.addString(pd, data, "FUZAIJI_TAIOU", "Grid11.h2.w2");
+
+        // 特記すべき留意事項
+        IkenshoCommon.addString(pd, "lblTokki", getLineBreakedString(data.get("SIJI_TOKKI")));
+
+        // 他の訪問看護ステーションへの指示
+        if (((Integer) VRBindPathParser.get("OTHER_STATION_SIJI", data))
+                .intValue() != 2) {
+            pd.addAttribute("Shape39", "Visible", "FALSE");
+            IkenshoCommon.addString(pd, "Grid12.h4.w8", " 殿");
+        } else {
+            pd.addAttribute("Shape48", "Visible", "FALSE");
+            IkenshoCommon.addString(pd, "Grid12.h4.w8", stationName2 + " 殿");
+        }
+
+        // 記入日
+        if (VRBindPathParser.has("KINYU_DT", data)) {
+            Object obj = VRBindPathParser.get("KINYU_DT", data);
+            if (obj instanceof Date) {
+                IkenshoCommon.addString(pd, "Label2", VRDateParser.format(
+                        (Date) obj, "gggee年MM月dd日"));
+            }
+        }
+
+        // 医療機関名
+        IkenshoCommon.addString(pd, data, "MI_NM", "Grid13.h1.w2");
+
+        // 医療機関住所
+        IkenshoCommon.addString(pd, data, "MI_ADDRESS", "Grid13.h2.w2");
+
+        // 医療機関電話番号
+        IkenshoCommon.addTel(pd, data, "MI_TEL1", "MI_TEL2", "Grid13.h3.w2");
+
+        // 医療機関FAX番号
+        IkenshoCommon.addTel(pd, data, "MI_FAX1", "MI_FAX2", "Grid13.h4.w2");
+
+        // 医師氏名
+        IkenshoCommon.addString(pd, data, "DR_NM", "Grid13.h5.w2");
+
+        // 対象の訪問看護ステーション
+        IkenshoCommon.addString(pd, "Label6", stationName1 + " 殿");
+
+        pd.endPageEdit();
+
+    }
+    
+    private static String getLineBreakedString(Object obj) throws Exception {
+    	if (obj == null) {
+    		return "";
+    	}
+    	
+    	String value = ACCastUtilities.toString(obj);
+    	
+    	StringBuffer result = new StringBuffer();
+        String[] lines = ACTextUtilities.separateLineWrapOnByte(value, 100);
+        
+        for (int i = 0; i < lines.length; i++) {
+        	if (i != 0) {
+        		result.append(IkenshoConstants.LINE_SEPARATOR);
+        	}
+        	result.append(lines[i]);
+        }
+        
+    	return result.toString();
+    }
+    
+    
+    //[ID:0000635][Shin Fujihara] 2011/02/25 add end 【2010年度要望対応】
+    
 
     /**
      * 薬剤情報を出力します。

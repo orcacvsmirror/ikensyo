@@ -50,11 +50,23 @@ public class IkenshoHoumonKangoShijishoRyuiShiji
     seikatsuShidouRyuijikou.setShowSelectText("選択(C)");
     seikatsuShidouRyuijikou.setCaption("療養生活指導上の留意事項");
     seikatsuShidouRyuijikou.setTextBindPath("RSS_RYUIJIKOU");
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
     seikatsuShidouRyuijikou.setTitle(
-        " I  療養生活指導上の留意事項（全項目120文字/3行以内）");
+        " I  療養生活指導上の留意事項(全項目{0}文字以上／{1}行以上の入力では、帳票は2枚で印刷されます)(現在 {2}文字 {3}行)");
+    seikatsuShidouRyuijikou.setPageBreakLimitProperty(151, 4);
+    seikatsuShidouRyuijikou.setMaxLength(250);
+    seikatsuShidouRyuijikou.setMaxRows(5);
+    seikatsuShidouRyuijikou.setColumns(100);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     seikatsuShidouRyuijikou.setCheckVisible(false);
     rehabilitation.setCheckBindPath("REHA_SIJI_UMU");
-    rehabilitation.setCheckText("１．リハビリテーション");
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
+    rehabilitation.setCheckText("１．リハビリテーション(現在 {2}文字 {3}行)");
+    rehabilitation.setPageBreakLimitProperty(151, 4);
+    rehabilitation.setMaxLength(250);
+    rehabilitation.setMaxRows(5);
+    rehabilitation.setColumns(100);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     rehabilitation.setCode(IkenshoCommon.TEIKEI_HOUMON_REHABILITATION);
     rehabilitation.setShowSelectMnemonic('D');
     rehabilitation.setShowSelectText("選択(D)");
@@ -62,7 +74,13 @@ public class IkenshoHoumonKangoShijishoRyuiShiji
     rehabilitation.setTextBindPath("REHA_SIJI");
     rehabilitation.setTitle("II  ");
     jyokusou.setCheckBindPath("JOKUSOU_SIJI_UMU");
-    jyokusou.setCheckText("２．褥瘡の処置等");
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
+    jyokusou.setCheckText("２．褥瘡の処置等(現在 {2}文字 {3}行)");
+    jyokusou.setPageBreakLimitProperty(151, 4);
+    jyokusou.setMaxLength(250);
+    jyokusou.setMaxRows(5);
+    jyokusou.setColumns(100);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     jyokusou.setCode(IkenshoCommon.TEIKEI_HOUMON_JYOKUSOU);
     jyokusou.setShowSelectMnemonic('E');
     jyokusou.setShowSelectText("選択(E)");
@@ -70,7 +88,13 @@ public class IkenshoHoumonKangoShijishoRyuiShiji
     jyokusou.setTextBindPath("JOKUSOU_SIJI");
     jyokusou.setTitle("　");
     kikiSousaShien.setCheckBindPath("SOUCHAKU_SIJI_UMU");
-    kikiSousaShien.setCheckText("３．装着・使用医療機器等の操作援助・管理");
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
+    kikiSousaShien.setCheckText("３．装着・使用医療機器等の操作援助・管理(現在 {2}文字 {3}行)");
+    kikiSousaShien.setPageBreakLimitProperty(151, 4);
+    kikiSousaShien.setMaxLength(250);
+    kikiSousaShien.setMaxRows(5);
+    kikiSousaShien.setColumns(100);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     kikiSousaShien.setCode(IkenshoCommon.TEIKEI_HOUMON_KIKI_SOUSA_ENJYO);
     kikiSousaShien.setShowSelectMnemonic('G');
     kikiSousaShien.setShowSelectText("選択(G)");
@@ -79,7 +103,13 @@ public class IkenshoHoumonKangoShijishoRyuiShiji
     kikiSousaShien.setTextBindPath("SOUCHAKU_SIJI");
     kikiSousaShien.setTitle("　");
     other.setCheckBindPath("RYUI_SIJI_UMU");
-    other.setCheckText("４．その他");
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
+    other.setCheckText("４．その他(現在 {2}文字 {3}行)");
+    other.setPageBreakLimitProperty(151, 4);
+    other.setMaxLength(250);
+    other.setMaxRows(5);
+    other.setColumns(100);
+    //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     other.setCode(IkenshoCommon.TEIKEI_HOUMON_SONOTA);
     other.setShowSelectMnemonic('H');
     other.setShowSelectText("選択(H)");
@@ -153,5 +183,47 @@ public class IkenshoHoumonKangoShijishoRyuiShiji
     
     // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
   
-  
+
+    //[ID:0000635][Shin Fujihara] 2011/02/28 add begin 【2010年度要望対応】
+    // --- Override ---
+    public boolean noControlWarning() throws Exception {
+    	if (getMasterAffair() == null) {
+    		return true;
+    	}
+    	
+    	if (getMasterAffair().getCanUpdateCheckStatus() != IkenshoTabbableAffairContainer.CAN_UPDATE_CHECK_STATUS_PRINT) {
+    		return true;
+    	}
+    	
+    	if (!(getMasterAffair() instanceof IkenshoHoumonKangoShijisho)) {
+    		return true;
+    	}
+    	
+    	IkenshoHoumonKangoShijisho owner = (IkenshoHoumonKangoShijisho)getMasterAffair();
+    	
+  		//療養生活指導上の留意事項
+    	setWarningMessageText(owner, seikatsuShidouRyuijikou, "療養生活指導上の留意事項");
+  		//リハビリテーション
+    	setWarningMessageText(owner, rehabilitation, "リハビリテーション");
+  		//褥瘡の処置等
+    	setWarningMessageText(owner, jyokusou, "褥瘡の処置等");
+  		//装着・使用医療機器等の操作援助・管理
+    	setWarningMessageText(owner, kikiSousaShien, "装着・使用医療機器等の操作援助・管理");
+    	//その他
+    	setWarningMessageText(owner, other, "その他");
+  		
+  		return true;
+    }
+    
+    private void setWarningMessageText(
+    		IkenshoHoumonKangoShijisho owner,
+    		IkenshoHoumonKangoShijishoInstructContainer target,
+    		String contentName) {
+    	
+  		if (target.isPageBreak()) {
+  			owner.setWarningMessage(contentName);
+  		}
+    }
+    //[ID:0000635][Shin Fujihara] 2011/02/28 add end 【2010年度要望対応】
+    
 }

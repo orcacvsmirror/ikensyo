@@ -207,6 +207,18 @@ public class IP001 extends IP001Event {
             } else if (fileName.endsWith("ikenshoshien2.xml")) {
                 fileName = "医師意見書2ページ目";  
             }
+            //[ID:0000639][Shin Fujihara] 2011/03 add begin
+            else if(fileName.equals("shijisho_m1.xml")) {
+            	fileName = "訪問看護指示書（医療機関）1ページ目";
+            } else if(fileName.equals("shijisho_m2.xml")) {
+            	fileName = "訪問看護指示書（医療機関）2ページ目";
+            } else if(fileName.equals("shijishob_m1.xml")) {
+            	fileName = "訪問看護指示書（介護老人保健施設）1ページ目";
+            } else if(fileName.equals("shijishob_m2.xml")) {
+            	fileName = "訪問看護指示書（介護老人保健施設）2ページ目";
+            }
+            //[ID:0000639][Shin Fujihara] 2011/03 add end
+            
             // 変更の有無(modified)をfalseとする。
             setModified(false);
             // 帳票保存と印刷ボタンを有効にする。

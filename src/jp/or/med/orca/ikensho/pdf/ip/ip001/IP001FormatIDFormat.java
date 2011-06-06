@@ -79,6 +79,17 @@ public class IP001FormatIDFormat extends Format {
             } else if (fileName.endsWith("ikenshoshien2.xml")) {
                 newID = 12; 
             }
+            //[ID:0000639][Shin Fujihara] 2011/03 add begin
+            else if(fileName.equals("shijisho_m1.xml")) {
+            	newID = 14;
+            } else if(fileName.equals("shijisho_m2.xml")) {
+            	newID = 15;
+            } else if(fileName.equals("shijishob_m1.xml")) {
+            	newID = 16;
+            } else if(fileName.equals("shijishob_m2.xml")) {
+            	newID = 17;
+            }
+            //[ID:0000639][Shin Fujihara] 2011/03 add end
         }
         setFormatType(newID);
 
@@ -134,7 +145,21 @@ public class IP001FormatIDFormat extends Format {
         case 13://特別訪問看護指示書
             obj = formatTokubetsuShijisho(code, obj);
             break;
-//          [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//          [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+        //[ID:0000639][Shin Fujihara] 2011/03 add begin
+        case 14: //訪問看護指示書（医療機関）1ページ目
+        	obj = formatShijisho_M1(code, obj);
+        	break;
+        case 15: //訪問看護指示書（医療機関）2ページ目
+        	obj = formatShijisho_M2(code, obj);
+        	break;
+        case 16: //訪問看護指示書（介護老人保健施設）1ページ目
+        	obj = formatShijishoB_M1(code, obj);
+        	break;
+        case 17: //訪問看護指示書（介護老人保健施設）2ページ目
+        	obj = formatShijishoB_M2(code, obj);
+        	break;
+        //[ID:0000639][Shin Fujihara] 2011/03 add end
         }
 
         toAppendTo.append(obj);
@@ -568,7 +593,7 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid3.h1.w3".equals(code)) obj = "「〒」　見出し";
         else if ("Grid3.h1.w4".equals(code)) obj = "患者郵便番号";
         else if ("Grid3.h2.w4".equals(code)) obj = "患者住所";
-        else if ("Grid3.h3.w1".equals(code)) obj = "電話番号";
+        else if ("Grid3.h3.w2".equals(code)) obj = "電話番号";
         else if ("Grid3.h3.w6".equals(code)) obj = "「電話」　見出し";
         else if ("Grid4.h1.w1".equals(code)) obj = "「主たる傷病名」　見出し";
         else if ("Grid4.h1.w2".equals(code)) obj = "主たる傷病名";
@@ -664,6 +689,16 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid12.h4.w6".equals(code)) obj = "他の訪問看護ステーション";
         else if ("Grid12.h4.w8".equals(code)) obj = "他の訪問看護ステーションへの指示・「 殿」　見出し";
         else if ("Grid12.h4.w7".equals(code)) obj = "他の訪問看護ステーションへの指示・「）」　見出し";
+        //[ID:0000639][Shin Fujihara] 2011/03 add begin 「褥瘡の深さ」対応漏れ
+        else if ("Label26".equals(code)) obj = "「褥瘡の深さ」　見出し";
+        else if ("Grid15.h1.w4".equals(code)) obj = "褥瘡の深さ　「NPUAP分類」";
+        else if ("Grid15.h1.w9".equals(code)) obj = "褥瘡の深さ・NPUAP分類　「Ⅲ度」";
+        else if ("Grid15.h1.w7".equals(code)) obj = "褥瘡の深さ・NPUAP分類　「Ⅳ度」";
+        else if ("Grid15.h1.w14".equals(code)) obj = "褥瘡の深さ　「DESIGN分類」";
+        else if ("Grid15.h1.w18".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D3」";
+        else if ("Grid15.h1.w16".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D4」";
+        else if ("Grid15.h1.w19".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D5」";
+        //[ID:0000639][Shin Fujihara] 2011/03 add end
         return obj;
     }
 
@@ -782,7 +817,7 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid3.h1.w3".equals(code)) obj = "「〒」　見出し";
         else if ("Grid3.h1.w4".equals(code)) obj = "入所者郵便番号";
         else if ("Grid3.h2.w4".equals(code)) obj = "入所者住所";
-        else if ("Grid3.h3.w1".equals(code)) obj = "電話番号";
+        else if ("Grid3.h3.w2".equals(code)) obj = "電話番号";
         else if ("Grid3.h3.w6".equals(code)) obj = "「電話」　見出し";
         else if ("Grid4.h1.w1".equals(code)) obj = "「主たる傷病名」　見出し";
         else if ("Grid4.h1.w2".equals(code)) obj = "主たる傷病名";
@@ -878,6 +913,16 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid12.h4.w6".equals(code)) obj = "他の訪問看護ステーション";
         else if ("Grid12.h4.w8".equals(code)) obj = "他の訪問看護ステーションへの指示・「 殿」　見出し";
         else if ("Grid12.h4.w7".equals(code)) obj = "他の訪問看護ステーションへの指示・「）」　見出し";
+        //[ID:0000639][Shin Fujihara] 2011/03 add begin 「褥瘡の深さ」対応漏れ
+        else if ("Label26".equals(code)) obj = "「褥瘡の深さ」　見出し";
+        else if ("Grid15.h3.w22".equals(code)) obj = "褥瘡の深さ　「NPUAP分類」";
+        else if ("Grid15.h3.w20".equals(code)) obj = "褥瘡の深さ・NPUAP分類　「Ⅲ度」";
+        else if ("Grid15.h3.w17".equals(code)) obj = "褥瘡の深さ・NPUAP分類　「Ⅳ度」";
+        else if ("Grid15.h3.w15".equals(code)) obj = "褥瘡の深さ　「DESIGN分類」";
+        else if ("Grid15.h3.w13".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D3」";
+        else if ("Grid15.h3.w11".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D4」";
+        else if ("Grid15.h3.w9".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D5」";
+        //[ID:0000639][Shin Fujihara] 2011/03 add end
         return obj;
     }
 
@@ -2579,6 +2624,532 @@ public class IP001FormatIDFormat extends Format {
         else if ("TITLE_TOKUBETU_TENTEKI".equals(code)) obj = "特別訪問看護指示書・在宅患者訪問点滴注射指示書　見出し";
         return obj;
     }
-    //  [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+    //  [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+    
+    
+    //[ID:0000639][Shin Fujihara] 2011/03 add begin
+    /**
+     * 訪問看護指示書（医療機関）1ページ目の定義体IDをフォーマット化します。
+     * @param code コード
+     * @param obj 変換前
+     * @return 変換結果
+     */
+    protected Object formatShijisho_M1(String code, Object obj){
+    	
+    	if ("title".equals(code)) obj = "「訪問看護指示書」　見出し";
+    	
+        else if ("Grid1".equals(code)) obj = "訪問看護指示期間・点滴注射指示期間　枠";
+        else if ("Grid1.h1.w14".equals(code)) obj = "「訪問看護指示期間」　見出し";
+        else if ("Grid1.h1.w2".equals(code)) obj = "訪問看護指示期間　開始年";
+        else if ("Grid1.h1.w3".equals(code)) obj = "訪問看護指示期間　開始年　見出し";
+        else if ("Grid1.h1.w4".equals(code)) obj = "訪問看護指示期間　開始月";
+        else if ("Grid1.h1.w5".equals(code)) obj = "訪問看護指示期間　開始月　見出し";
+        else if ("Grid1.h1.w6".equals(code)) obj = "訪問看護指示期間　開始日";
+        else if ("Grid1.h1.w7".equals(code)) obj = "訪問看護指示期間　開始日　見出し";
+        else if ("Grid1.h1.w8".equals(code)) obj = "訪問看護指示期間　終了年";
+        else if ("Grid1.h1.w9".equals(code)) obj = "訪問看護指示期間　終了年　見出し";
+        else if ("Grid1.h1.w10".equals(code)) obj = "訪問看護指示期間　終了月";
+        else if ("Grid1.h1.w11".equals(code)) obj = "訪問看護指示期間　終了月　見出し";
+        else if ("Grid1.h1.w12".equals(code)) obj = "訪問看護指示期間　終了日";
+        else if ("Grid1.h1.w13".equals(code)) obj = "訪問看護指示期間　終了日　見出し";
+        else if ("Grid1.h2.w14".equals(code)) obj = "「点滴注射指示期間」　見出し";
+        else if ("Grid1.h2.w2".equals(code)) obj = "点滴注射指示期間　開始年";
+        else if ("Grid1.h2.w3".equals(code)) obj = "点滴注射指示期間　開始年　見出し";
+        else if ("Grid1.h2.w4".equals(code)) obj = "点滴注射指示期間　開始月";
+        else if ("Grid1.h2.w5".equals(code)) obj = "点滴注射指示期間　開始月　見出し";
+        else if ("Grid1.h2.w6".equals(code)) obj = "点滴注射指示期間　開始日";
+        else if ("Grid1.h2.w7".equals(code)) obj = "点滴注射指示期間　開始日　見出し";
+        else if ("Grid1.h2.w8".equals(code)) obj = "点滴注射指示期間　終了年";
+        else if ("Grid1.h2.w9".equals(code)) obj = "点滴注射指示期間　終了年　見出し";
+        else if ("Grid1.h2.w10".equals(code)) obj = "点滴注射指示期間　終了月";
+        else if ("Grid1.h2.w11".equals(code)) obj = "点滴注射指示期間　終了月　見出し";
+        else if ("Grid1.h2.w12".equals(code)) obj = "点滴注射指示期間　終了日";
+        else if ("Grid1.h2.w13".equals(code)) obj = "点滴注射指示期間　終了日　見出し";
+    	
+        else if ("Grid2.h1.w1".equals(code)) obj = "「患者氏名」　見出し";
+        else if ("Grid2.h1.w2".equals(code)) obj = "患者氏名";
+        else if ("Grid2.h1.w3".equals(code)) obj = "「生年月日」";
+        else if ("Grid2.h1.w5".equals(code)) obj = "生年月日・年";
+        else if ("Grid2.h1.w6".equals(code)) obj = "生年月日・年　見出し";
+        else if ("Grid2.h1.w7".equals(code)) obj = "生年月日・月";
+        else if ("Grid2.h1.w8".equals(code)) obj = "生年月日・月　見出し";
+        else if ("Grid2.h1.w9".equals(code)) obj = "生年月日・日";
+        else if ("Grid2.h1.w10".equals(code)) obj = "生年月日・日　見出し";
+        else if ("Grid2.h1.w12".equals(code)) obj = "歳）";
+        
+        else if ("Label7".equals(code)) obj = "生年月日・元号　「明｣　見出し";
+        else if ("Label8".equals(code)) obj = "生年月日・元号　「大」　見出し";
+        else if ("Label9".equals(code)) obj = "生年月日・元号　「昭」　見出し";
+        else if ("Label10".equals(code)) obj = "生年月日・元号　「平」　見出し";
+    	
+    	
+        else if ("Grid3.h1.w1".equals(code)) obj = "「患者住所」　見出し";
+        else if ("Grid3.h1.w3".equals(code)) obj = "「〒」　見出し";
+        else if ("Grid3.h1.w4".equals(code)) obj = "患者郵便番号";
+        else if ("Grid3.h2.w4".equals(code)) obj = "患者住所";
+        else if ("Grid3.h3.w2".equals(code)) obj = "電話番号";
+        else if ("Grid3.h3.w6".equals(code)) obj = "「電話」　見出し";
+
+        else if ("Grid4.h1.w1".equals(code)) obj = "「主たる傷病名」　見出し";
+        else if ("Grid4.h1.w2".equals(code)) obj = "主たる傷病名";
+    	
+        else if ("Grid5.h1.w1".equals(code)) obj = "「現在の状況」　見出し";
+    	
+        else if ("Grid6.h1.w1".equals(code)) obj = "「症状・治療状態」　見出し";
+        else if ("lblJyotai".equals(code)) obj = "症状・治療状態";
+
+        else if ("sickMedicines8.h1.w1".equals(code)) obj = "投与中の薬剤の用法・用量・「投与中の薬剤の用法・用量」　見出し";
+        else if ("sickMedicines8.h1.w5".equals(code)) obj = "投与中の薬剤の用法・用量・「１」　見出し";
+        else if ("sickMedicines8.h1.w4".equals(code)) obj = "投与中の薬剤の用法・用量・「１」";
+        else if ("sickMedicines8.h1.w3".equals(code)) obj = "投与中の薬剤の用法・用量・「２」　見出し";
+        else if ("sickMedicines8.h1.w2".equals(code)) obj = "投与中の薬剤の用法・用量・「２」";
+        else if ("sickMedicines8.h2.w5".equals(code)) obj = "投与中の薬剤の用法・用量・「３」　見出し";
+        else if ("sickMedicines8.h2.w4".equals(code)) obj = "投与中の薬剤の用法・用量・「３」";
+        else if ("sickMedicines8.h2.w3".equals(code)) obj = "投与中の薬剤の用法・用量・「４」　見出し";
+        else if ("sickMedicines8.h2.w2".equals(code)) obj = "投与中の薬剤の用法・用量・「４」";
+        else if ("sickMedicines8.h3.w5".equals(code)) obj = "投与中の薬剤の用法・用量・「５」　見出し";
+        else if ("sickMedicines8.h3.w4".equals(code)) obj = "投与中の薬剤の用法・用量・「５」";
+        else if ("sickMedicines8.h3.w3".equals(code)) obj = "投与中の薬剤の用法・用量・「６」　見出し";
+        else if ("sickMedicines8.h3.w2".equals(code)) obj = "投与中の薬剤の用法・用量・「６」";
+        else if ("sickMedicines8.h4.w5".equals(code)) obj = "投与中の薬剤の用法・用量・「７」　見出し";
+        else if ("sickMedicines8.h4.w4".equals(code)) obj = "投与中の薬剤の用法・用量・「７」";
+        else if ("sickMedicines8.h4.w3".equals(code)) obj = "投与中の薬剤の用法・用量・「８」　見出し";
+        else if ("sickMedicines8.h4.w2".equals(code)) obj = "投与中の薬剤の用法・用量・「８」";
+    	
+        else if ("Grid8".equals(code)) obj = "日常生活　枠";
+        else if ("Grid8.h1.w1".equals(code)) obj = "日常生活自立度　「日常生活」　見出し";
+        else if ("Grid8.h1.w2".equals(code)) obj = "「寝たきり度」　見出し";
+        else if ("Grid8.h1.w19".equals(code)) obj = " J1";
+        else if ("Grid8.h1.w17".equals(code)) obj = " J2";
+        else if ("Grid8.h1.w15".equals(code)) obj = " A1";
+        else if ("Grid8.h1.w13".equals(code)) obj = " A2";
+        else if ("Grid8.h1.w11".equals(code)) obj = " B1";
+        else if ("Grid8.h1.w9".equals(code)) obj = " B2";
+        else if ("Grid8.h1.w7".equals(code)) obj = " C1";
+        else if ("Grid8.h1.w5".equals(code)) obj = " C2";
+        else if ("Grid8.h2.w1".equals(code)) obj = "日常生活自立度　「自 立 度」　見出し";
+        else if ("Grid8.h2.w2".equals(code)) obj = "「認知症の状況」　見出し";
+        else if ("Grid8.h2.w19".equals(code)) obj = " I";
+        else if ("Grid8.h2.w17".equals(code)) obj = " IIａ";
+        else if ("Grid8.h2.w15".equals(code)) obj = " IIｂ";
+        else if ("Grid8.h2.w13".equals(code)) obj = " IIIａ";
+        else if ("Grid8.h2.w11".equals(code)) obj = " IIIｂ";
+        else if ("Grid8.h2.w9".equals(code)) obj = " IV";
+        else if ("Grid8.h2.w7".equals(code)) obj = " Ｍ";
+
+        else if ("Label23".equals(code)) obj = "「要介護認定の状況」　見出し";
+        else if ("Grid8.h3.w21".equals(code)) obj = "要支援";
+        else if ("Grid8.h3.w19".equals(code)) obj = "要介護";
+    	
+        else if ("Label18".equals(code)) obj = "要介護認定の状況　「５ ）」";
+        else if ("Label17".equals(code)) obj = "要介護認定の状況　「４」";
+        else if ("Label16".equals(code)) obj = "要介護認定の状況　「３」";
+        else if ("Label15".equals(code)) obj = "要介護認定の状況　「２」";
+        else if ("Label14".equals(code)) obj = "要介護認定の状況　「１」";
+    	
+        else if ("Label26".equals(code)) obj = "「褥瘡の深さ」　見出し";
+        else if ("Grid15.h3.w22".equals(code)) obj = "褥瘡の深さ　「NPUAP分類」";
+        else if ("Grid15.h3.w20".equals(code)) obj = "褥瘡の深さ・NPUAP分類　「Ⅲ度」";
+        else if ("Grid15.h3.w17".equals(code)) obj = "褥瘡の深さ・NPUAP分類　「Ⅳ度」";
+        else if ("Grid15.h3.w15".equals(code)) obj = "褥瘡の深さ　「DESIGN分類」";
+        else if ("Grid15.h3.w13".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D3」";
+        else if ("Grid15.h3.w11".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D4」";
+        else if ("Grid15.h3.w9".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D5」";
+    	
+        else if ("Grid9".equals(code)) obj = "「装着・使用医療機器等」　枠";
+        else if ("Grid9.h1.w1".equals(code)) obj = "「装着・使用医療機器等」　見出し";
+        else if ("Grid9.h1.w3".equals(code)) obj = "１．自動腹膜灌流装置・「1」　見出し";
+        else if ("Grid9.h1.w4".equals(code)) obj = "１．自動腹膜灌流装置・「自動腹膜灌流装置」　見出し";
+        else if ("Grid9.h1.w7".equals(code)) obj = "２．透析液供給装置・「2」　見出し";
+        else if ("Grid9.h1.w8".equals(code)) obj = "２．透析液供給装置・「透析液供給装置」　見出し";
+        else if ("Grid9.h1.w15".equals(code)) obj = "３．酸素療法・「3」　見出し";
+        else if ("Grid9.h1.w24".equals(code)) obj = "３．酸素療法・「酸素療法（」　見出し";
+        else if ("Grid9.h1.w20".equals(code)) obj = "３．酸素療法";
+        else if ("Grid9.h1.w21".equals(code)) obj = "３．酸素療法・「 l/min」　見出し";
+        else if ("Grid9.h1.w22".equals(code)) obj = "３．酸素療法・「）」　見出し";
+        
+        else if ("Grid9.h2.w3".equals(code)) obj = "４．吸引器・「4」　見出し";
+        else if ("Grid9.h2.w4".equals(code)) obj = "４．吸引器・「吸引器」　見出し";
+        else if ("Grid9.h2.w7".equals(code)) obj = "５．中心静脈栄養・「5」　見出し";
+        else if ("Grid9.h2.w8".equals(code)) obj = "５．中心静脈栄養・「中心静脈栄養」　見出し";
+        else if ("Grid9.h2.w15".equals(code)) obj = "６．輸液ポンプ・「6」　見出し";
+        else if ("Grid9.h2.w24".equals(code)) obj = "６．輸液ポンプ・「輸液ポンプ」　見出し";
+        
+        else if ("Grid9.h3.w3".equals(code)) obj = "７．経管栄養・「7」　見出し";
+        else if ("Grid9.h3.w4".equals(code)) obj = "７．経管栄養・「経管栄養　　　（」　見出し";
+        else if ("Grid9.h3.w23".equals(code)) obj = "７．経管栄養";
+        else if ("Grid9.h3.w9".equals(code)) obj = "７．経管栄養・「：チューブサイズ」　見出し";
+        else if ("Grid9.h3.w15".equals(code)) obj = "７．経管栄養・「：チューブサイズ」";
+        else if ("Grid9.h3.w16".equals(code)) obj = "７．経管栄養・「、」　見出し";
+        else if ("Grid9.h3.w18".equals(code)) obj = "７．経管栄養　日";
+        else if ("Grid9.h3.w19".equals(code)) obj = "７．経管栄養・「日に1回交換」　見出し";
+        else if ("Grid9.h3.w22".equals(code)) obj = "７．経管栄養・「）」　見出し";
+        
+        else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
+        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
+        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+        else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
+        else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
+        else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+        
+        else if ("Grid9.h5.w3".equals(code)) obj = "９．人工呼吸器・「9」　見出し";
+        else if ("Grid9.h5.w4".equals(code)) obj = "９．人工呼吸器・「人工呼吸器　　（」　見出し";
+        else if ("Grid9.h5.w8".equals(code)) obj = "９．人工呼吸器　種類";
+        else if ("Grid9.h5.w10".equals(code)) obj = "９．人工呼吸器・「：設定」　見出し";
+        else if ("Grid9.h5.w6".equals(code)) obj = "９．人工呼吸器　設定";
+        else if ("Grid9.h5.w22".equals(code)) obj = "９．人工呼吸器・「）」　見出し";
+        
+        else if ("Grid9.h6.w3".equals(code)) obj = "１０．気管カニューレ・「10｣　見出し";
+        else if ("Grid9.h6.w4".equals(code)) obj = "１０．気管カニューレ・「気管カニューレ（サイズ」　見出し";
+        else if ("Grid9.h6.w9".equals(code)) obj = "１０．気管カニューレ　サイズ";
+        else if ("Grid9.h6.w11".equals(code)) obj = "１０．気管カニューレ・「）」　見出し";
+        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
+        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
+        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
+        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
+        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
+        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
+        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
+        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
+        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
+        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
+        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
+        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
+    	
+        else if ("Grid7.h1.w1".equals(code)) obj = "＜次頁へ続く＞";
+    	
+        return obj;
+    }
+    
+    /**
+     * 訪問看護指示書（医療機関）2ページ目の定義体IDをフォーマット化します。
+     * @param code コード
+     * @param obj 変換前
+     * @return 変換結果
+     */
+    protected Object formatShijisho_M2(String code, Object obj){
+    	
+    	if ("patientData.h1.w2".equals(code)) obj = "氏名・年齢「年齢」見出し";
+    	else if ("patientData.h1.w4".equals(code)) obj = "氏名・年齢「歳」見出し";
+    	
+        else if ("Grid10".equals(code)) obj = "留意事項及び指示事項　枠";
+        else if ("Grid10.h1.w1".equals(code)) obj = "「留意事項及び指示事項」　見出し";
+        else if ("Grid10.h13.w1".equals(code)) obj = "「 I 療養生活指導上の留意事項」　見出し";
+        else if ("Grid10.h3.w1".equals(code)) obj = "「II」 　見出し";
+    	
+        else if ("Label19".equals(code)) obj = "「１. リハビリテーション」　見出し";
+        else if ("Label20".equals(code)) obj = "「２. 褥瘡の処置等」　見出し";
+        else if ("Label21".equals(code)) obj = "「３. 装着・使用医療機器等の操作援助・管理」　見出し";
+        else if ("Label22".equals(code)) obj = "「４. その他」　見出し";
+    	
+        else if ("lblRyoyo".equals(code)) obj = " I 療養生活指導上の留意事項";
+        else if ("lblRiha".equals(code)) obj = "留意事項及び指示事項・Ⅱ　「１. リハビリテーション」";
+        else if ("lblJyokusyo".equals(code)) obj = "留意事項及び指示事項・Ⅱ　「２. 褥瘡の処置等」";
+        else if ("lblSochaku".equals(code)) obj = "留意事項及び指示事項・Ⅱ　「３. 装着・使用医療機器等の操作援助・管理」";
+    	else if ("lblEtc".equals(code)) obj = "留意事項及び指示事項・Ⅱ　「４．その他」";
+    	
+        else if ("Label24".equals(code)) obj = "「在宅患者訪問点滴注射に関する指示（投与薬剤・投与量・投与方法等）」　見出し";
+        else if ("lblZaitaku".equals(code)) obj = "在宅患者訪問点滴注射に関する指示（投与薬剤・投与量・投与方法等）";
+    	
+        else if ("Grid11.h1.w1".equals(code)) obj = "「緊急時の連絡先」　見出し";
+        else if ("Grid11.h1.w2".equals(code)) obj = "緊急時の連絡先";
+        else if ("Grid11.h2.w1".equals(code)) obj = "「不在時の対応法」　見出し";
+        else if ("Grid11.h2.w2".equals(code)) obj = "不在時の対応法";
+    	
+        else if ("Grid12.h1.w1".equals(code)) obj = "特記すべき留意事項・「特記すべき留意事項」　見出し";
+        else if ("Grid12.h1.w6".equals(code)) obj = "特記すべき留意事項・「（注：薬の相互作用・副作用についての留意点、薬物アレルギーの既往等あれば記載して下さい。）」　見出し";
+        else if ("lblTokki".equals(code)) obj = "特記すべき留意事項";
+        else if ("Grid12.h3.w1".equals(code)) obj = "他の訪問看護ステーションへの指示・「他の訪問看護ステーションへの指示」　見出し";
+        else if ("Grid12.h4.w1".equals(code)) obj = "他の訪問看護ステーションへの指示・「（」　見出し ";
+        else if ("Grid12.h4.w2".equals(code)) obj = "他の訪問看護ステーションへの指示・「無」　見出し";
+        else if ("Grid12.h4.w4".equals(code)) obj = "他の訪問看護ステーションへの指示・「有」　見出し";
+        else if ("Grid12.h4.w5".equals(code)) obj = "他の訪問看護ステーションへの指示・「：指定訪問看護ステーション名」　見出し";
+        else if ("Grid12.h4.w8".equals(code)) obj = "他の訪問看護ステーション";
+        else if ("Grid12.h4.w7".equals(code)) obj = "他の訪問看護ステーションへの指示・「）」　見出し";
+        
+        else if ("Label1".equals(code)) obj = "「上記のとおり、指定訪問看護の実施を指示いたします。」　見出し";
+        else if ("Label2".equals(code)) obj = "作成年月日　「平成  年  月  日」";
+    	
+        else if ("Grid13.h1.w1".equals(code)) obj = "「医療機関名」　見出し";
+        else if ("Grid13.h1.w2".equals(code)) obj = "医療機関名";
+        else if ("Grid13.h2.w1".equals(code)) obj = "「住　　　所」　見出し";
+        else if ("Grid13.h2.w2".equals(code)) obj = "医療機関住所";
+        else if ("Grid13.h3.w1".equals(code)) obj = "「電　　　話」　見出し";
+        else if ("Grid13.h3.w2".equals(code)) obj = "医療機関　電話番号";
+        else if ("Grid13.h4.w1".equals(code)) obj = "「（ＦＡＸ）」　見出し";
+        else if ("Grid13.h4.w2".equals(code)) obj = "医療機関　ＦＡＸ番号";
+        else if ("Grid13.h5.w1".equals(code)) obj = "「医療機関医師氏名」　見出し";
+        else if ("Grid13.h5.w2".equals(code)) obj = "医療機関医師氏名";
+    	
+        else if ("Label3".equals(code)) obj = "訪問看護ステーション　「印」　見出し";
+        else if ("Label6".equals(code)) obj = "訪問看護ステーション名";
+
+        return obj;
+    }
+    
+    
+    /**
+     * 訪問看護指示書（介護老人保健施設）1ページ目の定義体IDをフォーマット化します。
+     * @param code コード
+     * @param obj 変換前
+     * @return 変換結果
+     */
+    protected Object formatShijishoB_M1(String code, Object obj){
+    	
+    	if ("title".equals(code)) obj = "「訪問看護指示書」　見出し";
+    	
+        else if ("Grid1".equals(code)) obj = "訪問看護指示期間・点滴注射指示期間　枠";
+        else if ("Grid1.h1.w14".equals(code)) obj = "「訪問看護指示期間」　見出し";
+        else if ("Grid1.h1.w2".equals(code)) obj = "訪問看護指示期間　開始年";
+        else if ("Grid1.h1.w3".equals(code)) obj = "訪問看護指示期間　開始年　見出し";
+        else if ("Grid1.h1.w4".equals(code)) obj = "訪問看護指示期間　開始月";
+        else if ("Grid1.h1.w5".equals(code)) obj = "訪問看護指示期間　開始月　見出し";
+        else if ("Grid1.h1.w6".equals(code)) obj = "訪問看護指示期間　開始日";
+        else if ("Grid1.h1.w7".equals(code)) obj = "訪問看護指示期間　開始日　見出し";
+        else if ("Grid1.h1.w8".equals(code)) obj = "訪問看護指示期間　終了年";
+        else if ("Grid1.h1.w9".equals(code)) obj = "訪問看護指示期間　終了年　見出し";
+        else if ("Grid1.h1.w10".equals(code)) obj = "訪問看護指示期間　終了月";
+        else if ("Grid1.h1.w11".equals(code)) obj = "訪問看護指示期間　終了月　見出し";
+        else if ("Grid1.h1.w12".equals(code)) obj = "訪問看護指示期間　終了日";
+        else if ("Grid1.h1.w13".equals(code)) obj = "訪問看護指示期間　終了日　見出し";
+        else if ("Grid1.h2.w14".equals(code)) obj = "「点滴注射指示期間」　見出し";
+        else if ("Grid1.h2.w2".equals(code)) obj = "点滴注射指示期間　開始年";
+        else if ("Grid1.h2.w3".equals(code)) obj = "点滴注射指示期間　開始年　見出し";
+        else if ("Grid1.h2.w4".equals(code)) obj = "点滴注射指示期間　開始月";
+        else if ("Grid1.h2.w5".equals(code)) obj = "点滴注射指示期間　開始月　見出し";
+        else if ("Grid1.h2.w6".equals(code)) obj = "点滴注射指示期間　開始日";
+        else if ("Grid1.h2.w7".equals(code)) obj = "点滴注射指示期間　開始日　見出し";
+        else if ("Grid1.h2.w8".equals(code)) obj = "点滴注射指示期間　終了年";
+        else if ("Grid1.h2.w9".equals(code)) obj = "点滴注射指示期間　終了年　見出し";
+        else if ("Grid1.h2.w10".equals(code)) obj = "点滴注射指示期間　終了月";
+        else if ("Grid1.h2.w11".equals(code)) obj = "点滴注射指示期間　終了月　見出し";
+        else if ("Grid1.h2.w12".equals(code)) obj = "点滴注射指示期間　終了日";
+        else if ("Grid1.h2.w13".equals(code)) obj = "点滴注射指示期間　終了日　見出し";
+    	
+        else if ("Grid2.h1.w1".equals(code)) obj = "「入所者氏名」　見出し";
+        else if ("Grid2.h1.w2".equals(code)) obj = "入所者氏名";
+        else if ("Grid2.h1.w3".equals(code)) obj = "「生年月日」";
+        else if ("Grid2.h1.w5".equals(code)) obj = "生年月日・年";
+        else if ("Grid2.h1.w6".equals(code)) obj = "生年月日・年　見出し";
+        else if ("Grid2.h1.w7".equals(code)) obj = "生年月日・月";
+        else if ("Grid2.h1.w8".equals(code)) obj = "生年月日・月　見出し";
+        else if ("Grid2.h1.w9".equals(code)) obj = "生年月日・日";
+        else if ("Grid2.h1.w10".equals(code)) obj = "生年月日・日　見出し";
+        else if ("Grid2.h1.w12".equals(code)) obj = "歳）";
+        
+        else if ("Label7".equals(code)) obj = "生年月日・元号　「明｣　見出し";
+        else if ("Label8".equals(code)) obj = "生年月日・元号　「大」　見出し";
+        else if ("Label9".equals(code)) obj = "生年月日・元号　「昭」　見出し";
+        else if ("Label10".equals(code)) obj = "生年月日・元号　「平」　見出し";
+    	
+    	
+        else if ("Grid3.h1.w1".equals(code)) obj = "「入所者住所」　見出し";
+        else if ("Grid3.h1.w3".equals(code)) obj = "「〒」　見出し";
+        else if ("Grid3.h1.w4".equals(code)) obj = "入所者郵便番号";
+        else if ("Grid3.h2.w4".equals(code)) obj = "入所者住所";
+        else if ("Grid3.h3.w2".equals(code)) obj = "電話番号";
+        else if ("Grid3.h3.w6".equals(code)) obj = "「電話」　見出し";
+
+        else if ("Grid4.h1.w1".equals(code)) obj = "「主たる傷病名」　見出し";
+        else if ("Grid4.h1.w2".equals(code)) obj = "主たる傷病名";
+    	
+        else if ("Grid5.h1.w1".equals(code)) obj = "「現在の状況」　見出し";
+    	
+        else if ("Grid6.h1.w1".equals(code)) obj = "「症状・治療状態」　見出し";
+        else if ("lblJyotai".equals(code)) obj = "症状・治療状態";
+
+        else if ("sickMedicines8.h1.w1".equals(code)) obj = "投与中の薬剤の用法・用量・「投与中の薬剤の用法・用量」　見出し";
+        else if ("sickMedicines8.h1.w5".equals(code)) obj = "投与中の薬剤の用法・用量・「１」　見出し";
+        else if ("sickMedicines8.h1.w4".equals(code)) obj = "投与中の薬剤の用法・用量・「１」";
+        else if ("sickMedicines8.h1.w3".equals(code)) obj = "投与中の薬剤の用法・用量・「２」　見出し";
+        else if ("sickMedicines8.h1.w2".equals(code)) obj = "投与中の薬剤の用法・用量・「２」";
+        else if ("sickMedicines8.h2.w5".equals(code)) obj = "投与中の薬剤の用法・用量・「３」　見出し";
+        else if ("sickMedicines8.h2.w4".equals(code)) obj = "投与中の薬剤の用法・用量・「３」";
+        else if ("sickMedicines8.h2.w3".equals(code)) obj = "投与中の薬剤の用法・用量・「４」　見出し";
+        else if ("sickMedicines8.h2.w2".equals(code)) obj = "投与中の薬剤の用法・用量・「４」";
+        else if ("sickMedicines8.h3.w5".equals(code)) obj = "投与中の薬剤の用法・用量・「５」　見出し";
+        else if ("sickMedicines8.h3.w4".equals(code)) obj = "投与中の薬剤の用法・用量・「５」";
+        else if ("sickMedicines8.h3.w3".equals(code)) obj = "投与中の薬剤の用法・用量・「６」　見出し";
+        else if ("sickMedicines8.h3.w2".equals(code)) obj = "投与中の薬剤の用法・用量・「６」";
+        else if ("sickMedicines8.h4.w5".equals(code)) obj = "投与中の薬剤の用法・用量・「７」　見出し";
+        else if ("sickMedicines8.h4.w4".equals(code)) obj = "投与中の薬剤の用法・用量・「７」";
+        else if ("sickMedicines8.h4.w3".equals(code)) obj = "投与中の薬剤の用法・用量・「８」　見出し";
+        else if ("sickMedicines8.h4.w2".equals(code)) obj = "投与中の薬剤の用法・用量・「８」";
+    	
+        else if ("Grid8".equals(code)) obj = "日常生活　枠";
+        else if ("Grid8.h1.w1".equals(code)) obj = "日常生活自立度　「日常生活」　見出し";
+        else if ("Grid8.h1.w2".equals(code)) obj = "「寝たきり度」　見出し";
+        else if ("Grid8.h1.w19".equals(code)) obj = " J1";
+        else if ("Grid8.h1.w17".equals(code)) obj = " J2";
+        else if ("Grid8.h1.w15".equals(code)) obj = " A1";
+        else if ("Grid8.h1.w13".equals(code)) obj = " A2";
+        else if ("Grid8.h1.w11".equals(code)) obj = " B1";
+        else if ("Grid8.h1.w9".equals(code)) obj = " B2";
+        else if ("Grid8.h1.w7".equals(code)) obj = " C1";
+        else if ("Grid8.h1.w5".equals(code)) obj = " C2";
+        else if ("Grid8.h2.w1".equals(code)) obj = "日常生活自立度　「自 立 度」　見出し";
+        else if ("Grid8.h2.w2".equals(code)) obj = "「認知症の状況」　見出し";
+        else if ("Grid8.h2.w19".equals(code)) obj = " I";
+        else if ("Grid8.h2.w17".equals(code)) obj = " IIａ";
+        else if ("Grid8.h2.w15".equals(code)) obj = " IIｂ";
+        else if ("Grid8.h2.w13".equals(code)) obj = " IIIａ";
+        else if ("Grid8.h2.w11".equals(code)) obj = " IIIｂ";
+        else if ("Grid8.h2.w9".equals(code)) obj = " IV";
+        else if ("Grid8.h2.w7".equals(code)) obj = " Ｍ";
+
+        else if ("Label23".equals(code)) obj = "「要介護認定の状況」　見出し";
+        else if ("Grid8.h3.w21".equals(code)) obj = "自立";
+        else if ("Grid8.h3.w19".equals(code)) obj = "要支援";
+        else if ("Grid8.h3.w17".equals(code)) obj = "要介護";
+    	
+        else if ("Label18".equals(code)) obj = "要介護認定の状況　「５ ）」";
+        else if ("Label17".equals(code)) obj = "要介護認定の状況　「４」";
+        else if ("Label16".equals(code)) obj = "要介護認定の状況　「３」";
+        else if ("Label15".equals(code)) obj = "要介護認定の状況　「２」";
+        else if ("Label14".equals(code)) obj = "要介護認定の状況　「１」";
+    	
+        else if ("Label26".equals(code)) obj = "「褥瘡の深さ」　見出し";
+        else if ("Grid15.h3.w22".equals(code)) obj = "褥瘡の深さ　「NPUAP分類」";
+        else if ("Grid15.h3.w20".equals(code)) obj = "褥瘡の深さ・NPUAP分類　「Ⅲ度」";
+        else if ("Grid15.h3.w17".equals(code)) obj = "褥瘡の深さ・NPUAP分類　「Ⅳ度」";
+        else if ("Grid15.h3.w15".equals(code)) obj = "褥瘡の深さ　「DESIGN分類」";
+        else if ("Grid15.h3.w13".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D3」";
+        else if ("Grid15.h3.w11".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D4」";
+        else if ("Grid15.h3.w9".equals(code)) obj = "褥瘡の深さ・DESIGN分類　「D5」";
+    	
+        else if ("Grid9".equals(code)) obj = "「装着・使用医療機器等」　枠";
+        else if ("Grid9.h1.w1".equals(code)) obj = "「装着・使用医療機器等」　見出し";
+        else if ("Grid9.h1.w3".equals(code)) obj = "１．自動腹膜灌流装置・「1」　見出し";
+        else if ("Grid9.h1.w4".equals(code)) obj = "１．自動腹膜灌流装置・「自動腹膜灌流装置」　見出し";
+        else if ("Grid9.h1.w7".equals(code)) obj = "２．透析液供給装置・「2」　見出し";
+        else if ("Grid9.h1.w8".equals(code)) obj = "２．透析液供給装置・「透析液供給装置」　見出し";
+        else if ("Grid9.h1.w15".equals(code)) obj = "３．酸素療法・「3」　見出し";
+        else if ("Grid9.h1.w24".equals(code)) obj = "３．酸素療法・「酸素療法（」　見出し";
+        else if ("Grid9.h1.w20".equals(code)) obj = "３．酸素療法";
+        else if ("Grid9.h1.w21".equals(code)) obj = "３．酸素療法・「 l/min」　見出し";
+        else if ("Grid9.h1.w22".equals(code)) obj = "３．酸素療法・「）」　見出し";
+        
+        else if ("Grid9.h2.w3".equals(code)) obj = "４．吸引器・「4」　見出し";
+        else if ("Grid9.h2.w4".equals(code)) obj = "４．吸引器・「吸引器」　見出し";
+        else if ("Grid9.h2.w7".equals(code)) obj = "５．中心静脈栄養・「5」　見出し";
+        else if ("Grid9.h2.w8".equals(code)) obj = "５．中心静脈栄養・「中心静脈栄養」　見出し";
+        else if ("Grid9.h2.w15".equals(code)) obj = "６．輸液ポンプ・「6」　見出し";
+        else if ("Grid9.h2.w24".equals(code)) obj = "６．輸液ポンプ・「輸液ポンプ」　見出し";
+        
+        else if ("Grid9.h3.w3".equals(code)) obj = "７．経管栄養・「7」　見出し";
+        else if ("Grid9.h3.w4".equals(code)) obj = "７．経管栄養・「経管栄養　　　（」　見出し";
+        else if ("Grid9.h3.w23".equals(code)) obj = "７．経管栄養";
+        else if ("Grid9.h3.w9".equals(code)) obj = "７．経管栄養・「：チューブサイズ」　見出し";
+        else if ("Grid9.h3.w15".equals(code)) obj = "７．経管栄養・「：チューブサイズ」";
+        else if ("Grid9.h3.w16".equals(code)) obj = "７．経管栄養・「、」　見出し";
+        else if ("Grid9.h3.w18".equals(code)) obj = "７．経管栄養　日";
+        else if ("Grid9.h3.w19".equals(code)) obj = "７．経管栄養・「日に1回交換」　見出し";
+        else if ("Grid9.h3.w22".equals(code)) obj = "７．経管栄養・「）」　見出し";
+        
+        else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
+        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
+        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+        else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
+        else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
+        else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+        
+        else if ("Grid9.h5.w3".equals(code)) obj = "９．人工呼吸器・「9」　見出し";
+        else if ("Grid9.h5.w4".equals(code)) obj = "９．人工呼吸器・「人工呼吸器　　（」　見出し";
+        else if ("Grid9.h5.w8".equals(code)) obj = "９．人工呼吸器　種類";
+        else if ("Grid9.h5.w10".equals(code)) obj = "９．人工呼吸器・「：設定」　見出し";
+        else if ("Grid9.h5.w6".equals(code)) obj = "９．人工呼吸器　設定";
+        else if ("Grid9.h5.w22".equals(code)) obj = "９．人工呼吸器・「）」　見出し";
+        
+        else if ("Grid9.h6.w3".equals(code)) obj = "１０．気管カニューレ・「10｣　見出し";
+        else if ("Grid9.h6.w4".equals(code)) obj = "１０．気管カニューレ・「気管カニューレ（サイズ」　見出し";
+        else if ("Grid9.h6.w9".equals(code)) obj = "１０．気管カニューレ　サイズ";
+        else if ("Grid9.h6.w11".equals(code)) obj = "１０．気管カニューレ・「）」　見出し";
+        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
+        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
+        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
+        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
+        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
+        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
+        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
+        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
+        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
+        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
+        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
+        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
+    	
+        else if ("Grid7.h1.w1".equals(code)) obj = "＜次頁へ続く＞";
+    	
+    	
+        return obj;
+    }
+
+    /**
+     * 訪問看護指示書（介護老人保健施設）2ページ目の定義体IDをフォーマット化します。
+     * @param code コード
+     * @param obj 変換前
+     * @return 変換結果
+     */
+    protected Object formatShijishoB_M2(String code, Object obj){
+    	if ("patientData.h1.w2".equals(code)) obj = "氏名・年齢「年齢」見出し";
+    	else if ("patientData.h1.w4".equals(code)) obj = "氏名・年齢「歳」見出し";
+    	
+        else if ("Grid10".equals(code)) obj = "留意事項及び指示事項　枠";
+        else if ("Grid10.h1.w1".equals(code)) obj = "「留意事項及び指示事項」　見出し";
+        else if ("Grid10.h13.w1".equals(code)) obj = "「 I 療養生活指導上の留意事項」　見出し";
+        else if ("Grid10.h3.w1".equals(code)) obj = "「II」 　見出し";
+    	
+        else if ("Label19".equals(code)) obj = "「１. リハビリテーション」　見出し";
+        else if ("Label20".equals(code)) obj = "「２. 褥瘡の処置等」　見出し";
+        else if ("Label21".equals(code)) obj = "「３. 装着・使用医療機器等の操作援助・管理」　見出し";
+        else if ("Label22".equals(code)) obj = "「４. その他」　見出し";
+    	
+        else if ("lblRyoyo".equals(code)) obj = " I 療養生活指導上の留意事項";
+        else if ("lblRiha".equals(code)) obj = "留意事項及び指示事項・Ⅱ　「１. リハビリテーション」";
+        else if ("lblJyokusyo".equals(code)) obj = "留意事項及び指示事項・Ⅱ　「２. 褥瘡の処置等」";
+        else if ("lblSochaku".equals(code)) obj = "留意事項及び指示事項・Ⅱ　「３. 装着・使用医療機器等の操作援助・管理」";
+    	else if ("lblEtc".equals(code)) obj = "留意事項及び指示事項・Ⅱ　「４．その他」";
+    	
+        else if ("Label24".equals(code)) obj = "「在宅患者訪問点滴注射に関する指示（投与薬剤・投与量・投与方法等）」　見出し";
+        else if ("lblZaitaku".equals(code)) obj = "在宅患者訪問点滴注射に関する指示（投与薬剤・投与量・投与方法等）";
+    	
+        else if ("Grid11.h1.w1".equals(code)) obj = "「緊急時の連絡先」　見出し";
+        else if ("Grid11.h1.w2".equals(code)) obj = "緊急時の連絡先";
+        else if ("Grid11.h2.w1".equals(code)) obj = "「不在時の対応法」　見出し";
+        else if ("Grid11.h2.w2".equals(code)) obj = "不在時の対応法";
+    	
+        else if ("Grid12.h1.w1".equals(code)) obj = "特記すべき留意事項・「特記すべき留意事項」　見出し";
+        else if ("Grid12.h1.w6".equals(code)) obj = "特記すべき留意事項・「（注：薬の相互作用・副作用についての留意点、薬物アレルギーの既往等あれば記載して下さい。）」　見出し";
+        else if ("lblTokki".equals(code)) obj = "特記すべき留意事項";
+        else if ("Grid12.h3.w1".equals(code)) obj = "他の訪問看護ステーションへの指示・「他の訪問看護ステーションへの指示」　見出し";
+        else if ("Grid12.h4.w1".equals(code)) obj = "他の訪問看護ステーションへの指示・「（」　見出し ";
+        else if ("Grid12.h4.w2".equals(code)) obj = "他の訪問看護ステーションへの指示・「無」　見出し";
+        else if ("Grid12.h4.w4".equals(code)) obj = "他の訪問看護ステーションへの指示・「有」　見出し";
+        else if ("Grid12.h4.w5".equals(code)) obj = "他の訪問看護ステーションへの指示・「：指定訪問看護ステーション名」　見出し";
+        else if ("Grid12.h4.w8".equals(code)) obj = "他の訪問看護ステーション";
+        else if ("Grid12.h4.w7".equals(code)) obj = "他の訪問看護ステーションへの指示・「）」　見出し";
+        
+        else if ("Label1".equals(code)) obj = "「上記のとおり、指定訪問看護の実施を指示いたします。」　見出し";
+        else if ("Label2".equals(code)) obj = "作成年月日　「平成  年  月  日」";
+    	
+        else if ("Grid13.h1.w1".equals(code)) obj = "「介護老人保健施設名」　見出し";
+        else if ("Grid13.h1.w2".equals(code)) obj = "介護老人保健施設名";
+        else if ("Grid13.h2.w1".equals(code)) obj = "「住　　　所」　見出し";
+        else if ("Grid13.h2.w2".equals(code)) obj = "介護老人保健施設名住所";
+        else if ("Grid13.h3.w1".equals(code)) obj = "「電　　　話」　見出し";
+        else if ("Grid13.h3.w2".equals(code)) obj = "介護老人保健施設名　電話番号";
+        else if ("Grid13.h4.w1".equals(code)) obj = "「（ＦＡＸ）」　見出し";
+        else if ("Grid13.h4.w2".equals(code)) obj = "介護老人保健施設名　ＦＡＸ番号";
+        else if ("Grid13.h5.w1".equals(code)) obj = "「介護老人保健施設医師氏名」　見出し";
+        else if ("Grid13.h5.w2".equals(code)) obj = "介護老人保健施設医師氏名";
+    	
+        else if ("Label3".equals(code)) obj = "訪問看護ステーション　「印」　見出し";
+        else if ("Label6".equals(code)) obj = "訪問看護ステーション名";
+    	
+        return obj;
+    }
+
+    //[ID:0000639][Shin Fujihara] 2011/03 add end
 
 }
