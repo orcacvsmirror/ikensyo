@@ -947,9 +947,9 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(",COMMON_IKN_SIS.BIRTHDAY");
         sb.append(",COMMON_IKN_SIS.AGE");
         sb.append(",COMMON_IKN_SIS.SEX");
-        //2009/01/16 [Tozo Tanaka] Add - begin★薬剤名増暫定隠ぺい
-//        sb.append(",(COALESCE(COMMON_IKN_SIS.MEDICINE7,'') || COALESCE(COMMON_IKN_SIS.MEDICINE8,'') || COALESCE(COMMON_IKN_SIS.DOSAGE7,'') || COALESCE(COMMON_IKN_SIS.DOSAGE8,'') || COALESCE(COMMON_IKN_SIS.UNIT7,'') || COALESCE(COMMON_IKN_SIS.UNIT8,'') || COALESCE(COMMON_IKN_SIS.USAGE7,'') || COALESCE(COMMON_IKN_SIS.USAGE8,'')) AS MEDICINE_6OVER");
-        //2009/01/16 [Tozo Tanaka] Add - end★薬剤名増暫定隠ぺい
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+        sb.append(",(COALESCE(COMMON_IKN_SIS.MEDICINE7,'') || COALESCE(COMMON_IKN_SIS.MEDICINE8,'') || COALESCE(COMMON_IKN_SIS.DOSAGE7,'') || COALESCE(COMMON_IKN_SIS.DOSAGE8,'') || COALESCE(COMMON_IKN_SIS.UNIT7,'') || COALESCE(COMMON_IKN_SIS.UNIT8,'') || COALESCE(COMMON_IKN_SIS.USAGE7,'') || COALESCE(COMMON_IKN_SIS.USAGE8,'')) AS MEDICINE_6OVER");
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
         sb.append(",IKN_ORIGIN.INSURER_NO");
         sb.append(",IKN_ORIGIN.INSURED_NO");
         sb.append(",IKN_ORIGIN.REQ_NO");
@@ -1001,16 +1001,19 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 
     //2009/01/21 [Tozo Tanaka] Add - begin
     protected int getMedicineViewCount() {
-          try {
-              if (ACFrame.getInstance().hasProperty(
-                      "DocumentSetting/MedicineViewCount")
-                      && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
-                              "DocumentSetting/MedicineViewCount"), 6) == 8) {
-                  return 8;
-              }
-          } catch (Exception e) {
-          }      
-        return 6;
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//          try {
+//              if (ACFrame.getInstance().hasProperty(
+//                      "DocumentSetting/MedicineViewCount")
+//                      && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
+//                              "DocumentSetting/MedicineViewCount"), 6) == 8) {
+//                  return 8;
+//              }
+//          } catch (Exception e) {
+//          }      
+//        return 6;
+        return 8;
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
     }
     //2009/01/21 [Tozo Tanaka] Add - end
     
@@ -2340,87 +2343,168 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             row.add(getDataString(map, "INSECURE_CONDITION"));
             // 043:傷病の経過・治療内容
             sbBuf = new StringBuffer();
+            
+            // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//            if (getDataString(map, "MT_STS").length() > 0) {
+//                // 2006/06/23
+//                // CRLF - 置換対応
+//                // Replace - begin [Masahiko Higuchi]
+//                sbBuf.append((getDataString(map, "MT_STS").replaceAll("\r\n",VT)).replaceAll("\n",VT)); // 0x0B
+//                // Replace - end
+//                sbBuf.append("");
+//            }
+//            if ((getDataString(map, "MEDICINE1").length()
+//                    + getDataString(map, "DOSAGE1").length()
+//                    + getDataString(map, "UNIT1").length()
+//                    + getDataString(map, "USAGE1").length()
+//                    + getDataString(map, "MEDICINE2").length()
+//                    + getDataString(map, "DOSAGE2").length()
+//                    + getDataString(map, "UNIT2").length() + getDataString(map,
+//                    "USAGE2").length()) > 0) {
+//                sbBuf.append(getDataString(map, "MEDICINE1") + " ");
+//                sbBuf.append(getDataString(map, "DOSAGE1"));
+//                sbBuf.append(getDataString(map, "UNIT1") + " ");
+//                sbBuf.append(getDataString(map, "USAGE1") + " / ");
+//                sbBuf.append(getDataString(map, "MEDICINE2") + " ");
+//                sbBuf.append(getDataString(map, "DOSAGE2"));
+//                sbBuf.append(getDataString(map, "UNIT2") + " ");
+//                sbBuf.append(getDataString(map, "USAGE2") + "");
+//            }
+//            if ((getDataString(map, "MEDICINE3").length()
+//                    + getDataString(map, "DOSAGE3").length()
+//                    + getDataString(map, "UNIT3").length()
+//                    + getDataString(map, "USAGE3").length()
+//                    + getDataString(map, "MEDICINE4").length()
+//                    + getDataString(map, "DOSAGE4").length()
+//                    + getDataString(map, "UNIT4").length() + getDataString(map,
+//                    "USAGE4").length()) > 0) {
+//                sbBuf.append(getDataString(map, "MEDICINE3") + " ");
+//                sbBuf.append(getDataString(map, "DOSAGE3"));
+//                sbBuf.append(getDataString(map, "UNIT3") + " ");
+//                sbBuf.append(getDataString(map, "USAGE3") + " / ");
+//                sbBuf.append(getDataString(map, "MEDICINE4") + " ");
+//                sbBuf.append(getDataString(map, "DOSAGE4"));
+//                sbBuf.append(getDataString(map, "UNIT4") + " ");
+//                sbBuf.append(getDataString(map, "USAGE4") + "");
+//            }
+//            if ((getDataString(map, "MEDICINE5").length()
+//                    + getDataString(map, "DOSAGE5").length()
+//                    + getDataString(map, "UNIT5").length()
+//                    + getDataString(map, "USAGE5").length()
+//                    + getDataString(map, "MEDICINE6").length()
+//                    + getDataString(map, "DOSAGE6").length()
+//                    + getDataString(map, "UNIT6").length() + getDataString(map,
+//                    "USAGE6").length()) > 0) {
+//                sbBuf.append(getDataString(map, "MEDICINE5") + " ");
+//                sbBuf.append(getDataString(map, "DOSAGE5"));
+//                sbBuf.append(getDataString(map, "UNIT5") + " ");
+//                sbBuf.append(getDataString(map, "USAGE5") + " / ");
+//                sbBuf.append(getDataString(map, "MEDICINE6") + " ");
+//                sbBuf.append(getDataString(map, "DOSAGE6"));
+//                sbBuf.append(getDataString(map, "UNIT6") + " ");
+//                sbBuf.append(getDataString(map, "USAGE6") + "");
+//            }
+//            // 2009/01/09[Tozo Tanaka] : add begin
+//            if (isMedicineViewCountOver6) {
+//                //薬剤7か薬剤8が入力されている場合
+//                if ((getDataString(map, "MEDICINE7").length()
+//                        + getDataString(map, "DOSAGE7").length()
+//                        + getDataString(map, "UNIT7").length()
+//                        + getDataString(map, "USAGE7").length()
+//                        + getDataString(map, "MEDICINE8").length()
+//                        + getDataString(map, "DOSAGE8").length()
+//                        + getDataString(map, "UNIT8").length() + getDataString(map,
+//                        "USAGE8").length()) > 0) {
+//                    sbBuf.append(getDataString(map, "MEDICINE7") + " ");
+//                    sbBuf.append(getDataString(map, "DOSAGE7"));
+//                    sbBuf.append(getDataString(map, "UNIT7") + " ");
+//                    sbBuf.append(getDataString(map, "USAGE7") + " / ");
+//                    sbBuf.append(getDataString(map, "MEDICINE8") + " ");
+//                    sbBuf.append(getDataString(map, "DOSAGE8"));
+//                    sbBuf.append(getDataString(map, "UNIT8") + " ");
+//                    sbBuf.append(getDataString(map, "USAGE8") + "");
+//                }
+//            }
+            //傷病の経過＋薬剤の最大出力文字数
+            final int SICK_PROGRESS_FIELD_LIMIT = 560;
+            int totalCharCount = 0;            
             if (getDataString(map, "MT_STS").length() > 0) {
-                // 2006/06/23
-                // CRLF - 置換対応
-                // Replace - begin [Masahiko Higuchi]
-                sbBuf.append((getDataString(map, "MT_STS").replaceAll("\r\n",VT)).replaceAll("\n",VT)); // 0x0B
-                // Replace - end
+                String text = getDataString(map, "MT_STS");
+                sbBuf.append((text.replaceAll("\r\n",VT)).replaceAll("\n",VT)); // 0x0B
                 sbBuf.append("");
+                
+                totalCharCount = text.replaceAll("[\r\n]", "").length();
             }
-            if ((getDataString(map, "MEDICINE1").length()
-                    + getDataString(map, "DOSAGE1").length()
-                    + getDataString(map, "UNIT1").length()
-                    + getDataString(map, "USAGE1").length()
-                    + getDataString(map, "MEDICINE2").length()
-                    + getDataString(map, "DOSAGE2").length()
-                    + getDataString(map, "UNIT2").length() + getDataString(map,
-                    "USAGE2").length()) > 0) {
-                sbBuf.append(getDataString(map, "MEDICINE1") + " ");
-                sbBuf.append(getDataString(map, "DOSAGE1"));
-                sbBuf.append(getDataString(map, "UNIT1") + " ");
-                sbBuf.append(getDataString(map, "USAGE1") + " / ");
-                sbBuf.append(getDataString(map, "MEDICINE2") + " ");
-                sbBuf.append(getDataString(map, "DOSAGE2"));
-                sbBuf.append(getDataString(map, "UNIT2") + " ");
-                sbBuf.append(getDataString(map, "USAGE2") + "");
-            }
-            if ((getDataString(map, "MEDICINE3").length()
-                    + getDataString(map, "DOSAGE3").length()
-                    + getDataString(map, "UNIT3").length()
-                    + getDataString(map, "USAGE3").length()
-                    + getDataString(map, "MEDICINE4").length()
-                    + getDataString(map, "DOSAGE4").length()
-                    + getDataString(map, "UNIT4").length() + getDataString(map,
-                    "USAGE4").length()) > 0) {
-                sbBuf.append(getDataString(map, "MEDICINE3") + " ");
-                sbBuf.append(getDataString(map, "DOSAGE3"));
-                sbBuf.append(getDataString(map, "UNIT3") + " ");
-                sbBuf.append(getDataString(map, "USAGE3") + " / ");
-                sbBuf.append(getDataString(map, "MEDICINE4") + " ");
-                sbBuf.append(getDataString(map, "DOSAGE4"));
-                sbBuf.append(getDataString(map, "UNIT4") + " ");
-                sbBuf.append(getDataString(map, "USAGE4") + "");
-            }
-            if ((getDataString(map, "MEDICINE5").length()
-                    + getDataString(map, "DOSAGE5").length()
-                    + getDataString(map, "UNIT5").length()
-                    + getDataString(map, "USAGE5").length()
-                    + getDataString(map, "MEDICINE6").length()
-                    + getDataString(map, "DOSAGE6").length()
-                    + getDataString(map, "UNIT6").length() + getDataString(map,
-                    "USAGE6").length()) > 0) {
-                sbBuf.append(getDataString(map, "MEDICINE5") + " ");
-                sbBuf.append(getDataString(map, "DOSAGE5"));
-                sbBuf.append(getDataString(map, "UNIT5") + " ");
-                sbBuf.append(getDataString(map, "USAGE5") + " / ");
-                sbBuf.append(getDataString(map, "MEDICINE6") + " ");
-                sbBuf.append(getDataString(map, "DOSAGE6"));
-                sbBuf.append(getDataString(map, "UNIT6") + " ");
-                sbBuf.append(getDataString(map, "USAGE6") + "");
-            }
-            // 2009/01/09[Tozo Tanaka] : add begin
-            if (isMedicineViewCountOver6) {
-                //薬剤7か薬剤8が入力されている場合
-                if ((getDataString(map, "MEDICINE7").length()
-                        + getDataString(map, "DOSAGE7").length()
-                        + getDataString(map, "UNIT7").length()
-                        + getDataString(map, "USAGE7").length()
-                        + getDataString(map, "MEDICINE8").length()
-                        + getDataString(map, "DOSAGE8").length()
-                        + getDataString(map, "UNIT8").length() + getDataString(map,
-                        "USAGE8").length()) > 0) {
-                    sbBuf.append(getDataString(map, "MEDICINE7") + " ");
-                    sbBuf.append(getDataString(map, "DOSAGE7"));
-                    sbBuf.append(getDataString(map, "UNIT7") + " ");
-                    sbBuf.append(getDataString(map, "USAGE7") + " / ");
-                    sbBuf.append(getDataString(map, "MEDICINE8") + " ");
-                    sbBuf.append(getDataString(map, "DOSAGE8"));
-                    sbBuf.append(getDataString(map, "UNIT8") + " ");
-                    sbBuf.append(getDataString(map, "USAGE8") + "");
+            for(int keyIndex=1; keyIndex<=7; keyIndex+=2){
+                String num1 = ACCastUtilities.toString(keyIndex);
+                String num2 = ACCastUtilities.toString(keyIndex+1);
+                
+                if ((getDataString(map, "MEDICINE"+num1).length()
+                        + getDataString(map, "DOSAGE"+num1).length()
+                        + getDataString(map, "UNIT"+num1).length()
+                        + getDataString(map, "USAGE"+num1).length()
+                        + getDataString(map, "MEDICINE"+num2).length()
+                        + getDataString(map, "DOSAGE"+num2).length()
+                        + getDataString(map, "UNIT"+num2).length() + getDataString(map,
+                        "USAGE"+num2).length()) > 0) {
+                    String[] medicine = new String[]{"",""};
+                    String[] dosage = new String[]{"",""};
+                    String[] unit = new String[]{"",""};
+                    String[] usage = new String[]{"",""};
+                    
+                    for(int arrayIndex=0; arrayIndex<2; arrayIndex++){
+                        int keySubIndex = keyIndex + arrayIndex;
+                        medicine[arrayIndex] = getDataString(map, "MEDICINE"+keySubIndex);
+                        if(totalCharCount+medicine[arrayIndex].length() > SICK_PROGRESS_FIELD_LIMIT){
+                            medicine[arrayIndex] = medicine[arrayIndex].substring(0, SICK_PROGRESS_FIELD_LIMIT-totalCharCount);
+                            totalCharCount = SICK_PROGRESS_FIELD_LIMIT;
+                            break;
+                        }else{
+                            totalCharCount += medicine[arrayIndex].length();
+                            
+                            dosage[arrayIndex] = getDataString(map, "DOSAGE"+keySubIndex);
+                            if(totalCharCount+dosage[arrayIndex].length() > SICK_PROGRESS_FIELD_LIMIT){
+                                dosage[arrayIndex] = dosage[arrayIndex].substring(0, SICK_PROGRESS_FIELD_LIMIT-totalCharCount);
+                                totalCharCount = SICK_PROGRESS_FIELD_LIMIT;
+                                break;
+                            }else{
+                                totalCharCount += dosage[arrayIndex].length();
+                                
+                                unit[arrayIndex] = getDataString(map, "UNIT"+keySubIndex);
+                                if(totalCharCount+unit[arrayIndex].length() > SICK_PROGRESS_FIELD_LIMIT){
+                                    unit[arrayIndex] = unit[arrayIndex].substring(0, SICK_PROGRESS_FIELD_LIMIT-totalCharCount);
+                                    totalCharCount = SICK_PROGRESS_FIELD_LIMIT;
+                                    break;
+                                }else{
+                                    totalCharCount += unit[arrayIndex].length();
+    
+                                    usage[arrayIndex] = getDataString(map, "USAGE"+keySubIndex);
+                                    if(totalCharCount+usage[arrayIndex].length() > SICK_PROGRESS_FIELD_LIMIT){
+                                        usage[arrayIndex] = usage[arrayIndex].substring(0, SICK_PROGRESS_FIELD_LIMIT-totalCharCount);
+                                        totalCharCount = SICK_PROGRESS_FIELD_LIMIT;
+                                        break;
+                                    }else{
+                                        totalCharCount += usage[arrayIndex].length();
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    sbBuf.append(medicine[0] + " ");
+                    sbBuf.append(dosage[0]);
+                    sbBuf.append(unit[0] + " ");
+                    sbBuf.append(usage[0] + " / ");
+                    sbBuf.append(medicine[1] + " ");
+                    sbBuf.append(dosage[1]);
+                    sbBuf.append(unit[1] + " ");
+                    sbBuf.append(usage[1] + "");
+                }
+                if(totalCharCount >= SICK_PROGRESS_FIELD_LIMIT){
+                    break;
                 }
             }
-            // 2009/01/09[Tozo Tanaka] : add end
+            // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
             if (sbBuf.length() > 0) {
                 sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // 最後の0x0Bを削除
             }
@@ -3161,89 +3245,178 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			row.add(getDataString(map, "INSECURE_CONDITION"));
 			// 052:疾病の経過‐治療内容‐治療状態
 			sbBuf = new StringBuffer();
-			if (getDataString(map, "MT_STS").length() > 0) {
-				sbBuf.append((getDataString(map, "MT_STS").replaceAll("\r\n",
-						VT)).replaceAll("\n", VT)); // 0x0B
-				sbBuf.append("");
-			}
-			if ((getDataString(map, "MEDICINE1").length()
-					+ getDataString(map, "DOSAGE1").length()
-					+ getDataString(map, "UNIT1").length()
-					+ getDataString(map, "USAGE1").length()
-					+ getDataString(map, "MEDICINE2").length()
-					+ getDataString(map, "DOSAGE2").length()
-					+ getDataString(map, "UNIT2").length() + getDataString(map,
-					"USAGE2").length()) > 0) {
-				sbBuf.append(getDataString(map, "MEDICINE1") + " ");
-				sbBuf.append(getDataString(map, "DOSAGE1"));
-				sbBuf.append(getDataString(map, "UNIT1") + " ");
-				sbBuf.append(getDataString(map, "USAGE1") + " / ");
-				sbBuf.append(getDataString(map, "MEDICINE2") + " ");
-				sbBuf.append(getDataString(map, "DOSAGE2"));
-				sbBuf.append(getDataString(map, "UNIT2") + " ");
-				sbBuf.append(getDataString(map, "USAGE2") + "");
-			}
-			if ((getDataString(map, "MEDICINE3").length()
-					+ getDataString(map, "DOSAGE3").length()
-					+ getDataString(map, "UNIT3").length()
-					+ getDataString(map, "USAGE3").length()
-					+ getDataString(map, "MEDICINE4").length()
-					+ getDataString(map, "DOSAGE4").length()
-					+ getDataString(map, "UNIT4").length() + getDataString(map,
-					"USAGE4").length()) > 0) {
-				sbBuf.append(getDataString(map, "MEDICINE3") + " ");
-				sbBuf.append(getDataString(map, "DOSAGE3"));
-				sbBuf.append(getDataString(map, "UNIT3") + " ");
-				sbBuf.append(getDataString(map, "USAGE3") + " / ");
-				sbBuf.append(getDataString(map, "MEDICINE4") + " ");
-				sbBuf.append(getDataString(map, "DOSAGE4"));
-				sbBuf.append(getDataString(map, "UNIT4") + " ");
-				sbBuf.append(getDataString(map, "USAGE4") + "");
-			}
-			if ((getDataString(map, "MEDICINE5").length()
-					+ getDataString(map, "DOSAGE5").length()
-					+ getDataString(map, "UNIT5").length()
-					+ getDataString(map, "USAGE5").length()
-					+ getDataString(map, "MEDICINE6").length()
-					+ getDataString(map, "DOSAGE6").length()
-					+ getDataString(map, "UNIT6").length() + getDataString(map,
-					"USAGE6").length()) > 0) {
-				sbBuf.append(getDataString(map, "MEDICINE5") + " ");
-				sbBuf.append(getDataString(map, "DOSAGE5"));
-				sbBuf.append(getDataString(map, "UNIT5") + " ");
-				sbBuf.append(getDataString(map, "USAGE5") + " / ");
-				sbBuf.append(getDataString(map, "MEDICINE6") + " ");
-				sbBuf.append(getDataString(map, "DOSAGE6"));
-				sbBuf.append(getDataString(map, "UNIT6") + " ");
-				sbBuf.append(getDataString(map, "USAGE6") + "");
-			}
-            // 2009/01/09[Tozo Tanaka] : add begin
-            if (isMedicineViewCountOver6) {
-                // 薬剤7か薬剤8が入力されている場合
-                if ((getDataString(map, "MEDICINE7").length()
-                        + getDataString(map, "DOSAGE7").length()
-                        + getDataString(map, "UNIT7").length()
-                        + getDataString(map, "USAGE7").length()
-                        + getDataString(map, "MEDICINE8").length()
-                        + getDataString(map, "DOSAGE8").length()
-                        + getDataString(map, "UNIT8").length() + getDataString(
-                        map, "USAGE8").length()) > 0) {
-                    sbBuf.append(getDataString(map, "MEDICINE7") + " ");
-                    sbBuf.append(getDataString(map, "DOSAGE7"));
-                    sbBuf.append(getDataString(map, "UNIT7") + " ");
-                    sbBuf.append(getDataString(map, "USAGE7") + " / ");
-                    sbBuf.append(getDataString(map, "MEDICINE8") + " ");
-                    sbBuf.append(getDataString(map, "DOSAGE8"));
-                    sbBuf.append(getDataString(map, "UNIT8") + " ");
-                    sbBuf.append(getDataString(map, "USAGE8") + "");
+            
+            // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//			if (getDataString(map, "MT_STS").length() > 0) {
+//				sbBuf.append((getDataString(map, "MT_STS").replaceAll("\r\n",
+//						VT)).replaceAll("\n", VT)); // 0x0B
+//				sbBuf.append("");
+//			}
+//			if ((getDataString(map, "MEDICINE1").length()
+//					+ getDataString(map, "DOSAGE1").length()
+//					+ getDataString(map, "UNIT1").length()
+//					+ getDataString(map, "USAGE1").length()
+//					+ getDataString(map, "MEDICINE2").length()
+//					+ getDataString(map, "DOSAGE2").length()
+//					+ getDataString(map, "UNIT2").length() + getDataString(map,
+//					"USAGE2").length()) > 0) {
+//				sbBuf.append(getDataString(map, "MEDICINE1") + " ");
+//				sbBuf.append(getDataString(map, "DOSAGE1"));
+//				sbBuf.append(getDataString(map, "UNIT1") + " ");
+//				sbBuf.append(getDataString(map, "USAGE1") + " / ");
+//				sbBuf.append(getDataString(map, "MEDICINE2") + " ");
+//				sbBuf.append(getDataString(map, "DOSAGE2"));
+//				sbBuf.append(getDataString(map, "UNIT2") + " ");
+//				sbBuf.append(getDataString(map, "USAGE2") + "");
+//			}
+//			if ((getDataString(map, "MEDICINE3").length()
+//					+ getDataString(map, "DOSAGE3").length()
+//					+ getDataString(map, "UNIT3").length()
+//					+ getDataString(map, "USAGE3").length()
+//					+ getDataString(map, "MEDICINE4").length()
+//					+ getDataString(map, "DOSAGE4").length()
+//					+ getDataString(map, "UNIT4").length() + getDataString(map,
+//					"USAGE4").length()) > 0) {
+//				sbBuf.append(getDataString(map, "MEDICINE3") + " ");
+//				sbBuf.append(getDataString(map, "DOSAGE3"));
+//				sbBuf.append(getDataString(map, "UNIT3") + " ");
+//				sbBuf.append(getDataString(map, "USAGE3") + " / ");
+//				sbBuf.append(getDataString(map, "MEDICINE4") + " ");
+//				sbBuf.append(getDataString(map, "DOSAGE4"));
+//				sbBuf.append(getDataString(map, "UNIT4") + " ");
+//				sbBuf.append(getDataString(map, "USAGE4") + "");
+//			}
+//			if ((getDataString(map, "MEDICINE5").length()
+//					+ getDataString(map, "DOSAGE5").length()
+//					+ getDataString(map, "UNIT5").length()
+//					+ getDataString(map, "USAGE5").length()
+//					+ getDataString(map, "MEDICINE6").length()
+//					+ getDataString(map, "DOSAGE6").length()
+//					+ getDataString(map, "UNIT6").length() + getDataString(map,
+//					"USAGE6").length()) > 0) {
+//				sbBuf.append(getDataString(map, "MEDICINE5") + " ");
+//				sbBuf.append(getDataString(map, "DOSAGE5"));
+//				sbBuf.append(getDataString(map, "UNIT5") + " ");
+//				sbBuf.append(getDataString(map, "USAGE5") + " / ");
+//				sbBuf.append(getDataString(map, "MEDICINE6") + " ");
+//				sbBuf.append(getDataString(map, "DOSAGE6"));
+//				sbBuf.append(getDataString(map, "UNIT6") + " ");
+//				sbBuf.append(getDataString(map, "USAGE6") + "");
+//			}
+//            // 2009/01/09[Tozo Tanaka] : add begin
+//            if (isMedicineViewCountOver6) {
+//                // 薬剤7か薬剤8が入力されている場合
+//                if ((getDataString(map, "MEDICINE7").length()
+//                        + getDataString(map, "DOSAGE7").length()
+//                        + getDataString(map, "UNIT7").length()
+//                        + getDataString(map, "USAGE7").length()
+//                        + getDataString(map, "MEDICINE8").length()
+//                        + getDataString(map, "DOSAGE8").length()
+//                        + getDataString(map, "UNIT8").length() + getDataString(
+//                        map, "USAGE8").length()) > 0) {
+//                    sbBuf.append(getDataString(map, "MEDICINE7") + " ");
+//                    sbBuf.append(getDataString(map, "DOSAGE7"));
+//                    sbBuf.append(getDataString(map, "UNIT7") + " ");
+//                    sbBuf.append(getDataString(map, "USAGE7") + " / ");
+//                    sbBuf.append(getDataString(map, "MEDICINE8") + " ");
+//                    sbBuf.append(getDataString(map, "DOSAGE8"));
+//                    sbBuf.append(getDataString(map, "UNIT8") + " ");
+//                    sbBuf.append(getDataString(map, "USAGE8") + "");
+//                }
+//            }
+//            // 2009/01/09[Tozo Tanaka] : add end
+//			if (sbBuf.length() > 0) {
+//				sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // 最後の0x0Bを削除
+//			}
+//			row.add(sbBuf.toString());
+            
+
+            //傷病の経過＋薬剤の最大出力文字数
+            final int SICK_PROGRESS_FIELD_LIMIT = 560;
+            int totalCharCount = 0;            
+            if (getDataString(map, "MT_STS").length() > 0) {
+                String text = getDataString(map, "MT_STS");
+                sbBuf.append((text.replaceAll("\r\n",VT)).replaceAll("\n",VT)); // 0x0B
+                sbBuf.append("");
+                
+                totalCharCount = text.replaceAll("[\r\n]", "").length();
+            }
+            for(int keyIndex=1; keyIndex<=7; keyIndex+=2){
+                String num1 = ACCastUtilities.toString(keyIndex);
+                String num2 = ACCastUtilities.toString(keyIndex+1);
+                
+                if ((getDataString(map, "MEDICINE"+num1).length()
+                        + getDataString(map, "DOSAGE"+num1).length()
+                        + getDataString(map, "UNIT"+num1).length()
+                        + getDataString(map, "USAGE"+num1).length()
+                        + getDataString(map, "MEDICINE"+num2).length()
+                        + getDataString(map, "DOSAGE"+num2).length()
+                        + getDataString(map, "UNIT"+num2).length() + getDataString(map,
+                        "USAGE"+num2).length()) > 0) {
+                    String[] medicine = new String[]{"",""};
+                    String[] dosage = new String[]{"",""};
+                    String[] unit = new String[]{"",""};
+                    String[] usage = new String[]{"",""};
+                    
+                    for(int arrayIndex=0; arrayIndex<2; arrayIndex++){
+                        int keySubIndex = keyIndex + arrayIndex;
+                        medicine[arrayIndex] = getDataString(map, "MEDICINE"+keySubIndex);
+                        if(totalCharCount+medicine[arrayIndex].length() > SICK_PROGRESS_FIELD_LIMIT){
+                            medicine[arrayIndex] = medicine[arrayIndex].substring(0, SICK_PROGRESS_FIELD_LIMIT-totalCharCount);
+                            totalCharCount = SICK_PROGRESS_FIELD_LIMIT;
+                            break;
+                        }else{
+                            totalCharCount += medicine[arrayIndex].length();
+                            
+                            dosage[arrayIndex] = getDataString(map, "DOSAGE"+keySubIndex);
+                            if(totalCharCount+dosage[arrayIndex].length() > SICK_PROGRESS_FIELD_LIMIT){
+                                dosage[arrayIndex] = dosage[arrayIndex].substring(0, SICK_PROGRESS_FIELD_LIMIT-totalCharCount);
+                                totalCharCount = SICK_PROGRESS_FIELD_LIMIT;
+                                break;
+                            }else{
+                                totalCharCount += dosage[arrayIndex].length();
+                                
+                                unit[arrayIndex] = getDataString(map, "UNIT"+keySubIndex);
+                                if(totalCharCount+unit[arrayIndex].length() > SICK_PROGRESS_FIELD_LIMIT){
+                                    unit[arrayIndex] = unit[arrayIndex].substring(0, SICK_PROGRESS_FIELD_LIMIT-totalCharCount);
+                                    totalCharCount = SICK_PROGRESS_FIELD_LIMIT;
+                                    break;
+                                }else{
+                                    totalCharCount += unit[arrayIndex].length();
+    
+                                    usage[arrayIndex] = getDataString(map, "USAGE"+keySubIndex);
+                                    if(totalCharCount+usage[arrayIndex].length() > SICK_PROGRESS_FIELD_LIMIT){
+                                        usage[arrayIndex] = usage[arrayIndex].substring(0, SICK_PROGRESS_FIELD_LIMIT-totalCharCount);
+                                        totalCharCount = SICK_PROGRESS_FIELD_LIMIT;
+                                        break;
+                                    }else{
+                                        totalCharCount += usage[arrayIndex].length();
+                                    }
+                                }
+                            }
+                        }
+                    }
+
+                    sbBuf.append(medicine[0] + " ");
+                    sbBuf.append(dosage[0]);
+                    sbBuf.append(unit[0] + " ");
+                    sbBuf.append(usage[0] + " / ");
+                    sbBuf.append(medicine[1] + " ");
+                    sbBuf.append(dosage[1]);
+                    sbBuf.append(unit[1] + " ");
+                    sbBuf.append(usage[1] + "");
+                }
+                if(totalCharCount >= SICK_PROGRESS_FIELD_LIMIT){
+                    break;
                 }
             }
-            // 2009/01/09[Tozo Tanaka] : add end
-			if (sbBuf.length() > 0) {
-				sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // 最後の0x0Bを削除
-			}
-			row.add(sbBuf.toString());
-
+            // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
+            if (sbBuf.length() > 0) {
+                sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // 最後の0x0Bを削除
+            }
+            row.add(sbBuf.toString());
+            
+            
 			// 053:処置内容
 			sbBuf = new StringBuffer();
 			sbBuf.append(getDataString(map, "TNT_KNR"));
@@ -4048,16 +4221,16 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(",COMMON_IKN_SIS.DOSAGE6");
         sb.append(",COMMON_IKN_SIS.UNIT6");
         sb.append(",COMMON_IKN_SIS.USAGE6");
-        // 2009/01/09[Tozo Tanaka] : add begin★薬剤名増暫定隠ぺい
-//        sb.append(",COMMON_IKN_SIS.MEDICINE7");
-//        sb.append(",COMMON_IKN_SIS.DOSAGE7");
-//        sb.append(",COMMON_IKN_SIS.UNIT7");
-//        sb.append(",COMMON_IKN_SIS.USAGE7");
-//        sb.append(",COMMON_IKN_SIS.MEDICINE8");
-//        sb.append(",COMMON_IKN_SIS.DOSAGE8");
-//        sb.append(",COMMON_IKN_SIS.UNIT8");
-//        sb.append(",COMMON_IKN_SIS.USAGE8");
-        // 2009/01/09[Tozo Tanaka] : add end★薬剤名増暫定隠ぺい
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+        sb.append(",COMMON_IKN_SIS.MEDICINE7");
+        sb.append(",COMMON_IKN_SIS.DOSAGE7");
+        sb.append(",COMMON_IKN_SIS.UNIT7");
+        sb.append(",COMMON_IKN_SIS.USAGE7");
+        sb.append(",COMMON_IKN_SIS.MEDICINE8");
+        sb.append(",COMMON_IKN_SIS.DOSAGE8");
+        sb.append(",COMMON_IKN_SIS.UNIT8");
+        sb.append(",COMMON_IKN_SIS.USAGE8");
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
         sb.append(",COMMON_IKN_SIS.TNT_KNR");
         sb.append(",COMMON_IKN_SIS.CHU_JOU_EIYOU");
         sb.append(",COMMON_IKN_SIS.TOUSEKI");
@@ -4329,16 +4502,16 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(", COMMON_IKN_SIS.DOSAGE6");
         sb.append(", COMMON_IKN_SIS.UNIT6");
         sb.append(", COMMON_IKN_SIS.USAGE6");
-        // 2009/01/09[Tozo Tanaka] : add begin★薬剤名増暫定隠ぺい
-//        sb.append(", COMMON_IKN_SIS.MEDICINE7");
-//        sb.append(", COMMON_IKN_SIS.DOSAGE7");
-//        sb.append(", COMMON_IKN_SIS.UNIT7");
-//        sb.append(", COMMON_IKN_SIS.USAGE7");
-//        sb.append(", COMMON_IKN_SIS.MEDICINE8");
-//        sb.append(", COMMON_IKN_SIS.DOSAGE8");
-//        sb.append(", COMMON_IKN_SIS.UNIT8");
-//        sb.append(", COMMON_IKN_SIS.USAGE8");
-        // 2009/01/09[Tozo Tanaka] : add end★薬剤名増暫定隠ぺい
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+        sb.append(", COMMON_IKN_SIS.MEDICINE7");
+        sb.append(", COMMON_IKN_SIS.DOSAGE7");
+        sb.append(", COMMON_IKN_SIS.UNIT7");
+        sb.append(", COMMON_IKN_SIS.USAGE7");
+        sb.append(", COMMON_IKN_SIS.MEDICINE8");
+        sb.append(", COMMON_IKN_SIS.DOSAGE8");
+        sb.append(", COMMON_IKN_SIS.UNIT8");
+        sb.append(", COMMON_IKN_SIS.USAGE8");
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
         sb.append(", COMMON_IKN_SIS.TNT_KNR");
         sb.append(", COMMON_IKN_SIS.CHU_JOU_EIYOU");
         sb.append(", COMMON_IKN_SIS.TOUSEKI");

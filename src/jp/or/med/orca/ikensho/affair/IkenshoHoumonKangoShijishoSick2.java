@@ -1,5 +1,7 @@
 package jp.or.med.orca.ikensho.affair;
 
+import jp.nichicom.ac.text.ACTextUtilities;
+import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
@@ -7,107 +9,67 @@ import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
-public class IkenshoIshiIkenshoInfoSick2 extends IkenshoIkenshoInfoSickH18 {
-    // タイトルコンポーネント
-    private IkenshoDocumentTabTitleLabel titleLabel;
-    
-    public IkenshoIshiIkenshoInfoSick2() {
-        try{
+/**
+ * 傷病２タブ
+ * 
+ * @since V3.0.9
+ * @author Masahiko Higuchi
+ */
+public class IkenshoHoumonKangoShijishoSick2 extends IkenshoDocumentAffairSick {
+
+    public IkenshoHoumonKangoShijishoSick2() {
+        try {
             jbInit();
-        }catch(Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
-    
+
     /**
-     * 画面構成に関する処理を行いま。
+     * 画面構築処理
+     * @throws Exception
      */
-    private void jbInit(){
-        // コンポーネント追加
-        addThisComponent();
+    private void jbInit() throws Exception {
+        getTitle().setText("現在の状態（続き）");
+        getSickProgresss().setText("傷病の経過");
+        getSickMedicineValueWarning().setText("傷病の経過は 250文字 または 5行以内 しか印刷されません。");
     }
-    
+
     /**
-     * overrideしてタブに追加する項目を定義します。
+     * 画面項目制御
      */
-    protected void addThisComponent(){
-        getProgressGroup().setText("障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容");
-		// [ID:0000509][Masahiko Higuchi] 2009/06 del begin 画面調整に伴い調整
-		//getSickProgresss().setText(
-        //        "傷病の経過" + IkenshoConstants.LINE_SEPARATOR +
-        //        "（250文字" + IkenshoConstants.LINE_SEPARATOR +
-        //        "または5行以内）");
-        //getSickProgresss().setText(getSickProgressName());
-        //getSickMedicineValueWarning().setText("傷病の経過 と 薬剤名 はトータルで560文字しか印刷されません。");
-        // [ID:0000509][Masahiko Higuchi] 2009/06 del end
-        this.add(getTitleLabel(),VRLayout.NORTH);
+    protected void addThisComponent() {
+        this.add(getTitle(), VRLayout.NORTH);
         this.add(getProgressGroup(), VRLayout.NORTH);
     }
-    
+
     /**
-     * タブ名称ラベルを返します。
-     * @return
+     * コンボへの定型文設定などDBへのアクセスを必要とする初期化処理を生成します。
+     * 
+     * @param dbm DBManager
+     * @throws Exception 処理例外
+     * @since 3.0.9
+     * @author Masahiko Higuchi
      */
-    protected IkenshoDocumentTabTitleLabel getTitleLabel() {
-        if(titleLabel == null){
-            titleLabel = new IkenshoDocumentTabTitleLabel();
-            titleLabel.setText("１．傷病に関する意見（続き）");
-        }
-        return titleLabel;
-    }
-
-
-
     public void initDBCopmponent(IkenshoFirebirdDBManager dbm) throws Exception {
-      super.initDBCopmponent(dbm);
-      applyPoolTeikeibun(getSickMedicineName(0), IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME);
-      applyPoolTeikeibun(getSickMedicineName(1), IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME);
-      applyPoolTeikeibun(getSickMedicineName(2), IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME);
-      applyPoolTeikeibun(getSickMedicineName(3), IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME);
-      applyPoolTeikeibun(getSickMedicineName(4), IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME);
-      applyPoolTeikeibun(getSickMedicineName(5), IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME);
-      applyPoolTeikeibun(getSickMedicineDosageUnit(0), IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT);
-      applyPoolTeikeibun(getSickMedicineDosageUnit(1), IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT);
-      applyPoolTeikeibun(getSickMedicineDosageUnit(2), IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT);
-      applyPoolTeikeibun(getSickMedicineDosageUnit(3), IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT);
-      applyPoolTeikeibun(getSickMedicineDosageUnit(4), IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT);
-      applyPoolTeikeibun(getSickMedicineDosageUnit(5), IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT);
-      applyPoolTeikeibun(getSickMedicineUsage(0), IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE);
-      applyPoolTeikeibun(getSickMedicineUsage(1), IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE);
-      applyPoolTeikeibun(getSickMedicineUsage(2), IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE);
-      applyPoolTeikeibun(getSickMedicineUsage(3), IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE);
-      applyPoolTeikeibun(getSickMedicineUsage(4), IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE);
-      applyPoolTeikeibun(getSickMedicineUsage(5), IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE);
-      //2009/01/06 [Tozo Tanaka] Add - begin
-      applyPoolTeikeibun(getSickMedicineName(6), IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME);
-      applyPoolTeikeibun(getSickMedicineDosageUnit(6), IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT);
-      applyPoolTeikeibun(getSickMedicineUsage(6), IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE);
-      applyPoolTeikeibun(getSickMedicineName(7), IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME);
-      applyPoolTeikeibun(getSickMedicineDosageUnit(6), IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT);
-      applyPoolTeikeibun(getSickMedicineUsage(7), IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE);
-      //2009/01/06 [Tozo Tanaka] Add - end
-      
+        super.initDBCopmponent(dbm);
 
-        // 2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応
-        // ACComboBox⇒IkenshoOptionComboBox
         getSickMedicineName(0).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
         getSickMedicineName(1).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
         getSickMedicineName(2).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
         getSickMedicineName(3).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
         getSickMedicineName(4).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
         getSickMedicineName(5).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
-        //2009/01/06 [Tozo Tanaka] Add - begin
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
         getSickMedicineName(6).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
         getSickMedicineName(7).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
-        //2009/01/06 [Tozo Tanaka] Add - end
+                IkenshoCommon.TEIKEI_MEDICINE_NAME, 12);
 
         // コンボ連動設定
         getSickMedicineName(0).addInterlockComboComponents(
@@ -140,7 +102,6 @@ public class IkenshoIshiIkenshoInfoSick2 extends IkenshoIkenshoInfoSickH18 {
                         getSickMedicineName(1), getSickMedicineName(2),
                         getSickMedicineName(3), getSickMedicineName(4),
                         getSickMedicineName(6), getSickMedicineName(7) });
-        //2009/01/06 [Tozo Tanaka] Add - begin
         getSickMedicineName(6).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineName(0),
                         getSickMedicineName(1), getSickMedicineName(2),
@@ -151,26 +112,23 @@ public class IkenshoIshiIkenshoInfoSick2 extends IkenshoIkenshoInfoSickH18 {
                         getSickMedicineName(1), getSickMedicineName(2),
                         getSickMedicineName(3), getSickMedicineName(4),
                         getSickMedicineName(5), getSickMedicineName(6) });
-        //2009/01/06 [Tozo Tanaka] Add - end
 
         getSickMedicineDosageUnit(0).setOptionComboBoxParameters("用量単位",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT, 4);
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
         getSickMedicineDosageUnit(1).setOptionComboBoxParameters("用量単位",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT, 4);
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
         getSickMedicineDosageUnit(2).setOptionComboBoxParameters("用量単位",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT, 4);
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
         getSickMedicineDosageUnit(3).setOptionComboBoxParameters("用量単位",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT, 4);
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
         getSickMedicineDosageUnit(4).setOptionComboBoxParameters("用量単位",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT, 4);
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
         getSickMedicineDosageUnit(5).setOptionComboBoxParameters("用量単位",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT, 4);
-        //2009/01/06 [Tozo Tanaka] Add - begin
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
         getSickMedicineDosageUnit(6).setOptionComboBoxParameters("用量単位",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT, 4);
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
         getSickMedicineDosageUnit(7).setOptionComboBoxParameters("用量単位",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT, 4);
-        //2009/01/06 [Tozo Tanaka] Add - end
+                IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT, 4);
 
         // 連動コンボの登録
         getSickMedicineDosageUnit(0).addInterlockComboComponents(
@@ -221,7 +179,6 @@ public class IkenshoIshiIkenshoInfoSick2 extends IkenshoIkenshoInfoSickH18 {
                         getSickMedicineDosageUnit(4),
                         getSickMedicineDosageUnit(6),
                         getSickMedicineDosageUnit(7) });
-        //2009/01/06 [Tozo Tanaka] Add - begin
         getSickMedicineDosageUnit(6).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineDosageUnit(0),
                         getSickMedicineDosageUnit(1),
@@ -238,26 +195,23 @@ public class IkenshoIshiIkenshoInfoSick2 extends IkenshoIkenshoInfoSickH18 {
                         getSickMedicineDosageUnit(4),
                         getSickMedicineDosageUnit(5),
                         getSickMedicineDosageUnit(6) });
-        //2009/01/06 [Tozo Tanaka] Add - end
 
         getSickMedicineUsage(0).setOptionComboBoxParameters("用法",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10);
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
         getSickMedicineUsage(1).setOptionComboBoxParameters("用法",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10);
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
         getSickMedicineUsage(2).setOptionComboBoxParameters("用法",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10);
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
         getSickMedicineUsage(3).setOptionComboBoxParameters("用法",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10);
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
         getSickMedicineUsage(4).setOptionComboBoxParameters("用法",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10);
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
         getSickMedicineUsage(5).setOptionComboBoxParameters("用法",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10);
-        //2009/01/06 [Tozo Tanaka] Add - begin
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
         getSickMedicineUsage(6).setOptionComboBoxParameters("用法",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10);
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
         getSickMedicineUsage(7).setOptionComboBoxParameters("用法",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10);
-        //2009/01/06 [Tozo Tanaka] Add - end
+                IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10);
 
         // 連動コンボの登録
         getSickMedicineUsage(0).addInterlockComboComponents(
@@ -290,7 +244,6 @@ public class IkenshoIshiIkenshoInfoSick2 extends IkenshoIkenshoInfoSickH18 {
                         getSickMedicineUsage(1), getSickMedicineUsage(2),
                         getSickMedicineUsage(3), getSickMedicineUsage(4),
                         getSickMedicineUsage(6), getSickMedicineUsage(7) });
-        //2009/01/06 [Tozo Tanaka] Add - begin
         getSickMedicineUsage(6).addInterlockComboComponents(
                 new IkenshoOptionComboBox[] { getSickMedicineUsage(0),
                         getSickMedicineUsage(1), getSickMedicineUsage(2),
@@ -301,25 +254,78 @@ public class IkenshoIshiIkenshoInfoSick2 extends IkenshoIkenshoInfoSickH18 {
                         getSickMedicineUsage(1), getSickMedicineUsage(2),
                         getSickMedicineUsage(3), getSickMedicineUsage(4),
                         getSickMedicineUsage(5), getSickMedicineUsage(6) });
-        //2009/01/06 [Tozo Tanaka] Add - end
-        // 2007/10/18 [Masahiko Higuchi] Addition - end
-      
     }
-    
-    //2009/01/08 [Tozo Tanaka] Add - begin
-    protected String getSickProgressName(){
+
+    protected String getSickProgressName() {
         return "傷病の経過";
     }
-    
 
-    protected void setSickProgressContaierText(int maxLength){
-        // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
-//        getSickProgresss().setText(
-//                  getSickProgressName() + IkenshoConstants.LINE_SEPARATOR + "（" + maxLength
-//                          + "文字" + IkenshoConstants.LINE_SEPARATOR + "または5行以内）");
-      getSickProgresss().setText(getSickProgressName());
-        // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
+    /**
+     * 傷病テキスト見出し
+     */
+    protected void setSickProgressContaierText(int maxLength) {
+        getSickProgresss().setText(getSickProgressName());
     }
-    //2009/01/08 [Tozo Tanaka] Add - end
     
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//    public boolean noControlWarning() {
+//        if (!noControlWarningOfSickProgress()) {
+//            return false;
+//        }
+//        return true;
+//    }
+//
+//    protected boolean noControlWarningOfSickProgress() {
+//        String text = getSickProgress().getText();
+//        int lines = ACTextUtilities.separateLineWrap(text).length;
+//        int totalChars = text.replaceAll("[\r\n]","").length();
+//        if(lines > 6 || totalChars > 300){
+//            // 傷病テキストが5行もしくは300文字を超えている場合
+//            if (ACMessageBox.showOkCancel(getSickProgressName()
+//                    + "がトータルで300文字または6行を超えています。"
+//                    + IkenshoConstants.LINE_SEPARATOR+getSickProgressName()
+//                    + "は300文字または6行目までしか印刷されません。") != ACMessageBox.RESULT_OK) {
+//                getSickProgress().requestFocus();
+//                return false;
+//            }
+//        }
+//
+//        return true;
+//    }
+//    protected void showAlertOnSickProgressLengthOver(){
+//        //フォーカスロストではエラーを出さない
+//    }
+    protected void showAlertOnSickProgressLengthOverWhenSaveOrPrint(){
+        ACMessageBox.show(getSickProgressName() + "がトータルで250文字または5行を超えています。"
+                + IkenshoConstants.LINE_SEPARATOR + getSickProgressName()
+                + "は250文字または5行目までしか印刷されません。");
+    }
+    protected int getSickProgressMaxLengthWhenPrint(){
+        String text = getSickProgress().getText();
+        int lines = ACTextUtilities.separateLineWrapOnByte(text,100).length;
+        int totalByteCount = text.replaceAll("[\r\n]","").getBytes().length;
+        if(lines > 5 || totalByteCount > 500){
+            return -totalByteCount;
+        }
+        return 500;
+    }    
+    public boolean noControlWarning() throws Exception {
+        if (getMasterAffair() != null
+                && getMasterAffair().getCanUpdateCheckStatus() == IkenshoTabbableAffairContainer.CAN_UPDATE_CHECK_STATUS_PRINT) {
+            //印刷時のみチェック(保存時は警告対象外)
+          int maxLen = getSickProgressMaxLengthWhenPrint();
+          if (maxLen < 0) {
+              // 警告
+              showAlertOnSickProgressLengthOverWhenSaveOrPrint();
+          }
+        }
+      return true;
+    }
+
+    protected String getSickMedicineValueWarningText(int inputedCharCount, int inputedLineCount){
+        return "傷病の経過は 250文字 または 5行以内 しか印刷されません。";
+    }
+
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
+
 }

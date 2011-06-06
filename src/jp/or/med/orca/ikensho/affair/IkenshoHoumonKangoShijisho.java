@@ -32,6 +32,9 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
 
     private IkenshoHoumonKangoShijishoApplicant applicant = new IkenshoHoumonKangoShijishoApplicant();
     private IkenshoHoumonKangoShijishoSick shoubyou = new IkenshoHoumonKangoShijishoSick();
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add begin ‰ζ–Κ’²®‚Ι”Ί‚Ά’²®
+    private IkenshoHoumonKangoShijishoSick2 shoubyou2 = new IkenshoHoumonKangoShijishoSick2();
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add end
     private IkenshoHoumonKangoShijishoMindBody1 jiritudo = new IkenshoHoumonKangoShijishoMindBody1();
     private IkenshoHoumonKangoShijishoSpecial tokubetu = new IkenshoHoumonKangoShijishoSpecial();
     private IkenshoHoumonKangoShijishoRyuiShiji ryuiShiji = new IkenshoHoumonKangoShijishoRyuiShiji();
@@ -444,6 +447,9 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
 
         tabArray.add(applicant);
         tabArray.add(shoubyou);
+        // [ID:0000509][Masahiko Higuchi] 2009/06 add begin ‰ζ–Κ’²®‚Ι”Ί‚Ά’²®
+        tabArray.add(shoubyou2);
+        // [ID:0000509][Masahiko Higuchi] 2009/06 add end
         tabArray.add(jiritudo);
         tabArray.add(tokubetu);
         tabArray.add(ryuiShiji);
@@ -476,7 +482,10 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
     private void jbInit() throws Exception {
         // tab
         tabs.addTab("³Ò", applicant);
-        tabs.addTab("•a", shoubyou);
+        // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin ‰ζ–Κ’²®‚Ι”Ί‚Ά’²®
+        tabs.addTab("•a‚P", shoubyou);
+        tabs.addTab("•a‚Q", shoubyou2);
+        // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
         // [ID:0000463][Tozo TANAKA] 2009/03/20 replace begin •½¬21”N4–@‰ό³‘Ξ‰
         //tabs.addTab("“ϊν¶©—§“x", jiritudo);
         tabs.addTab("“ϊν¶©—§“xEερα‚Μ[‚³", jiritudo);
@@ -489,28 +498,31 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
     }
     //2009/01/16 [Tozo Tanaka] Add - begin
     protected int getMedicineViewCount() {
-        int ikenshoCount = super.getMedicineViewCount();
-        int shijishoCount = ikenshoCount;
-        try {
-            if (
-                    ACFrame
-                    .getInstance()
-                    .hasProperty(
-                            "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6")
-                    && ACCastUtilities
-                            .toBoolean(
-                                    ACFrame
-                                            .getInstance()
-                                            .getProperty(
-                                                    "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6"),
-                                    false)
-            ) {
-                //w¦‘έ’θ‚π—Dζ
-                shijishoCount = 6;
-            }
-        } catch (Exception e) {
-        }
-        return shijishoCount;
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin yε΅γγ©‘Eγtγ©‘z–ςά–ΌƒeƒLƒXƒg‚Μ’Η‰Α
+//        int ikenshoCount = super.getMedicineViewCount();
+//        int shijishoCount = ikenshoCount;
+//        try {
+//            if (
+//                    ACFrame
+//                    .getInstance()
+//                    .hasProperty(
+//                            "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6")
+//                    && ACCastUtilities
+//                            .toBoolean(
+//                                    ACFrame
+//                                            .getInstance()
+//                                            .getProperty(
+//                                                    "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6"),
+//                                    false)
+//            ) {
+//                //w¦‘έ’θ‚π—Dζ
+//                shijishoCount = 6;
+//            }
+//        } catch (Exception e) {
+//        }
+//        return shijishoCount;
+        return 8;
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end yε΅γγ©‘Eγtγ©‘z–ςά–ΌƒeƒLƒXƒg‚Μ’Η‰Α
   }
     //2009/01/16 [Tozo Tanaka] Add - end
 

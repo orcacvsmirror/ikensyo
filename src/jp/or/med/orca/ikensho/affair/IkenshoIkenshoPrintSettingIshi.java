@@ -12,6 +12,7 @@ import java.util.HashMap;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRHashMap;
@@ -340,59 +341,229 @@ public class IkenshoIkenshoPrintSettingIshi extends
 //				}
 //			}
 //		}
-        //傷病治療状態
-        ACChotarouXMLUtilities.setValue(pd, "ShobyoKeika",
-                getInsertionLineSeparatorToStringOnByte(ACCastUtilities.toString(data
-                        .get("MT_STS")), 100));
-        
-        //薬剤
-        String sickMedicinesGridName = "Grid9";
-        int sickMedicinesRows = 3;
-        if (!(
-                IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE7", data)) && 
-                IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE8", data)) &&
-                IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE7", data)) &&
-                IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE8", data)) &&
-                IkenshoCommon.isNullText(VRBindPathParser.get("UNIT7", data)) &&
-                IkenshoCommon.isNullText(VRBindPathParser.get("UNIT8", data)) &&
-                IkenshoCommon.isNullText(VRBindPathParser.get("USAGE7", data)) && 
-                IkenshoCommon.isNullText(VRBindPathParser.get("USAGE8", data))
-                ) &&
-                (getMedicineViewCount()>6)) {
-            //薬剤7か薬剤8が入力されている場合
-            sickMedicinesGridName = "sickMedicines8";
-            sickMedicinesRows = 4;
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//        //傷病治療状態
+//        ACChotarouXMLUtilities.setValue(pd, "ShobyoKeika",
+//                getInsertionLineSeparatorToStringOnByte(ACCastUtilities.toString(data
+//                        .get("MT_STS")), 100));
+//        
+//        //薬剤
+//        String sickMedicinesGridName = "Grid9";
+//        int sickMedicinesRows = 3;
+//        if (!(
+//                IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE7", data)) && 
+//                IkenshoCommon.isNullText(VRBindPathParser.get("MEDICINE8", data)) &&
+//                IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE7", data)) &&
+//                IkenshoCommon.isNullText(VRBindPathParser.get("DOSAGE8", data)) &&
+//                IkenshoCommon.isNullText(VRBindPathParser.get("UNIT7", data)) &&
+//                IkenshoCommon.isNullText(VRBindPathParser.get("UNIT8", data)) &&
+//                IkenshoCommon.isNullText(VRBindPathParser.get("USAGE7", data)) && 
+//                IkenshoCommon.isNullText(VRBindPathParser.get("USAGE8", data))
+//                ) &&
+//                (getMedicineViewCount()>6)) {
+//            //薬剤7か薬剤8が入力されている場合
+//            sickMedicinesGridName = "sickMedicines8";
+//            sickMedicinesRows = 4;
+//        }
+//        
+//        for (int i = 0; i < sickMedicinesRows; i++) {
+//            for (int j = 0; j < 2; j++) {
+//                StringBuffer sb = new StringBuffer();
+//                String text;
+//                String index = ACCastUtilities.toString(i * 2 + j + 1);
+//                text = (String) VRBindPathParser.get("MEDICINE" + index, data);
+//                if (!IkenshoCommon.isNullText(text)) {
+//                    sb.append(text);
+//                    sb.append(" ");
+//                }
+//                text = (String) VRBindPathParser.get("DOSAGE" + index, data);
+//                if (!IkenshoCommon.isNullText(text)) {
+//                    sb.append(text);
+//                }
+//                text = (String) VRBindPathParser.get("UNIT" + index, data);
+//                if (!IkenshoCommon.isNullText(text)) {
+//                    sb.append(text);
+//                }
+//                text = (String) VRBindPathParser.get("USAGE" + index, data);
+//                if (!IkenshoCommon.isNullText(text)) {
+//                    sb.append(" ");
+//                    sb.append(text);
+//                }
+//                if (sb.length() > 0) {
+//                    IkenshoCommon.addString(pd, sickMedicinesGridName+".h" + (i + 1) + ".w"
+//                            + (j + 1), sb.toString());
+//                }
+//            }
+//        }
+        StringBuffer sbSickProgress = new StringBuffer();
+
+        // 傷病治療状態
+        String text = ACCastUtilities.toString(data.get("MT_STS"));
+        String[] sickProgressLines = ACTextUtilities.separateLineWrapOnByte(
+                text, 100);
+        int totalLineCount = sickProgressLines.length;
+        sbSickProgress
+                .append(ACTextUtilities.concatLineWrap(sickProgressLines));
+
+        text = text.replaceAll("[\r\n]", "");
+        int totalCharCount = text.length();
+        int totalByteCount = text.getBytes().length;
+
+        // 薬剤
+        boolean isUseOver6Medicine = false;
+        for (int index = 7; index <= 8; index++) {
+            text = (String) VRBindPathParser.get("MEDICINE" + index, data);
+            if (!IkenshoCommon.isNullText(text)) {
+                isUseOver6Medicine = true;
+                break;
+            }
+            text = (String) VRBindPathParser.get("DOSAGE" + index, data);
+            if (!IkenshoCommon.isNullText(text)) {
+                isUseOver6Medicine = true;
+                break;
+            }
+            text = (String) VRBindPathParser.get("UNIT" + index, data);
+            if (!IkenshoCommon.isNullText(text)) {
+                isUseOver6Medicine = true;
+                break;
+            }
+            text = (String) VRBindPathParser.get("USAGE" + index, data);
+            if (!IkenshoCommon.isNullText(text)) {
+                isUseOver6Medicine = true;
+                break;
+            }
         }
-        
-        for (int i = 0; i < sickMedicinesRows; i++) {
-            for (int j = 0; j < 2; j++) {
+
+        if (totalByteCount > 500 || totalLineCount > 5 || isUseOver6Medicine) {
+            // 傷病の経過が251文字以上または6行以上または薬剤名が6個以上の場合
+            int lastLineByteCount = 0;
+            StringBuffer sbMedicine = new StringBuffer();
+            for (int index = 1; index <= 8; index++) {
                 StringBuffer sb = new StringBuffer();
-                String text;
-                String index = ACCastUtilities.toString(i * 2 + j + 1);
+                int medicineCharLen = 0;
+                int dosageCharLen = 0;
+                int unitCharLen = 0;
+                int usageCharLen = 0;
+                // 薬剤セットを結合
                 text = (String) VRBindPathParser.get("MEDICINE" + index, data);
                 if (!IkenshoCommon.isNullText(text)) {
                     sb.append(text);
                     sb.append(" ");
+                    medicineCharLen = text.length();
                 }
                 text = (String) VRBindPathParser.get("DOSAGE" + index, data);
                 if (!IkenshoCommon.isNullText(text)) {
                     sb.append(text);
+                    dosageCharLen = text.length();
                 }
                 text = (String) VRBindPathParser.get("UNIT" + index, data);
                 if (!IkenshoCommon.isNullText(text)) {
                     sb.append(text);
+                    unitCharLen = text.length();
                 }
                 text = (String) VRBindPathParser.get("USAGE" + index, data);
                 if (!IkenshoCommon.isNullText(text)) {
                     sb.append(" ");
                     sb.append(text);
+                    usageCharLen = text.length();
                 }
-                if (sb.length() > 0) {
-                    IkenshoCommon.addString(pd, sickMedicinesGridName+".h" + (i + 1) + ".w"
-                            + (j + 1), sb.toString());
+
+                // 連結して表示するか改行するかを判定
+                int lineCharLen = medicineCharLen + dosageCharLen + unitCharLen
+                        + usageCharLen;
+                int lineByetLen = sb.toString().getBytes().length;
+                if (lastLineByteCount + lineByetLen
+                        + ((lastLineByteCount > 0) ? 2 : 0) > 100) {
+                    sbMedicine.append(IkenshoConstants.LINE_SEPARATOR);
+                    lastLineByteCount = lineByetLen;
+                } else {
+                    if (lastLineByteCount > 0) {
+                        sbMedicine.append("  ");
+                        lastLineByteCount += 2;
+                    }
+                    lastLineByteCount += lineByetLen;
+                }
+                // 最大文字数制限を判定
+                if (totalCharCount + lineCharLen > 560) {
+                    int useCharCount = 560 - totalCharCount;
+                    int lastPos = 0;
+                    // 薬剤名
+                    if (useCharCount > medicineCharLen) {
+                        lastPos += medicineCharLen + 1;
+                        useCharCount -= medicineCharLen;
+                        // 用量
+                        if (useCharCount > dosageCharLen) {
+                            lastPos += dosageCharLen;
+                            useCharCount -= dosageCharLen;
+                            // 用量単位
+                            if (useCharCount > unitCharLen) {
+                                lastPos += unitCharLen;
+                                useCharCount -= unitCharLen;
+                                // 用法
+                                if (useCharCount <= usageCharLen) {
+                                    useCharCount++;
+                                }
+                            }
+                        }
+                    }
+                    lastPos += useCharCount;
+
+                    sbMedicine.append(sb.substring(0, lastPos));
+                    break;
+                } else {
+                    sbMedicine.append(sb.toString());
+                }
+                totalCharCount += lineCharLen;
+            }
+            // 傷病の経過と薬剤名の区切りとして改行x2を使用
+            if (sbSickProgress.length() > 0 && sbMedicine.length() > 0) {
+                // 傷病の経過と薬剤名の間には1行分の空行を挟んで区切りとする。
+                sbSickProgress.append(IkenshoConstants.LINE_SEPARATOR);
+                sbSickProgress.append(IkenshoConstants.LINE_SEPARATOR);
+            }
+            // 連結
+            sbSickProgress.append(sbMedicine.toString());
+        } else {
+            // 傷病の経過が250文字以内かつ5行以内かつ薬剤名が6個以内の場合
+
+            String sickMedicinesGridName = "Grid9";
+            int sickMedicinesRows = 3;
+            for (int i = 0; i < sickMedicinesRows; i++) {
+                for (int j = 0; j < 2; j++) {
+                    StringBuffer sb = new StringBuffer();
+                    String index = String.valueOf(i * 2 + j + 1);
+                    text = (String) VRBindPathParser.get("MEDICINE" + index,
+                            data);
+                    if (!IkenshoCommon.isNullText(text)) {
+                        sb.append(text);
+                        sb.append(" ");
+                    }
+                    text = (String) VRBindPathParser
+                            .get("DOSAGE" + index, data);
+                    if (!IkenshoCommon.isNullText(text)) {
+                        sb.append(text);
+                    }
+                    text = (String) VRBindPathParser.get("UNIT" + index, data);
+                    if (!IkenshoCommon.isNullText(text)) {
+                        sb.append(text);
+                    }
+                    text = (String) VRBindPathParser.get("USAGE" + index, data);
+                    if (!IkenshoCommon.isNullText(text)) {
+                        sb.append(" ");
+                        sb.append(text);
+                    }
+                    if (sb.length() > 0) {
+                        IkenshoCommon.addString(pd, sickMedicinesGridName
+                                + ".h" + (i + 1) + ".w" + (j + 1), sb
+                                .toString());
+                    }
                 }
             }
         }
+
+        ACChotarouXMLUtilities.setValue(pd, "ShobyoKeika", sbSickProgress.toString());
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
+        
         //2009/01/09 [Tozo Tanaka] Replace - end
 
 		// -----------------------------------------------------

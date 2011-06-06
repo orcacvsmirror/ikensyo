@@ -30,6 +30,7 @@ import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
+import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 
 /** <HEAD_IKENSYO> */
@@ -433,9 +434,31 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
 //        addMedicine(pd, data, "6", "Grid7.h3.w2");
 
         // 傷病治療状態
-        ACChotarouXMLUtilities.setValue(pd, "Grid6.h1.w2",
-                getInsertionLineSeparatorToStringOnByte(ACCastUtilities.toString(data
-                        .get("MT_STS")), 100));
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//        ACChotarouXMLUtilities.setValue(pd, "Grid6.h1.w2",
+//                getInsertionLineSeparatorToStringOnByte(ACCastUtilities.toString(data
+//                        .get("MT_STS")), 100));
+        String[] lines = ACTextUtilities.separateLineWrapOnByte(ACCastUtilities
+                .toString(data.get("MT_STS")), 100);
+        int linesCount = Math.min(5, lines.length);
+        int totalByteCount = 0;
+        StringBuffer sbSickProgress = new StringBuffer();
+        for (int i = 0; i < linesCount; i++) {
+            if (totalByteCount > 0) {
+                sbSickProgress.append(IkenshoConstants.LINE_SEPARATOR);
+            }
+            int lineByteLen = lines[i].getBytes().length;
+            if (totalByteCount + lineByteLen > 500) {
+                sbSickProgress.append(lines[i].substring(0,
+                        Math.max(0,501 - (totalByteCount + lineByteLen))));
+                break;
+            }
+            sbSickProgress.append(lines[i]);
+            totalByteCount += lineByteLen;
+        }
+        ACChotarouXMLUtilities.setValue(pd, "Grid6.h1.w2", sbSickProgress
+                .toString());
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
         
         // 投与中の薬剤の用法・用量
         if (!(
@@ -869,35 +892,38 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
     
     //2009/01/21 [Tozo Tanaka] Add - begin
     protected static int getMedicineViewCount() {
-        int ikenshoCount = 6;
-        int shijishoCount = ikenshoCount;
-        try {
-            if (ACFrame.getInstance().hasProperty(
-                    "DocumentSetting/MedicineViewCount")
-                    && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
-                            "DocumentSetting/MedicineViewCount"), 6) == 8) {
-                ikenshoCount = 8;
-            }
-
-            shijishoCount = ikenshoCount;
-            if (ACFrame
-                    .getInstance()
-                    .hasProperty(
-                            "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6")
-                    && ACCastUtilities
-                            .toBoolean(
-                                    ACFrame
-                                            .getInstance()
-                                            .getProperty(
-                                                    "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6"),
-                                    false)) {
-                // 指示書設定を優先
-                shijishoCount = 6;
-            }
-
-        } catch (Exception e) {
-        }
-        return shijishoCount;
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//        int ikenshoCount = 6;
+//        int shijishoCount = ikenshoCount;
+//        try {
+//            if (ACFrame.getInstance().hasProperty(
+//                    "DocumentSetting/MedicineViewCount")
+//                    && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
+//                            "DocumentSetting/MedicineViewCount"), 6) == 8) {
+//                ikenshoCount = 8;
+//            }
+//
+//            shijishoCount = ikenshoCount;
+//            if (ACFrame
+//                    .getInstance()
+//                    .hasProperty(
+//                            "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6")
+//                    && ACCastUtilities
+//                            .toBoolean(
+//                                    ACFrame
+//                                            .getInstance()
+//                                            .getProperty(
+//                                                    "DocumentSetting/MedicineViewCountOfHoumonKangoShijishoFixed6"),
+//                                    false)) {
+//                // 指示書設定を優先
+//                shijishoCount = 6;
+//            }
+//
+//        } catch (Exception e) {
+//        }
+//        return shijishoCount;
+        return 8;
+        // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
     }
     /**
      * 指定された文字数で改行した文字列を返します。

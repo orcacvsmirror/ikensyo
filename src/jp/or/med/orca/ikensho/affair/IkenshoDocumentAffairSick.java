@@ -3,19 +3,20 @@ package jp.or.med.orca.ikensho.affair;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.im.InputSubset;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.swing.ComboBoxModel;
+import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
+import javax.swing.text.AttributeSet;
+import javax.swing.text.BadLocationException;
+import javax.swing.text.JTextComponent;
 
-import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
 import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.component.ACLabel;
@@ -23,10 +24,15 @@ import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.container.ACParentHesesPanelContainer;
-import jp.nichicom.ac.core.ACFrame;
-import jp.nichicom.ac.core.ACFrameEventProcesser;
+import jp.nichicom.ac.lang.ACCastUtilities;
+import jp.nichicom.ac.text.ACTextAreaDocument;
+import jp.nichicom.ac.text.ACTextFieldDocument;
+import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.bind.VRBindSource;
+import jp.nichicom.vr.component.AbstractVRTextArea;
+import jp.nichicom.vr.component.AbstractVRTextField;
 import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
@@ -34,7 +40,9 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.adapter.VRHashMapArrayToConstKeyArrayAdapter;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.IkenshoACRowMaximumableTextArea;
 import jp.or.med.orca.ikensho.component.IkenshoACTextArea;
+import jp.or.med.orca.ikensho.component.IkenshoACTextField;
 import jp.or.med.orca.ikensho.component.IkenshoEraDateTextField;
 import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.component.IkenshoSpecialSickButton;
@@ -72,7 +80,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   private IkenshoOptionComboBox sickMedicineName1 = new IkenshoOptionComboBox();
   private IkenshoOptionComboBox sickMedicineDosageUnit2 = new IkenshoOptionComboBox();
 //2007/10/18 [Masahiko Higuchi] Replace - end
-  private ACTextField sickMedicineDosage6 = new ACTextField();
+  private ACTextField sickMedicineDosage6 = new IkenshoACTextField();
   private VRLabel sickMedicineDosageHead3 = new VRLabel();
 //2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
   private IkenshoOptionComboBox sickMedicineName6 = new IkenshoOptionComboBox();
@@ -89,7 +97,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   private IkenshoOptionComboBox sickMedicineDosageUnit1 = new IkenshoOptionComboBox();
 //2007/10/18 [Masahiko Higuchi] Replace - end
   private VRLabel sickMedicineUsageHead4 = new VRLabel();
-  private ACTextField sickMedicineDosage2 = new ACTextField();
+  private ACTextField sickMedicineDosage2 = new IkenshoACTextField();
 //2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
   private IkenshoOptionComboBox sickName1 = new IkenshoOptionComboBox();
 //2007/10/18 [Masahiko Higuchi] Replace - end
@@ -110,7 +118,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
 //2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
   private IkenshoOptionComboBox sickMedicineUsage2 = new IkenshoOptionComboBox();
 //2007/10/18 [Masahiko Higuchi] Replace - end
-  private ACTextField sickMedicineDosage4 = new ACTextField();
+  private ACTextField sickMedicineDosage4 = new IkenshoACTextField();
   private IkenshoSpecialSickButton sickSpecial3;
 //2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
   private IkenshoOptionComboBox sickMedicineUsage1 = new IkenshoOptionComboBox();
@@ -124,13 +132,13 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   private VRLabel sickMedicineDosageHead6 = new VRLabel();
   private ACLabelContainer sickMedicines6 = new ACLabelContainer();
   private IkenshoSpecialSickButton sickSpecial1;
-  private ACTextField sickMedicineDosage5 = new ACTextField();
+  private ACTextField sickMedicineDosage5 = new IkenshoACTextField();
   private ACLabelContainer sickMedicines3 = new ACLabelContainer();
 //2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
   private IkenshoOptionComboBox sickMedicineUsage5 = new IkenshoOptionComboBox();
 //2007/10/18 [Masahiko Higuchi] Replace - end
   private ACParentHesesPanelContainer sickDates1;
-  private ACTextField sickMedicineDosage1 = new ACTextField();
+  private ACTextField sickMedicineDosage1 = new IkenshoACTextField();
 //2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
   private IkenshoOptionComboBox sickName3 = new IkenshoOptionComboBox();
 //2007/10/18 [Masahiko Higuchi] Replace - end
@@ -139,7 +147,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   private IkenshoOptionComboBox sickMedicineName2 = new IkenshoOptionComboBox();
 //2007/10/18 [Masahiko Higuchi] Replace - end
   private VRLabel sickMedicineDosageHead4 = new VRLabel();
-  private ACTextField sickMedicineDosage3 = new ACTextField();
+  private ACTextField sickMedicineDosage3 = new IkenshoACTextField();
   private ACLabelContainer sickMedicines4 = new ACLabelContainer();
 //2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
   private IkenshoOptionComboBox sickName2 = new IkenshoOptionComboBox();
@@ -164,7 +172,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   private ACLabelContainer sickMedicines7 = new ACLabelContainer();
   private IkenshoOptionComboBox sickMedicineName7 = new IkenshoOptionComboBox();
   private VRLabel sickMedicineDosageHead7 = new VRLabel();
-  private ACTextField sickMedicineDosage7 = new ACTextField();
+  private ACTextField sickMedicineDosage7 = new IkenshoACTextField();
   private IkenshoOptionComboBox sickMedicineDosageUnit7 = new IkenshoOptionComboBox();
   private VRLabel sickMedicineUsageHead7 = new VRLabel();
   private IkenshoOptionComboBox sickMedicineUsage7 = new IkenshoOptionComboBox();
@@ -172,13 +180,26 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
   private ACLabelContainer sickMedicines8 = new ACLabelContainer();
   private IkenshoOptionComboBox sickMedicineName8 = new IkenshoOptionComboBox();
   private VRLabel sickMedicineDosageHead8 = new VRLabel();
-  private ACTextField sickMedicineDosage8 = new ACTextField();
+  private ACTextField sickMedicineDosage8 = new IkenshoACTextField();
   private IkenshoOptionComboBox sickMedicineDosageUnit8 = new IkenshoOptionComboBox();
   private VRLabel sickMedicineUsageHead8 = new VRLabel();
   private IkenshoOptionComboBox sickMedicineUsage8 = new IkenshoOptionComboBox();
   //隠れた入力済み薬剤名の警告
-  private ACLabel sickMedicineHiddenValueWarning = new ACLabel();
+  // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴いサイズ指定を可能とする。
+  private ACLabel sickMedicineValueWarning = new ACLabel();
+  // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
   //2009/01/06 [Tozo Tanaka] Add - end
+  // [ID:0000509][Masahiko Higuchi] 2009/06 add begin 画面調整に伴いサイズ指定を可能とする。
+  // 薬剤名用ラベルコンテナのレイアウト
+  private VRLayout sickMedicines1Layout;
+  private VRLayout sickMedicines2Layout;
+  private VRLayout sickMedicines3Layout;
+  private VRLayout sickMedicines4Layout;
+  private VRLayout sickMedicines5Layout;
+  private VRLayout sickMedicines6Layout;
+  private VRLayout sickMedicines7Layout;
+  private VRLayout sickMedicines8Layout;
+  // [ID:0000509][Masahiko Higuchi] 2009/06 add end
 
 
   /**
@@ -375,6 +396,10 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
 
       //2009/01/06 [Tozo Tanaka] Add - end
 
+      
+      // [ID:0000438][Tozo TANAKA] 2009/06/09 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+      initSickMedicineDocument();
+      // [ID:0000438][Tozo TANAKA] 2009/06/09 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
     }
   
   public boolean noControlError() {
@@ -398,46 +423,53 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
       }
     }
     
-    //2009/01/08 [Tozo Tanaka] Add - begin
-    if(!noControlErrorOfSickProgress()){
-        return false;
-    }
-    //2009/01/08 [Tozo Tanaka] Add - end
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 delete begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//    //2009/01/08 [Tozo Tanaka] Add - begin
+//    if(!noControlErrorOfSickProgress()){
+//        return false;
+//    }
+//    //2009/01/08 [Tozo Tanaka] Add - end
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 delete end 【主治医医見書・医師医見書】薬剤名テキストの追加
     
     return true;
   }
   
   //2009/01/08 [Tozo Tanaka] Add - begin
-  protected boolean noControlErrorOfSickProgress(){
-      int maxLen = getSickProgressMaxLengthWhenMedicineOverLength();
-      if(maxLen < 0){
-          //薬剤7または薬剤8が入力され、かつ傷病の経過が最大入力文字数を超過している場合
-          ACMessageBox.show(getSickProgressName() + "はトータルで"
-                      + Math.abs(maxLen) + "文字までしか入力できません。");
-          sickProgress.requestFocus();
-          return false;
-//      }else if(maxLen < getSickProgress().getMaxLength()){
-//          //薬剤7または薬剤8が入力されている場合
-//          if(getMedicineViewCount()==6){
-//              //薬剤名の表示個数は6個に設定されている
-//              ACMessageBox
-//                          .show("薬剤名の表示個数が6個の場合、7あるいは8個目の薬剤名等を入力した文書の保存・印刷はできません。"
-//                                  + ACConstants.LINE_SEPARATOR
-//                                  + "薬剤名の表示個数は、[メインメニュー]-[設定(S)]-[その他の設定(O)]より変更可能です。");
-//              sickProgress.requestFocus();
-//              return false;
-//          }
-      }
-      return true;
-  }
+  // [ID:0000438][Tozo TANAKA] 2009/06/02 delete begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//  protected boolean noControlErrorOfSickProgress(){
+//      int maxLen = getSickProgressMaxLengthWhenMedicineOverLength();
+//      if(maxLen < 0){
+//          //薬剤7または薬剤8が入力され、かつ傷病の経過が最大入力文字数を超過している場合
+//          ACMessageBox.show(getSickProgressName() + "はトータルで"
+//                      + Math.abs(maxLen) + "文字までしか入力できません。");
+//          sickProgress.requestFocus();
+//          return false;
+////      }else if(maxLen < getSickProgress().getMaxLength()){
+////          //薬剤7または薬剤8が入力されている場合
+////          if(getMedicineViewCount()==6){
+////              //薬剤名の表示個数は6個に設定されている
+////              ACMessageBox
+////                          .show("薬剤名の表示個数が6個の場合、7あるいは8個目の薬剤名等を入力した文書の保存・印刷はできません。"
+////                                  + ACConstants.LINE_SEPARATOR
+////                                  + "薬剤名の表示個数は、[メインメニュー]-[設定(S)]-[その他の設定(O)]より変更可能です。");
+////              sickProgress.requestFocus();
+////              return false;
+////          }
+//      }
+//      return true;
+//  }
+  // [ID:0000438][Tozo TANAKA] 2009/06/02 delete end 【主治医医見書・医師医見書】薬剤名テキストの追加
   
+  // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴いサイズ指定を可能とする。
   /**
-   * 隠れた入力済み薬剤名の警告を返します。
-   * @return 隠れた入力済み薬剤名の警告
-   */
-  protected ACLabel getSickMedicineHiddenValueWarning() {
-    return sickMedicineHiddenValueWarning;
-  }
+     * 隠れた入力済み薬剤名の警告を返します。
+     * 
+     * @return 隠れた入力済み薬剤名の警告
+     */
+    protected ACLabel getSickMedicineValueWarning() {
+        return sickMedicineValueWarning;
+    }
+  // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
 
 //  protected ACTextArea getSickProgress(){
   protected IkenshoACTextArea getSickProgress(){
@@ -460,19 +492,50 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
       return subChars;
   }  
   protected int getSickProgressMaxLengthWhenMedicineOverLength(){
-      int subChars = getSickProgressMaxLengthCutDownLength();
-      if(subChars > 0){
-          //薬剤7または薬剤8が入力されている場合
-          int maxLen = sickProgress.getMaxLength() - subChars;
-          if(maxLen < sickProgress.getText().replaceAll("[\r\n]","").length()){
+      // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//      int subChars = getSickProgressMaxLengthCutDownLength();
+//      if(subChars > 0){
+//          //薬剤7または薬剤8が入力されている場合
+//          int maxLen = sickProgress.getMaxLength() - subChars;
+//          if(maxLen < sickProgress.getText().replaceAll("[\r\n]","").length()){
+//              //入力可能文字数を超えていたら負の値で返す
+//              return -maxLen;
+//          }else{
+//              //入力可能文字数は超えていないが制限がかかっている場合は正の値で返す
+//              return maxLen;
+//          }
+//      }
+//      return sickProgress.getMaxLength();
+      
+      int defaultMaxLength = getSickProgress().getMaxLength();
+      int totalChars = getSickProgress().getText().replaceAll("[\r\n]","").length();
+      //薬剤1～8の入力チェック
+      for(int i=0; i<8; i++){
+          Object obj;
+          obj = getSickMedicineName(i).getEditor().getItem();
+          if(!isNullText(obj)){
+              totalChars += ACCastUtilities.toString(obj,"").length();
+          }
+          obj = getSickMedicineDosage(i).getText();
+          if(!isNullText(obj)){
+              totalChars += ACCastUtilities.toString(obj,"").length();
+          }
+          obj = getSickMedicineDosageUnit(i).getEditor().getItem();
+          if(!isNullText(obj)){
+              totalChars += ACCastUtilities.toString(obj,"").length();
+          }
+          obj = getSickMedicineUsage(i).getEditor().getItem();
+          if(!isNullText(obj)){
+              totalChars += ACCastUtilities.toString(obj,"").length();
+          }
+          if(defaultMaxLength < totalChars){
               //入力可能文字数を超えていたら負の値で返す
-              return -maxLen;
-          }else{
-              //入力可能文字数は超えていないが制限がかかっている場合は正の値で返す
-              return maxLen;
+              return defaultMaxLength - totalChars;
           }
       }
-      return sickProgress.getMaxLength();
+      //入力可能文字数は超えていないが制限がかかっている場合は正の値で返す
+      return defaultMaxLength - totalChars;
+      // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
   }
   
   protected String getSickProgressName(){
@@ -485,90 +548,389 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
                         + "文字" + IkenshoConstants.LINE_SEPARATOR + "または"
                         + IkenshoConstants.LINE_SEPARATOR + "5行以内）");
   }
+//  ComboBoxEditor edit = getEditor();
+//  if (edit != null) {
+//      Component comp = edit.getEditorComponent();
+//      if (comp instanceof AbstractVRTextField) {
+//          return (AbstractVRTextField) comp;
+//      }
+//  }
+//  return null;
+
+//// [ID:0000438][Tozo TANAKA] 2009/06/09 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//  protected class IkenshoSickMedicineLengthCheckFocusAdapter extends FocusAdapter{
+//      private List exclusionAlertCompnents;
+//    public List getExclusionAlertCompnents() {
+//        return exclusionAlertCompnents;
+//    }
+//    public void setExclusionAlertComponents(List setExclusionAlertCompnents) {
+//        this.exclusionAlertCompnents = setExclusionAlertCompnents;
+//    }
+//    public void focusLost(FocusEvent e) {
+//          super.focusLost(e);
+//          
+//          boolean overLength = false;
+//          
+//          ACFrameEventProcesser processer = ACFrame.getInstance()
+//                      .getFrameEventProcesser();
+//          int maxLen = getSickProgressMaxLengthWhenMedicineOverLength();
+//          if (maxLen < 0) {
+//              // エラー色
+//              getSickProgresss().setLabelFilled(true);
+//              if (processer != null) {
+//                  // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+////                  getSickProgresss().setForeground(
+////                          processer.getContainerErrorForeground());
+////                  getSickProgresss().setBackground(
+////                          processer.getContainerErrorBackground());
+//                  getSickProgresss().setForeground(
+//                          processer.getContainerWarningForeground());
+//                  getSickProgresss().setBackground(
+//                          processer.getContainerWarningBackground());
+//                  // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
+//              }
+//              setSickProgressContaierText(maxLen);
+//              
+//              overLength = true;
+//          } else {
+//              // デフォルト色
+//              getSickProgresss().setLabelFilled(false);
+//                  getSickProgresss().setForeground(
+//                          processer.getContainerDefaultForeground());
+//                  getSickProgresss().setBackground(
+//                          processer.getContainerDefaultBackground());
+//                  setSickProgressContaierText(250);
+//          }
+//          //文字数表記更新
+//          setSickProgressContaierText(Math.abs(maxLen));
+//          
+//          if(overLength){
+//              Component lostedComp= e.getComponent();
+//              Component gainedComp= e.getOppositeComponent();
+//              if(gainedComp!=null && lostedComp!=null){
+//                  boolean showAlert = true;
+//                  List comps = getExclusionAlertCompnents();
+//                  if(comps!=null){
+//                      Iterator it1 = comps.iterator();
+//                      while(it1.hasNext()){
+//                          Iterator it2=((List)it1.next()).iterator();
+//                          boolean gained = false;
+//                          boolean losted = false;
+//                          while(it2.hasNext()){
+//                              Object obj=it2.next();
+//                              if(lostedComp==obj){
+//                                  losted=true;
+//                              }else if(gainedComp==obj){
+//                                  gained=true;
+//                              }
+//                              if(losted&&gained){
+//                                  //同列のコンポーネント間のフォーカス遷移
+//                                  showAlert = false;
+//                                  break;
+//                              }
+//                          }
+//                          if(!showAlert){
+//                              break;
+//                          }
+//                      }
+//                  }
+//                  if(showAlert){
+//                      //警告表示
+//                      //薬剤7または薬剤8が入力され、かつ傷病の経過が最大入力文字数を超過している場合
+//                      // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+////                      ACMessageBox.show(getSickProgressName() + "はトータルで"
+////                                  + Math.abs(maxLen) + "文字までしか入力できません。");
+//                      showAlertOnSickProgressLengthOver();
+//                      // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
+//                  }
+//              }
+//          }
+//          
+//      }
+//  }
+//  //2009/01/08 [Tozo Tanaka] Add - end
   
-  protected class IkenshoSickMedicineLengthCheckFocusAdapter extends FocusAdapter{
-      private List exclusionAlertCompnents;
-    public List getExclusionAlertCompnents() {
-        return exclusionAlertCompnents;
-    }
-    public void setExclusionAlertComponents(List setExclusionAlertCompnents) {
-        this.exclusionAlertCompnents = setExclusionAlertCompnents;
-    }
-    public void focusLost(FocusEvent e) {
-          super.focusLost(e);
-          
-          boolean overLength = false;
-          
-          ACFrameEventProcesser processer = ACFrame.getInstance()
-                      .getFrameEventProcesser();
-          int maxLen = getSickProgressMaxLengthWhenMedicineOverLength();
-          if (maxLen < 0) {
-              // エラー色
-              getSickProgresss().setLabelFilled(true);
-              if (processer != null) {
-                  getSickProgresss().setForeground(
-                          processer.getContainerErrorForeground());
-                  getSickProgresss().setBackground(
-                          processer.getContainerErrorBackground());
-              }
-              setSickProgressContaierText(maxLen);
-              
-              overLength = true;
-          } else {
-              // デフォルト色
-              getSickProgresss().setLabelFilled(false);
-                  getSickProgresss().setForeground(
-                          processer.getContainerDefaultForeground());
-                  getSickProgresss().setBackground(
-                          processer.getContainerDefaultBackground());
-                  setSickProgressContaierText(250);
-          }
-          //文字数表記更新
-          setSickProgressContaierText(Math.abs(maxLen));
-          
-          if(overLength){
-              Component lostedComp= e.getComponent();
-              Component gainedComp= e.getOppositeComponent();
-              if(gainedComp!=null && lostedComp!=null){
-                  boolean showAlert = true;
-                  List comps = getExclusionAlertCompnents();
-                  if(comps!=null){
-                      Iterator it1 = comps.iterator();
-                      while(it1.hasNext()){
-                          Iterator it2=((List)it1.next()).iterator();
-                          boolean gained = false;
-                          boolean losted = false;
-                          while(it2.hasNext()){
-                              Object obj=it2.next();
-                              if(lostedComp==obj){
-                                  losted=true;
-                              }else if(gainedComp==obj){
-                                  gained=true;
-                              }
-                              if(losted&&gained){
-                                  //同列のコンポーネント間のフォーカス遷移
-                                  showAlert = false;
-                                  break;
-                              }
-                          }
-                          if(!showAlert){
-                              break;
-                          }
-                      }
-                  }
-                  if(showAlert){
-                      //警告表示
-                      //薬剤7または薬剤8が入力され、かつ傷病の経過が最大入力文字数を超過している場合
-                      ACMessageBox.show(getSickProgressName() + "はトータルで"
-                                  + Math.abs(maxLen) + "文字までしか入力できません。");
-                  }
-              }
-          }
-          
+//  protected void showAlertOnSickProgressLengthOver(){
+//      ACMessageBox.show(getSickProgressName() + "と薬剤名のトータルが560文字を超えています。"
+//              + IkenshoConstants.LINE_SEPARATOR + "印刷時に560文字を超える文字は印字されません。");
+//  }
+  protected static final int SICK_MEDICINE_LINE_COUNT_LIMIT = 11; 
+  protected class IkenshoSickMedicineLengthCheckFieldDocument extends ACTextFieldDocument{
+      public IkenshoSickMedicineLengthCheckFieldDocument(AbstractVRTextField textField) {
+          super(textField);
       }
-  }
-  //2009/01/08 [Tozo Tanaka] Add - end
-  
+      public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
+          if (isInsertProcessDisabled(offset, str, attr)) {
+              return;
+          }
+          if(str != null){
+              int maxLen = getSickProgressMaxLengthWhenMedicineOverLength();
+              if (maxLen < str.length()) {
+                  //文字数超過なら削る
+                  if(maxLen <= 0){
+                      //すでに最大文字数
+                      return;
+                  }
+                  str  = str.substring(0, maxLen);
+              }
+          }
+          
+          //1文字ずつ減らしながら、行あふれしないギリギリの文字数を探す。
+          boolean nowIsAbsoluteEditable = isAbsoluteEditable(); 
+          setAbsoluteEditable(true);
+          for(int i=str.length(); i>0; i--){
+              super.insertString(offset, str.substring(0, i), attr);
+              int totalLineCount = getSickMedicineTotalLineCount();
+              if(totalLineCount <= SICK_MEDICINE_LINE_COUNT_LIMIT){
+                  if (getTextComponent() instanceof IkenshoACTextField) {
+                      ((IkenshoACTextField) getTextComponent())
+                              .setModelForce(getTextComponent().getText());
+                  }
+                  updateSickMedicineValueWarningText(totalLineCount);
+                  break;
+              }
+              super.remove(offset, i);
+          }
+          setAbsoluteEditable(nowIsAbsoluteEditable);
+          
+      }     
+      public void remove(int offset, int length) throws BadLocationException {
+          super.remove(offset, length);
+          int totalLineCount = getSickMedicineTotalLineCount();
+          updateSickMedicineValueWarningText(totalLineCount);
+      }
+    }
+    protected class IkenshoSickMedicineLengthCheckAreaDocument extends ACTextAreaDocument{
+        public IkenshoSickMedicineLengthCheckAreaDocument(AbstractVRTextArea textArea) {
+            super(textArea);
+        }
+        public void insertString(int offset, String str, AttributeSet attr) throws BadLocationException {
+            if (isInsertProcessDisabled(offset, str, attr)) {
+                return;
+            }
+            if(str != null){
+                int maxLen = getSickProgressMaxLengthWhenMedicineOverLength();
+                if (maxLen < str.length()) {
+                    //文字数超過なら削る
+                    if(maxLen <= 0){
+                        //すでに最大文字数
+                        return;
+                    }
+                    str  = str.substring(0, maxLen);
+                }
+            }
+            //1文字ずつ減らしながら、行あふれしないギリギリの文字数を探す。
+            boolean nowIsAbsoluteEditable = isAbsoluteEditable(); 
+            setAbsoluteEditable(true);
+            for(int i=str.length(); i>0; i--){
+                super.insertString(offset, str.substring(0, i), attr);
+                int totalLineCount = getSickMedicineTotalLineCount();
+                if(totalLineCount <= SICK_MEDICINE_LINE_COUNT_LIMIT){
+                    if (getTextComponent() instanceof IkenshoACRowMaximumableTextArea) {
+                        ((IkenshoACRowMaximumableTextArea) getTextComponent())
+                                .setModelForce(getTextComponent().getText());
+                    }
+                    updateSickMedicineValueWarningText(totalLineCount);
+                    break;
+                }
+                
+                super.remove(offset, i);
+            }
+            
+            setAbsoluteEditable(nowIsAbsoluteEditable);
+            
+        }
+        public void remove(int offset, int length) throws BadLocationException {
+            super.remove(offset, length);
+            int totalLineCount = getSickMedicineTotalLineCount();
+            updateSickMedicineValueWarningText(totalLineCount);
+        }
+    }
+    protected int getSickMedicineTotalLineCount(){
+        StringBuffer sbSickProgress = new StringBuffer();
+
+        // 傷病治療状態
+        String text = getSickProgress().getText();
+        String[] sickProgressLines = ACTextUtilities.separateLineWrapOnByte(
+                text, 100);
+        int totalLineCount = sickProgressLines.length;
+        sbSickProgress
+                .append(ACTextUtilities.concatLineWrap(sickProgressLines));
+
+        text = text.replaceAll("[\r\n]", "");
+        int totalCharCount = text.length();
+        int totalByteCount = text.getBytes().length;
+
+        // 薬剤
+        int lastMedicineLineIndex = 0;
+        for (int i = 0; i < 4; i++) {
+            boolean hasData = false;
+            for (int j = 0; j < 2; j++) {
+                int index = i * 2 + j;
+                text = getSickMedicineName(index).getText();
+                if (!IkenshoCommon.isNullText(text)) {
+                    hasData = true;
+                    break;
+                }
+                text = getSickMedicineDosage(index).getText();
+                if (!IkenshoCommon.isNullText(text)) {
+                    hasData = true;
+                    break;
+                }
+                text = getSickMedicineDosageUnit(index).getText();
+                if (!IkenshoCommon.isNullText(text)) {
+                    hasData = true;
+                    break;
+                }
+                text = getSickMedicineUsage(index).getText();
+                if (!IkenshoCommon.isNullText(text)) {
+                    hasData = true;
+                    break;
+                }
+            }
+            if(hasData){
+                lastMedicineLineIndex = i + 1;
+            }
+        }
+
+        if (totalByteCount > 500 || totalLineCount > 5 || lastMedicineLineIndex > 3) {
+            // 傷病の経過が251文字以上または6行以上または薬剤名が6個以上の場合
+            int lastLineByteCount = 0;
+            StringBuffer sbMedicine = new StringBuffer();
+            for (int index = 0; index <= 7; index++) {
+                StringBuffer sb = new StringBuffer();
+                int medicineCharLen = 0;
+                int dosageCharLen = 0;
+                int unitCharLen = 0;
+                int usageCharLen = 0;
+                // 薬剤セットを結合
+                text = getSickMedicineName(index).getText();
+                if (!IkenshoCommon.isNullText(text)) {
+                    sb.append(text);
+                    sb.append(" ");
+                    medicineCharLen = text.length();
+                }
+                text = getSickMedicineDosage(index).getText();
+                if (!IkenshoCommon.isNullText(text)) {
+                    sb.append(text);
+                    dosageCharLen = text.length();
+                }
+                text = getSickMedicineDosageUnit(index).getText();
+                if (!IkenshoCommon.isNullText(text)) {
+                    sb.append(text);
+                    unitCharLen = text.length();
+                }
+                text = getSickMedicineUsage(index).getText();
+                if (!IkenshoCommon.isNullText(text)) {
+                    sb.append(" ");
+                    sb.append(text);
+                    usageCharLen = text.length();
+                }
+
+                // 連結して表示するか改行するかを判定
+                int lineCharLen = medicineCharLen + dosageCharLen + unitCharLen
+                        + usageCharLen;
+                int lineByetLen = sb.toString().getBytes().length;
+                if (lastLineByteCount + lineByetLen
+                        + ((lastLineByteCount > 0) ? 2 : 0) > 100) {
+                    sbMedicine.append(IkenshoConstants.LINE_SEPARATOR);
+                    lastLineByteCount = lineByetLen;
+                } else {
+                    if (lastLineByteCount > 0) {
+                        sbMedicine.append("  ");
+                        lastLineByteCount += 2;
+                    }
+                    lastLineByteCount += lineByetLen;
+                }
+                // 最大文字数制限を判定
+                if (totalCharCount + lineCharLen > 560) {
+                    int useCharCount = 560 - totalCharCount;
+                    int lastPos = 0;
+                    // 薬剤名
+                    if (useCharCount > medicineCharLen) {
+                        lastPos += medicineCharLen + 1;
+                        useCharCount -= medicineCharLen;
+                        // 用量
+                        if (useCharCount > dosageCharLen) {
+                            lastPos += dosageCharLen;
+                            useCharCount -= dosageCharLen;
+                            // 用量単位
+                            if (useCharCount > unitCharLen) {
+                                lastPos += unitCharLen;
+                                useCharCount -= unitCharLen;
+                                // 用法
+                                if (useCharCount <= usageCharLen) {
+                                    useCharCount++;
+                                }
+                            }
+                        }
+                    }
+                    lastPos += useCharCount;
+
+                    sbMedicine.append(sb.substring(0, lastPos));
+                    break;
+                } else {
+                    sbMedicine.append(sb.toString());
+                }
+                totalCharCount += lineCharLen;
+            }
+            // 傷病の経過と薬剤名の区切りとして改行を使用(計算上は空行をカウントしない)
+            if (sbSickProgress.length() > 0 && sbMedicine.length() > 0) {
+                // 傷病の経過と薬剤名の間には1行分の空行を挟んで区切りとする。
+                sbSickProgress.append(IkenshoConstants.LINE_SEPARATOR);
+            }
+            // 連結
+            sbSickProgress.append(sbMedicine.toString());
+            
+            return ACTextUtilities.separateLineWrap(sbSickProgress.toString()).length;
+        }else{
+            return totalLineCount + lastMedicineLineIndex;
+        }
+    }
+    
+    
+    protected void updateSickMedicineValueWarningText(int totalLineCount){
+        int defaultMaxLength = getSickProgress().getMaxLength();
+        int maxLen = getSickProgressMaxLengthWhenMedicineOverLength();
+        int inputedLen = Math.max(0,defaultMaxLength-maxLen);
+        getSickMedicineValueWarning().setText(getSickMedicineValueWarningText(inputedLen,totalLineCount));
+    }
+    protected String getSickMedicineValueWarningText(int inputedCharCount, int inputedLineCount){
+        return getSickProgressName() + " と 薬剤名 はトータルで560文字かつ11行しか入力できません。(現在 "+inputedCharCount+"文字 "+inputedLineCount+"行)";
+    }
+
+    protected void initSickMedicineDocument(){
+        //横一列の薬剤関連コンポーネントを登録
+        Component sickProgressContants = getSickProgress().getViewport().getComponent(0);
+        if(sickProgressContants!=null){
+            if(sickProgressContants instanceof AbstractVRTextArea){
+                    ((AbstractVRTextArea) sickProgressContants)
+                            .setDocument(new IkenshoSickMedicineLengthCheckAreaDocument(
+                                    (AbstractVRTextArea) sickProgressContants));
+            }
+        }
+        for(int i=0; i<8; i++){
+            Component comp;
+          
+            comp = getSickMedicineName(i).getEditor().getEditorComponent();
+            ((AbstractVRTextField) comp).setDocument(new IkenshoSickMedicineLengthCheckFieldDocument(
+                    (AbstractVRTextField) comp));
+              
+            comp = getSickMedicineDosage(i);
+            ((AbstractVRTextField) comp).setDocument(new IkenshoSickMedicineLengthCheckFieldDocument(
+                    (AbstractVRTextField) comp));
+              
+            comp = getSickMedicineDosageUnit(i).getEditor().getEditorComponent();
+            ((AbstractVRTextField) comp).setDocument(new IkenshoSickMedicineLengthCheckFieldDocument(
+                    (AbstractVRTextField) comp));
+              
+            comp = getSickMedicineUsage(i).getEditor().getEditorComponent();
+            ((AbstractVRTextField) comp).setDocument(new IkenshoSickMedicineLengthCheckFieldDocument(
+                    (AbstractVRTextField) comp));
+        }
+    }
+    
+    // [ID:0000438][Tozo TANAKA] 2009/06/09 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
 
   protected void bindSourceInnerBindComponent() throws Exception {
     super.bindSourceInnerBindComponent();
@@ -576,70 +938,79 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     checkSpecialSick(sickName1, getSickSpecial1());
     checkSpecialSick(sickName2, getSickSpecial2());
     checkSpecialSick(sickName3, getSickSpecial3());
-
-    //2009/01/06 [Tozo Tanaka] Add - begin    
-    if(getMasterAffair().getMedicineViewCount()!=8){
-        if(getSickProgressMaxLengthCutDownLength() > 0){
-            //6個表示だが薬剤7または薬剤8に入力あり
-            getSickMedicineHiddenValueWarning().setVisible(true);
-        }
-        sickMedicines7.setVisible(false);
-        sickMedicines8.setVisible(false);
-    }else{
-        sickMedicines7.setVisible(true);
-        sickMedicines8.setVisible(true);
-    }
-    //フォーカスロストを発火させ、文字数表示を更新させる
-    getSickProgress().focusLost(new FocusEvent(getSickProgress(), FocusEvent.FOCUS_LOST));
-
-
-    //横一列の薬剤関連コンポーネントを登録
-    IkenshoSickMedicineLengthCheckFocusAdapter sickMedicineLengthCheckFocusAdapter = new IkenshoSickMedicineLengthCheckFocusAdapter();
-    Component sickProgressContants = getSickProgress().getViewport().getComponent(0);
-    List medicineLinesComponents = new ArrayList();
-    if(sickProgressContants!=null){
-        sickProgressContants.addFocusListener(sickMedicineLengthCheckFocusAdapter);
-
-        medicineLinesComponents.add(Arrays.asList(new Object[]{
-                sickProgressContants,
-                getMasterAffair().getUpdate(),
-                getMasterAffair().getPrint(),
-        }));
-    }
-    for(int i=0; i<8; i++){
-        getSickMedicineName(i).getEditor().getEditorComponent().addFocusListener(sickMedicineLengthCheckFocusAdapter);
-        getSickMedicineDosage(i).addFocusListener(sickMedicineLengthCheckFocusAdapter);
-        getSickMedicineDosageUnit(i).getEditor().getEditorComponent().addFocusListener(sickMedicineLengthCheckFocusAdapter);
-        getSickMedicineUsage(i).getEditor().getEditorComponent().addFocusListener(sickMedicineLengthCheckFocusAdapter);
-        
+    // [ID:0000438][Masahiko Higuchi] 2009/06/02 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+    // 完全新規の場合に文字数を表示する
+    updateSickMedicineValueWarningText(getSickMedicineTotalLineCount());
+    // [ID:0000438][Masahiko Higuchi] 2009/06/02 add end
+    //2009/01/06 [Tozo Tanaka] Add - begin
+    // [ID:0000438][Masahiko Higuchi] 2009/06/02 del begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//    if(getMasterAffair().getMedicineViewCount()!=8){
+//        if(getSickProgressMaxLengthCutDownLength() > 0){
+//            //6個表示だが薬剤7または薬剤8に入力あり
+//            getSickMedicineValueWarning().setVisible(true);
+//        }
+//        sickMedicines7.setVisible(false);
+//        sickMedicines8.setVisible(false);
+//    }else{
+//        sickMedicines7.setVisible(true);
+//        sickMedicines8.setVisible(true);
+//    }
+    // [ID:0000438][Masahiko Higuchi] 2009/06/02 del end
+    
+    // [ID:0000438][Tozo TANAKA] 2009/06/09 delete begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//    //フォーカスロストを発火させ、文字数表示を更新させる
+//    getSickProgress().focusLost(new FocusEvent(getSickProgress(), FocusEvent.FOCUS_LOST));
+//
+//
+//    //横一列の薬剤関連コンポーネントを登録
+//    IkenshoSickMedicineLengthCheckFocusAdapter sickMedicineLengthCheckFocusAdapter = new IkenshoSickMedicineLengthCheckFocusAdapter();
+//    Component sickProgressContants = getSickProgress().getViewport().getComponent(0);
+//    List medicineLinesComponents = new ArrayList();
+//    if(sickProgressContants!=null){
+//        sickProgressContants.addFocusListener(sickMedicineLengthCheckFocusAdapter);
+//
 //        medicineLinesComponents.add(Arrays.asList(new Object[]{
-//                getSickMedicineName(i).getEditor().getEditorComponent(),
-//                getSickMedicineDosage(i),
-//                getSickMedicineDosageUnit(i).getEditor().getEditorComponent(),
-//                getSickMedicineUsage(i).getEditor().getEditorComponent(),
+//                sickProgressContants,
 //                getMasterAffair().getUpdate(),
 //                getMasterAffair().getPrint(),
 //        }));
-        
-      medicineLinesComponents.add(Arrays.asList(new Object[] {
-                    getSickMedicineName(i).getEditor().getEditorComponent(),
-                    getMasterAffair().getUpdate(),
-                    getMasterAffair().getPrint(), }));
-            medicineLinesComponents.add(Arrays.asList(new Object[] {
-                    getSickMedicineDosage(i), getMasterAffair().getUpdate(),
-                    getMasterAffair().getPrint(), }));
-            medicineLinesComponents.add(Arrays.asList(new Object[] {
-                    getSickMedicineDosageUnit(i).getEditor()
-                            .getEditorComponent(),
-                    getMasterAffair().getUpdate(),
-                    getMasterAffair().getPrint(), }));
-            medicineLinesComponents.add(Arrays.asList(new Object[] {
-                    getSickMedicineUsage(i).getEditor().getEditorComponent(),
-                    getMasterAffair().getUpdate(),
-                    getMasterAffair().getPrint(), }));
-    }
-    sickMedicineLengthCheckFocusAdapter.setExclusionAlertComponents(medicineLinesComponents);
-    //2009/01/06 [Tozo Tanaka] Add - end    
+//    }
+//    for(int i=0; i<8; i++){
+//        getSickMedicineName(i).getEditor().getEditorComponent().addFocusListener(sickMedicineLengthCheckFocusAdapter);
+//        getSickMedicineDosage(i).addFocusListener(sickMedicineLengthCheckFocusAdapter);
+//        getSickMedicineDosageUnit(i).getEditor().getEditorComponent().addFocusListener(sickMedicineLengthCheckFocusAdapter);
+//        getSickMedicineUsage(i).getEditor().getEditorComponent().addFocusListener(sickMedicineLengthCheckFocusAdapter);
+//        
+////        medicineLinesComponents.add(Arrays.asList(new Object[]{
+////                getSickMedicineName(i).getEditor().getEditorComponent(),
+////                getSickMedicineDosage(i),
+////                getSickMedicineDosageUnit(i).getEditor().getEditorComponent(),
+////                getSickMedicineUsage(i).getEditor().getEditorComponent(),
+////                getMasterAffair().getUpdate(),
+////                getMasterAffair().getPrint(),
+////        }));
+//        
+//      medicineLinesComponents.add(Arrays.asList(new Object[] {
+//                    getSickMedicineName(i).getEditor().getEditorComponent(),
+//                    getMasterAffair().getUpdate(),
+//                    getMasterAffair().getPrint(), }));
+//            medicineLinesComponents.add(Arrays.asList(new Object[] {
+//                    getSickMedicineDosage(i), getMasterAffair().getUpdate(),
+//                    getMasterAffair().getPrint(), }));
+//            medicineLinesComponents.add(Arrays.asList(new Object[] {
+//                    getSickMedicineDosageUnit(i).getEditor()
+//                            .getEditorComponent(),
+//                    getMasterAffair().getUpdate(),
+//                    getMasterAffair().getPrint(), }));
+//            medicineLinesComponents.add(Arrays.asList(new Object[] {
+//                    getSickMedicineUsage(i).getEditor().getEditorComponent(),
+//                    getMasterAffair().getUpdate(),
+//                    getMasterAffair().getPrint(), }));
+//    }
+//    sickMedicineLengthCheckFocusAdapter.setExclusionAlertComponents(medicineLinesComponents);
+//    //2009/01/06 [Tozo Tanaka] Add - end
+//
+    // [ID:0000438][Tozo TANAKA] 2009/06/09 delete end 【主治医医見書・医師医見書】薬剤名テキストの追加
   }
   /**
    * 特定疾病を含むかをチェックします。
@@ -753,7 +1124,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineDosageUnit2.setMaxLength(4);
     getStableAndOutlook().setLayout(new VRLayout());
     sickMedicineDosage6.setMaxLength(4);
-    sickMedicineDosage6.setColumns(4);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickMedicineDosage6.setColumns(5);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickMedicineDosage6.setHorizontalAlignment(SwingConstants.RIGHT);
     sickMedicineDosage6.setBindPath("DOSAGE6");
     sickMedicineDosage6.setIMEMode(InputSubset.LATIN);
@@ -784,7 +1157,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineDosageUnit1.setMaxLength(4);
     sickMedicineUsageHead4.setText("　　　");
     sickMedicineDosage2.setMaxLength(4);
-    sickMedicineDosage2.setColumns(4);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickMedicineDosage2.setColumns(5);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickMedicineDosage2.setHorizontalAlignment(SwingConstants.RIGHT);
     sickMedicineDosage2.setBindPath("DOSAGE2");
     sickMedicineDosage2.setIMEMode(InputSubset.LATIN);
@@ -796,10 +1171,13 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickProgress.setColumns(100);
 //    sickProgress.setColumns(86);
     sickProgress.setLineWrap(true);
-    sickProgress.setRows(5);
-//    sickProgress.setRows(6);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickProgress.setRows(12);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickProgress.setBindPath("MT_STS");
-    sickProgress.setMaxLength(250);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickProgress.setMaxLength(560);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
 //    sickProgress.setMaxColumns(100);
 //    sickProgress.setMaxColumns(86);
 //    sickProgress.setUseMaxRows(true);
@@ -822,7 +1200,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineUsage2.setBindPath("USAGE2");
     sickMedicineUsage2.setIMEMode(InputSubset.KANJI);
     sickMedicineDosage4.setMaxLength(4);
-    sickMedicineDosage4.setColumns(4);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickMedicineDosage4.setColumns(5);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickMedicineDosage4.setHorizontalAlignment(SwingConstants.RIGHT);
     sickMedicineDosage4.setBindPath("DOSAGE4");
     sickMedicineDosage4.setIMEMode(InputSubset.LATIN);
@@ -853,7 +1233,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicines6.setText("　　　６．");
     sickMedicines6.setToolTipText("");
     sickMedicineDosage5.setMaxLength(4);
-    sickMedicineDosage5.setColumns(4);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickMedicineDosage5.setColumns(5);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickMedicineDosage5.setHorizontalAlignment(SwingConstants.RIGHT);
     sickMedicineDosage5.setBindPath("DOSAGE5");
     sickMedicineDosage5.setIMEMode(InputSubset.LATIN);
@@ -866,7 +1248,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     getSickDates1().setBeginText("発症年月日（");
     getSickDates1().setEndText("）");
     sickDate1.getDayUnit().setText("日頃");
-    sickMedicineDosage1.setColumns(4);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickMedicineDosage1.setColumns(5);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickMedicineDosage1.setHorizontalAlignment(SwingConstants.RIGHT);
     sickMedicineDosage1.setBindPath("DOSAGE1");
     sickMedicineDosage1.setMaxLength(4);
@@ -881,7 +1265,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineName2.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageHead4.setText("　　　");
     sickMedicineDosage3.setMaxLength(4);
-    sickMedicineDosage3.setColumns(4);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickMedicineDosage3.setColumns(5);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickMedicineDosage3.setHorizontalAlignment(SwingConstants.RIGHT);
     sickMedicineDosage3.setBindPath("DOSAGE3");
     sickMedicineDosage3.setIMEMode(InputSubset.LATIN);
@@ -932,11 +1318,12 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     
 
     //2009/01/06 [Tozo Tanaka] Add - begin
-    //隠れた入力済み薬剤名の警告
-    getSickMedicineHiddenValueWarning().setText("7あるいは8個目の薬剤名等が入力されています。7あるいは8個目の薬剤名等を編集する場合は"+ACConstants.LINE_SEPARATOR+"[メインメニュー]-[設定(S)]-[その他の設定(O)]より薬剤名等の表示数を変更してください。");
-    getSickMedicineHiddenValueWarning().setForeground(IkenshoConstants.COLOR_MESSAGE_ALART_TEXT_FOREGROUND);
-    getSickMedicineHiddenValueWarning().setVisible(false);
-    sickProgressGroup.add(getSickMedicineHiddenValueWarning(), VRLayout.SOUTH);  
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    // 印刷に関する警告
+    getSickMedicineValueWarning().setText(getSickProgressName() + " と 薬剤名 はトータルで560文字しか印刷されません。");
+    getSickMedicineValueWarning().setForeground(IkenshoConstants.COLOR_MESSAGE_ALART_TEXT_FOREGROUND);
+    sickProgressGroup.add(getSickMedicineValueWarning(), VRLayout.SOUTH);  
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     
     //薬剤8
     sickMedicines8.setText("　　　８．");
@@ -947,7 +1334,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineName8.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageHead8.setText("　　　");
     sickMedicineDosage8.setMaxLength(4);
-    sickMedicineDosage8.setColumns(4);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickMedicineDosage8.setColumns(5);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickMedicineDosage8.setHorizontalAlignment(SwingConstants.RIGHT);
     sickMedicineDosage8.setBindPath("DOSAGE8");
     sickMedicineDosage8.setIMEMode(InputSubset.LATIN);
@@ -960,12 +1349,16 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineUsage8.setMaxLength(10);
     sickMedicineUsage8.setBindPath("USAGE8");
     sickMedicineUsage8.setIMEMode(InputSubset.KANJI);
-    sickMedicines8.add(sickMedicineName8, null);
-    sickMedicines8.add(sickMedicineDosageHead8, null);
-    sickMedicines8.add(sickMedicineDosage8, null);
-    sickMedicines8.add(sickMedicineDosageUnit8, null);
-    sickMedicines8.add(sickMedicineUsageHead8, null);
-    sickMedicines8.add(sickMedicineUsage8, null);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴いサイズ指定を可能とする。
+    // レイアウト設定
+    sickMedicines8.setLayout(getSickMedicines8Layout());
+    sickMedicines8.add(sickMedicineName8, VRLayout.FLOW);
+    sickMedicines8.add(sickMedicineDosageHead8, VRLayout.FLOW);
+    sickMedicines8.add(sickMedicineDosage8, VRLayout.FLOW);
+    sickMedicines8.add(sickMedicineDosageUnit8, VRLayout.FLOW);
+    sickMedicines8.add(sickMedicineUsageHead8, VRLayout.FLOW);
+    sickMedicines8.add(sickMedicineUsage8, VRLayout.FLOW);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickProgressGroup.add(sickMedicines8, VRLayout.SOUTH);  
     //薬剤7
     sickMedicines7.setText("　　　７．");
@@ -976,7 +1369,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineName7.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageHead7.setText("　　　");
     sickMedicineDosage7.setMaxLength(4);
-    sickMedicineDosage7.setColumns(4);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+    sickMedicineDosage7.setColumns(5);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickMedicineDosage7.setHorizontalAlignment(SwingConstants.RIGHT);
     sickMedicineDosage7.setBindPath("DOSAGE7");
     sickMedicineDosage7.setIMEMode(InputSubset.LATIN);
@@ -989,58 +1384,75 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineUsage7.setMaxLength(10);
     sickMedicineUsage7.setBindPath("USAGE7");
     sickMedicineUsage7.setIMEMode(InputSubset.KANJI);
-    sickMedicines7.add(sickMedicineName7, null);
-    sickMedicines7.add(sickMedicineDosageHead7, null);
-    sickMedicines7.add(sickMedicineDosage7, null);
-    sickMedicines7.add(sickMedicineDosageUnit7, null);
-    sickMedicines7.add(sickMedicineUsageHead7, null);
-    sickMedicines7.add(sickMedicineUsage7, null);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴いサイズ指定を可能とする。
+    // レイアウト設定
+    sickMedicines7.setLayout(getSickMedicines7Layout());
+    sickMedicines7.add(sickMedicineName7, VRLayout.FLOW);
+    sickMedicines7.add(sickMedicineDosageHead7, VRLayout.FLOW);
+    sickMedicines7.add(sickMedicineDosage7, VRLayout.FLOW);
+    sickMedicines7.add(sickMedicineDosageUnit7, VRLayout.FLOW);
+    sickMedicines7.add(sickMedicineUsageHead7, VRLayout.FLOW);
+    sickMedicines7.add(sickMedicineUsage7, VRLayout.FLOW);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickProgressGroup.add(sickMedicines7, VRLayout.SOUTH);
     
     //2009/01/06 [Tozo Tanaka] Add - end    
-        
-    sickMedicines6.add(sickMedicineName6, null);
-    sickMedicines6.add(sickMedicineDosageHead6, null);
-    sickMedicines6.add(sickMedicineDosage6, null);
-    sickMedicines6.add(sickMedicineDosageUnit6, null);
-    sickMedicines6.add(sickMedicineUsageHead6, null);
-    sickMedicines6.add(sickMedicineUsage6, null);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴いサイズ指定を可能とする。
+    // レイアウト設定
+    sickMedicines6.setLayout(getSickMedicines6Layout());
+    sickMedicines6.add(sickMedicineName6, VRLayout.FLOW);
+    sickMedicines6.add(sickMedicineDosageHead6, VRLayout.FLOW);
+    sickMedicines6.add(sickMedicineDosage6, VRLayout.FLOW);
+    sickMedicines6.add(sickMedicineDosageUnit6, VRLayout.FLOW);
+    sickMedicines6.add(sickMedicineUsageHead6, VRLayout.FLOW);
+    sickMedicines6.add(sickMedicineUsage6, VRLayout.FLOW);
     sickProgressGroup.add(sickMedicines6, VRLayout.SOUTH);
+    
+    sickMedicines5.setLayout(getSickMedicines5Layout());
     sickProgressGroup.add(sickMedicines5, VRLayout.SOUTH);
-    sickMedicines5.add(sickMedicineName5, null);
-    sickMedicines5.add(sickMedicineDosageHead5, null);
-    sickMedicines5.add(sickMedicineDosage5, null);
-    sickMedicines5.add(sickMedicineDosageUnit5, null);
-    sickMedicines5.add(sickMedicineUsageHead5, null);
-    sickMedicines5.add(sickMedicineUsage5, null);
+    sickMedicines5.add(sickMedicineName5, VRLayout.FLOW);
+    sickMedicines5.add(sickMedicineDosageHead5, VRLayout.FLOW);
+    sickMedicines5.add(sickMedicineDosage5, VRLayout.FLOW);
+    sickMedicines5.add(sickMedicineDosageUnit5, VRLayout.FLOW);
+    sickMedicines5.add(sickMedicineUsageHead5, VRLayout.FLOW);
+    sickMedicines5.add(sickMedicineUsage5, VRLayout.FLOW);
+    
+    sickMedicines4.setLayout(getSickMedicines4Layout());
     sickProgressGroup.add(sickMedicines4, VRLayout.SOUTH);
-    sickMedicines4.add(sickMedicineName4, null);
-    sickMedicines4.add(sickMedicineDosageHead4, null);
-    sickMedicines4.add(sickMedicineDosage4, null);
-    sickMedicines4.add(sickMedicineDosageUnit4, null);
-    sickMedicines4.add(sickMedicineUsageHead4, null);
-    sickMedicines4.add(sickMedicineUsage4, null);
+    sickMedicines4.add(sickMedicineName4, VRLayout.FLOW);
+    sickMedicines4.add(sickMedicineDosageHead4, VRLayout.FLOW);
+    sickMedicines4.add(sickMedicineDosage4, VRLayout.FLOW);
+    sickMedicines4.add(sickMedicineDosageUnit4, VRLayout.FLOW);
+    sickMedicines4.add(sickMedicineUsageHead4, VRLayout.FLOW);
+    sickMedicines4.add(sickMedicineUsage4, VRLayout.FLOW);
+    
+    sickMedicines3.setLayout(getSickMedicines3Layout());
     sickProgressGroup.add(sickMedicines3, VRLayout.SOUTH);
-    sickMedicines3.add(sickMedicineName3, null);
-    sickMedicines3.add(sickMedicineDosageHead3, null);
-    sickMedicines3.add(sickMedicineDosage3, null);
-    sickMedicines3.add(sickMedicineDosageUnit3, null);
-    sickMedicines3.add(sickMedicineUsageHead3, null);
-    sickMedicines3.add(sickMedicineUsage3, null);
+    sickMedicines3.add(sickMedicineName3, VRLayout.FLOW);
+    sickMedicines3.add(sickMedicineDosageHead3, VRLayout.FLOW);
+    sickMedicines3.add(sickMedicineDosage3, VRLayout.FLOW);
+    sickMedicines3.add(sickMedicineDosageUnit3, VRLayout.FLOW);
+    sickMedicines3.add(sickMedicineUsageHead3, VRLayout.FLOW);
+    sickMedicines3.add(sickMedicineUsage3, VRLayout.FLOW);
+    
+    sickMedicines2.setLayout(getSickMedicines2Layout());
     sickProgressGroup.add(sickMedicines2, VRLayout.SOUTH);
-    sickMedicines2.add(sickMedicineName2, null);
-    sickMedicines2.add(sickMedicineDosageHead2, null);
-    sickMedicines2.add(sickMedicineDosage2, null);
-    sickMedicines2.add(sickMedicineDosageUnit2, null);
-    sickMedicines2.add(sickMedicineUsageHead2, null);
-    sickMedicines2.add(sickMedicineUsage2, null);
+    sickMedicines2.add(sickMedicineName2, VRLayout.FLOW);
+    sickMedicines2.add(sickMedicineDosageHead2, VRLayout.FLOW);
+    sickMedicines2.add(sickMedicineDosage2, VRLayout.FLOW);
+    sickMedicines2.add(sickMedicineDosageUnit2, VRLayout.FLOW);
+    sickMedicines2.add(sickMedicineUsageHead2, VRLayout.FLOW);
+    sickMedicines2.add(sickMedicineUsage2, VRLayout.FLOW);
+    
+    sickMedicines1.setLayout(getSickMedicines1Layout());
     sickProgressGroup.add(sickMedicines1, VRLayout.SOUTH);
-    sickMedicines1.add(sickMedicineName1, null);
-    sickMedicines1.add(sickMedicineDosageHead1, null);
-    sickMedicines1.add(sickMedicineDosage1, null);
-    sickMedicines1.add(sickMedicineDosageUnit1, null);
-    sickMedicines1.add(sickMedicineUsageHead1, null);
-    sickMedicines1.add(sickMedicineUsage1, null);
+    sickMedicines1.add(sickMedicineName1, VRLayout.FLOW);
+    sickMedicines1.add(sickMedicineDosageHead1, VRLayout.FLOW);
+    sickMedicines1.add(sickMedicineDosage1, VRLayout.FLOW);
+    sickMedicines1.add(sickMedicineDosageUnit1, VRLayout.FLOW);
+    sickMedicines1.add(sickMedicineUsageHead1, VRLayout.FLOW);
+    sickMedicines1.add(sickMedicineUsage1, VRLayout.FLOW);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickProgressGroup.add(getSickProgresss(), VRLayout.NORTH);
     getSickProgresss().setLayout(new VRLayout());
     getSickProgresss().add(sickProgress, VRLayout.LEFT);
@@ -1063,6 +1475,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickNames3.add(getSickDates3(), VRLayout.EAST);
     sickNames3.add(getSickSpecial3(), VRLayout.EAST);
     getSickDates3().add(sickDate3, null);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add begin 画面調整に伴い調整
+    setSickProgressContaierText(0);
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add end
     // 2006/07/24 - 医師意見書
     // Replace - begin [Masahiko Higuchi
     addThisComponent();
@@ -1250,4 +1665,175 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
         }
         return sickDates3;
     }
+    
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add begin 画面調整に伴いサイズ指定を可能とする。
+    /**
+     * 薬剤名コンテナ１のレイアウトを返却します。
+     * @return 薬剤名コンテナ１レイアウト
+     */
+    public VRLayout getSickMedicines1Layout() {
+        if(sickMedicines1Layout == null) {
+            sickMedicines1Layout = new VRLayout();
+            sickMedicines1Layout.setHgap(0);
+            sickMedicines1Layout.setVgap(0);
+        }
+        return sickMedicines1Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ１のレイアウトを設定します。
+     * @param レイアウト
+     */
+    public void setSickMedicines1Layout(VRLayout sickMedicines1Layout) {
+        this.sickMedicines1Layout = sickMedicines1Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ２のレイアウトを返却します。
+     * @return 薬剤名コンテナ２レイアウト
+     */
+    public VRLayout getSickMedicines2Layout() {
+        if(sickMedicines2Layout == null) {
+            sickMedicines2Layout = new VRLayout();
+            sickMedicines2Layout.setHgap(0);
+            sickMedicines2Layout.setVgap(0);
+        }
+        return sickMedicines2Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ２のレイアウトを設定します。
+     * @param レイアウト
+     */
+    public void setSickMedicines2Layout(VRLayout sickMedicines2Layout) {
+        this.sickMedicines2Layout = sickMedicines2Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ３のレイアウトを返却します。
+     * @return 薬剤名コンテナ３レイアウト
+     */
+    public VRLayout getSickMedicines3Layout() {
+        if(sickMedicines3Layout == null) {
+            sickMedicines3Layout = new VRLayout();
+            sickMedicines3Layout.setHgap(0);
+            sickMedicines3Layout.setVgap(0);
+        }
+        return sickMedicines3Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ３のレイアウトを設定します。
+     * @param レイアウト
+     */
+    public void setSickMedicines3Layout(VRLayout sickMedicines3Layout) {
+        this.sickMedicines3Layout = sickMedicines3Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ４のレイアウトを返却します。
+     * @return 薬剤名コンテナ４レイアウト
+     */
+    public VRLayout getSickMedicines4Layout() {
+        if(sickMedicines4Layout == null) {
+            sickMedicines4Layout = new VRLayout();
+            sickMedicines4Layout.setHgap(0);
+            sickMedicines4Layout.setVgap(0);
+        }
+        return sickMedicines4Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ４のレイアウトを設定します。
+     * @param レイアウト
+     */
+    public void setSickMedicines4Layout(VRLayout sickMedicines4Layout) {
+        this.sickMedicines4Layout = sickMedicines4Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ５のレイアウトを返却します。
+     * @return 薬剤名コンテナ５レイアウト
+     */
+    public VRLayout getSickMedicines5Layout() {
+        if(sickMedicines5Layout == null) {
+            sickMedicines5Layout = new VRLayout();
+            sickMedicines5Layout.setHgap(0);
+            sickMedicines5Layout.setVgap(0);
+        }
+        return sickMedicines5Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ５のレイアウトを設定します。
+     * @param レイアウト
+     */
+    public void setSickMedicines5Layout(VRLayout sickMedicines5Layout) {
+        this.sickMedicines5Layout = sickMedicines5Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ６のレイアウトを返却します。
+     * @return 薬剤名コンテナ６レイアウト
+     */
+    public VRLayout getSickMedicines6Layout() {
+        if(sickMedicines6Layout == null) {
+            sickMedicines6Layout = new VRLayout();
+            sickMedicines6Layout.setHgap(0);
+            sickMedicines6Layout.setVgap(0);
+        }
+        return sickMedicines6Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ６のレイアウトを設定します。
+     * @param レイアウト
+     */
+    public void setSickMedicines6Layout(VRLayout sickMedicines6Layout) {
+        this.sickMedicines6Layout = sickMedicines6Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ７のレイアウトを返却します。
+     * @return 薬剤名コンテナ７レイアウト
+     */
+    public VRLayout getSickMedicines7Layout() {
+        if(sickMedicines7Layout == null) {
+            sickMedicines7Layout = new VRLayout();
+            sickMedicines7Layout.setHgap(0);
+            sickMedicines7Layout.setVgap(0);
+        }
+        return sickMedicines7Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ７のレイアウトを設定します。
+     * @param レイアウト
+     */
+    public void setSickMedicines7Layout(VRLayout sickMedicines7Layout) {
+        this.sickMedicines7Layout = sickMedicines7Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ８のレイアウトを返却します。
+     * @return 薬剤名コンテナ８レイアウト
+     */
+    public VRLayout getSickMedicines8Layout() {
+        if(sickMedicines8Layout == null) {
+            sickMedicines8Layout = new VRLayout();
+            sickMedicines8Layout.setHgap(0);
+            sickMedicines8Layout.setVgap(0);
+        }
+        return sickMedicines8Layout;
+    }
+    
+    /**
+     * 薬剤名コンテナ８のレイアウトを設定します。
+     * @param レイアウト
+     */
+    public void setSickMedicines8Layout(VRLayout sickMedicines8Layout) {
+        this.sickMedicines8Layout = sickMedicines8Layout;
+    }
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add end
+    
 }

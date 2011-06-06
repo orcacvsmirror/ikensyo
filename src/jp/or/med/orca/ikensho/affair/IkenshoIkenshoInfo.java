@@ -49,6 +49,9 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
 
     protected IkenshoIkenshoInfoApplicant applicant;
     protected IkenshoIkenshoInfoSick sick;
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add begin âÊñ í≤êÆÇ…î∫Ç¢í≤êÆ
+    protected IkenshoIkenshoInfoSick sick2;
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add end
     protected IkenshoIkenshoInfoSpecial special;
     protected IkenshoIkenshoInfoCare1 care1;
     protected IkenshoIkenshoInfoCare2 care2;

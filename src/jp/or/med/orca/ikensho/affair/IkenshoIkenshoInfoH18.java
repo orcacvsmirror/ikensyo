@@ -28,6 +28,9 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
     protected void addTabs() {
         applicant = new IkenshoIkenshoInfoApplicantH18();
         sick = new IkenshoIkenshoInfoSickH18();
+        // [ID:0000509][Masahiko Higuchi] 2009/06 add begin 画面調整に伴い調整
+        sick2 = new IkenshoIkenshoInfoSickH18_2();
+        // [ID:0000509][Masahiko Higuchi] 2009/06 add end
         special = new IkenshoIkenshoInfoSpecial();
         seikatsuService1 = new IkenshoIkenshoSeikatsuService1();
         care1 = new IkenshoIkenshoInfoCare1H18();
@@ -40,7 +43,10 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
 
         // Add
         tabs.addTab("申請者", applicant);
-        tabs.addTab("傷病", sick);
+                // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
+        tabs.addTab("傷病１", sick);
+        tabs.addTab("傷病２", sick2);
+        // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
         tabs.addTab("特別な医療", special);
         tabs.addTab("心身の状態１", mindBody1);
         tabs.addTab("心身の状態２", mindBody2);
@@ -54,6 +60,9 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
         tabArray.clear();
         tabArray.add(applicant);
         tabArray.add(sick);
+        // [ID:0000509][Masahiko Higuchi] 2009/06 add begin 画面調整に伴い調整
+        tabArray.add(sick2);
+        // [ID:0000509][Masahiko Higuchi] 2009/06 add end
         tabArray.add(special);
         tabArray.add(mindBody1);
         tabArray.add(mindBody2);

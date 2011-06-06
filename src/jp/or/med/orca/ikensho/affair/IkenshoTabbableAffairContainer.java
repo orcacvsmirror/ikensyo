@@ -92,7 +92,21 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
   // Addition - begin [Masahiko Higuchi]
   protected IkenshoIkenshoSimpleSnapshot simpleSnap = new IkenshoIkenshoSimpleSnapshot();
   // Addition - end
-  
+
+  // [ID:0000438][Tozo TANAKA] 2009/06/08 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+  public static final int CAN_UPDATE_CHECK_STATUS_UNKNOWN = 0;
+  public static final int CAN_UPDATE_CHECK_STATUS_PRINT = 1;
+  public static final int CAN_UPDATE_CHECK_STATUS_UPDATE = 2;
+  public static final int CAN_UPDATE_CHECK_STATUS_INSERT = 3;
+  private int canUpdateCheckStatus = CAN_UPDATE_CHECK_STATUS_UNKNOWN;
+  public int getCanUpdateCheckStatus(){
+      return canUpdateCheckStatus;
+  }
+  protected void setCanUpdateCheckStatus(int canUpdateCheckStatus){
+      this.canUpdateCheckStatus = canUpdateCheckStatus;
+  }
+  // [ID:0000438][Tozo TANAKA] 2009/06/08 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
+
   /**
    * overrideして固有のパッシブチェック予約を定義します。
    * @throws ParseException 処理例外
@@ -443,16 +457,19 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
   }
   
   protected int getMedicineViewCount() {
-      try {
-          if (ACFrame.getInstance().hasProperty(
-                  "DocumentSetting/MedicineViewCount")
-                  && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
-                          "DocumentSetting/MedicineViewCount"), 6) == 8) {
-              return 8;
-          }
-      } catch (Exception e) {
-      }      
-    return 6;
+      // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//      try {
+//          if (ACFrame.getInstance().hasProperty(
+//                  "DocumentSetting/MedicineViewCount")
+//                  && ACCastUtilities.toInt(ACFrame.getInstance().getProperty(
+//                          "DocumentSetting/MedicineViewCount"), 6) == 8) {
+//              return 8;
+//          }
+//      } catch (Exception e) {
+//      }      
+//    return 6;
+    return 8;
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
 }
   
   protected void showSickMedicineCountAdjustedMessage(){
@@ -955,9 +972,19 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
 
   protected void printActionPerformed(ActionEvent e) throws Exception {
     //エラーチェック
-    if (!canControlUpdate()) {
-      return;
+    // [ID:0000438][Tozo TANAKA] 2009/06/08 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//    if (!canControlUpdate()) {
+//      return;
+//    }
+    setCanUpdateCheckStatus(CAN_UPDATE_CHECK_STATUS_PRINT);
+    try{
+        if (!canControlUpdate()) {
+          return;
+        }
+    }finally{
+        setCanUpdateCheckStatus(CAN_UPDATE_CHECK_STATUS_UNKNOWN);
     }
+    // [ID:0000438][Tozo TANAKA] 2009/06/08 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
 
     fullApplySource();
 
@@ -1016,12 +1043,25 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
   protected boolean doInsert() throws Exception {
 
     //エラーチェック
-    if (!canControlUpdate()) {
-      return false;
+      // [ID:0000438][Tozo TANAKA] 2009/06/08 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//      if (!canControlUpdate()) {
+//          return false;
+//        }
+//        if(!canUpdateCustom()){
+//          return false;
+//        }
+    setCanUpdateCheckStatus(CAN_UPDATE_CHECK_STATUS_INSERT);
+    try{
+        if (!canControlUpdate()) {
+            return false;
+        }
+        if(!canUpdateCustom()){
+            return false;
+        }
+    }finally{
+        setCanUpdateCheckStatus(CAN_UPDATE_CHECK_STATUS_UNKNOWN);
     }
-    if(!canUpdateCustom()){
-      return false;
-    }
+    // [ID:0000438][Tozo TANAKA] 2009/06/08 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
 
     IkenshoFirebirdDBManager dbm = null;
     try {
@@ -1142,12 +1182,25 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
    */
   protected boolean doUpdate() throws Exception {
     //エラーチェック
-    if (!canControlUpdate()) {
-      return false;
+      // [ID:0000438][Tozo TANAKA] 2009/06/08 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+//      if (!canControlUpdate()) {
+//          return false;
+//        }
+//        if(!canUpdateCustom()){
+//          return false;
+//        }
+    setCanUpdateCheckStatus(CAN_UPDATE_CHECK_STATUS_UPDATE);
+    try{
+        if (!canControlUpdate()) {
+            return false;
+          }
+          if(!canUpdateCustom()){
+            return false;
+          }
+    }finally{
+        setCanUpdateCheckStatus(CAN_UPDATE_CHECK_STATUS_UNKNOWN);
     }
-    if(!canUpdateCustom()){
-      return false;
-    }
+    // [ID:0000438][Tozo TANAKA] 2009/06/08 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
 
     IkenshoFirebirdDBManager dbm = null;
     try {
@@ -1363,16 +1416,16 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(",DOSAGE6");
     sb.append(",UNIT6");
     sb.append(",USAGE6");
-    //2009/01/06 [Tozo Tanaka] Add - begin★薬剤名増暫定隠ぺい
-//    sb.append(",MEDICINE7");
-//    sb.append(",DOSAGE7");
-//    sb.append(",UNIT7");
-//    sb.append(",USAGE7");
-//    sb.append(",MEDICINE8");
-//    sb.append(",DOSAGE8");
-//    sb.append(",UNIT8");
-//    sb.append(",USAGE8");
-    //2009/01/06 [Tozo Tanaka] Add - end★薬剤名増暫定隠ぺい
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+    sb.append(",MEDICINE7");
+    sb.append(",DOSAGE7");
+    sb.append(",UNIT7");
+    sb.append(",USAGE7");
+    sb.append(",MEDICINE8");
+    sb.append(",DOSAGE8");
+    sb.append(",UNIT8");
+    sb.append(",USAGE8");
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
     sb.append(",NETAKIRI");
     sb.append(",CHH_STS");
     sb.append(",SHJ_ANT");
@@ -1511,24 +1564,24 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(getDBSafeString("UNIT6", originalData));
     sb.append(",");
     sb.append(getDBSafeString("USAGE6", originalData));
-    //2009/01/06 [Tozo Tanaka] Add - begin★薬剤名増暫定隠ぺい
-//    sb.append(",");
-//    sb.append(getDBSafeString("MEDICINE7", originalData));
-//    sb.append(",");
-//    sb.append(getDBSafeString("DOSAGE7", originalData));
-//    sb.append(",");
-//    sb.append(getDBSafeString("UNIT7", originalData));
-//    sb.append(",");
-//    sb.append(getDBSafeString("USAGE7", originalData));
-//    sb.append(",");
-//    sb.append(getDBSafeString("MEDICINE8", originalData));
-//    sb.append(",");
-//    sb.append(getDBSafeString("DOSAGE8", originalData));
-//    sb.append(",");
-//    sb.append(getDBSafeString("UNIT8", originalData));
-//    sb.append(",");
-//    sb.append(getDBSafeString("USAGE8", originalData));
-    //2009/01/06 [Tozo Tanaka] Add - end★薬剤名増暫定隠ぺい
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+    sb.append(",");
+    sb.append(getDBSafeString("MEDICINE7", originalData));
+    sb.append(",");
+    sb.append(getDBSafeString("DOSAGE7", originalData));
+    sb.append(",");
+    sb.append(getDBSafeString("UNIT7", originalData));
+    sb.append(",");
+    sb.append(getDBSafeString("USAGE7", originalData));
+    sb.append(",");
+    sb.append(getDBSafeString("MEDICINE8", originalData));
+    sb.append(",");
+    sb.append(getDBSafeString("DOSAGE8", originalData));
+    sb.append(",");
+    sb.append(getDBSafeString("UNIT8", originalData));
+    sb.append(",");
+    sb.append(getDBSafeString("USAGE8", originalData));
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
     sb.append(",");
     sb.append(getDBSafeNumber("NETAKIRI", originalData));
     sb.append(",");
@@ -1746,24 +1799,24 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(getDBSafeString("UNIT6", originalData));
     sb.append(",USAGE6 = ");
     sb.append(getDBSafeString("USAGE6", originalData));
-    //2009/01/06 [Tozo Tanaka] Add - begin★薬剤名増暫定隠ぺい
-//    sb.append(",MEDICINE7 = ");
-//    sb.append(getDBSafeString("MEDICINE7", originalData));
-//    sb.append(",DOSAGE7 = ");
-//    sb.append(getDBSafeString("DOSAGE7", originalData));
-//    sb.append(",UNIT7 = ");
-//    sb.append(getDBSafeString("UNIT7", originalData));
-//    sb.append(",USAGE7 = ");
-//    sb.append(getDBSafeString("USAGE7", originalData));
-//    sb.append(",MEDICINE8 = ");
-//    sb.append(getDBSafeString("MEDICINE8", originalData));
-//    sb.append(",DOSAGE8 = ");
-//    sb.append(getDBSafeString("DOSAGE8", originalData));
-//    sb.append(",UNIT8 = ");
-//    sb.append(getDBSafeString("UNIT8", originalData));
-//    sb.append(",USAGE8 = ");
-//    sb.append(getDBSafeString("USAGE8", originalData));
-    //2009/01/06 [Tozo Tanaka] Add - end★薬剤名増暫定隠ぺい
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+    sb.append(",MEDICINE7 = ");
+    sb.append(getDBSafeString("MEDICINE7", originalData));
+    sb.append(",DOSAGE7 = ");
+    sb.append(getDBSafeString("DOSAGE7", originalData));
+    sb.append(",UNIT7 = ");
+    sb.append(getDBSafeString("UNIT7", originalData));
+    sb.append(",USAGE7 = ");
+    sb.append(getDBSafeString("USAGE7", originalData));
+    sb.append(",MEDICINE8 = ");
+    sb.append(getDBSafeString("MEDICINE8", originalData));
+    sb.append(",DOSAGE8 = ");
+    sb.append(getDBSafeString("DOSAGE8", originalData));
+    sb.append(",UNIT8 = ");
+    sb.append(getDBSafeString("UNIT8", originalData));
+    sb.append(",USAGE8 = ");
+    sb.append(getDBSafeString("USAGE8", originalData));
+    // [ID:0000438][Tozo TANAKA] 2009/06/02 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
     
     sb.append(",NETAKIRI = ");
     sb.append(getDBSafeNumber("NETAKIRI", originalData));

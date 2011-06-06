@@ -12,6 +12,7 @@ import javax.swing.text.Document;
 
 import jp.nichicom.ac.component.ACRowMaximumableTextArea;
 import jp.nichicom.ac.text.ACTextAreaDocument;
+import jp.nichicom.vr.component.AbstractVRTextField;
 import jp.nichicom.vr.component.VRTextArea;
 
 /**
@@ -128,13 +129,19 @@ public class IkenshoACRowMaximumableTextArea extends ACRowMaximumableTextArea {
             
             Insets margin = getInsets();
             if (margin != null) {
-                w += margin.left + margin.right;
+                // [ID:0000438][Tozo TANAKA] 2009/06/08 replace begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+                //w += margin.left + margin.right;
+                w += margin.left + margin.right-1;
+                // [ID:0000438][Tozo TANAKA] 2009/06/08 replace end 【主治医医見書・医師医見書】薬剤名テキストの追加
             }
             
             double per=1.0;
             if (!runComposition) {
                 //Macの補正率は0.55
                 per = 0.55;
+                // [ID:0000438][Tozo TANAKA] 2009/06/08 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+                w -= 2;
+                // [ID:0000438][Tozo TANAKA] 2009/06/08 add end 【主治医医見書・医師医見書】薬剤名テキストの追加
             }
             size.width = (int)Math.max(0, getColumnWidth()*(getColumns()*per));
         }
@@ -287,4 +294,11 @@ public class IkenshoACRowMaximumableTextArea extends ACRowMaximumableTextArea {
 //        }
 //        return 0;
 //    }
+    
+    // [ID:0000438][Tozo TANAKA] 2009/06/10 delete begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+    public void setModelForce(Object model) {
+        setModel(model);
     }
+    // [ID:0000438][Tozo TANAKA] 2009/06/10 delete end 【主治医医見書・医師医見書】薬剤名テキストの追加
+
+}

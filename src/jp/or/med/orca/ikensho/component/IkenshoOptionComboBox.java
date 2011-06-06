@@ -1,7 +1,9 @@
 package jp.or.med.orca.ikensho.component;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.Insets;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Vector;
@@ -27,10 +29,12 @@ import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.component.ACListBox;
 import jp.nichicom.ac.component.ACListItem;
+import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.mainmenu.ACMainMenuButton;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACComboBoxModelAdapter;
+import jp.nichicom.vr.component.AbstractVRTextField;
 import jp.nichicom.vr.component.VRListBox;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRHashMap;
@@ -69,6 +73,11 @@ public class IkenshoOptionComboBox extends ACComboBox {
     private boolean isSelectEvent = false;
     
     private boolean optionMode = true;
+
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add begin 画面調整に伴いサイズ指定を可能とする。
+    private int optionSize = 0;
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add end
+    
     // 連動対象となるコンボボックス群
     private ArrayList interlockComboComponents;
 
@@ -467,6 +476,48 @@ public class IkenshoOptionComboBox extends ACComboBox {
             return (ComboBoxModel) new ACComboBoxModelAdapter();
         }
     }
+ 
     
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add begin 画面調整に伴いサイズ指定を可能とする。
+    
+    /**
+     * コンボボックスの指定サイズを返却します。 
+     */
+    public int getOptionSize() {
+        return optionSize;
+    }
+
+    /**
+     * コンボボックスの指定サイズを設定します。
+     * @param optionColumnSize
+     */
+    public void setOptionSize(int optionColumnSize) {
+        this.optionSize = optionColumnSize;
+    }
+    
+    public Dimension getPreferredSize() {
+        Dimension d = super.getPreferredSize();
+        if(getMaxLength()>0 && d != null){
+            //最大幅で制限する
+            d.width += 6;
+            // オプションサイズが0を超えている場合
+            if(getOptionSize() > 0) {
+                // カラムサイズを採用する
+                d.width = getOptionSize();
+            }
+            
+        }
+        return d;
+    }
+    // [ID:0000509][Masahiko Higuchi] 2009/06 add end
+    
+    
+    // [ID:0000438][Tozo TANAKA] 2009/06/10 delete begin 【主治医医見書・医師医見書】薬剤名テキストの追加
+    protected AbstractVRTextField createEditorField() {
+        return new IkenshoACTextField();
+    }
+    // [ID:0000438][Tozo TANAKA] 2009/06/10 delete end 【主治医医見書・医師医見書】薬剤名テキストの追加
+    
+
 }
 
