@@ -15,6 +15,7 @@ import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.component.event.ACFollowDisabledItemListener;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
+import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.container.ACParentHesesPanelContainer;
 import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
@@ -110,7 +111,10 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
   private ACParentHesesPanelContainer specialKeikanEiyous = new ACParentHesesPanelContainer();
   private ACParentHesesPanelContainer specialCannulaSizes = new ACParentHesesPanelContainer();
   private ACParentHesesPanelContainer specialDorenPoss = new ACParentHesesPanelContainer();
-  private ACParentHesesPanelContainer specialRyuchiCatheters = new ACParentHesesPanelContainer();
+  //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - start
+  //private ACParentHesesPanelContainer specialRyuchiCatheters = new ACParentHesesPanelContainer();
+  private ACPanel specialRyuchiCatheters = new ACPanel();
+  //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - end
   private ACLabelContainer processs = new ACLabelContainer();
   private ACLabelContainer specialTentekiKannris = new ACLabelContainer();
   private IkenshoSpecialSijiContainer specialTentekiKannriSiji = new IkenshoSpecialSijiContainer();
@@ -144,6 +148,11 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
   private  VRLayout specialProcessLayout = new VRLayout();
   private VRLayout sikkinLayout = new VRLayout();
   private VRLayout specialMonitorCaptionLayout = new VRLayout();
+  //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+  //留置カテーテルの部位コンボ追加
+  private IkenshoOptionComboBox specialRyuchiCatheterPos = new IkenshoOptionComboBox();
+  private VRLabel specialRyuchiCatheterPosHead = new VRLabel();
+  //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
 
   
   public void initDBCopmponent(IkenshoFirebirdDBManager dbm) throws Exception {
@@ -157,6 +166,10 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     applyPoolTeikeibun(specialRyuchiCatheterSize, IkenshoCommon.TEIKEI_CATHETER_SIZE);
     applyPoolTeikeibun(specialRyuchiCatheterChange, IkenshoCommon.TEIKEI_CATHETER_CHANGE_SPAN);
 
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+    //留置カテーテルの部位コンボ追加
+    applyPoolTeikeibun(specialRyuchiCatheterPos, IkenshoCommon.TEIKEI_CATHETER_POS_NAME);
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
 
   }
 
@@ -200,10 +213,17 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialOtherUse.addItemListener(new ACFollowDisabledItemListener(new
         JComponent[] {specialOther, specialOtherHeses}));
 
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - start
+    //留置カテーテルに部位コンボ追加
+//    specialRyuchiCatheter.addItemListener(new ACFollowDisabledItemListener(new
+//        JComponent[] {specialRyuchiCatheterSizeHead, specialRyuchiCatheterSize,
+//        specialRyuchiCatheterMiddle, specialRyuchiCatheterChange,
+//        specialRyuchiCatheterFoot}));
     specialRyuchiCatheter.addItemListener(new ACFollowDisabledItemListener(new
-        JComponent[] {specialRyuchiCatheterSizeHead, specialRyuchiCatheterSize,
-        specialRyuchiCatheterMiddle, specialRyuchiCatheterChange,
-        specialRyuchiCatheterFoot}));
+            JComponent[] {specialRyuchiCatheterSizeHead, specialRyuchiCatheterSize,
+            specialRyuchiCatheterMiddle, specialRyuchiCatheterChange,
+            specialRyuchiCatheterFoot, specialRyuchiCatheterPos, specialRyuchiCatheterPosHead}));
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - end
 
   }
   private void jbInit() throws Exception {
@@ -546,6 +566,21 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialOtherPanel.add(specialOtherHeses, VRLayout.FLOW);
     specialOtherHeses.add(specialOther, null);
     specialRyuchiCatheters.add(specialRyuchiCatheter, null);
+    
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+    specialRyuchiCatheterPosHead.setEnabled(false);
+    specialRyuchiCatheterPosHead.setText("部位");
+    specialRyuchiCatheters.add(specialRyuchiCatheterPosHead, null);
+    
+    specialRyuchiCatheterPos.setEnabled(false);
+    specialRyuchiCatheterPos.setPreferredSize(new Dimension(200, 19));
+    specialRyuchiCatheterPos.setActionCommand("comboBoxChanged");
+    specialRyuchiCatheterPos.setIMEMode(InputSubset.KANJI);
+    specialRyuchiCatheterPos.setMaxLength(10);
+    specialRyuchiCatheterPos.setBindPath("RYU_CAT_BUI");
+    specialRyuchiCatheters.add(specialRyuchiCatheterPos, VRLayout.FLOW_RETURN);
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
+    
     specialRyuchiCatheters.add(specialRyuchiCatheterSizeHead, null);
     specialRyuchiCatheters.add(specialRyuchiCatheterSize, null);
     specialRyuchiCatheters.add(specialRyuchiCatheterMiddle, null);
@@ -560,6 +595,12 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialCatheters.add(specialCatheter, BorderLayout.WEST);
     specialCatheters.add(specialCatheterSiji,  BorderLayout.CENTER);
     specialCatheterSiji.add(specialRyuchiCatheters, VRLayout.FLOW_RETURN);
+    
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+    //訪問看護指示書から除外に伴い、ドレーンを非表示とする
+    getSpecialDorenPoss().setVisible(false);
+    getSpecialDoren().setVisible(false);
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
   }
   
   /**
@@ -724,8 +765,8 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     }
 
     /**
-     * 留置カテーテールサイズ を返します。
-     * @return 留置カテーテールサイズコンボ
+     * 留置カテーテルサイズ を返します。
+     * @return 留置カテーテルサイズコンボ
      * @author Masahiko Higuchi
      * @since 3.0.5
      */
@@ -802,4 +843,39 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     }
 //  2007/10/18 [Masahiko Higuchi] Addition - end
     
+    
+//[ID:0000688][Shin Fujihara]  2012/03/12 Addition - start
+    /**
+     * カッコ付きのドレーンコンテナ
+     * @return
+     */
+    public ACParentHesesPanelContainer getSpecialDorenPoss() {
+        if (specialDorenPoss == null) {
+            specialDorenPoss = new ACParentHesesPanelContainer();
+        }
+        return specialDorenPoss;
+    }
+    
+    /**
+     * ドレーンのチェックボックス
+     * @return
+     */
+    public ACIntegerCheckBox getSpecialDoren() {
+        if (specialDoren == null) {
+            specialDoren = new ACIntegerCheckBox();
+        }
+        return specialDoren;
+    }
+    
+    /**
+     * 留置カテーテルの部位を返します
+     */
+    public IkenshoOptionComboBox getSpecialRyuchiCatheterPos() {
+        if(specialRyuchiCatheterPos == null){
+            specialRyuchiCatheterPos = new IkenshoOptionComboBox();
+        }
+        return specialRyuchiCatheterPos;
+    } 
+    
+//[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
 }

@@ -643,13 +643,26 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid9.h3.w19".equals(code)) obj = "７．経管栄養・「日に1回交換」　見出し";
         else if ("Grid9.h3.w22".equals(code)) obj = "７．経管栄養・「）」　見出し";
         else if ("Grid9.h4.w1".equals(code)) obj = "装着・使用医療機器等・「 器等」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 delete begin 【2012年度対応】訪問指示書の留置カテーテル部位追加
+//        else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
+//        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+//        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
+//        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+//        else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
+//        else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
+//        else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 delete end
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add begin 【2012年度対応】訪問指示書の留置カテーテル部位追加
         else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
-        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
-        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
-        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（部位：」　見出し";
+        else if ("Grid9.h4.w23".equals(code)) obj = "８．留置カテーテル　部位";
+        else if ("Grid9.h4.w12".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+        else if ("Grid9.h4.w15".equals(code)) obj = "８．留置カテーテル　サイズ";
+        else if ("Grid9.h4.w17".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
         else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
         else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
         else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add end
         else if ("Grid9.h5.w1".equals(code)) obj = "装着・使用医療機器等・「 （番号に」　見出し";
         else if ("Grid9.h5.w3".equals(code)) obj = "９．人工呼吸器・「9」　見出し";
         else if ("Grid9.h5.w4".equals(code)) obj = "９．人工呼吸器・「人工呼吸器　　（」　見出し";
@@ -662,18 +675,30 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid9.h6.w4".equals(code)) obj = "１０．気管カニューレ・「気管カニューレ（サイズ」　見出し";
         else if ("Grid9.h6.w9".equals(code)) obj = "１０．気管カニューレ　サイズ";
         else if ("Grid9.h6.w11".equals(code)) obj = "１０．気管カニューレ・「）」　見出し";
-        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
-        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
-        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
-        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
-        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
-        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
-        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
-        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
-        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
-        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
-        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
-        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 delete begin 【2012年度対応】訪問指示書のドレーン削除
+//        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
+//        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
+//        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
+//        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
+//        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
+//        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
+//        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
+//        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
+//        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
+//        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
+//        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
+//        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 delete end
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add begin 【2012年度対応】訪問指示書のドレーン削除
+        else if ("Grid9.h7.w3".equals(code)) obj = "１１．人工肛門・「11」　見出し";
+        else if ("Grid9.h7.w4".equals(code)) obj = "１１．人工肛門・「人工肛門」　見出し";
+        else if ("Grid9.h7.w5".equals(code)) obj = "１２．人工膀胱・「12」　見出し";
+        else if ("Grid9.h7.w23".equals(code)) obj = "１２．人工膀胱・「人工膀胱」　見出し";
+        else if ("Grid9.h7.w10".equals(code)) obj = "１３・その他・「13」　見出し";
+        else if ("Grid9.h7.w11".equals(code)) obj = "１３・その他・「その他（」　見出し";
+        else if ("Grid9.h7.w14".equals(code)) obj = "１３．その他";
+        else if ("Grid9.h7.w22".equals(code)) obj = "１３・その他・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add end
         else if ("Grid11.h1.w1".equals(code)) obj = "「緊急時の連絡先」　見出し";
         else if ("Grid11.h1.w2".equals(code)) obj = "緊急時の連絡先";
         else if ("Grid11.h2.w1".equals(code)) obj = "「不在時の対応法」　見出し";
@@ -867,13 +892,26 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid9.h3.w19".equals(code)) obj = "７．経管栄養・「日に1回交換」　見出し";
         else if ("Grid9.h3.w22".equals(code)) obj = "７．経管栄養・「）」　見出し";
         else if ("Grid9.h4.w1".equals(code)) obj = "装着・使用医療機器等・「 器等」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 delete begin 【2012年度対応】訪問指示書の留置カテーテル部位追加
+//        else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
+//        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+//        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
+//        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+//        else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
+//        else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
+//        else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 delete end
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add begin 【2012年度対応】訪問指示書の留置カテーテル部位追加
         else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
-        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
-        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
-        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（部位：」　見出し";
+        else if ("Grid9.h4.w23".equals(code)) obj = "８．留置カテーテル　部位";
+        else if ("Grid9.h4.w12".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+        else if ("Grid9.h4.w15".equals(code)) obj = "８．留置カテーテル　サイズ";
+        else if ("Grid9.h4.w17".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
         else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
         else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
         else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add end
         else if ("Grid9.h5.w1".equals(code)) obj = "装着・使用医療機器等・「 （番号に」　見出し";
         else if ("Grid9.h5.w3".equals(code)) obj = "９．人工呼吸器・「9」　見出し";
         else if ("Grid9.h5.w4".equals(code)) obj = "９．人工呼吸器・「人工呼吸器　　（」　見出し";
@@ -886,18 +924,30 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid9.h6.w4".equals(code)) obj = "１０．気管カニューレ・「気管カニューレ（サイズ」　見出し";
         else if ("Grid9.h6.w9".equals(code)) obj = "１０．気管カニューレ　サイズ";
         else if ("Grid9.h6.w11".equals(code)) obj = "１０．気管カニューレ・「）」　見出し";
-        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
-        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
-        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
-        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
-        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
-        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
-        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
-        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
-        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
-        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
-        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
-        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 delete begin 【2012年度対応】訪問指示書のドレーン削除
+//        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
+//        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
+//        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
+//        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
+//        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
+//        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
+//        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
+//        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
+//        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
+//        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
+//        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
+//        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 delete end
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add begin 【2012年度対応】訪問指示書のドレーン削除
+        else if ("Grid9.h7.w3".equals(code)) obj = "１１．人工肛門・「11」　見出し";
+        else if ("Grid9.h7.w4".equals(code)) obj = "１１．人工肛門・「人工肛門」　見出し";
+        else if ("Grid9.h7.w5".equals(code)) obj = "１２．人工膀胱・「12」　見出し";
+        else if ("Grid9.h7.w23".equals(code)) obj = "１２．人工膀胱・「人工膀胱」　見出し";
+        else if ("Grid9.h7.w10".equals(code)) obj = "１３・その他・「13」　見出し";
+        else if ("Grid9.h7.w11".equals(code)) obj = "１３・その他・「その他（」　見出し";
+        else if ("Grid9.h7.w14".equals(code)) obj = "１３．その他";
+        else if ("Grid9.h7.w22".equals(code)) obj = "１３・その他・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add end
         else if ("Grid11.h1.w1".equals(code)) obj = "「緊急時の連絡先」　見出し";
         else if ("Grid11.h1.w2".equals(code)) obj = "緊急時の連絡先";
         else if ("Grid11.h2.w1".equals(code)) obj = "「不在時の対応法」　見出し";
@@ -2785,13 +2835,26 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid9.h3.w19".equals(code)) obj = "７．経管栄養・「日に1回交換」　見出し";
         else if ("Grid9.h3.w22".equals(code)) obj = "７．経管栄養・「）」　見出し";
         
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 delete begin 【2012年度対応】訪問指示書の留置カテーテル部位追加
+//        else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
+//        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+//        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
+//        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+//        else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
+//        else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
+//        else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 delete end
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 add begin 【2012年度対応】訪問指示書の留置カテーテル部位追加
         else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
-        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
-        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
-        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（部位：」　見出し";
+        else if ("Grid9.h4.w23".equals(code)) obj = "８．留置カテーテル　部位";
+        else if ("Grid9.h4.w12".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+        else if ("Grid9.h4.w15".equals(code)) obj = "８．留置カテーテル　サイズ";
+        else if ("Grid9.h4.w17".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
         else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
         else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
         else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 add end
         
         else if ("Grid9.h5.w3".equals(code)) obj = "９．人工呼吸器・「9」　見出し";
         else if ("Grid9.h5.w4".equals(code)) obj = "９．人工呼吸器・「人工呼吸器　　（」　見出し";
@@ -2804,19 +2867,30 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid9.h6.w4".equals(code)) obj = "１０．気管カニューレ・「気管カニューレ（サイズ」　見出し";
         else if ("Grid9.h6.w9".equals(code)) obj = "１０．気管カニューレ　サイズ";
         else if ("Grid9.h6.w11".equals(code)) obj = "１０．気管カニューレ・「）」　見出し";
-        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
-        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
-        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
-        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
-        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
-        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
-        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
-        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
-        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
-        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
-        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
-        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
-    	
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 delete begin 【2012年度対応】訪問指示書のドレーン削除
+//        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
+//        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
+//        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
+//        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
+//        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
+//        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
+//        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
+//        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
+//        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
+//        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
+//        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
+//        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 delete end
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 add begin 【2012年度対応】訪問指示書のドレーン削除
+        else if ("Grid9.h7.w3".equals(code)) obj = "１１．人工肛門・「11」　見出し";
+        else if ("Grid9.h7.w4".equals(code)) obj = "１１．人工肛門・「人工肛門」　見出し";
+        else if ("Grid9.h7.w5".equals(code)) obj = "１２．人工膀胱・「12」　見出し";
+        else if ("Grid9.h7.w23".equals(code)) obj = "１２．人工膀胱・「人工膀胱」　見出し";
+        else if ("Grid9.h7.w10".equals(code)) obj = "１３・その他・「13」　見出し";
+        else if ("Grid9.h7.w11".equals(code)) obj = "１３・その他・「その他（」　見出し";
+        else if ("Grid9.h7.w14".equals(code)) obj = "１３．その他";
+        else if ("Grid9.h7.w22".equals(code)) obj = "１３・その他・「）」　見出し";
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 add end
         else if ("Grid7.h1.w1".equals(code)) obj = "＜次頁へ続く＞";
     	
         return obj;
@@ -3047,13 +3121,26 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid9.h3.w19".equals(code)) obj = "７．経管栄養・「日に1回交換」　見出し";
         else if ("Grid9.h3.w22".equals(code)) obj = "７．経管栄養・「）」　見出し";
         
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 delete begin 【2012年度対応】訪問指示書の留置カテーテル部位追加
+//        else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
+//        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+//        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
+//        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+//        else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
+//        else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
+//        else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 delete end
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add begin 【2012年度対応】訪問指示書の留置カテーテル部位追加
         else if ("Grid9.h4.w3".equals(code)) obj = "８．留置カテーテル・「8」　見出し";
-        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
-        else if ("Grid9.h4.w9".equals(code)) obj = "８．留置カテーテル　サイズ";
-        else if ("Grid9.h4.w13".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
+        else if ("Grid9.h4.w4".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（部位：」　見出し";
+        else if ("Grid9.h4.w23".equals(code)) obj = "８．留置カテーテル　部位";
+        else if ("Grid9.h4.w12".equals(code)) obj = "８．留置カテーテル・「留置カテーテル（サイズ」　見出し";
+        else if ("Grid9.h4.w15".equals(code)) obj = "８．留置カテーテル　サイズ";
+        else if ("Grid9.h4.w17".equals(code)) obj = "８．留置カテーテル・「、」　見出し";
         else if ("Grid9.h4.w18".equals(code)) obj = "８．留置カテーテル　日";
         else if ("Grid9.h4.w19".equals(code)) obj = "８．留置カテーテル・「 日に1回交換」　見出し";
         else if ("Grid9.h4.w22".equals(code)) obj = "８．留置カテーテル・「）」　見出し";
+        //[ID:0000689][Shin Fujihara] 2012/03/12 add end
         
         else if ("Grid9.h5.w3".equals(code)) obj = "９．人工呼吸器・「9」　見出し";
         else if ("Grid9.h5.w4".equals(code)) obj = "９．人工呼吸器・「人工呼吸器　　（」　見出し";
@@ -3066,19 +3153,30 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid9.h6.w4".equals(code)) obj = "１０．気管カニューレ・「気管カニューレ（サイズ」　見出し";
         else if ("Grid9.h6.w9".equals(code)) obj = "１０．気管カニューレ　サイズ";
         else if ("Grid9.h6.w11".equals(code)) obj = "１０．気管カニューレ・「）」　見出し";
-        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
-        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
-        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
-        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
-        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
-        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
-        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
-        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
-        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
-        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
-        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
-        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
-    	
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 delete begin 【2012年度対応】訪問指示書のドレーン削除
+//        else if ("Grid9.h6.w12".equals(code)) obj = "１１．ドレーン・「11」　見出し";
+//        else if ("Grid9.h6.w13".equals(code)) obj = "１１．ドレーン・「ドレーン（部位：」　見出し";
+//        else if ("Grid9.h6.w20".equals(code)) obj = "１１．ドレーン　部位";
+//        else if ("Grid9.h6.w22".equals(code)) obj = "１１．ドレーン・「）」　見出し";
+//        else if ("Grid9.h7.w3".equals(code)) obj = "１２．人工肛門・「12」　見出し";
+//        else if ("Grid9.h7.w4".equals(code)) obj = "１２．人工肛門・「人工肛門」　見出し";
+//        else if ("Grid9.h7.w5".equals(code)) obj = "１３．人工膀胱・「13」　見出し";
+//        else if ("Grid9.h7.w23".equals(code)) obj = "１３．人工膀胱・「人工膀胱」　見出し";
+//        else if ("Grid9.h7.w10".equals(code)) obj = "１４・その他・「14」　見出し";
+//        else if ("Grid9.h7.w11".equals(code)) obj = "１４・その他・「その他（」　見出し";
+//        else if ("Grid9.h7.w14".equals(code)) obj = "１４．その他";
+//        else if ("Grid9.h7.w22".equals(code)) obj = "１４・その他・「）」　見出し";
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 delete end
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 add begin 【2012年度対応】訪問指示書のドレーン削除
+        else if ("Grid9.h7.w3".equals(code)) obj = "１１．人工肛門・「11」　見出し";
+        else if ("Grid9.h7.w4".equals(code)) obj = "１１．人工肛門・「人工肛門」　見出し";
+        else if ("Grid9.h7.w5".equals(code)) obj = "１２．人工膀胱・「12」　見出し";
+        else if ("Grid9.h7.w23".equals(code)) obj = "１２．人工膀胱・「人工膀胱」　見出し";
+        else if ("Grid9.h7.w10".equals(code)) obj = "１３・その他・「13」　見出し";
+        else if ("Grid9.h7.w11".equals(code)) obj = "１３・その他・「その他（」　見出し";
+        else if ("Grid9.h7.w14".equals(code)) obj = "１３．その他";
+        else if ("Grid9.h7.w22".equals(code)) obj = "１３・その他・「）」　見出し";
+    	//[ID:0000689][Shin Fujihara] 2012/03/12 add end
         else if ("Grid7.h1.w1".equals(code)) obj = "＜次頁へ続く＞";
     	
     	

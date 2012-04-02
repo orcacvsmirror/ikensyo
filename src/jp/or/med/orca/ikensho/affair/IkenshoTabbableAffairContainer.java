@@ -1608,6 +1608,10 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(",MI_CEL_TEL1");
     sb.append(",MI_CEL_TEL2");
     sb.append(",LAST_TIME");
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+    //留置カテーテルの部位コンボ追加
+    sb.append(",RYU_CAT_BUI");
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
     appendInsertCommonDocumentKeys(sb);
 
     sb.append(" )");
@@ -1810,6 +1814,12 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(getDBSafeString("MI_CEL_TEL2", originalData));
 
     sb.append(",CURRENT_TIMESTAMP");
+    
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+    //留置カテーテルの部位コンボ追加
+    sb.append(",");
+    sb.append(getDBSafeString("RYU_CAT_BUI", originalData));
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
 
     appendInsertCommonDocumentValues(sb);
 
@@ -2022,9 +2032,15 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
 //    sb.append(getDBSafeString("RYU_CAT_SIZE", originalData));
 //    sb.append(",RYU_CAT_CHG = ");
 //    sb.append(getDBSafeString("RYU_CAT_CHG", originalData));
+    
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - start
+//    IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "RYU_CATHETER",
+//                                           new String[] {"RYU_CAT_SIZE",
+//                                           "RYU_CAT_CHG"}, true);
     IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "RYU_CATHETER",
-                                           new String[] {"RYU_CAT_SIZE",
-                                           "RYU_CAT_CHG"}, true);
+            new String[] {"RYU_CAT_SIZE", "RYU_CAT_CHG", "RYU_CAT_BUI"}, true);
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - end
+    
 //    sb.append(",DOREN = ");
 //    sb.append(getDBSafeNumber("DOREN", originalData));
 //    sb.append(",DOREN_BUI = ");
@@ -2062,7 +2078,7 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(",MI_CEL_TEL2 = ");
     sb.append(getDBSafeString("MI_CEL_TEL2", originalData));
     sb.append(",LAST_TIME = CURRENT_TIMESTAMP");
-
+    
     appendUpdateCommonDocumentStetement(sb);
 
     sb.append(" WHERE");

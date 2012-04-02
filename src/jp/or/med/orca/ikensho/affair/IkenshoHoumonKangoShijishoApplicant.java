@@ -254,7 +254,10 @@ public class IkenshoHoumonKangoShijishoApplicant
     kangoKubun.setText("éwé¶èëä≈åÏãÊï™");
     kangoKubun.setBindPath("SIJI_KANGO_KBN");
     youkaigoJoukyou.setBindPath("YOUKAIGO_JOUKYOU");
-    youkaigoJoukyou.setValues(new int[] {1, 11, 21, 22, 23, 24, 25});
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - start
+    //youkaigoJoukyou.setValues(new int[] {1, 11, 21, 22, 23, 24, 25});
+    youkaigoJoukyou.setValues(new int[] {1, 10, 11, 21, 22, 23, 24, 25});
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - end
     houmonSijiSyo.setSelectValue(-1);
     tentekiSijiSyo.setSelectValue(-1);
     shyoubyouChiryouJyoutaiOther.setBindPath("MT_STS_OTHER");
@@ -388,15 +391,18 @@ public class IkenshoHoumonKangoShijishoApplicant
     this.add(hiddenGroup, null);
     hiddenGroup.add(validSpan, null);
     hiddenGroup.add(createCount, null);
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - start
     youkaigoJoukyou.setModel(new VRListModelAdapter(
         new VRArrayList(Arrays.asList(new String[] {
-                                      "é©óß",
-                                      "óvéxâáÅ@Å@óvâÓåÏÅi",
+                                      "é©óßÅ@óvéxâáÅi",
+                                      "ÇP",
+                                      "ÇQÅj óvâÓåÏÅi",
                                       "ÇP",
                                       "ÇQ",
                                       "ÇR",
                                       "ÇS",
-                                      "ÇTÅ@Åj"}))));
+                                      "ÇTÅj"}))));
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - end
 
   }
 

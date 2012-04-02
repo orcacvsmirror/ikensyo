@@ -79,8 +79,13 @@ public class IkenshoHoumonKangoShijishoMindBody1 extends IkenshoDocumentAffairMi
       return jokusoDepthGroup; 
   }  
   protected void addJokusoDepthGroup(){
+      //[ID:0000688][Shin Fujihara] 2012/03/12 replace begin レイアウト変更対応
+//      getJokusoDepthGroup().add(getJokusoDepthNPUAPContainer(), VRLayout.FLOW);
+//      getJokusoDepthGroup().add(getJokusoDepthDESIGNContainer(), VRLayout.FLOW);
+      //DESIGN分類、NPUAP分類の表示順を左右逆に変更
+      getJokusoDepthGroup().add(getJokusoDepthDESIGNContainer(), VRLayout.FLOW);
       getJokusoDepthGroup().add(getJokusoDepthNPUAPContainer(), VRLayout.FLOW);
-      getJokusoDepthGroup().add(getJokusoDepthDESIGNContainer(), VRLayout.FLOW);      
+      //[ID:0000688][Shin Fujihara] 2012/03/12 replace end
   }
   protected ACLabelContainer getJokusoDepthNPUAPContainer(){
       if(jokusoDepthNPUAPContainer==null){

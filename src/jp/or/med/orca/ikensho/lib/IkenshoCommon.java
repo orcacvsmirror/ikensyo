@@ -345,7 +345,12 @@ public class IkenshoCommon {
     // [ID:0000518][Tozo TANAKA] 2009/09/04 add begin 【2009年度対応：特記事項一覧】特定疾病項目の編集を可能とする 
     /** 特定疾病 */
     public static final int TEIKEI_SPECIFIED_DISEASE_NAME = 68;
-    // [ID:0000518][Tozo TANAKA] 2009/09/04 add end 【2009年度対応：特記事項一覧】特定疾病項目の編集を可能とする 
+    // [ID:0000518][Tozo TANAKA] 2009/09/04 add end 【2009年度対応：特記事項一覧】特定疾病項目の編集を可能とする
+    
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+    /** ドレーン部位 */
+    public static final int TEIKEI_CATHETER_POS_NAME = 69;
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
 
 	/**
 	 * 最新文書該当なし

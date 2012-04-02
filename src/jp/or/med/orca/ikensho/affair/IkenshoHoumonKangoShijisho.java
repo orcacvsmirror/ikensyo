@@ -196,9 +196,11 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
                 // [ID:0000517][Tozo TANAKA] 2009/09/04 delete begin 【2009年度対応：訪問看護指示書】指示項目の引継ぎ
                 //VRBindPathParser.set("TENTEKI_SIJI", originalData, "");
                 // [ID:0000517][Tozo TANAKA] 2009/09/04 delete end 【2009年度対応：訪問看護指示書】指示項目の引継ぎ
-                VRBindPathParser.set("OTHER_STATION_SIJI", originalData,
-                        new Integer(1));
-                VRBindPathParser.set("OTHER_STATION_NM", originalData, "");
+                // [ID:0000657][Masahiko Higuchi] 2011/09/28 delete begin 【2011年度対応：訪問看護指示書】指示項目の引継ぎ
+                // VRBindPathParser.set("OTHER_STATION_SIJI", originalData,
+                // new Integer(1));
+                // VRBindPathParser.set("OTHER_STATION_NM", originalData, "");
+                // [ID:0000657][Masahiko Higuchi] 2011/09/28 delete end
 
                 // 記入日は本日
                 VRBindPathParser.set("KINYU_DT", originalData, new Date());

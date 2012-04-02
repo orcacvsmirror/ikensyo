@@ -13,8 +13,6 @@ import java.util.Date;
 
 import javax.swing.JPanel;
 
-import sun.security.action.GetBooleanAction;
-
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
@@ -538,88 +536,87 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
                 "Shape12", "Shape16", "Shape14" }, -1);
 
         // —v‰îŒì”F’è‚Ìó‹µ
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - start
+        //—vx‰‡ => —vx‰‡‚PA—vx‰‡‚Q‚Ö‚Ì•ÏX‘Î‰
         switch (((Integer) VRBindPathParser.get("YOUKAIGO_JOUKYOU", data))
                 .intValue()) {
         case 1: // ©—§
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
+            pd.addAttribute("Label29", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label30", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
-        case 11:// —vx‰‡
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+        case 10:// —vx‰‡‚P
+            pd.addAttribute("Label30", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
+            break;
+        case 11:// —vx‰‡‚Q
+            pd.addAttribute("Label29", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 21:// —v‰îŒì1
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label29", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label30", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 22:// —v‰îŒì2
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label29", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label30", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 23:// —v‰îŒì3
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label29", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label30", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 24:// —v‰îŒì4
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label29", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label30", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 25:// —v‰îŒì5
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label29", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label30", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
             break;
         default:
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label29", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label30", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         }
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - end
+        
         // [ID:0000463][Tozo TANAKA] 2009/03/20 add begin •½¬21”N4Œ–@‰ü³‘Î‰
         //åñáŒ‚Ì[‚³FNPUAP•ª—Ş
         IkenshoCommon.addSelection(pd, data, "JOKUSOU_NPUAP", new String[] {
@@ -670,7 +667,16 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
         if (((Integer) VRBindPathParser.get("RYU_CATHETER", data)).intValue() != 1) {
             pd.addAttribute("Shape42", "Visible", "FALSE");
         } else {
-            IkenshoCommon.addString(pd, data, "RYU_CAT_SIZE", "Grid9.h4.w7");
+            // [ID:0000688][Masahiko.Higuchi] 2012/03/16 Delete - start
+            //IkenshoCommon.addString(pd, data, "RYU_CAT_SIZE", "Grid9.h4.w7");
+            // [ID:0000688][Masahiko.Higuchi] 2012/03/16 Delete - end
+            // [ID:0000688][Masahiko.Higuchi] 2012/03/16 Add - start
+            StringBuffer bui = new StringBuffer();
+            bui.append("@@ ");
+            bui.append(data.getData("RYU_CAT_BUI"));
+            IkenshoCommon.addString(pd, "Grid9.h4.w23", bui.toString());
+            IkenshoCommon.addString(pd, data, "RYU_CAT_SIZE", "Grid9.h4.w15");
+            // [ID:0000688][Masahiko.Higuchi] 2012/03/16 Add - end
             IkenshoCommon.addString(pd, data, "RYU_CAT_CHG", "Grid9.h4.w18");
         }
         // lHŒÄ‹zŠí
@@ -688,11 +694,15 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
             IkenshoCommon.addString(pd, data, "CANNULA_SIZE", "Grid9.h6.w7");
         }
         // ƒhƒŒ[ƒ“
-        if (((Integer) VRBindPathParser.get("DOREN", data)).intValue() != 1) {
-            pd.addAttribute("Shape37", "Visible", "FALSE");
-        } else {
-            IkenshoCommon.addString(pd, data, "DOREN_BUI", "Grid9.h6.w17");
-        }
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Delete - start
+        //–@‰ü³‚É‚æ‚èAƒhƒŒ[ƒ“‚Ì•\‹L‚Ííœ
+//        if (((Integer) VRBindPathParser.get("DOREN", data)).intValue() != 1) {
+//            pd.addAttribute("Shape37", "Visible", "FALSE");
+//        } else {
+//            IkenshoCommon.addString(pd, data, "DOREN_BUI", "Grid9.h6.w17");
+//        }
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Delete - end
+        
         // lHãè–å
         if (((Integer) VRBindPathParser.get("JINKOU_KOUMON", data)).intValue() != 1) {
             pd.addAttribute("Shape43", "Visible", "FALSE");
@@ -1033,88 +1043,87 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
                 "Shape12", "Shape16", "Shape14" }, -1);
 
         // —v‰îŒì”F’è‚Ìó‹µ
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - start
+        //—vx‰‡ => —vx‰‡‚PA—vx‰‡‚Q‚Ö‚Ì•ÏX‘Î‰
         switch (((Integer) VRBindPathParser.get("YOUKAIGO_JOUKYOU", data))
                 .intValue()) {
         case 1: // ©—§
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
+            pd.addAttribute("Label3", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label4", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
-        case 11:// —vx‰‡
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+        case 10:// —vx‰‡‚P
+            pd.addAttribute("Label4", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
+            break;
+        case 11:// —vx‰‡‚Q
+            pd.addAttribute("Label3", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 21:// —v‰îŒì1
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label3", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label4", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 22:// —v‰îŒì2
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label3", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label4", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 23:// —v‰îŒì3
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label3", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label4", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 24:// —v‰îŒì4
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label3", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label4", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         case 25:// —v‰îŒì5
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label3", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label4", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
             break;
         default:
-            pd.addAttribute("Shape49", "Visible", "FALSE");
-            pd.addAttribute("Shape54", "Visible", "FALSE");
-            pd.addAttribute("Shape9", "Visible", "FALSE");
-            pd.addAttribute("Shape51", "Visible", "FALSE");
-            pd.addAttribute("Shape52", "Visible", "FALSE");
-            pd.addAttribute("Shape53", "Visible", "FALSE");
-            if (printStyle == DOCUMENT_TYPE_HOKEN_SHISETSU) {
-                pd.addAttribute("Shape5", "Visible", "FALSE");
-            }
+            pd.addAttribute("Label3", "Visible", "FALSE"); //—vx‰‡‚P
+            pd.addAttribute("Label4", "Visible", "FALSE"); //—vx‰‡‚Q
+            pd.addAttribute("Shape54", "Visible", "FALSE"); //—v‰îŒì‚P
+            pd.addAttribute("Shape9", "Visible", "FALSE"); //—v‰îŒì‚Q
+            pd.addAttribute("Shape51", "Visible", "FALSE"); //—v‰îŒì‚R
+            pd.addAttribute("Shape52", "Visible", "FALSE"); //—v‰îŒì‚S
+            pd.addAttribute("Shape53", "Visible", "FALSE"); //—v‰îŒì‚T
             break;
         }
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - end
+        
         //åñáŒ‚Ì[‚³FNPUAP•ª—Ş
         IkenshoCommon.addSelection(pd, data, "JOKUSOU_NPUAP", new String[] {
                 "Shape55", "Shape56" }, -1);
@@ -1163,7 +1172,16 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
         if (((Integer) VRBindPathParser.get("RYU_CATHETER", data)).intValue() != 1) {
             pd.addAttribute("Shape42", "Visible", "FALSE");
         } else {
-            IkenshoCommon.addString(pd, data, "RYU_CAT_SIZE", "Grid9.h4.w7");
+            // [ID:0000688][Masahiko.Higuchi] 2012/03/16 Delete - start
+            //IkenshoCommon.addString(pd, data, "RYU_CAT_SIZE", "Grid9.h4.w7");
+            // [ID:0000688][Masahiko.Higuchi] 2012/03/16 Delete - end
+            // [ID:0000688][Masahiko.Higuchi] 2012/03/16 Add - start
+            StringBuffer bui = new StringBuffer();
+            bui.append("@@");
+            bui.append(data.getData("RYU_CAT_BUI"));
+            IkenshoCommon.addString(pd, "Grid9.h4.w23", bui.toString());
+            IkenshoCommon.addString(pd, data, "RYU_CAT_SIZE", "Grid9.h4.w15");
+            // [ID:0000688][Masahiko.Higuchi] 2012/03/16 Add - end
             IkenshoCommon.addString(pd, data, "RYU_CAT_CHG", "Grid9.h4.w18");
         }
         // lHŒÄ‹zŠí
@@ -1181,11 +1199,14 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
             IkenshoCommon.addString(pd, data, "CANNULA_SIZE", "Grid9.h6.w7");
         }
         // ƒhƒŒ[ƒ“
-        if (((Integer) VRBindPathParser.get("DOREN", data)).intValue() != 1) {
-            pd.addAttribute("Shape37", "Visible", "FALSE");
-        } else {
-            IkenshoCommon.addString(pd, data, "DOREN_BUI", "Grid9.h6.w17");
-        }
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Delete - start
+        //–@‰ü³‚É‚æ‚èAƒhƒŒ[ƒ“‚Ì•\‹L‚Ííœ
+//        if (((Integer) VRBindPathParser.get("DOREN", data)).intValue() != 1) {
+//            pd.addAttribute("Shape37", "Visible", "FALSE");
+//        } else {
+//            IkenshoCommon.addString(pd, data, "DOREN_BUI", "Grid9.h6.w17");
+//        }
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Delete - end
         // lHãè–å
         if (((Integer) VRBindPathParser.get("JINKOU_KOUMON", data)).intValue() != 1) {
             pd.addAttribute("Shape43", "Visible", "FALSE");

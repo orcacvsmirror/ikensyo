@@ -20,6 +20,11 @@ public class IkenshoHoumonKangoShijishoSpecial extends IkenshoDocumentAffairSpec
     specialTitle.setText("特別な医療");
     specialMessage1.setVisible(false);
     specialMessage2.setVisible(false);
+    
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+    getSpecialDorenPoss().setVisible(false);
+    getSpecialDoren().setVisible(false);
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
   }
 
   /**
@@ -36,13 +41,17 @@ public class IkenshoHoumonKangoShijishoSpecial extends IkenshoDocumentAffairSpec
       getSpecialCannulaSize().setOptionComboBoxParameters("気管カニューレサイズ",IkenshoCommon.TEIKEI_CANURE_SIZE,5);
       getSpecialDorenPos().setOptionComboBoxParameters("ドレーン部位",IkenshoCommon.TEIKEI_DOREN_POS_NAME,10);
       getSpecialRyuchiCatheterChange().setOptionComboBoxParameters("留置カテーテル交換",IkenshoCommon.TEIKEI_CATHETER_CHANGE_SPAN,5);
-      getSpecialRyuchiCatheterSize().setOptionComboBoxParameters("留置カテーテールサイズ",IkenshoCommon.TEIKEI_CATHETER_SIZE,5);
+      getSpecialRyuchiCatheterSize().setOptionComboBoxParameters("留置カテーテルサイズ",IkenshoCommon.TEIKEI_CATHETER_SIZE,5);
       getSpecialKeikanEiyouSize().setOptionComboBoxParameters("経管栄養サイズ",IkenshoCommon.TEIKEI_TUBE_SIZE,5);
       getSpecialKeikanEiyouChange().setOptionComboBoxParameters("経管栄養交換",IkenshoCommon.TEIKEI_TUBE_CHANGE_SPAN,5);
       getSpecialJinkouKokyuHousiki().setOptionComboBoxParameters("人工呼吸器方式",IkenshoCommon.TEIKEI_RESPIRATOR_TYPE,5);
       getSpecialJinkouKokyuSettei().setOptionComboBoxParameters("人工呼吸器設定",IkenshoCommon.TEIKEI_RESPIRATOR_SETTING,10);
       getSpecialKeikanEiyouMethod().setOptionComboBoxParameters("経管栄養方法",IkenshoCommon.TEIKEI_TUBE_TYPE,5);
       
+      //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+      //留置カテーテルの部位コンボ追加
+      getSpecialRyuchiCatheterPos().setOptionComboBoxParameters("留置カテーテル部位", IkenshoCommon.TEIKEI_CATHETER_POS_NAME, 10);
+      //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
   }
   
   

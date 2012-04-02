@@ -967,9 +967,9 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         rollBackPnl.setLayout(new VRLayout());
         rollBackPnl.add(rollBack, VRLayout.EAST);
         insurerNmContainer.add(insurerNmField, java.awt.BorderLayout.CENTER);
-        //[ID:0000600][Masahiko Higuchi] 2010/02 edit begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
-        rollBack.setText("H22”Nf—Ã•ñV’P‰¿(D)");
-        //[ID:0000600][Masahiko Higuchi] 2010/02 edit end
+        //[ID:0000686][Masahiko Higuchi] 2012/03 edit begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+        rollBack.setText("H24”Nf—Ã•ñV’P‰¿(D)");
+        //[ID:0000686][Masahiko Higuchi] 2010/02 edit end
         rollBack.setMnemonic('D');
     }
 
@@ -1098,12 +1098,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         // ‰Šúf—Ã•ñV’P‰¿‚É–ß‚·
         rollBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // [ID:0000600][Masahiko Higuchi] 2010/02 edit begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+                // [ID:0000686][Masahiko Higuchi] 2010/03 edit begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
                 int result = ACMessageBox.show(
-                        "ˆÓŒ©‘ì¬—¿^f@EŒŸ¸”ï—p“_”‚É"+ ACConstants.LINE_SEPARATOR + "H22”Nf—Ã•ñV’P‰¿‚ğİ’è‚µ‚Ü‚·B‚æ‚ë‚µ‚¢‚Å‚·‚©H",
+                        "ˆÓŒ©‘ì¬—¿^f@EŒŸ¸”ï—p“_”‚É"+ ACConstants.LINE_SEPARATOR + "H24”Nf—Ã•ñV’P‰¿‚ğİ’è‚µ‚Ü‚·B‚æ‚ë‚µ‚¢‚Å‚·‚©H",
                         ACMessageBox.BUTTON_OKCANCEL,
                         ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
-                // [ID:0000600][Masahiko Higuchi] 2010/02 edit end
+                // [ID:0000686][Masahiko Higuchi] 2010/03 edit end
                 if (result == ACMessageBox.RESULT_OK) {
                     try {
                         loadMKingakuTensu();
@@ -1434,12 +1434,33 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
 //            // [ID:0000600][Masahiko Higuchi] 2010/02 add end
 
             // [ID:0000600][Masahiko Higuchi] 2010/02 add begin f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+            // [ID:0000686][Masahiko Higuchi] 2012/03 del-Start
             // Ikensyo.jar‚ğ·‚µ–ß‚µ‚Ä‰ß‹‚Ì¿‹‘ì¬‚ğs‚¤ê‡‚ğ‘z’è‚µ‚Ä‚¢‚é‚½‚ßAƒ\[ƒX“à‚Å“_”‚ğ‹LÚ
             // ‰Â“Ç«‚ª—‚¿‚½‚Ì‚Å‚Ü‚Æ‚ß‚Ä“]‹L
-            kingakuTensuData.put("EXP_KS",new Double(13.0)); // ŒŒ‰tÌæ(Ã–¬)
+//            kingakuTensuData.put("EXP_KS",new Double(13.0)); // ŒŒ‰tÌæ(Ã–¬)
+//            kingakuTensuData.put("EXP_KIK_MKI",new Double(21.0)); // ––½ŒŒ‰tˆê”ÊŒŸ¸
+//            kingakuTensuData.put("EXP_KIK_KEKK",new Double(125.0)); // ŒŒ‰tŠw“IŒŸ¸”»’f—¿
+//            kingakuTensuData.put("EXP_KKK_KKK",new Double(123.0)); // ŒŒ‰t‰»ŠwŒŸ¸(10€–ÚˆÈã)
+//            kingakuTensuData.put("EXP_KKK_SKK",new Double(144.0)); // ¶‰»Šw“IŒŸ¸(I)”»’f—¿
+//            kingakuTensuData.put("EXP_NITK",new Double(26.0)); // ”A’†ˆê”Ê•¨¿’è«”»’è—ÊŒŸ¸
+//            kingakuTensuData.put("EXP_XRAY_TS",new Double(60.0)); // ’PƒB‰eiƒAƒiƒƒOj
+//            kingakuTensuData.put("EXP_XRAY_TS_DIGITAL", new Double(68.0)); // ’PƒB‰eiƒfƒWƒ^ƒ‹j
+//            kingakuTensuData.put("EXP_XRAY_SS",new Double(85.0)); // Ê^f’f(‹¹•”)
+//            kingakuTensuData.put("EXP_XRAY_FILM",new Double(11));// ƒtƒBƒ‹ƒ€(‘åŠp)
+//            kingakuTensuData.put("EXP_XRAY_DIGITAL_MANAGEMENT",new Double(57.0));// “dq‰æ‘œŠÇ—‰ÁZ
+//            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(22));// ‰æ‘œ‹L˜^—pƒtƒBƒ‹ƒ€(‘åŠp)
+//            kingakuTensuData.put("SHOSIN_SINRYOUJO", new Double(270.0)); // ‰f—¿(f—ÃŠ)
+//            kingakuTensuData.put("SHOSIN_HOSPITAL", new Double(270.0)); // ‰f—¿(•a‰@)
+//            // íœ€–Ú ’l‚Í0‚Åİ’è
+//            kingakuTensuData.put("EXP_XRAY_DIGITAL_IMAGING",new Double(0.0));// ƒfƒWƒ^ƒ‹‰f‘œ‰»ˆ—‰ÁZ
+//            kingakuTensuData.put("SHOSIN_ADD_IT", new Double(0.0)); // “dq‰»‰ÁZ
+            // [ID:0000686][Masahiko Higuchi] 2012/03 del-End
+            // [ID:0000600][Masahiko Higuchi] 2010/02 add end
+            // [ID:0000686][Masahiko Higuchi] 2012/03 add-Start •½¬24”Nf—Ã•ñV‰ü’è
+            kingakuTensuData.put("EXP_KS",new Double(16.0)); // ŒŒ‰tÌæ(Ã–¬)
             kingakuTensuData.put("EXP_KIK_MKI",new Double(21.0)); // ––½ŒŒ‰tˆê”ÊŒŸ¸
             kingakuTensuData.put("EXP_KIK_KEKK",new Double(125.0)); // ŒŒ‰tŠw“IŒŸ¸”»’f—¿
-            kingakuTensuData.put("EXP_KKK_KKK",new Double(123.0)); // ŒŒ‰t‰»ŠwŒŸ¸(10€–ÚˆÈã)
+            kingakuTensuData.put("EXP_KKK_KKK",new Double(121.0)); // ŒŒ‰t‰»ŠwŒŸ¸(10€–ÚˆÈã)
             kingakuTensuData.put("EXP_KKK_SKK",new Double(144.0)); // ¶‰»Šw“IŒŸ¸(I)”»’f—¿
             kingakuTensuData.put("EXP_NITK",new Double(26.0)); // ”A’†ˆê”Ê•¨¿’è«”»’è—ÊŒŸ¸
             kingakuTensuData.put("EXP_XRAY_TS",new Double(60.0)); // ’PƒB‰eiƒAƒiƒƒOj
@@ -1447,13 +1468,13 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             kingakuTensuData.put("EXP_XRAY_SS",new Double(85.0)); // Ê^f’f(‹¹•”)
             kingakuTensuData.put("EXP_XRAY_FILM",new Double(11));// ƒtƒBƒ‹ƒ€(‘åŠp)
             kingakuTensuData.put("EXP_XRAY_DIGITAL_MANAGEMENT",new Double(57.0));// “dq‰æ‘œŠÇ—‰ÁZ
-            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(22));// ‰æ‘œ‹L˜^—pƒtƒBƒ‹ƒ€(‘åŠp)
+            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(21));// ‰æ‘œ‹L˜^—pƒtƒBƒ‹ƒ€(‘åŠp)
             kingakuTensuData.put("SHOSIN_SINRYOUJO", new Double(270.0)); // ‰f—¿(f—ÃŠ)
             kingakuTensuData.put("SHOSIN_HOSPITAL", new Double(270.0)); // ‰f—¿(•a‰@)
             // íœ€–Ú ’l‚Í0‚Åİ’è
             kingakuTensuData.put("EXP_XRAY_DIGITAL_IMAGING",new Double(0.0));// ƒfƒWƒ^ƒ‹‰f‘œ‰»ˆ—‰ÁZ
             kingakuTensuData.put("SHOSIN_ADD_IT", new Double(0.0)); // “dq‰»‰ÁZ
-            // [ID:0000600][Masahiko Higuchi] 2010/02 add end
+            // [ID:0000686][Masahiko Higuchi] 2012/03 add-End
             
         } else {
             kingakuTensuData = (VRMap) pointsGrp.createSource(); // DBã‚Éƒf[ƒ^–³

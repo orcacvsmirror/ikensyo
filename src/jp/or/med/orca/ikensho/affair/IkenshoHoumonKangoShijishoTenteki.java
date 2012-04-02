@@ -61,7 +61,12 @@ public class IkenshoHoumonKangoShijishoTenteki
     tokki.setCaption("特記すべき留意事項");
     tokki.setTextBindPath("SIJI_TOKKI");
     //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
-    tokki.setTitle("特記すべき留意事項（注：薬の相互作用・副作用についての留意点、薬物アレルギーの既往等あれば記載してください）" + ACConstants.LINE_SEPARATOR + "(現在 {2}文字 {3}行)");
+    //[ID:0000688][Shin Fujihara] 2012/03/12 replace begin レイアウト変更対応
+    //tokki.setTitle("特記すべき留意事項（注：薬の相互作用・副作用についての留意点、薬物アレルギーの既往等あれば記載してください）" + ACConstants.LINE_SEPARATOR + "(現在 {2}文字 {3}行)");
+    tokki.setTitle("特記すべき留意事項（注：薬の相互作用・副作用についての留意点、薬物アレルギーの既往、定期巡回・随時対応型訪問"
+            + ACConstants.LINE_SEPARATOR
+            + "介護看護及び第一号複合型サービス利用時の留意事項等があれば記載して下さい。）(現在 {2}文字 {3}行)");
+    //[ID:0000688][Shin Fujihara] 2012/03/12 replace end
     tokki.setPageBreakLimitProperty(201, 5);
     //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     tokki.setCheckVisible(false);

@@ -156,7 +156,11 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
 //                createDataH17();
 //                break;
 //        }
-        createDataH18();
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Edit - start
+        //ドレーンを削除し、留置カテーテルの部位を追加
+        //createDataH18();
+        createDataH24();
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
         //テーブルのカラムを生成
         createColumn();
         //行の選択
@@ -204,7 +208,7 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
         data.add(createRow(IkenshoCommon.TEIKEI_TUBE_CHANGE_SPAN,  5, "", "●", "", "現在の状況／装着・医療機器等", "経管栄養交換"));
         data.add(createRow(IkenshoCommon.TEIKEI_CANURE_SIZE,  5, "", "●", "", "現在の状況／装着・医療機器等", "気管カニューレサイズ"));
         data.add(createRow(IkenshoCommon.TEIKEI_DOREN_POS_NAME, 10, "", "●", "", "現在の状況／装着・医療機器等", "ドレーン部位"));
-        data.add(createRow(IkenshoCommon.TEIKEI_CATHETER_SIZE,  5, "", "●", "", "現在の状況／装着・医療機器等", "留置カテーテールサイズ"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CATHETER_SIZE,  5, "", "●", "", "現在の状況／装着・医療機器等", "留置カテーテルサイズ"));
         data.add(createRow(IkenshoCommon.TEIKEI_CATHETER_CHANGE_SPAN,  5, "", "●", "", "現在の状況／装着・医療機器等", "留置カテーテル交換"));
         data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_RYOUYOU_SHIDOU_RYUIJIKOU, 50, "", "●", "", "留意事項及び指示事項", "療養生活指導上の留意事項"));
         data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_REHABILITATION, 50, "", "●", "", "留意事項及び指示事項", "リハビリテーション"));
@@ -292,7 +296,7 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
         data.add(createRow(IkenshoCommon.TEIKEI_TUBE_CHANGE_SPAN,  5, "", "●", "", "現在の状況／装着・医療機器等", "経管栄養交換"));
         data.add(createRow(IkenshoCommon.TEIKEI_CANURE_SIZE,  5, "", "●", "", "現在の状況／装着・医療機器等", "気管カニューレサイズ"));
         data.add(createRow(IkenshoCommon.TEIKEI_DOREN_POS_NAME, 10, "", "●", "", "現在の状況／装着・医療機器等", "ドレーン部位"));
-        data.add(createRow(IkenshoCommon.TEIKEI_CATHETER_SIZE,  5, "", "●", "", "現在の状況／装着・医療機器等", "留置カテーテールサイズ"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CATHETER_SIZE,  5, "", "●", "", "現在の状況／装着・医療機器等", "留置カテーテルサイズ"));
         data.add(createRow(IkenshoCommon.TEIKEI_CATHETER_CHANGE_SPAN,  5, "", "●", "", "現在の状況／装着・医療機器等", "留置カテーテル交換"));
         data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_RYOUYOU_SHIDOU_RYUIJIKOU, 50, "", "●", "", "留意事項及び指示事項", "療養生活指導上の留意事項"));
         data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_REHABILITATION, 50, "", "●", "", "留意事項及び指示事項", "リハビリテーション"));
@@ -335,6 +339,82 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
 
     }
 
+    /**
+     * テーブルに設定するデータを生成します。(H248改正後)
+     */
+    private void createDataH24() {
+        data = new VRArrayList();
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_NAME, 30, "1-(1)", "●", "", "診断名", "疾病名"));
+        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_SICK_NAME, 30, "", "", "1-(1)", "診断名", "疾病名"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SPECIFIED_DISEASE_NAME, 30, "●", "●", "", "特定疾病", "特定疾病"));
+        data.add(createRow(IkenshoCommon.TEIKEI_INSECURE_CONDITION_NAME, 30, "1-(2)", "", "1-(2)", "症状としての安定性", "「不安定」とした場合の具体的状況"));
+        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_NAME, 12, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "薬剤名"));
+        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "薬剤名"));
+        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT,  4, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "用量単位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT,  4, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "用量単位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "用法"));
+        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_USAGE, 10, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "用法"));
+
+        data.add(createRow(IkenshoCommon.TEIKEI_MIND_SICK_NAME, 30, "3-(4)", "", "3-(2)", "その他の精神・神経症状", "精神・神経症状"));
+        data.add(createRow(IkenshoCommon.TEIKEI_BODY_STATUS_HAND_FOOT_NAME, 10, "3-(5)", "", "3-(3)", "身体の状態", "四肢欠損・部位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_MAHI_POSITION_OTHER_NAME, 10, "3-(5)", "", "3-(3)", "身体の状態", "麻痺(その他)・部位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_BODY_STATUS_MUSCULAR_DOWN_NAME, 10, "3-(5)", "", "3-(3)", "身体の状態", "筋力の低下・部位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CENNECT_KOSHUKU_NAME, 10, "3-(5)", "", "3-(3)", "身体の状態", "関節の拘縮・部位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CONNECT_PAIN_NAME, 10, "3-(5)", "", "3-(3)", "身体の状態", "関節の痛み・部位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_BODY_STATUS_JYOKUSOU_NAME, 10, "3-(5)", "", "3-(3)", "身体の状態", "褥瘡・部位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_BODY_STATUS_SKIN_NAME, 10, "3-(5)", "", "3-(3)",  "身体の状態", "その他の皮膚疾患・部位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_EATING_RYUIJIKOU_NAME, 30, "4-(2)", "", "", "栄養・食生活", "栄養・食生活上の留意点"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_COPE_URINE_NAME, 30, "4-(3)", "", "4-(1)", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "尿失禁"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_COPE_FACTURE_NAME, 30, "4-(3)", "", "4-(1)", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "転倒・骨折"));
+        data.add(createRow(IkenshoCommon.TEIKEI_MOVILITY_DOWN_NAME, 30, "4-(3)", "", "", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "移動能力の低下"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_COPE_JYOKUSOU_NAME, 30, "4-(3)", "", "4-(1)", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "褥瘡"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_COPE_HEART_LUNG_NAME, 30, "4-(3)", "", "4-(1)", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "心肺機能の低下"));
+        data.add(createRow(IkenshoCommon.TEIKEI_TOJIKOMORI_NAME, 30, "4-(3)", "", "", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "閉じこもり"));
+        data.add(createRow(IkenshoCommon.TEIKEI_IYOKU_DOWN_NAME, 30, "4-(3)", "", "", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "意欲低下"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_COPE_PROWL_NAME, 30, "4-(3)", "", "4-(1)", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "徘徊"));
+        data.add(createRow(IkenshoCommon.TEIKEI_LOW_ENERGY_NAME, 30, "4-(3)", "", "", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "低栄養"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SESSHOKU_ENGE_DOWN_NAME, 30, "4-(3)", "", "", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "摂食・嚥下機能低下"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_COPE_DEHYDRATION_NAME, 30, "4-(3)", "", "4-(1)", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "脱水"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_COPE_INFECTION_NAME, 30, "4-(3)", "", "4-(1)", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "易感染性"));
+        data.add(createRow(IkenshoCommon.TEIKEI_GAN_TOTSU_NAME, 30, "4-(3)", "", "", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "がん等による疼痛"));
+
+        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_SICK_COPE_PNEUMONIA_NAME, 30, "", "", "4-(1)", "現在、発生の可能性が高い病態とその対処方針", "嚥下性肺炎"));
+        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_SICK_COPE_INTESTINES_NAME, 30, "", "", "4-(1)", "現在、発生の可能性が高い病態とその対処方針", "腸閉塞"));
+        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_SICK_COPE_PAIN_NAME, 30, "", "", "4-(1)", "現在、発生の可能性が高い病態とその対処方針", "痛み"));
+
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_COPE_OTHER_NAME, 30, "4-(3)", "", "4-(1)", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "その他・詳細"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SICK_TYPE_OTHER_NAME, 15, "4-(3)", "", "4-(1)", "現在あるかまたは今後発生の可能性の高い状態とその対処方針", "その他・項目名"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CARE_SERVICE_BLOOD_PRESSURE_NAME, 30, "4-(6)", "", "4-(2)", "サービス提供時における医学的観点からの留意事項", "血圧"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CARE_SERVICE_EAT_NAME, 30, "4-(6)", "", "4-(2)", "サービス提供時における医学的観点からの留意事項", "摂食"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CARE_SERVICE_ENGE_NAME, 30, "4-(6)", "", "4-(2)", "サービス提供時における医学的観点からの留意事項", "嚥下"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CARE_SERVICE_MOVE_NAME, 30, "4-(6)", "", "4-(2)", "サービス提供時における医学的観点からの留意事項", "移動"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CARE_SERVICE_UNDOU_NAME, 30, "4-(6)", "", "", "サービス提供時における医学的観点からの留意事項", "運動"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CARE_SERVICE_OTHER_NAME, 50, "4-(6)", "", "4-(2)", "サービス提供時における医学的観点からの留意事項", "その他"));
+        data.add(createRow(IkenshoCommon.TEIKEI_INFECTION_NAME, 30, "4-(7)", "", "4-(3)", "感染症の有無", "有の場合"));
+        data.add(createRow(IkenshoCommon.TEIKEI_MENTION_NAME, 50, "5", "", "", "その他特記すべき事項", "その他特記すべき事項"));
+
+        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MENTION_NAME, 50, "", "", "5", "その他特記すべき事項", "その他特記すべき事項"));
+        
+        data.add(createRow(IkenshoCommon.TEIKEI_RESPIRATOR_TYPE,  5, "", "●", "", "現在の状況／装着・医療機器等", "人工呼吸器方式"));
+        data.add(createRow(IkenshoCommon.TEIKEI_RESPIRATOR_SETTING, 10, "", "●", "", "現在の状況／装着・医療機器等", "人工呼吸器設定"));
+        data.add(createRow(IkenshoCommon.TEIKEI_TUBE_TYPE,  5, "", "●", "", "現在の状況／装着・医療機器等", "経管栄養方法"));
+        data.add(createRow(IkenshoCommon.TEIKEI_TUBE_SIZE,  5, "", "●", "", "現在の状況／装着・医療機器等", "経管栄養サイズ"));
+        data.add(createRow(IkenshoCommon.TEIKEI_TUBE_CHANGE_SPAN,  5, "", "●", "", "現在の状況／装着・医療機器等", "経管栄養交換"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CANURE_SIZE,  5, "", "●", "", "現在の状況／装着・医療機器等", "気管カニューレサイズ"));
+        //data.add(createRow(IkenshoCommon.TEIKEI_DOREN_POS_NAME, 10, "", "●", "", "現在の状況／装着・医療機器等", "ドレーン部位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CATHETER_POS_NAME, 10, "", "●", "", "現在の状況／装着・医療機器等", "留置カテーテル部位"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CATHETER_SIZE,  5, "", "●", "", "現在の状況／装着・医療機器等", "留置カテーテルサイズ"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CATHETER_CHANGE_SPAN,  5, "", "●", "", "現在の状況／装着・医療機器等", "留置カテーテル交換"));
+        data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_RYOUYOU_SHIDOU_RYUIJIKOU, 50, "", "●", "", "留意事項及び指示事項", "療養生活指導上の留意事項"));
+        data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_REHABILITATION, 50, "", "●", "", "留意事項及び指示事項", "リハビリテーション"));
+        data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_JYOKUSOU, 50, "", "●", "", "留意事項及び指示事項", "褥瘡の処置等"));
+        data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_KIKI_SOUSA_ENJYO, 50, "", "●", "", "留意事項及び指示事項", "装置・使用医療機器等の操作援助・管理"));
+        data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_SONOTA, 50, "", "●", "", "留意事項及び指示事項", "その他"));
+        data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_TOKKI, 50, "", "●", "", "留意事項及び指示事項", "特記すべき留意事項"));
+        data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_TENTEKI_CHUSHA, 50, "", "●", "", "在宅患者訪問点滴注射に関する指示", "在宅訪問点滴注射"));
+    }
+    //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
+    
     /**
      * 1行分のデータを生成
      * @param tkb_kbn 定型文区分

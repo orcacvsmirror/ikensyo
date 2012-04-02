@@ -44,7 +44,7 @@ public class IkenshoIkenshoInfoSpecial extends IkenshoDocumentAffairSpecial {
         getSpecialRyuchiCatheterChange().setOptionComboBoxParameters(
                 "留置カテーテル交換", IkenshoCommon.TEIKEI_CATHETER_CHANGE_SPAN, 5);
         getSpecialRyuchiCatheterSize().setOptionComboBoxParameters(
-                "留置カテーテールサイズ", IkenshoCommon.TEIKEI_CATHETER_SIZE, 5);
+                "留置カテーテルサイズ", IkenshoCommon.TEIKEI_CATHETER_SIZE, 5);
         getSpecialKeikanEiyouSize().setOptionComboBoxParameters("経管栄養サイズ",
                 IkenshoCommon.TEIKEI_TUBE_SIZE, 5);
         getSpecialKeikanEiyouChange().setOptionComboBoxParameters("経管栄養交換",
@@ -55,6 +55,11 @@ public class IkenshoIkenshoInfoSpecial extends IkenshoDocumentAffairSpecial {
                 IkenshoCommon.TEIKEI_RESPIRATOR_SETTING, 10);
         getSpecialKeikanEiyouMethod().setOptionComboBoxParameters("経管栄養方法",
                 IkenshoCommon.TEIKEI_TUBE_TYPE, 5);
+        
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - start
+        //留置カテーテルの部位コンボ追加
+        getSpecialRyuchiCatheterPos().setOptionComboBoxParameters("留置カテーテル部位", IkenshoCommon.TEIKEI_CATHETER_POS_NAME, 10);
+        //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
 
     }
     // 2007/10/18 [Masahiko Higuchi] Addition - end
