@@ -30,6 +30,11 @@ public class IkenshoTokubetsuHoumonKangoShijishoIryoukikan extends
         otherStationSijiUmuContainer.setVisible(false);
         otherStationSijiContainer.setVisible(false);
         
+        //[ID:0000731][Shin Fujihara] 2012/04/20 add begin y2012”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
+        kyuinStationSijiUmuContainer.setVisible(false);
+        kyuinStationSijiContainer.setVisible(false);
+        //[ID:0000731][Shin Fujihara] 2012/04/20 add end y2009”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
+        
         getTokubertsuKinkyuRenraku().setColumns(100);
         getTokubertsuKinkyuRenraku().setRows(3);
         getTokubertsuKinkyuRenraku().setMaxRows(2);

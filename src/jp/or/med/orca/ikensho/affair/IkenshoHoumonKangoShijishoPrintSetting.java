@@ -196,25 +196,28 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
 
             String station1 = String.valueOf(VRBindPathParser.get("STATION_NM", source));
             String station2 = String.valueOf(VRBindPathParser.get("OTHER_STATION_NM", source));
+            //[ID:0000731][Shin Fujihara] 2012/04/20 edit begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+            String station3 = String.valueOf(VRBindPathParser.get("KYUIN_STATION_NM", source));
             
             //[ID:0000635][Shin Fujihara] 2011/02/25 edit begin 【2010年度要望対応】
             if (sendTo.isEnabled()) {
                 switch (sendTo.getSelectedIndex()) {
                 case 1: // 2枚
-                	printShijishoBranch(pd, "page1", source, station1, station2, printStyle);
-                	printShijishoBranch(pd, "page1", source, station2, station1, printStyle);
+                	printShijishoBranch(pd, "page1", source, station1, station2, station3, printStyle);
+                	printShijishoBranch(pd, "page1", source, station2, station1, station3, printStyle);
                     break;
                 case 2: // 前者のみ
-                	printShijishoBranch(pd, "page1", source, station1, station2, printStyle);
+                	printShijishoBranch(pd, "page1", source, station1, station2, station3, printStyle);
                     break;
                 case 3: // 後者のみ
-                	printShijishoBranch(pd, "page1", source, station2, station1, printStyle);
+                	printShijishoBranch(pd, "page1", source, station2, station1, station3, printStyle);
                     break;
                 }
             } else {
                 // 単一のステーションのみ
-            	printShijishoBranch(pd, "page1", source, station1, station2, printStyle);
+            	printShijishoBranch(pd, "page1", source, station1, station2, station3, printStyle);
             }
+            // [ID:0000731][Shin Fujihara] 2012/04/20 edit end 【2009年度対応：訪問看護指示書】たん吸引指示追加
             //[ID:0000635][Shin Fujihara] 2011/02/25 edit end 【2010年度要望対応】
 
             pd.endPrintEdit();
@@ -229,17 +232,17 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
 
     //[ID:0000635][Shin Fujihara] 2011/02/25 add begin 【2010年度要望対応】
     public void printShijishoBranch(ACChotarouXMLWriter pd, String formatName,
-            VRMap data, String stationName1, String stationName2, int printStyle)
+            VRMap data, String stationName1, String stationName2, String stationName3, int printStyle)
             throws Exception {
     	
     	//改ページが発生しているかどうかで、印字に使用するメソッドを切り替える
     	//改ページアリ
     	if (isPageBreak) {
-    		printShijishoMulti(pd, data, stationName1, stationName2, printStyle);
+    		printShijishoMulti(pd, data, stationName1, stationName2, stationName3, printStyle);
     		
     	//改ページなし（従来どおりのメソッドを使用）
     	} else {
-    		printShijisho(pd, formatName, data, stationName1, stationName2, printStyle);
+    		printShijisho(pd, formatName, data, stationName1, stationName2, stationName3, printStyle);
     	}
     	
     }
@@ -258,7 +261,7 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
      * @throws Exception 処理例外
      */
     public static void printShijisho(ACChotarouXMLWriter pd, String formatName,
-            VRMap data, String stationName1, String stationName2, int printStyle)
+            VRMap data, String stationName1, String stationName2, String stationName3, int printStyle)
             throws Exception {
     	
         pd.beginPageEdit(formatName);
@@ -784,6 +787,17 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
             pd.addAttribute("Shape48", "Visible", "FALSE");
             IkenshoCommon.addString(pd, "Grid12.h4.w8", stationName2 + " 殿");
         }
+        
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        //たん吸引等の指示
+        if (((Integer) VRBindPathParser.get("KYUIN_STATION_SIJI", data)).intValue() != 2) {
+            pd.addAttribute("tan_yes", "Visible", "FALSE");
+            IkenshoCommon.addString(pd, "Grid12.h8.w8", " 殿");
+        } else {
+            pd.addAttribute("tan_no", "Visible", "FALSE");
+            IkenshoCommon.addString(pd, "Grid12.h8.w8", stationName3 + " 殿");
+        }
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add end 【2009年度対応：訪問看護指示書】たん吸引指示追加
 
         // 記入日
         if (VRBindPathParser.has("KINYU_DT", data)) {
@@ -835,7 +849,7 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
     //[ID:0000635][Shin Fujihara] 2011/02/25 add begin 【2010年度要望対応】
     //指示書を改ページして印字する
     public static void printShijishoMulti(
-    		ACChotarouXMLWriter pd,  VRMap data, String stationName1, String stationName2, int printStyle)
+    		ACChotarouXMLWriter pd,  VRMap data, String stationName1, String stationName2, String stationName3, int printStyle)
             throws Exception {
     	
         pd.beginPageEdit("page1");
@@ -1289,6 +1303,16 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
             pd.addAttribute("Shape48", "Visible", "FALSE");
             IkenshoCommon.addString(pd, "Grid12.h4.w8", stationName2 + " 殿");
         }
+        
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        if (((Integer) VRBindPathParser.get("KYUIN_STATION_SIJI", data)).intValue() != 2) {
+            pd.addAttribute("tan_yes", "Visible", "FALSE");
+            IkenshoCommon.addString(pd, "Grid12.h8.w8", " 殿");
+        } else {
+            pd.addAttribute("tan_no", "Visible", "FALSE");
+            IkenshoCommon.addString(pd, "Grid12.h8.w8", stationName3 + " 殿");
+        }
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add end 【2009年度対応：訪問看護指示書】たん吸引指示追加
 
         // 記入日
         if (VRBindPathParser.has("KINYU_DT", data)) {

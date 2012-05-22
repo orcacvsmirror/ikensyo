@@ -7,6 +7,7 @@ import java.util.Arrays;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 
+import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
 import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.component.ACTextField;
@@ -56,12 +57,20 @@ public class IkenshoHoumonKangoShijishoIryoukikan
   private JLabel otherStationSijiCaption = new JLabel();
   private VRPanel stationContainer = new VRPanel();
 
-
+//[ID:0000731][Shin Fujihara] 2012/04/20 add begin y2012”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
+  protected ACLabelContainer kyuinStationSijiUmuContainer = new ACLabelContainer();
+  private ACClearableRadioButtonGroup kyuinStationSiji = new ACClearableRadioButtonGroup();
+  protected ACLabelContainer kyuinStationSijiContainer = new ACLabelContainer();
+  private ACComboBox kyuinStationName = new ACComboBox();
+  private JLabel kyuinStationSijiCaption = new JLabel();
+//[ID:0000731][Shin Fujihara] 2012/04/20 add end y2009”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
 
 public VRMap createSourceInnerBindComponent() {
     VRMap map = super.createSourceInnerBindComponent();
     map.setData("OTHER_STATION_SIJI", new Integer(1));
-
+    // [ID:0000731][Shin Fujihara] 2012/04/20 add begin y2012”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
+    map.setData("KYUIN_STATION_SIJI", new Integer(1));
+    // [ID:0000731][Shin Fujihara] 2012/04/20 add end y2009”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
     return map;
   }
 
@@ -109,6 +118,11 @@ public VRMap createSourceInnerBindComponent() {
         VRHashMapArrayToConstKeyArrayAdapter(array, "MI_NM")));
     otherStationName.setModel(IkenshoCommon.createComboAdapter(new
         VRHashMapArrayToConstKeyArrayAdapter(array, "MI_NM")));
+    
+    //[ID:0000731][Shin Fujihara] 2012/04/20 add begin y2012”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
+    kyuinStationName.setModel(IkenshoCommon.createComboAdapter(new
+            VRHashMapArrayToConstKeyArrayAdapter(array, "MI_NM")));
+    //[ID:0000731][Shin Fujihara] 2012/04/20 add end y2009”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
 
   }
 
@@ -124,6 +138,10 @@ public VRMap createSourceInnerBindComponent() {
         ACFollowDisableSelectionListener(new JComponent[] {
                                               otherStationName}
                                               , 1));
+    
+    //[ID:0000731][Shin Fujihara] 2012/04/20 add begin y2012”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
+    kyuinStationSiji.addListSelectionListener(new ACFollowDisableSelectionListener(new JComponent[] { kyuinStationName }, 1));
+    //[ID:0000731][Shin Fujihara] 2012/04/20 add end y2009”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
 
   }
   protected boolean checkSelectedDoctor() {
@@ -223,6 +241,32 @@ public VRMap createSourceInnerBindComponent() {
     otherStationName.setIMEMode(InputSubset.KANJI);
     otherStationName.setBindPath("OTHER_STATION_NM");
     otherStationSijiCaption.setText("“a");
+    
+    //[ID:0000731][Shin Fujihara] 2012/04/20 add begin y2012”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
+    //‚½‚ñ‹zˆøw¦‚Ì—L–³
+    kyuinStationSijiUmuContainer.setText("‚½‚ñ‚Ì‹zˆø“™À{‚Ì‚½‚ß‚Ì–K–â‰îŒì–‹ÆŠ‚Ö‚Ìw¦");
+    kyuinStationSijiUmuContainer.add(kyuinStationSiji, null);
+    kyuinStationSiji.setUseClearButton(false);
+    kyuinStationSiji.setBindPath("KYUIN_STATION_SIJI");
+    kyuinStationSiji.setModel(new VRListModelAdapter(
+        new VRArrayList(Arrays.asList(new String[] {
+                                      "–³",
+                                      "—L"}))));
+    //‚½‚ñ‹zˆø–K–â‰îŒì–‹ÆŠ
+    kyuinStationSijiContainer.setText("–K–â‰îŒì–‹ÆŠ");
+    kyuinStationSijiContainer.add(kyuinStationName, null);
+    kyuinStationSijiContainer.add(kyuinStationSijiCaption, null);
+    kyuinStationName.setPreferredSize(new Dimension(400, 20));
+    kyuinStationName.setMaxLength(30);
+    kyuinStationName.setIMEMode(InputSubset.KANJI);
+    kyuinStationName.setBindPath("KYUIN_STATION_NM");
+    kyuinStationSijiCaption.setText("“a");
+    
+    otherStationSubPnl.add(kyuinStationSijiUmuContainer,
+            VRLayout.FLOW_INSETLINE_RETURN);
+    otherStationSubPnl.add(kyuinStationSijiContainer,
+                VRLayout.FLOW_INSETLINE_RETURN);
+    //[ID:0000731][Shin Fujihara] 2012/04/20 add end y2009”N“x‘Î‰F–K–âŠÅŒìw¦‘z‚½‚ñ‹zˆøw¦’Ç‰Á
   }
   
 //[ID:0000514][Tozo TANAKA] 2009/09/09 add begin y2009”N“x‘Î‰F–K–âŠÅŒìw¦‘z“Á•Êw¦‘‚ÌŠÇ—‹@”\  

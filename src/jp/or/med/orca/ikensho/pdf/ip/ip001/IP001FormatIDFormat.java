@@ -714,6 +714,18 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid12.h4.w6".equals(code)) obj = "他の訪問看護ステーション";
         else if ("Grid12.h4.w8".equals(code)) obj = "他の訪問看護ステーションへの指示・「 殿」　見出し";
         else if ("Grid12.h4.w7".equals(code)) obj = "他の訪問看護ステーションへの指示・「）」　見出し";
+        
+        //[ID:0000732][Shin Fujihara] 2012/04/20 add begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        else if ("Grid12.h6.w1".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「たんの吸引等実施のための訪問介護事業所への指示」　見出し";
+        else if ("Grid12.h8.w1".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「（」　見出し ";
+        else if ("Grid12.h8.w2".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「無」　見出し";
+        else if ("Grid12.h8.w4".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「有」　見出し";
+        else if ("Grid12.h8.w5".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「：訪問介護事業所名」　見出し";
+        else if ("Grid12.h8.w6".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所";
+        else if ("Grid12.h8.w8".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「 殿」　見出し";
+        else if ("Grid12.h8.w7".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「）」　見出し";
+        //[ID:0000732][Shin Fujihara] 2012/04/20 add end 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        
         //[ID:0000639][Shin Fujihara] 2011/03 add begin 「褥瘡の深さ」対応漏れ
         else if ("Label26".equals(code)) obj = "「褥瘡の深さ」　見出し";
         else if ("Grid15.h1.w4".equals(code)) obj = "褥瘡の深さ　「NPUAP分類」";
@@ -963,6 +975,18 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid12.h4.w6".equals(code)) obj = "他の訪問看護ステーション";
         else if ("Grid12.h4.w8".equals(code)) obj = "他の訪問看護ステーションへの指示・「 殿」　見出し";
         else if ("Grid12.h4.w7".equals(code)) obj = "他の訪問看護ステーションへの指示・「）」　見出し";
+        
+        //[ID:0000732][Shin Fujihara] 2012/04/20 add begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        else if ("Grid12.h6.w1".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「たんの吸引等実施のための訪問介護事業所への指示」　見出し";
+        else if ("Grid12.h8.w1".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「（」　見出し ";
+        else if ("Grid12.h8.w2".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「無」　見出し";
+        else if ("Grid12.h8.w4".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「有」　見出し";
+        else if ("Grid12.h8.w5".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「：訪問介護事業所名」　見出し";
+        else if ("Grid12.h8.w6".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所";
+        else if ("Grid12.h8.w8".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「 殿」　見出し";
+        else if ("Grid12.h8.w7".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「）」　見出し";
+        //[ID:0000732][Shin Fujihara] 2012/04/20 add end 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        
         //[ID:0000639][Shin Fujihara] 2011/03 add begin 「褥瘡の深さ」対応漏れ
         else if ("Label26".equals(code)) obj = "「褥瘡の深さ」　見出し";
         else if ("Grid15.h3.w22".equals(code)) obj = "褥瘡の深さ　「NPUAP分類」";
@@ -2942,6 +2966,16 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid12.h4.w8".equals(code)) obj = "他の訪問看護ステーション";
         else if ("Grid12.h4.w7".equals(code)) obj = "他の訪問看護ステーションへの指示・「）」　見出し";
         
+    	//[ID:0000732][Shin Fujihara] 2012/04/20 add begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        else if ("Grid12.h6.w1".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「たんの吸引等実施のための訪問介護事業所への指示」　見出し";
+        else if ("Grid12.h8.w1".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「（」　見出し ";
+        else if ("Grid12.h8.w2".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「無」　見出し";
+        else if ("Grid12.h8.w4".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「有」　見出し";
+        else if ("Grid12.h8.w5".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「：訪問介護事業所名」　見出し";
+        else if ("Grid12.h8.w8".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所";
+        else if ("Grid12.h8.w7".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「）」　見出し";
+    	//[ID:0000732][Shin Fujihara] 2012/04/20 add end 【2012年度対応：訪問看護指示書】たん吸引指示追加
+    	
         else if ("Label1".equals(code)) obj = "「上記のとおり、指定訪問看護の実施を指示いたします。」　見出し";
         else if ("Label2".equals(code)) obj = "作成年月日　「平成  年  月  日」";
     	
@@ -3228,6 +3262,16 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid12.h4.w8".equals(code)) obj = "他の訪問看護ステーション";
         else if ("Grid12.h4.w7".equals(code)) obj = "他の訪問看護ステーションへの指示・「）」　見出し";
         
+        //[ID:0000732][Shin Fujihara] 2012/04/20 add begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        else if ("Grid12.h6.w1".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「たんの吸引等実施のための訪問介護事業所への指示」　見出し";
+        else if ("Grid12.h8.w1".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「（」　見出し ";
+        else if ("Grid12.h8.w2".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「無」　見出し";
+        else if ("Grid12.h8.w4".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「有」　見出し";
+        else if ("Grid12.h8.w5".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「：訪問介護事業所名」　見出し";
+        else if ("Grid12.h8.w8".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所";
+        else if ("Grid12.h8.w7".equals(code)) obj = "たんの吸引等実施のための訪問介護事業所への指示・「）」　見出し";
+        //[ID:0000732][Shin Fujihara] 2012/04/20 add end 【2012年度対応：訪問看護指示書】たん吸引指示追加
+    	
         else if ("Label1".equals(code)) obj = "「上記のとおり、指定訪問看護の実施を指示いたします。」　見出し";
         else if ("Label2".equals(code)) obj = "作成年月日　「平成  年  月  日」";
     	

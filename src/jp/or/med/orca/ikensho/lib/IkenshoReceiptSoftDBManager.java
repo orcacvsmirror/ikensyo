@@ -34,6 +34,7 @@ import java.net.SocketException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
 import java.net.UnknownHostException;
+import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -41,17 +42,23 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import jp.nichicom.ac.io.ACAgeEncorder;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.splash.ACSplash;
 import jp.nichicom.ac.util.splash.ACSplashable;
 import jp.nichicom.ac.util.splash.ACStopButtonSplash;
+import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRHashMap;
+import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.logging.VRLogger;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** TODO <HEAD_IKENSYO> */
+
+// 2011/10 Shin.Fujihara コメントを精査
 public class IkenshoReceiptSoftDBManager {
     // --------------------------------------------------------------------------
     // 定数値定義
@@ -208,6 +215,12 @@ public class IkenshoReceiptSoftDBManager {
 
     // 接続済みであるか
     private boolean connected = false;
+    
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+    private final int STATE_NOT_NEED = 1;
+    private final int STATE_NEED = 2;
+    private final int STATE_DEDUPLICATION = 3;
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
 
     /**
      * dbsサーバーに接続するコンストラクタです。
@@ -966,109 +979,6 @@ public class IkenshoReceiptSoftDBManager {
         return result;
     }
 
-    //2006/02/09[Tozo Tanaka] : replace begin
-//    /**
-//     * SELECT 文を発行する。
-//     * 
-//     * @param table テーブル名
-//     * @param whereCondition WHERE句マップ
-//     * @return 実行結果
-//     * @throws Exception 実行時例外
-//     */
-//    public VRArrayList executeQuery(String table, HashMap whereCondition)
-//            throws Exception {
-//        return executeQuery(table, "", whereCondition);
-//    }
-//
-//    /**
-//     * SELECTストアドプロシージャを発行する。
-//     * 
-//     * @param procedure 発行するプロシージャ名
-//     * @return 実行結果
-//     * @throws Exception 実行時例外
-//     */
-//    public VRArrayList executeQueryProcedure(String procedure) throws Exception {
-//        return executeQuery("", procedure, null);
-//    }
-   
-//    /**
-//     * SELECT 文を発行する。
-//     * 
-//     * @param table テーブル名
-//     * @param procedure 発行するプロシージャ名
-//     * @param whereCondition WHERE句マップ
-//     * @param splash スプラッシュ
-//     * @return 実行結果
-//     * @throws Exception 実行時例外
-//     */
-//    public VRArrayList executeQuery(String table, String procedure,
-//            HashMap whereCondition) throws Exception {
-//        VRArrayList array = new VRArrayList();
-//        if (!isConnected()) {
-//            if (connect() != STATUS_CODE_OK) {
-//                return array;
-//            }
-//        }
-//
-//        if (beginTransaction() != STATUS_CODE_OK) {
-//            return array;
-//        }
-//
-//        // カーソルを設定
-//        HashMap map = execute(COMMAND_DBSELECT, table, procedure,
-//                whereCondition);
-//
-//
-        //        // 1行ずつ取得
-        //        while (true) {
-        //            map = execute(COMMAND_DBFETCH, table, procedure, whereCondition);
-        //            if ((map == null) || (map.size() <= 0)) {
-        //                break;
-        //            }
-        //            array.add(toVRHashMap(map));
-        //        }
-//
-//        
-//        if (commitTransaction() != STATUS_CODE_OK) {
-//            return array;
-//        }
-//
-//        return array;
-//    }
-//  /**
-//  * dbs使用定義体で定義されたファンクションに渡すパラメータを送信する。
-//  * <P>
-//  * (1)Hashtableではnullを表現することができない<br>
-//  * (2)dbsでnullを扱うことができるようになった<br>
-//  * 上記の理由のため新しく実装されました。
-//  * <P>
-//  * 
-//  * @param rec 送信するデータセット（キー=レコード名、値=送信する値）
-//  * @throws IOException 入出力エラーが発生した場合
-//  * @throws Exception 上記以外の例外が発生した場合
-//  */
-// protected void execData(final HashMap rec) throws IOException, Exception {
-//     try {
-//         if (rec != null) {
-//             for (Iterator it = rec.keySet().iterator(); it.hasNext();) {
-//                 String key = (String) it.next();
-//                 Object obj = rec.get(key);
-//                 if (obj == null) {
-//                     String cmd = key + ": " + urlEncode(null) + LINE_CR;
-//                     sendMessage(cmd);
-//                 } else {
-//                     String cmd = key + ": " + urlEncode(obj.toString())
-//                             + LINE_CR;
-//                     sendMessage(cmd);
-//                 }
-//             }
-//         }
-//         sendMessage(LINE_CR);
-//
-//     } catch (IOException e) {
-//         throw e;
-//     }
-// }
 /*
  * dbs使用定義体で定義されたファンクションに渡すパラメータを送信する。
  * <P>
@@ -1137,7 +1047,12 @@ protected void execData(final Map rec) throws IOException, Exception {
      */
     public int executeQuery(String table, String procedure,
             Map whereCondition) throws Exception {
-        return executeQuery(table, procedure, whereCondition, null);
+        //2011/10 [MantisID:0000655] [Shin.Fujihara] Delete - begin
+        //return executeQuery(table, procedure, whereCondition, null);
+        //2011/10 [MantisID:0000655] [Shin.Fujihara] Delete - end
+        //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+        return executeQuery(table, procedure, whereCondition, null, null);
+        //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
     }
     /**
      * SELECT 文を発行する。
@@ -1197,61 +1112,82 @@ protected void execData(final Map rec) throws IOException, Exception {
      * @throws Exception 処理例外
      */
     public static void clearAccessSpace(IkenshoFirebirdDBManager dbm) throws Exception{
-        try{
-            //ローカルIPに該当するレコードを消去
-            StringBuffer sb = new StringBuffer();
-            sb.append(" WHERE");
-            sb.append("(RECEIPT_ACCESS_SPACE.LOCAL_IP='");
-            sb.append(getLocalIP());
-            sb.append("')");
-            String where = sb.toString();
-            sb = new StringBuffer();
-            sb.append("DELETE FROM");
-            sb.append(" RECEIPT_ACCESS_SPACE");
-            sb.append(where);
-            dbm.executeUpdate(sb.toString());
-            sb = new StringBuffer();
-            sb.append("SELECT");
-            sb.append(" COUNT(*)");
-            sb.append(" FROM");
-            sb.append(" RECEIPT_ACCESS_SPACE");
-            sb.append(where);
-            dbm.executeQuery(sb.toString());
-        }catch(Exception ex){
-            //存在しなければ作成してみる
-            StringBuffer sb = new StringBuffer();
-            sb.append("CREATE TABLE");
-            sb.append(" RECEIPT_ACCESS_SPACE");
-            sb.append(" (");
-            sb.append(" LOCAL_IP VARCHAR(30) NOT NULL");
-            sb.append(",SERIAL_ID INTEGER NOT NULL");
-            sb.append(",PTID VARCHAR(10)");
-            sb.append(",NAME VARCHAR(100)");
-            sb.append(",KANANAME VARCHAR(100)");
-            sb.append(",SEX CHAR(1)");
-            sb.append(",BIRTHDAY CHAR(8)");
-            sb.append(",HOME_POST VARCHAR(7)");
-            sb.append(",HOME_ADRS VARCHAR(200)");
-            sb.append(",HOME_BANTI VARCHAR(200)");
-            sb.append(",HOME_TEL1 VARCHAR(15)");
-            sb.append(",LAST_TIME TIMESTAMP");
-            sb.append(",PRIMARY KEY (");
-            sb.append(" LOCAL_IP");
-            sb.append(",SERIAL_ID");
-            sb.append(" )");
-            sb.append(")");
-            dbm.executeUpdate(sb.toString());
-            dbm.commitTransaction();
-            //コミットしないとCREATEが反映されない
-            dbm.beginTransaction();
-        }
+        //2011/10 [MantisID:0000655] [Shin.Fujihara] Delete - begin
+        //HOSPNUM,CHECKEDの列をテンポラリに追加。
+        //既にテンポラリが作成されていることを考慮し、一律テーブルのドロップに変更
+//        try{
+//            //ローカルIPに該当するレコードを消去
+//            StringBuffer sb = new StringBuffer();
+//            sb.append(" WHERE");
+//            sb.append("(RECEIPT_ACCESS_SPACE.LOCAL_IP='");
+//            sb.append(getLocalIP());
+//            sb.append("')");
+//            String where = sb.toString();
+//            sb = new StringBuffer();
+//            sb.append("DELETE FROM");
+//            sb.append(" RECEIPT_ACCESS_SPACE");
+//            sb.append(where);
+//            dbm.executeUpdate(sb.toString());
+//            sb = new StringBuffer();
+//            sb.append("SELECT");
+//            sb.append(" COUNT(*)");
+//            sb.append(" FROM");
+//            sb.append(" RECEIPT_ACCESS_SPACE");
+//            sb.append(where);
+//            dbm.executeQuery(sb.toString());
+//        }catch(Exception ex){
+//            //存在しなければ作成してみる
+//            StringBuffer sb = new StringBuffer();
+//            sb.append("CREATE TABLE");
+//            sb.append(" RECEIPT_ACCESS_SPACE");
+//            sb.append(" (");
+//            sb.append(" LOCAL_IP VARCHAR(30) NOT NULL");
+//            sb.append(",SERIAL_ID INTEGER NOT NULL");
+//            sb.append(",PTID VARCHAR(10)");
+//            sb.append(",NAME VARCHAR(100)");
+//            sb.append(",KANANAME VARCHAR(100)");
+//            sb.append(",SEX CHAR(1)");
+//            sb.append(",BIRTHDAY CHAR(8)");
+//            sb.append(",HOME_POST VARCHAR(7)");
+//            sb.append(",HOME_ADRS VARCHAR(200)");
+//            sb.append(",HOME_BANTI VARCHAR(200)");
+//            sb.append(",HOME_TEL1 VARCHAR(15)");
+//            sb.append(",LAST_TIME TIMESTAMP");
+//            sb.append(",PRIMARY KEY (");
+//            sb.append(" LOCAL_IP");
+//            sb.append(",SERIAL_ID");
+//            sb.append(" )");
+//            sb.append(")");
+//            dbm.executeUpdate(sb.toString());
+//            dbm.commitTransaction();
+//            //コミットしないとCREATEが反映されない
+//            dbm.beginTransaction();
+//        }
+        //2011/10 [MantisID:0000655] [Shin.Fujihara] Delete - end
+        
+        //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+        //テーブルの生成は、業務起動時に行うよう修正
+        StringBuffer sb = new StringBuffer();
+        sb.append("DELETE FROM");
+        sb.append(" RECEIPT_ACCESS_SPACE");
+        sb.append(" WHERE");
+        sb.append("(RECEIPT_ACCESS_SPACE.LOCAL_IP='");
+        sb.append(getLocalIP());
+        sb.append("')");
+        dbm.executeUpdate(sb.toString());
+        //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
     }
     /**
      * ローカルホストのIPアドレスを返します。
      * @return IPアドレス
      * @throws UnknownHostException ホスト解決例外
      */
-    protected static String getLocalIP() throws UnknownHostException{
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Delete - begin
+    //protected static String getLocalIP() throws UnknownHostException{
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Delete - end
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+    public static String getLocalIP() throws UnknownHostException {
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end{
         InetAddress local=InetAddress.getLocalHost();
         if(local!=null){
             String address =local.getHostAddress();
@@ -1275,8 +1211,24 @@ protected void execData(final Map rec) throws IOException, Exception {
      * @return 実行結果
      * @throws Exception 実行時例外
      */
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Delete - begin
+//    public int executeQuery(String table, String procedure,
+//            Map whereCondition, ACSplashable splash) throws Exception {
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Delete - end
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
     public int executeQuery(String table, String procedure,
-            Map whereCondition, ACSplashable splash) throws Exception {
+            Map whereCondition, ACSplashable splash, Map refiners) throws Exception {
+        
+        //絞り込み条件を復元
+        int ageStart = Integer.MIN_VALUE;
+        int ageEnd = Integer.MAX_VALUE;
+        boolean deduplication = false;
+        if (refiners != null) {
+            ageStart = ACCastUtilities.toInt(refiners.get("AGE_START"), Integer.MIN_VALUE);
+            ageEnd = ACCastUtilities.toInt(refiners.get("AGE_END"), Integer.MAX_VALUE);
+            deduplication = ACCastUtilities.toBoolean(refiners.get("DEDUPLICATION"), false);
+        }
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
         if (!isConnected()) {
             if (connect() != STATUS_CODE_OK) {
                 return -1;
@@ -1295,6 +1247,12 @@ protected void execData(final Map rec) throws IOException, Exception {
         IkenshoFirebirdDBManager dbm = null;
         try {
             dbm = new IkenshoFirebirdDBManager();
+            
+            //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+            //現在医見書に登録されている患者情報を取得しておく
+            VRList nowPatients = getIkenshoPatients(dbm);
+            //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
+            
             dbm.beginTransaction();
             // 移行領域をいったんすべて初期化
             clearAccessSpace(dbm);
@@ -1318,6 +1276,16 @@ protected void execData(final Map rec) throws IOException, Exception {
                     break;
                 }
                 Object patientName = map.get("tbl_ptinf.NAME");
+                //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+                Object patientBirth = map.get("tbl_ptinf.BIRTHDAY");
+                
+                //絞り込み条件チェック
+                int state = getDataState(patientName, patientBirth, ageStart, ageEnd, deduplication, nowPatients);
+                if (state == STATE_NOT_NEED) {
+                    continue;
+                }
+                //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
+                
 
                 StringBuffer sb = new StringBuffer();
                 sb.append("INSERT INTO");
@@ -1325,6 +1293,10 @@ protected void execData(final Map rec) throws IOException, Exception {
                 sb.append(" (");
                 sb.append(" LOCAL_IP");
                 sb.append(",SERIAL_ID");
+                //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+                sb.append(",HOSPNUM");
+                sb.append(",CHECKED");
+                //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
                 sb.append(",PTID");
                 sb.append(",NAME");
                 sb.append(",KANANAME");
@@ -1342,31 +1314,26 @@ protected void execData(final Map rec) throws IOException, Exception {
                 sb.append(",");
                 sb.append(count++);
                 sb.append(",");
+                
+                //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+                int hospnum = 0;
+                if (map.containsKey("tbl_ptinf.HOSPNUM")) {
+                    hospnum = ACCastUtilities.toInt(map.get("tbl_ptinf.HOSPNUM"), 0);
+                }
+                sb.append(Integer.toString(hospnum));
+                sb.append(",");
+                
+                //重複時は、チェックOFF
+                if (state == STATE_DEDUPLICATION) {
+                    sb.append("0, ");
+                } else {
+                    sb.append("1, ");
+                }
+                //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
+                
                 sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map.get("tbl_ptinf.PTID")));
                 sb.append(",");
                 
-                
-                // 2006/02/11[Tozo Tanaka] : replace begin
-                // TODO canChange?
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(patientName));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.KANANAME")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.SEX")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.BIRTHDAY")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.HOME_POST")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.HOME_ADRS")));
-                // sb.append(",");
-                // sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING.format(map
-                // .get("tbl_ptinf.HOME_BANTI")));
                 sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING
                         .format(getORCADecodeString(patientName, encode)));
                 sb.append(",");
@@ -1390,7 +1357,6 @@ protected void execData(final Map rec) throws IOException, Exception {
                 sb.append(IkenshoConstants.FORMAT_PASSIVE_STRING
                         .format(getORCADecodeString(map
                                 .get("tbl_ptinf.HOME_BANTI"), encode)));
-                // 2006/02/11[Tozo Tanaka] : replace end
                 
                 
                 sb.append(",");
@@ -1408,6 +1374,9 @@ protected void execData(final Map rec) throws IOException, Exception {
                         message += " / " + patientName;
                     }
                     ((ACSplash) splash).setMessage(message);
+                    
+                    // お試し スプラッシュの再描画
+                    ((ACSplash) splash).repaint();
                     
                     if(splash instanceof ACStopButtonSplash){
                         if(((ACStopButtonSplash)splash).isStopRequested()){
@@ -1433,7 +1402,76 @@ protected void execData(final Map rec) throws IOException, Exception {
 
         return count-1;
     }
-    //2006/02/09[Tozo Tanaka] : replace end 
+    
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
+    private VRList getIkenshoPatients(IkenshoFirebirdDBManager dbm) throws Exception {
+        StringBuffer sb = new StringBuffer();
+        sb.append("SELECT");
+        sb.append(" PATIENT_NM");
+        sb.append(",BIRTHDAY");
+        sb.append(" FROM");
+        sb.append(" PATIENT");
+        return dbm.executeQuery(sb.toString());
+    }
+    
+    //表示して良いデータかチェック(年齢範囲、重複)
+    private int getDataState(
+            Object patientName,
+            Object patientBirth,
+            int ageStart,
+            int ageEnd,
+            boolean deduplication,
+            VRList nowPatients) throws Exception {
+        
+        
+        //日レセに登録されている生年月日を取得
+        Date srcBirthDate = ACCastUtilities.toDate(patientBirth, null);
+        //変換失敗
+        if (srcBirthDate == null) {
+            return STATE_NEED;
+        }
+        
+        //生年月日から年齢を算出
+        int age = ACAgeEncorder.getInstance().toAge(srcBirthDate);
+        //指定された年齢範囲外の場合は除外
+        if ((age < ageStart) || (ageEnd < age)) {
+            return STATE_NOT_NEED;
+        }
+        
+        //氏名・生年月日の重複チェック
+        if (nowPatients == null) {
+            return STATE_NEED;
+        }
+        
+        int end = nowPatients.size();
+        for (int i = 0; i < end; i++) {
+            VRMap row = (VRMap) nowPatients.getData(i);
+            
+            String nowName = String.valueOf(VRBindPathParser.get("PATIENT_NM", row));
+            String nowBirth = "";
+            Object nowObj = VRBindPathParser.get("BIRTHDAY", row);
+            if (nowObj instanceof Date) {
+                nowBirth = VRDateParser.format((Date) nowObj, "yyyyMMdd");
+            }
+            
+            String srcBirth = VRDateParser.format(srcBirthDate, "yyyyMMdd");
+            
+            //名前と生年月日が一致したら重複とみなす
+            if (nowName.equals(patientName) && (srcBirth.equals(nowBirth))) {
+                //絞り込み条件・重複除外
+                if (deduplication) {
+                    return STATE_NOT_NEED;
+                } else {
+                    return STATE_DEDUPLICATION;
+                }
+            }
+        }
+        
+        return STATE_NEED;
+    }
+    
+    
+    //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - end
 
     /**
      * 引数のマップ値をVRHashMapとして返します。
@@ -1586,21 +1624,6 @@ protected void execData(final Map rec) throws IOException, Exception {
         return connected;
     }
 
-    // /**
-    // * Statementを生成して返す。
-    // * @return Statementインスタンス
-    // */
-    // public DBSStatement createStatement() {
-    // return new DBSStatement(this);
-    // }
-
-    // /**
-    // * PreparedStatementを生成して返す。
-    // * @return PreparedStatementインスタンス
-    // */
-    // public DBSPreparedStatement prepareStatement(DBSFunction function) {
-    // return new DBSPreparedStatement(this, function);
-    // }
 
     /**
      * 認証用のパスワードを取得します。

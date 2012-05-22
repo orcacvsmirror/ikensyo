@@ -319,6 +319,10 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
         sb.append(",JOKUSOU_NPUAP");
         sb.append(",JOKUSOU_DESIGN");
         // [ID:0000463][Tozo TANAKA] 2009/03/20 add end
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        sb.append(",KYUIN_STATION_SIJI");
+        sb.append(",KYUIN_STATION_NM");
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add end 【2009年度対応：訪問看護指示書】たん吸引指示追加
         // [ID:0000514][Tozo TANAKA] 2009/09/07 add begijn 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         sb.append(",FORMAT_KBN");
         
@@ -398,6 +402,11 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
         sb.append(",");
         sb.append(getDBSafeString("JOKUSOU_DESIGN", originalData));
         // [ID:0000463][Tozo TANAKA] 2009/03/20 add end
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        IkenshoCommon.addFollowCheckTextInsert(sb, originalData,
+                "KYUIN_STATION_SIJI", new String[] { "KYUIN_STATION_NM" }, 2,
+                true);
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add end 【2009年度対応：訪問看護指示書】たん吸引指示追加
         // [ID:0000514][Tozo TANAKA] 2009/09/07 add begijn 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         sb.append(",");
         sb.append(getFormatKubun());
@@ -494,6 +503,12 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
         sb.append(getDBSafeString("JOKUSOU_NPUAP", originalData));
         sb.append(",JOKUSOU_DESIGN = ");
         sb.append(getDBSafeString("JOKUSOU_DESIGN", originalData));
+        
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add begin 【2012年度対応：訪問看護指示書】たん吸引指示追加
+        IkenshoCommon.addFollowCheckTextUpdate(sb, originalData,
+                "KYUIN_STATION_SIJI", new String[] { "KYUIN_STATION_NM" }, 2,
+                true);
+        // [ID:0000731][Shin Fujihara] 2012/04/20 add end 【2009年度対応：訪問看護指示書】たん吸引指示追加
         
         // [ID:0000514][Tozo TANAKA] 2009/09/07 add begijn 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         appendUpdateShijishoStetement(sb);
