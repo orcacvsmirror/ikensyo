@@ -1397,6 +1397,10 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
         }
         obj = VRBindPathParser.get("USAGE" + index, data);
         if (obj != null) {
+            // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+            // 用法・用量の前に空白を挿入し、意見書の表示と合わせる
+            sb.append("　");
+            // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
             sb.append(String.valueOf(obj));
         }
         IkenshoCommon.addString(pd, target, sb.toString());

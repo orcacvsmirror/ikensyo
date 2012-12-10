@@ -348,8 +348,13 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
         data.add(createRow(IkenshoCommon.TEIKEI_ISHI_SICK_NAME, 30, "", "", "1-(1)", "診断名", "疾病名"));
         data.add(createRow(IkenshoCommon.TEIKEI_SPECIFIED_DISEASE_NAME, 30, "●", "●", "", "特定疾病", "特定疾病"));
         data.add(createRow(IkenshoCommon.TEIKEI_INSECURE_CONDITION_NAME, 30, "1-(2)", "", "1-(2)", "症状としての安定性", "「不安定」とした場合の具体的状況"));
-        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_NAME, 12, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "薬剤名"));
-        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "薬剤名"));
+        // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+        // 定数を参照するよう変更
+        //data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_NAME, 12, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "薬剤名"));
+        //data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "薬剤名"));
+        data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "薬剤名"));
+        data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "薬剤名"));
+        // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
         data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_DOSAGE_UNIT,  4, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "用量単位"));
         data.add(createRow(IkenshoCommon.TEIKEI_ISHI_MEDICINE_DOSAGE_UNIT,  4, "", "", "1-(3)", "障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容", "用量単位"));
         data.add(createRow(IkenshoCommon.TEIKEI_MEDICINE_USAGE, 10, "1-(3)", "●", "", "生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容", "用法"));

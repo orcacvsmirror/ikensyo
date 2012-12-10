@@ -27,8 +27,6 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
-import org.apache.xalan.trace.SelectionEvent;
-
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.component.ACLabel;

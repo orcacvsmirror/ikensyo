@@ -1,8 +1,13 @@
 package jp.or.med.orca.ikensho.affair;
 
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
+import java.awt.Insets;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.im.InputSubset;
 import java.text.ParseException;
@@ -33,6 +38,7 @@ import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
 import jp.nichicom.vr.component.AbstractVRTextArea;
 import jp.nichicom.vr.component.AbstractVRTextField;
+import jp.nichicom.vr.component.VRButton;
 import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
@@ -1114,8 +1120,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickDate3.setAgeVisible(false);
     sickDate3.setAllowedUnknown(true);
     sickMedicineUsageHead6.setText("　　　");
-    sickMedicineName1.setPreferredSize(new Dimension(220, 19));
-    sickMedicineName1.setMaxLength(12);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+    //sickMedicineName1.setPreferredSize(new Dimension(220, 19));
+    //sickMedicineName1.setMaxLength(12);
+    sickMedicineNameSetting(sickMedicineName1);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
     sickMedicineName1.setBindPath("MEDICINE1");
     sickMedicineName1.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageUnit2.setPreferredSize(new Dimension(100, 19));
@@ -1131,8 +1140,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineDosage6.setBindPath("DOSAGE6");
     sickMedicineDosage6.setIMEMode(InputSubset.LATIN);
     sickMedicineDosageHead3.setText("　　　");
-    sickMedicineName6.setPreferredSize(new Dimension(220, 19));
-    sickMedicineName6.setMaxLength(12);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+    //sickMedicineName6.setPreferredSize(new Dimension(220, 19));
+    //sickMedicineName6.setMaxLength(12);
+    sickMedicineNameSetting(sickMedicineName6);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
     sickMedicineName6.setBindPath("MEDICINE6");
     sickMedicineName6.setIMEMode(InputSubset.KANJI);
     sickNames2.setText("２．");
@@ -1144,8 +1156,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
                           IkenshoConstants.LINE_SEPARATOR + "5行以内）");
     getSickStableGroup().setText("症状としての安定性");
     getSickStableGroup().setLayout(sickStableLayout);
-    sickMedicineName4.setPreferredSize(new Dimension(220, 19));
-    sickMedicineName4.setMaxLength(12);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+    //sickMedicineName4.setPreferredSize(new Dimension(220, 19));
+    //sickMedicineName4.setMaxLength(12);
+    sickMedicineNameSetting(sickMedicineName4);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
     sickMedicineName4.setBindPath("MEDICINE4");
     sickMedicineName4.setIMEMode(InputSubset.KANJI);
     sickMedicines2.setToolTipText("");
@@ -1185,8 +1200,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickProgress.setIMEMode(InputSubset.KANJI);
     sickLayout.setFitHLast(true);
     sickLayout.setFitVLast(true);
-    sickMedicineName5.setPreferredSize(new Dimension(220, 19));
-    sickMedicineName5.setMaxLength(12);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+    //sickMedicineName5.setPreferredSize(new Dimension(220, 19));
+    //sickMedicineName5.setMaxLength(12);
+    sickMedicineNameSetting(sickMedicineName5);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
     sickMedicineName5.setBindPath("MEDICINE5");
     sickMedicineName5.setIMEMode(InputSubset.KANJI);
     sickMedicineUsageHead3.setText("　　　");
@@ -1214,8 +1232,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineUsage1.setMaxLength(10);
     sickMedicineUsage1.setBindPath("USAGE1");
     sickMedicineUsage1.setIMEMode(InputSubset.KANJI);
-    sickMedicineName3.setPreferredSize(new Dimension(220, 19));
-    sickMedicineName3.setMaxLength(12);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+    //sickMedicineName3.setPreferredSize(new Dimension(220, 19));
+    //sickMedicineName3.setMaxLength(12);
+    sickMedicineNameSetting(sickMedicineName3);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
     sickMedicineName3.setBindPath("MEDICINE3");
     sickMedicineName3.setIMEMode(InputSubset.KANJI);
     getSickDates3().setEndText("）");
@@ -1259,8 +1280,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickName3.setMaxLength(30);
     sickName3.setBindPath("SINDAN_NM3");
     getSickStable().setBindPath("SHJ_ANT");
-    sickMedicineName2.setPreferredSize(new Dimension(220, 19));
-    sickMedicineName2.setMaxLength(12);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+    //sickMedicineName2.setPreferredSize(new Dimension(220, 19));
+    //sickMedicineName2.setMaxLength(12);
+    sickMedicineNameSetting(sickMedicineName2);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
     sickMedicineName2.setBindPath("MEDICINE2");
     sickMedicineName2.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageHead4.setText("　　　");
@@ -1328,8 +1352,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     //薬剤8
     sickMedicines8.setText("　　　８．");
     sickMedicines8.setToolTipText("");
-    sickMedicineName8.setPreferredSize(new Dimension(220, 19));
-    sickMedicineName8.setMaxLength(12);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+    //sickMedicineName8.setPreferredSize(new Dimension(220, 19));
+    //sickMedicineName8.setMaxLength(12);
+    sickMedicineNameSetting(sickMedicineName8);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
     sickMedicineName8.setBindPath("MEDICINE8");
     sickMedicineName8.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageHead8.setText("　　　");
@@ -1363,8 +1390,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     //薬剤7
     sickMedicines7.setText("　　　７．");
     sickMedicines7.setToolTipText("");
-    sickMedicineName7.setPreferredSize(new Dimension(220, 19));
-    sickMedicineName7.setMaxLength(12);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+    //sickMedicineName7.setPreferredSize(new Dimension(220, 19));
+    //sickMedicineName7.setMaxLength(12);
+    sickMedicineNameSetting(sickMedicineName7);
+    // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
     sickMedicineName7.setBindPath("MEDICINE7");
     sickMedicineName7.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageHead7.setText("　　　");
@@ -1453,6 +1483,18 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicines1.add(sickMedicineUsageHead1, VRLayout.FLOW);
     sickMedicines1.add(sickMedicineUsage1, VRLayout.FLOW);
     // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
+    
+    //[ID:0000753][Shin Fujihara] 2012/09 add begin 2012年度対応 薬剤情報の行単位でのクリア機能
+    sickMedicines1.add(createMedicinesClearButton(), VRLayout.FLOW);
+    sickMedicines2.add(createMedicinesClearButton(), VRLayout.FLOW);
+    sickMedicines3.add(createMedicinesClearButton(), VRLayout.FLOW);
+    sickMedicines4.add(createMedicinesClearButton(), VRLayout.FLOW);
+    sickMedicines5.add(createMedicinesClearButton(), VRLayout.FLOW);
+    sickMedicines6.add(createMedicinesClearButton(), VRLayout.FLOW);
+    sickMedicines7.add(createMedicinesClearButton(), VRLayout.FLOW);
+    sickMedicines8.add(createMedicinesClearButton(), VRLayout.FLOW);
+    //[ID:0000753][Shin Fujihara] 2012/09 add end 2012年度対応 薬剤情報の行単位でのクリア機能
+    
     sickProgressGroup.add(getSickProgresss(), VRLayout.NORTH);
     getSickProgresss().setLayout(new VRLayout());
     //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin 【2011年度対応：訪問看護指示書】帳票印字文字数の拡大
@@ -1838,5 +1880,54 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
         this.sickMedicines8Layout = sickMedicines8Layout;
     }
     // [ID:0000509][Masahiko Higuchi] 2009/06 add end
+    
+    //[ID:0000753][Shin Fujihara] 2012/09 add begin 2012年度対応 薬剤情報の行単位でのクリア機能
+    public VRButton createMedicinesClearButton() {
+        VRButton btn = new VRButton("一行クリア");
+        Font bfont = btn.getFont();
+        Font font = new Font(bfont.getName(), bfont.getStyle(), bfont.getSize() - 2);
+        btn.setFont(font);
+        btn.setMargin(new Insets(0, 0, 0, 0));
+        
+        //クリア実行
+        btn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (ACMessageBox.show("この行の薬剤名をクリアしますか？",
+						ACMessageBox.BUTTON_OKCANCEL, ACMessageBox.ICON_QUESTION,
+						ACMessageBox.FOCUS_CANCEL) != ACMessageBox.RESULT_OK) {
+					return;
+				}
+				
+				VRButton me = (VRButton)e.getSource();
+				Container p = me.getParent();
+				Component comp = null;
+		        
+				for (int i = 0; i < p.getComponentCount(); i++) {
+					comp = p.getComponent(i);
+					
+					if (comp instanceof IkenshoOptionComboBox) {
+						((IkenshoOptionComboBox)comp).setText("");
+						continue;
+					}
+					
+					if (comp instanceof ACTextField) {
+						((ACTextField)comp).setText("");
+						continue;
+					}
+				}
+			}
+		});
+        
+        return btn;
+    }
+    //[ID:0000753][Shin Fujihara] 2012/09 add end 2012年度対応 薬剤情報の行単位でのクリア機能
+    
+    // [ID:0000752][Shin Fujihara] 2012/11 add begin 2012年度対応 薬剤名項目の入力文字数拡張
+    private void sickMedicineNameSetting(IkenshoOptionComboBox combo) {
+    	combo.setMaxLength(IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
+        combo.setPreferredSize(new Dimension(170, 19));
+        combo.setOptionSize(170);
+    }
+    // [ID:0000752][Shin Fujihara] 2012/11 add end 2012年度対応 薬剤名項目の入力文字数拡張
     
 }

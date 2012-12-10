@@ -10,18 +10,18 @@
 		<pathelement path="lib/firebirdsql-full.jar" />
 		<pathelement path="lib/iText.jar" />
 		<pathelement path="lib/iTextAsian.jar" />
-		<pathelement path="lib/build.jar" />
+		<pathelement path="lib/ac-impl.jar" />
+		<pathelement path="lib/vr-impl.jar" />
+		<pathelement path="lib/bridge.jar" />
 	</path>
 	<target name="compile">
 		<!-- コンパイル -->
 		<delete dir="${ClassDir}" />
 		<mkdir dir="${ClassDir}" />
-		<javac srcdir="src" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath">
+		<javac source="1.4" target="1.4" srcdir="src" destdir="${ClassDir}" includeAntRuntime="true" nowarn="on" classpathref="BuildClasspath">
+			<compilerarg value="-Xlint:deprecation" />
+			<compilerarg value="-Xlint:unchecked" />
 			<include name="jp/or/med/orca/ikensho/**/*" />
-			<exclude name="jp/or/med/orca/ikensho/affair/**/*" />
-		</javac>
-		<javac srcdir="src" destdir="${ClassDir}" nowarn="on" classpathref="BuildClasspath">
-			<include name="jp/or/med/orca/ikensho/affair/**/*" />
 		</javac>
 		<!-- リソース複写 -->
 		<copy todir="${ClassDir}" >
@@ -38,7 +38,7 @@
 			<exclude name="jp/or/med/orca/ikensho/pdf/ip/ip001/**/*" />
 			<manifest>
 				<attribute name="Main-Class" value="jp.or.med.orca.ikensho.affair.IkenshoStarter" />
-				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
+				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar lib/iText.jar lib/iTextAsian.jar lib/ac-impl.jar lib/vr-impl.jar lib/bridge.jar" />
 			</manifest>
 		</jar>
 		<delete file="${JarNameOfConvert}" />
@@ -48,7 +48,7 @@
 			<exclude name="**/*.java" />
 			<manifest>
 				<attribute name="Main-Class" value="jp.or.med.orca.ikensho.convert.IkenshoMacConvertStarter" />
-				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
+				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar lib/iText.jar lib/iTextAsian.jar lib/ac-impl.jar lib/vr-impl.jar lib/bridge.jar ${JarNameOfMain}" />
 			</manifest>
 		</jar>
 		<delete file="${JarNameOfPDFCustom}" />
@@ -57,14 +57,16 @@
 			<exclude name="**/*.java" />
 			<manifest>
 				<attribute name="Main-Class" value="jp.or.med.orca.ikensho.pdf.IkenshoPDFCustomStarter" />
-				<attribute name="Class-Path" value=". lib/ac-impl.jar" />
+				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar lib/iText.jar lib/iTextAsian.jar lib/ac-impl.jar lib/vr-impl.jar lib/bridge.jar ${JarNameOfMain}" />
 			</manifest>
 		</jar>
 		<delete dir="${ClassDir}" />
 	</target>
 
 	<target name="onlineUpdater">
-		<javac srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" includes="jp/nichicom/update/**/*" />
+		<delete dir="${ClassDir}" />
+		<mkdir dir="${ClassDir}" />
+		<javac source="1.4" target="1.4" srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" includes="jp/nichicom/update/**/*" />
 		<delete file="update.jar" />
 		<jar jarfile="update.jar" basedir="${ClassDir}">
 			<include name="jp/nichicom/update/**/*" />

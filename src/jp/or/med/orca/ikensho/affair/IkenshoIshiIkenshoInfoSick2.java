@@ -90,24 +90,44 @@ public class IkenshoIshiIkenshoInfoSick2 extends IkenshoIkenshoInfoSickH18 {
 
         // 2007/10/18 [Masahiko Higuchi] Addition - begin 業務遷移コンボ対応
         // ACComboBox⇒IkenshoOptionComboBox
+        // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
+//        getSickMedicineName(0).setOptionComboBoxParameters("薬剤名",
+//                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+//        getSickMedicineName(1).setOptionComboBoxParameters("薬剤名",
+//                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+//        getSickMedicineName(2).setOptionComboBoxParameters("薬剤名",
+//                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+//        getSickMedicineName(3).setOptionComboBoxParameters("薬剤名",
+//                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+//        getSickMedicineName(4).setOptionComboBoxParameters("薬剤名",
+//                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+//        getSickMedicineName(5).setOptionComboBoxParameters("薬剤名",
+//                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+//        //2009/01/06 [Tozo Tanaka] Add - begin
+//        getSickMedicineName(6).setOptionComboBoxParameters("薬剤名",
+//                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+//        getSickMedicineName(7).setOptionComboBoxParameters("薬剤名",
+//                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+//        //2009/01/06 [Tozo Tanaka] Add - end
+      
         getSickMedicineName(0).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+              IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
         getSickMedicineName(1).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+              IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
         getSickMedicineName(2).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+              IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
         getSickMedicineName(3).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+              IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
         getSickMedicineName(4).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+              IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
         getSickMedicineName(5).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
-        //2009/01/06 [Tozo Tanaka] Add - begin
+              IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
         getSickMedicineName(6).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
+              IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
         getSickMedicineName(7).setOptionComboBoxParameters("薬剤名",
-                IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, 12);
-        //2009/01/06 [Tozo Tanaka] Add - end
+              IkenshoCommon.TEIKEI_ISHI_MEDICINE_NAME, IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
+      
+        // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
 
         // コンボ連動設定
         getSickMedicineName(0).addInterlockComboComponents(

@@ -14,6 +14,8 @@ import javax.swing.event.ListSelectionListener;
 import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.core.ACAffairContainer;
+import jp.nichicom.ac.core.ACAffairInfo;
+import jp.nichicom.ac.core.ACBrowseLogWritable;
 import jp.nichicom.ac.pdf.ACChotarouXMLUtilities;
 import jp.nichicom.ac.pdf.ACChotarouXMLWriter;
 import jp.nichicom.ac.sql.ACPassiveKey;
@@ -25,7 +27,10 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 import jp.or.med.orca.ikensho.sql.IkenshoPassiveCheck;
 
-public class IkenshoAffairContainer extends ACAffairContainer {
+//[ID:0000754][Shin Fujihara] 2012/09 edit begin 2012年度対応 閲覧ログ出力機能
+//public class IkenshoAffairContainer extends ACAffairContainer {
+public class IkenshoAffairContainer extends ACAffairContainer implements ACBrowseLogWritable {
+//[ID:0000754][Shin Fujihara] 2012/09 edit end 2012年度対応 閲覧ログ出力機能
     private CopyActionAdapter copy = new CopyActionAdapter(this);
 
     private DeleteActionAdapter delete = new DeleteActionAdapter(this);
@@ -757,4 +762,10 @@ public class IkenshoAffairContainer extends ACAffairContainer {
         }
     }
 
+    //[ID:0000754][Shin Fujihara] 2012/09 edit begin 2012年度対応 閲覧ログ出力機能
+	public void writeBrowseLog(ACAffairInfo affair) {
+		IkenshoBrowseLogger.log(affair);
+	}
+	//[ID:0000754][Shin Fujihara] 2012/09 edit end 2012年度対応 閲覧ログ出力機能
+	
 }

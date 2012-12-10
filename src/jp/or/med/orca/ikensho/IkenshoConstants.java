@@ -246,6 +246,10 @@ public interface IkenshoConstants {
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
   public static final String PRINT_PDF_PATH = ACFrame.getInstance().getExeFolderPath() + IkenshoConstants.FILE_SEPARATOR + "printPDF.pdf";
   public static final String PRINT_PDF_DIRECTORY = ACFrame.getInstance().getExeFolderPath() + IkenshoConstants.FILE_SEPARATOR + "pdf" + IkenshoConstants.FILE_SEPARATOR;
-
-
+  
+  // [ID:0000752][Shin Fujihara] 2012/11 add begin 2012年度対応 薬剤名項目の入力文字数拡張
+  // 薬剤名の入力最大文字数
+  public static final int SICK_MEDICINE_NAME_MAX_LENGTH = 25;
+  // [ID:0000752][Shin Fujihara] 2012/11 add end 2012年度対応 薬剤名項目の入力文字数拡張
+  
 }
