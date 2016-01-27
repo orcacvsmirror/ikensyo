@@ -14,6 +14,9 @@ public class IkenshoTokubetsuHoumonKangoShijisho extends
         // ステータスバー
         setStatusText("特別訪問看護指示書");
         buttons.setText("特別訪問看護指示書");
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-Start 訪問看護指示書作成時の引き継ぎ元情報の選択対応
+        read.setVisible(false);
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-End
     }
     
 

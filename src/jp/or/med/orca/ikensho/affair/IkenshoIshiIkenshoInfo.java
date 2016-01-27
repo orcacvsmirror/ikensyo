@@ -1306,15 +1306,17 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         
     }
     
-    protected void doUpdateDifferenceItemSenmoni(StringBuffer sb)throws Exception{
-        if(new Integer(1).equals(originalData.getData("SEISIN"))){
-            IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "SENMONI",
-                    new String[] { "SENMONI_NM" }, true);
-        }else{
-            sb.append(",SENMONI = 2");
-            sb.append(",SENMONI_NM = ''");
-        }
-    }
+// [ID:0000790][Satoshi Tokusari] 2014/10 del-Start 医師意見書の専門科受診の有無の仕様変更対応
+//    protected void doUpdateDifferenceItemSenmoni(StringBuffer sb)throws Exception{
+//        if(new Integer(1).equals(originalData.getData("SEISIN"))){
+//            IkenshoCommon.addFollowCheckTextUpdate(sb, originalData, "SENMONI",
+//                    new String[] { "SENMONI_NM" }, true);
+//        }else{
+//            sb.append(",SENMONI = 2");
+//            sb.append(",SENMONI_NM = ''");
+//        }
+//    }
+//[ID:0000790][Satoshi Tokusari] 2014/10 del-End
     
     /**
      * 医師意見書との変更点を定義します。 

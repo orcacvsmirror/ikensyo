@@ -390,7 +390,10 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         }
         // 医師名コンボボックス
         doctorList = (VRArrayList) dbm
-                .executeQuery("SELECT DISTINCT DR_NM FROM DOCTOR ORDER BY DR_NM");
+// [ID:0000787][Satoshi Tokusari] 2014/10 edit-Start 医療機関情報の無効化対応
+//                .executeQuery("SELECT DISTINCT DR_NM FROM DOCTOR ORDER BY DR_NM");
+                .executeQuery("SELECT DISTINCT DR_NM FROM DOCTOR WHERE INVALID_FLAG = 0 ORDER BY DR_NM");
+// [ID:0000787][Satoshi Tokusari] 2014/10 edit-End
         // 空白行を追加
         VRMap spaceMap = new VRHashMap();
         spaceMap.setData("DR_NM", "");
@@ -2614,7 +2617,22 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
     private void doSelect(boolean msgFlg) throws Exception {
         IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
         StringBuffer sb = new StringBuffer();
-
+// [ID:0000791][Satoshi Tokusari] 2014/10 add-Start 請求対象意見書一覧の検索不具合対応
+        boolean insurerFlg = true;
+        
+        sb.append(" SELECT * FROM INSURER");
+        sb.append(" WHERE INSURER_NO = '"
+                + getSelectedCboData(hokenjyaCombo, hokenjyaList, "INSURER_NO") + "'");
+        data = (VRArrayList) dbm.executeQuery(sb.toString());
+        
+        // データが1件の場合は、保険者区分の条件を検索SQLから外す
+        if (data.getDataSize() == 1) {
+            insurerFlg = false;
+        }
+        
+        // 初期化
+        sb = new StringBuffer();
+// [ID:0000791][Satoshi Tokusari] 2014/10 add-End
         // 検索用SQL
         sb.append(" SELECT");
         // 画面表示用データ
@@ -2728,9 +2746,18 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
                 + getSelectedCboData(hokenjyaCombo, hokenjyaList, "INSURER_NO")
                 + "')");
         //2005-12-24 edit end
-        sb.append(" AND (IKN_ORIGIN.INSURER_TYPE = "
-                + getSelectedCboData(hokenjyaCombo, hokenjyaList, "INSURER_TYPE")
-                + ")");
+// [ID:0000791][Satoshi Tokusari] 2014/10 edit-Start 請求対象意見書一覧の検索不具合対応
+//        sb.append(" AND (IKN_ORIGIN.INSURER_TYPE = "
+//                + getSelectedCboData(hokenjyaCombo, hokenjyaList, "INSURER_TYPE")
+//                + ")");
+        // データが1件の場合は、保険者区分を条件から外す
+        if (insurerFlg) {
+            sb.append(" AND (IKN_ORIGIN.INSURER_TYPE = '0'");
+            sb.append(" OR IKN_ORIGIN.INSURER_TYPE = "
+                    + getSelectedCboData(hokenjyaCombo, hokenjyaList, "INSURER_TYPE")
+                    + ")");
+        }
+// [ID:0000791][Satoshi Tokusari] 2014/10 edit-End
         //2006-2-10 edit sta fujihara shin 意見書作成料が必ず0円になる(データ移行直後のデータ)は除く
         sb.append(" AND ((IKN_BILL.ZAITAKU_SINKI_CHARGE + IKN_BILL.ZAITAKU_KEIZOKU_CHARGE + IKN_BILL.SISETU_SINKI_CHARGE + IKN_BILL.SISETU_KEIZOKU_CHARGE) <> 0)");
         //2006-2-10 edit end

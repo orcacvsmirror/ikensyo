@@ -16,6 +16,9 @@ import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.event.ACFollowDisabledItemListener;
 import jp.nichicom.ac.container.ACPanel;
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-Start 入力画面と印刷の表示不一致対応
+import jp.nichicom.ac.core.ACFrame;
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-End
 import jp.nichicom.ac.sql.ACDBManager;
 import jp.nichicom.vr.component.VRButton;
 import jp.nichicom.vr.component.VRLabel;
@@ -85,13 +88,19 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
     	// 高さの計算はJavaに任せる
     	int height = (int)text.getPreferredSize().getHeight();
     	
-    	FontMetrics fo = getFontMetrics(text.getFont());
+// [ID:0000793][Satoshi Tokusari] 2014/10 edit-Start 入力画面と印刷の表示不一致対応
+//    	FontMetrics fo = getFontMetrics(text.getFont());
+        FontMetrics fo = getFontMetrics(text.getMainContent().getFont());
+// [ID:0000793][Satoshi Tokusari] 2014/10 edit-End
     	//int width = fo.charWidth('ｍ') * (column / 2) + 24;
     	//text.setPreferredSize(new Dimension(width, height));
     	
     	int fontWidth = fo.charWidth('ｍ');
     	// (fontWidth * 2 / 3)はキャレット & 環境依存による余白バッファ
-    	int width = fontWidth * (column / 2) + (fontWidth * 2 / 3);
+// [ID:0000793][Satoshi Tokusari] 2014/10 edit-Start 入力画面と印刷の表示不一致対応
+//    	int width = fontWidth * (column / 2) + (fontWidth * 2 / 3);
+        int width = fontWidth * (column / 2) + (fontWidth * 1 / 2);
+// [ID:0000793][Satoshi Tokusari] 2014/10 edit-End
     	text.getViewport().setPreferredSize(new Dimension(width, height));
     	
     }
@@ -392,7 +401,11 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
         	if (oldFont == null) {
         		text.getMainContent().setFont(new Font("ＭＳ ゴシック", Font.PLAIN, 12));
         	} else {
-        		text.getMainContent().setFont(new Font("ＭＳ ゴシック", oldFont.getStyle(), oldFont.getSize()));
+// [ID:0000793][Satoshi Tokusari] 2014/10 edit-Start 入力画面と印刷の表示不一致対応
+//        		text.getMainContent().setFont(new Font("ＭＳ ゴシック", oldFont.getStyle(), oldFont.getSize()));
+                ACFrame frame = ACFrame.getInstance();
+                text.getMainContent().setFont(new Font("ＭＳ ゴシック", oldFont.getStyle(), frame.isMiddle() ? 14 : oldFont.getSize()));
+// [ID:0000793][Satoshi Tokusari] 2014/10 edit-End
         	}
         }
         

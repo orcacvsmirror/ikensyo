@@ -290,6 +290,9 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
             sb.append( ",FURIKOMI_MEIGI" );
             sb.append( ",DR_ADD_IT" );
             sb.append( ",LAST_TIME" );
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+            sb.append( ",INVALID_FLAG" );
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
             sb.append( " FROM" );
             sb.append( " DOCTOR" );
             sb.append( " WHERE" );
@@ -448,6 +451,9 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
                 sbDoctor.append(",FURIKOMI_MEIGI=" + getDBSafeString("FURIKOMI_MEIGI", doctorData));
                 sbDoctor.append(",DR_ADD_IT=" + getDBSafeNumber("DR_ADD_IT", doctorData));
                 sbDoctor.append(",LAST_TIME=CURRENT_TIMESTAMP");
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+                sbDoctor.append(",INVALID_FLAG=" + getDBSafeNumber("INVALID_FLAG", doctorData));
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
                 sbDoctor.append(" WHERE");
                 sbDoctor.append(" DR_CD=" + drCd);
             }
@@ -480,6 +486,9 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
                 sbDoctor.append(" FURIKOMI_MEIGI,");
                 sbDoctor.append(" DR_ADD_IT,");
                 sbDoctor.append(" LAST_TIME");
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+                sbDoctor.append(",INVALID_FLAG");
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
                 sbDoctor.append(" )");
                 sbDoctor.append(" VALUES(");
                 sbDoctor.append(" " + getDBSafeString("DR_NM", doctorData));
@@ -506,6 +515,9 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
                 sbDoctor.append("," + getDBSafeString("FURIKOMI_MEIGI", doctorData));
                 sbDoctor.append("," + getDBSafeString("DR_ADD_IT", doctorData));
                 sbDoctor.append(",CURRENT_TIMESTAMP");
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+                sbDoctor.append("," + getDBSafeString("INVALID_FLAG", doctorData));
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
                 sbDoctor.append(" )");
             }
 

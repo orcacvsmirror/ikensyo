@@ -436,9 +436,11 @@ public class IkenshoIshiIkenshoInfoActionAndMind2 extends IkenshoTabbableChildAf
         seishinSonota.setEnabled(enable);
         getSeishinShinkeiSyojyoLabelConainer().setEnabled(enable);
         
-        getSeishinShinkeiSenmoniLabelContainer().setEnabled(enable);
-        seishinShinkeiSenmoniRadioGroup.setEnabled(enable);
-        seishinShinkeiSenmoniHesesPanel.setEnabled(enable);
+// [ID:0000790][Satoshi Tokusari] 2014/10 del-Start 医師意見書の専門科受診の有無の仕様変更対応
+//        getSeishinShinkeiSenmoniLabelContainer().setEnabled(enable);
+//        seishinShinkeiSenmoniRadioGroup.setEnabled(enable);
+//        seishinShinkeiSenmoniHesesPanel.setEnabled(enable);
+// [ID:0000790][Satoshi Tokusari] 2014/10 del-End
         
         //その他個別処理
         seishinShinkeiSonotaChangeState();
@@ -611,12 +613,12 @@ public class IkenshoIshiIkenshoInfoActionAndMind2 extends IkenshoTabbableChildAf
     			) {
     		return true;
     	}
-    	
-    	// 専門家受診の有無
-    	if (seishinShinkeiSenmoniRadioGroup.getSelectedIndex() == 1) {
-    		return true;
-    	}
-    	
+// [ID:0000790][Satoshi Tokusari] 2014/10 del-Start 医師意見書の専門科受診の有無の仕様変更対応
+//    	// 専門家受診の有無
+//    	if (seishinShinkeiSenmoniRadioGroup.getSelectedIndex() == 1) {
+//    		return true;
+//    	}
+//[ID:0000790][Satoshi Tokusari] 2014/10 del-End
     	return false;
     }
     

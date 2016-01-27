@@ -126,4 +126,10 @@ public class IkenshoIshiIkenshoInfoSpecialMention1 extends
         return "ó‹‹Ò”Ô†";
     }
 
+// [ID:0000785][Satoshi Tokusari] 2014/10 add-Start ˆãtˆÓŒ©‘‚Ì•ÛŒ¯Ò•\¦áŠQ‘Î‰
+    protected int getAllowedInsurerType(){
+        //2:ˆãtˆÓŒ©‘‚Ì‚İ‚Ì•ÛŒ¯Ò‚Í‹–‰Â‚·‚é
+        return 2;
+    }
+//[ID:0000785][Satoshi Tokusari] 2014/10 add-End
 }

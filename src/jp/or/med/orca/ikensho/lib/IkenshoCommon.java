@@ -1501,7 +1501,10 @@ public class IkenshoCommon {
     		return "ikensho";
     	}
     	if ("å¡ˆãˆÓŒ©‘".equals(title)) {
-    		return "ikensho";
+// [ID:0000778][Satoshi Tokusari] 2014/10 add-Start PDF–¼‘Î‰
+//    		return "ikensho";
+            return "ishiikensho";
+// [ID:0000778][Satoshi Tokusari] 2014/10 add-End
     	}
     	
     	if ("–K–âŠÅŒìw¦‘".equals(title)) {

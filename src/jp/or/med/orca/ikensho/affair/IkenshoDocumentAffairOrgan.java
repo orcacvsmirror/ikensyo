@@ -243,8 +243,15 @@ public class IkenshoDocumentAffairOrgan extends
         sb.append(" *");
         sb.append(" FROM");
         sb.append(" DOCTOR");
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start ˆã—Ã‹@ŠÖî•ñ‚Ì–³Œø‰»‘Î‰
+        sb.append(" WHERE");
+        sb.append(" INVALID_FLAG = 0");
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
         sb.append(" ORDER BY");
-        sb.append(" DR_CD");
+// [ID:0000787][Satoshi Tokusari] 2014/10 edit-Start ˆã—Ã‹@ŠÖî•ñ‚Ì–³Œø‰»‘Î‰
+//        sb.append(" DR_CD");
+        sb.append(" DR_NM");
+// [ID:0000787][Satoshi Tokusari] 2014/10 edit-End
         doctors = (VRArrayList) dbm.executeQuery(sb.toString());
 
         organDoctorName.setFormat(new IkenshoHashableComboFormat(doctors,

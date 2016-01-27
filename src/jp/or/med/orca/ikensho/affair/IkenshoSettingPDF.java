@@ -141,16 +141,21 @@ public class IkenshoSettingPDF extends IkenshoDialog {
 		signNameContainer.add(signChoose);
 		
 		// 説明文
-		signInfo.setText("電子署名ソフトの実行ファイルを選択してください。");
+// [ID:0000778][Satoshi Tokusari] 2014/10 edit-Start PDF署名対応
+//		signInfo.setText("電子署名ソフトの実行ファイルを選択してください。");
+		signInfo.setText("電子署名ソフトの実行ファイルを選択してください。\n" +
+				"※利用有無は自治体により異なります。");
+// [ID:0000778][Satoshi Tokusari] 2014/10 edit-End
 		signInfo.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
 		
 		signPdfGroup.add(signUseCheck, VRLayout.FLOW_RETURN);
 		signPdfGroup.add(signNameContainer, VRLayout.FLOW_RETURN);
 		signPdfGroup.add(signInfo);
 		
-		// TODO PDF署名ソフト出荷後にコメントを外して機能を有効化
-		//client.add(signPdfGroup, VRLayout.NORTH);
-		
+// [ID:0000778][Satoshi Tokusari] 2014/10 add-Start PDF署名対応
+		// 署名機能自体は実装済であったため、電子署名用のグループを追加することで有効化
+		client.add(signPdfGroup, VRLayout.NORTH);
+// [ID:0000778][Satoshi Tokusari] 2014/10 add-End
 		
 		// 操作ボタン
 		submit.setText("設定(S)");

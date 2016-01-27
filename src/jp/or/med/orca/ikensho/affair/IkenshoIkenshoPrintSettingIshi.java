@@ -911,17 +911,19 @@ public class IkenshoIkenshoPrintSettingIshi extends
 						"SeishinShinkeiOtherName");
 			}
 
-			// 専門医受診の有無
-			if (IkenshoCommon
-					.addSelection(pd, data, "SENMONI", new String[] {
-							"SeishinShinkeiSenmoniOn",
-							"SeishinShinkeiSenmoniOff" }, -1)) {
-				if ("1".equals(ACCastUtilities.toString(data.getData("SENMONI")))) {
-					// 専門医
-					IkenshoCommon.addString(pd, data, "SENMONI_NM",
-							"SeishinShinkeiSenmoniName");
-				}
-			}
+// [ID:0000790][Satoshi Tokusari] 2014/10 del-Start 医師意見書の専門科受診の有無の仕様変更対応
+//			// 専門医受診の有無
+//			if (IkenshoCommon
+//					.addSelection(pd, data, "SENMONI", new String[] {
+//							"SeishinShinkeiSenmoniOn",
+//							"SeishinShinkeiSenmoniOff" }, -1)) {
+//				if ("1".equals(ACCastUtilities.toString(data.getData("SENMONI")))) {
+//					// 専門医
+//					IkenshoCommon.addString(pd, data, "SENMONI_NM",
+//							"SeishinShinkeiSenmoniName");
+//				}
+//			}
+// [ID:0000790][Satoshi Tokusari] 2014/10 del-End
 
 			break;
 		default:
@@ -939,12 +941,26 @@ public class IkenshoIkenshoPrintSettingIshi extends
 			pd.addAttribute("SeishinShinkeiGenkaku", "Visible", "FALSE");
 			pd.addAttribute("SeishinShinkeiMousou", "Visible", "FALSE");
 			pd.addAttribute("SeishinShinkeiOther", "Visible", "FALSE");
-
-			pd.addAttribute("SeishinShinkeiSenmoniOn", "Visible", "FALSE");
-			pd.addAttribute("SeishinShinkeiSenmoniOff", "Visible", "FALSE");
+// [ID:0000790][Satoshi Tokusari] 2014/10 del-Start 医師意見書の専門科受診の有無の仕様変更対応
+//			pd.addAttribute("SeishinShinkeiSenmoniOn", "Visible", "FALSE");
+//			pd.addAttribute("SeishinShinkeiSenmoniOff", "Visible", "FALSE");
+// [ID:0000790][Satoshi Tokusari] 2014/10 del-End
 			break;
 		}
-        
+
+// [ID:0000790][Satoshi Tokusari] 2014/10 add-Start 医師意見書の専門科受診の有無の仕様変更対応
+		// 専門科受診の有無
+		if (IkenshoCommon
+				.addSelection(pd, data, "SENMONI", new String[] {
+						"SeishinShinkeiSenmoniOn",
+						"SeishinShinkeiSenmoniOff" }, -1)) {
+			if ("1".equals(ACCastUtilities.toString(data.getData("SENMONI")))) {
+				// 専門科
+				IkenshoCommon.addString(pd, data, "SENMONI_NM",
+						"SeishinShinkeiSenmoniName");
+			}
+		}
+// [ID:0000790][Satoshi Tokusari] 2014/10 add-End
         
 	    // (5) てんかん
 	    ary = new String[] { "TenkanHindoShuichi", "TenkanHindoTsukiichi",

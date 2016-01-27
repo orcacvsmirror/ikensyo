@@ -2,6 +2,9 @@ package jp.or.med.orca.ikensho.component;
 
 import java.awt.Color;
 import java.awt.Dimension;
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-Start 入力画面と印刷の表示不一致対応
+import java.awt.Font;
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-End
 import java.awt.FontMetrics;
 import java.awt.Insets;
 import java.awt.Point;
@@ -30,8 +33,14 @@ import javax.swing.text.Highlighter;
 import javax.swing.text.Keymap;
 import javax.swing.text.NavigationFilter;
 
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-Start 入力画面と印刷の表示不一致対応
+import jp.nichicom.ac.ACOSInfo;
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-End
 import jp.nichicom.ac.component.ACRowMaximumableTextArea;
 import jp.nichicom.ac.container.AbstractACScrollPane;
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-Start 入力画面と印刷の表示不一致対応
+import jp.nichicom.ac.core.ACFrame;
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-End
 import jp.nichicom.vr.bind.VRBindSource;
 import jp.nichicom.vr.bind.VRBindable;
 import jp.nichicom.vr.bind.event.VRBindEvent;
@@ -64,6 +73,13 @@ public class IkenshoACTextArea extends AbstractACScrollPane implements VRTextAre
      */
     public IkenshoACTextArea() {
         super();
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-Start 入力画面と印刷の表示不一致対応
+        try {
+            jbInit();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-End
     }
 
     /**
@@ -126,6 +142,27 @@ public class IkenshoACTextArea extends AbstractACScrollPane implements VRTextAre
     public void addCaretListener(CaretListener listener) {
         getMainContent().addCaretListener(listener);
     }
+
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-Start 入力画面と印刷の表示不一致対応
+    /**
+     * コンポーネントを初期化します。
+     *
+     * @throws Exception 初期化例外
+     */
+    private void jbInit() throws Exception {
+        // Windowsの場合は、MSゴシックの使用を強制し、LineSpaceを詰める
+        if (!ACOSInfo.isMac()) {
+            Font oldFont = getFont();
+            if (oldFont == null) {
+                getMainContent().setFont(new Font("ＭＳ ゴシック", Font.PLAIN, 12));
+            }
+            else {
+            	ACFrame frame = ACFrame.getInstance();
+                getMainContent().setFont(new Font("ＭＳ ゴシック", oldFont.getStyle(), frame.isMiddle() ? 14 : oldFont.getSize()));
+            }
+        }
+    }
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-End
 
     /**
      * フォーマットイベントリスナを追加します。
@@ -793,8 +830,17 @@ public class IkenshoACTextArea extends AbstractACScrollPane implements VRTextAre
     	int width = getColumns();
     	int height = getRows();
     	
-    	FontMetrics fo = getFontMetrics(getFont());
-    	setPreferredSize(new Dimension(fo.charWidth('m') *	(width / 2) + 76, fo.getHeight() * height + 6));
+// [ID:0000793][Satoshi Tokusari] 2014/10 edit-Start 入力画面と印刷の表示不一致対応
+//    	FontMetrics fo = getFontMetrics(getFont());
+//    	setPreferredSize(new Dimension(fo.charWidth('m') *	(width / 2) + 76, fo.getHeight() * height + 6));
+        if (ACOSInfo.isMac()) {
+            FontMetrics fo = getFontMetrics(getFont());
+            setPreferredSize(new Dimension(fo.charWidth('m') *	(width / 2) + 76, fo.getHeight() * height + 6));
+            return;
+        }
+        FontMetrics fo = getFontMetrics(getMainContent().getFont());
+        setPreferredSize(new Dimension(fo.charWidth('m') *	width + 26, fo.getHeight() * height + 6));
+// [ID:0000793][Satoshi Tokusari] 2014/10 add-End
     }
     
     

@@ -613,6 +613,9 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(" DR_NM");
         sb.append(" FROM");
         sb.append(" DOCTOR");
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start ˆã—Ã‹@ŠÖî•ñ‚Ì–³Œø‰»‘Î‰
+        sb.append(" WHERE INVALID_FLAG = 0");
+//[ID:0000787][Satoshi Tokusari] 2014/10 add-End
         sb.append(" GROUP BY");
         sb.append(" DR_NM");
         sb.append(" ORDER BY");

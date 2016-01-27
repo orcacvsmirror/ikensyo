@@ -1,6 +1,10 @@
 /** TODO <HEAD_IKENSYO> */
 package jp.or.med.orca.ikensho.affair;
 
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-Start 訪問看護指示書作成時の引き継ぎ元情報の選択対応
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-End
 import java.sql.SQLException;
 import java.text.Format;
 import java.text.ParseException;
@@ -12,12 +16,18 @@ import java.util.Iterator;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-Start 訪問看護指示書作成時の引き継ぎ元情報の選択対応
+import jp.nichicom.ac.ACConstants;
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-End
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-Start 訪問看護指示書作成時の引き継ぎ元情報の選択対応
+import jp.nichicom.vr.layout.VRLayout;
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-End
 import jp.nichicom.vr.text.parsers.VRDateParser;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.VRMap;
@@ -56,6 +66,10 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
     protected IkenshoHoumonKangoShijishoTenteki tenteki;
     protected IkenshoHoumonKangoShijishoIryoukikan iryoukikan;
     // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-Start 訪問看護指示書作成時の引き継ぎ元情報の選択対応
+    // 読込ボタン
+    protected ACAffairButton read = new ACAffairButton();
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-End
 
     protected void reselectForPassiveCustom(IkenshoFirebirdDBManager dbm,
             VRMap data) throws Exception {
@@ -607,6 +621,20 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
     }
 
     private void jbInit() throws Exception {
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-Start 訪問看護指示書作成時の引き継ぎ元情報の選択対応
+        // 読込ボタン
+        read.setIconPath(IkenshoConstants.BUTTON_IMAGE_PATH_FIND);
+        read.setMnemonic('V');
+        read.setText("読込(V)");
+        read.setToolTipText("最新の訪問看護指示書の情報を読み込みます。");
+        buttons.add(read, VRLayout.EAST);
+        read.addActionListener(null);
+        read.addActionListener(new ActionListener(){
+            public void actionPerformed(ActionEvent e) {
+                readHomonKangoShijisho();
+            }
+        });
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-End
         // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 //        // tab
 //        tabs.addTab("患者", applicant);
@@ -859,4 +887,84 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
 		return true;
 	}
     //[ID:0000635][Shin Fujihara] 2011/02/25 add end 【2010年度要望対応】
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-Start 訪問看護指示書作成時の引き継ぎ元情報の選択対応
+    /**
+     * 最新の訪問看護指示書の情報を読み込みます 
+     */
+    private void readHomonKangoShijisho(){
+        try {
+            StringBuffer sb = new StringBuffer();
+            sb.append("SELECT");
+            sb.append(" COMMON_IKN_SIS.*");
+            sb.append(" FROM");
+            sb.append(" COMMON_IKN_SIS");
+            sb.append(" JOIN ");
+            sb.append(getCustomDocumentTableName());
+            sb.append(" ON");
+            sb.append(" (COMMON_IKN_SIS.PATIENT_NO = ");
+            sb.append(getCustomDocumentTableName());
+            sb.append(".PATIENT_NO)");
+            sb.append("AND(COMMON_IKN_SIS.EDA_NO = ");
+            sb.append(getCustomDocumentTableName());
+            sb.append(".EDA_NO)");
+
+            sb.append("AND(");
+            sb.append("(COMMON_IKN_SIS.DOC_KBN != 2)");
+            sb.append("OR");
+            sb.append("(");
+            sb.append("(COMMON_IKN_SIS.DOC_KBN = 2)");
+            sb.append("AND(");
+            sb.append(getCustomDocumentTableName());
+            sb.append(".FORMAT_KBN != 1)");
+            sb.append(")");
+            sb.append(")");
+
+            sb.append(" WHERE");
+            sb.append(" (COMMON_IKN_SIS.PATIENT_NO=");
+            sb.append(getPatientNo());
+            sb.append(")");
+            sb.append("AND(COMMON_IKN_SIS.DOC_KBN=");
+            sb.append(getCustomDocumentType());
+            sb.append(")");
+            sb.append(" ORDER BY");
+            sb.append(" COMMON_IKN_SIS.EDA_NO DESC");
+            IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
+            VRArrayList array = (VRArrayList) dbm.executeQuery(sb.toString());
+            if (array.getDataSize() > 0) {
+            
+                // 読込前確認メッセージ表示
+                if (ACMessageBox.showOkCancel("最新の訪問看護指示書の情報を読み込みます。"
+                        + ACConstants.LINE_SEPARATOR + "よろしいですか？",
+                        ACMessageBox.FOCUS_CANCEL) != ACMessageBox.RESULT_OK) {
+                    return;
+                }
+                
+                VRMap data = (VRMap) array.getData();
+
+                String[] keeps = new String[] { "DR_NM", "MI_NM", "MI_POST_CD",
+                        "MI_ADDRESS", "MI_TEL1", "MI_TEL2", "MI_FAX1", "MI_FAX2",
+                        "MI_CEL_TEL1", "MI_CEL_TEL2", "PATIENT_NM", "PATIENT_KN",
+                        "SEX", "BIRTHDAY", "AGE", "POST_CD", "ADDRESS", "TEL1",
+                        "TEL2", };
+                int end = keeps.length;
+                for (int i = 0; i < end; i++) {
+                    data.setData(keeps[i], originalData.getData(keeps[i]));
+                }
+
+                originalData.putAll(data);
+                // 適用
+                originalArray = new VRArrayList();
+                if (originalData.size() > 0) {
+                    fullSetSource(originalData);
+                    fullBindSource();
+
+                    originalArray.addData(originalData);
+                }
+            } else {
+            	ACMessageBox.show("読込対象となる訪問看護指示書の情報がありません。");
+            }
+        } catch (Exception ex) {
+        }        
+    }
+// [ID:0000786][Satoshi Tokusari] 2014/10 add-End
 }

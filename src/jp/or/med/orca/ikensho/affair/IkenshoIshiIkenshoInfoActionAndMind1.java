@@ -1188,11 +1188,12 @@ public class IkenshoIshiIkenshoInfoActionAndMind1 extends IkenshoTabbableChildAf
         return titleLabel;
     }
     
-
-    protected int getAllowedInsurerType(){
-        //2:医師意見書のみの保険者は許可する
-        return 2;
-    }
+// [ID:0000785][Satoshi Tokusari] 2014/10 del-Start 医師意見書の保険者表示障害対応
+//    protected int getAllowedInsurerType(){
+//        //2:医師意見書のみの保険者は許可する
+//        return 2;
+//    }
+// [ID:0000785][Satoshi Tokusari] 2014/10 del-End
     
     /**
      * ヒントグループを返します。

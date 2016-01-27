@@ -55,7 +55,10 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
     private VRLabel note3 = new VRLabel();
     private ACLabelContainer miDefaultDummyContainer1 = new ACLabelContainer();
     private ACLabelContainer miDefaultDummyContainer2 = new ACLabelContainer();
-
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+    private ACIntegerCheckBox miInvalid = new ACIntegerCheckBox();
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
+  
     public IkenshoIryouKikanJouhouShousaiKihon() {
         try {
             jbInit();
@@ -78,7 +81,16 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
         this.add(kihonPnl6, VRLayout.SOUTH);
 
         //基本情報1
-        kihonPnl1.setLayout(new BorderLayout());
+// [ID:0000787][Satoshi Tokusari] 2014/10 edit-Start 医療機関情報の無効化対応
+//        kihonPnl1.setLayout(new BorderLayout());
+        VRLayout kihonPnl1Layout = new VRLayout();
+        kihonPnl1Layout.setLabelMargin(96);
+        kihonPnl1.setLayout(kihonPnl1Layout);
+        kihonPnl1.add(miInvalid, VRLayout.FLOW_INSETLINE);
+        miInvalid.setText("無効にする");
+        miInvalid.setBindPath("INVALID_FLAG");
+        miInvalid.setForeground(IkenshoConstants.COLOR_MESSAGE_TEXT_FOREGROUND);
+// [ID:0000787][Satoshi Tokusari] 2014/10 edit-End
         kihonPnl1.add(note1, BorderLayout.EAST);
 //      [ID:0000514][Tozo TANAKA] 2009/09/16 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 //        note1.setText("↓「主治医意見書」「医師医見書」「訪問看護指示書」に印刷される項目");

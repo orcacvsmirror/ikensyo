@@ -9,15 +9,25 @@ import java.text.Format;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+import javax.swing.SwingConstants;
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
 import javax.swing.event.ListSelectionEvent;
 
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.component.table.ACTable;
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+import jp.nichicom.ac.component.table.ACTableCellViewer;
+import jp.nichicom.ac.component.table.ACTableColumn;
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACAffairable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.sql.ACPassiveKey;
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+import jp.nichicom.ac.text.ACHashMapFormat;
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.component.VRLabel;
@@ -52,7 +62,10 @@ public class IkenshoIryouKikanJouhouIchiran extends IkenshoAffairContainer imple
     private JMenuItem deleteMenu = new JMenuItem();
     private VRArrayList data;
     private VRArrayList jigyoushoData;
-
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+    // 有効カラム
+    private ACTableColumn enabledColumn;
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
     private static final ACPassiveKey PASSIVE_CHECK_KEY_DOCTOR = new
         ACPassiveKey("DOCTOR", new String[] {"DR_CD"}
                           , new Format[] {null}, "LAST_TIME", "LAST_TIME");
@@ -376,6 +389,9 @@ public class IkenshoIryouKikanJouhouIchiran extends IkenshoAffairContainer imple
         sb.append( ",MI_DEFAULT" );
         sb.append( ",DR_NO" );
         sb.append( ",LAST_TIME" );
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+        sb.append( ",INVALID_FLAG" );
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
         sb.append( " FROM" );
         sb.append( " DOCTOR" );
         sb.append( " ORDER BY" );
@@ -450,6 +466,9 @@ public class IkenshoIryouKikanJouhouIchiran extends IkenshoAffairContainer imple
         //テーブルの生成
         table.setModel(new ACTableModelAdapter(data, new String[] {
             "MI_DEFAULT_MARK",
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+            "INVALID_FLAG",
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
             "DR_NM",
             "MI_NM",
             "MI_POST_CD",
@@ -475,16 +494,29 @@ public class IkenshoIryouKikanJouhouIchiran extends IkenshoAffairContainer imple
 //            new VRTableColumn(8, 200, "緊急時連絡先"),
 //            new VRTableColumn(9, 200, "不在時対応法"),
             new VRTableColumn(0, 32, " "),
-            new VRTableColumn(1, 180, "医師氏名"),
-            new VRTableColumn(2, 260, "医療機関名"),
-            new VRTableColumn(3, 120, "郵便番号"),
-            new VRTableColumn(4, 260, "所在地"),
-            new VRTableColumn(5, 160, "連絡先(電話)"),
-            new VRTableColumn(6, 160, "連絡先(FAX)"),
-            new VRTableColumn(7, 160, "連絡先(携帯)"),
-            new VRTableColumn(8, 260, "緊急時連絡先"),
-            new VRTableColumn(9, 260, "不在時対応法"),
-            new VRTableColumn(10, 300, "備考")
+// [ID:0000787][Satoshi Tokusari] 2014/10 edit-Start 医療機関情報の無効化対応
+//            new VRTableColumn(1, 180, "医師氏名"),
+//            new VRTableColumn(2, 260, "医療機関名"),
+//            new VRTableColumn(3, 120, "郵便番号"),
+//            new VRTableColumn(4, 260, "所在地"),
+//            new VRTableColumn(5, 160, "連絡先(電話)"),
+//            new VRTableColumn(6, 160, "連絡先(FAX)"),
+//            new VRTableColumn(7, 160, "連絡先(携帯)"),
+//            new VRTableColumn(8, 260, "緊急時連絡先"),
+//            new VRTableColumn(9, 260, "不在時対応法"),
+//            new VRTableColumn(10, 300, "備考")
+            getEnabledColumn(),
+            new VRTableColumn(2, 180, "医師氏名"),
+            new VRTableColumn(3, 260, "医療機関名"),
+            new VRTableColumn(4, 120, "郵便番号"),
+            new VRTableColumn(5, 260, "所在地"),
+            new VRTableColumn(6, 160, "連絡先(電話)"),
+            new VRTableColumn(7, 160, "連絡先(FAX)"),
+            new VRTableColumn(8, 160, "連絡先(携帯)"),
+            new VRTableColumn(9, 260, "緊急時連絡先"),
+            new VRTableColumn(10, 260, "不在時対応法"),
+            new VRTableColumn(11, 300, "備考")
+// [ID:0000787][Satoshi Tokusari] 2014/10 edit-End
         })
             );
 
@@ -496,6 +528,29 @@ public class IkenshoIryouKikanJouhouIchiran extends IkenshoAffairContainer imple
         table.getTable().setDefaultRenderer(Object.class, tableCellRenderer);
         */
     }
+
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
+    /**
+     * 医療機関情報一覧：有効を取得します。
+     * 
+     * @return 医療機関情報一覧：有効
+     */
+    public ACTableColumn getEnabledColumn() {
+        if (enabledColumn == null) {
+        	enabledColumn = new ACTableColumn(1);
+            enabledColumn.setHeaderValue("有効");
+            enabledColumn.setColumns(3);
+            enabledColumn.setHorizontalAlignment(SwingConstants.CENTER);
+            enabledColumn.setRendererType(ACTableCellViewer.RENDERER_TYPE_ICON);
+            // テーブルカラムにフォーマッタを設定する。
+            enabledColumn.setFormat(new ACHashMapFormat(new String[] {
+                    "jp/nichicom/ac/images/icon/pix16/btn_079.png",
+                    "jp/nichicom/ac/images/icon/pix16/btn_080.png" },
+                    new Integer[] { new Integer(0), new Integer(1), }));
+        }
+        return enabledColumn;
+    }
+// [ID:0000787][Satoshi Tokusari] 2014/10 add-End
 
     /**
      * テーブルの初期選択行の選択を行います。

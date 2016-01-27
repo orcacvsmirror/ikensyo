@@ -58,11 +58,18 @@ public class IkenshoIkenshoInfoH18 extends IkenshoIkenshoInfo {
         tabs.addTab("傷病２", sick2);
         // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
         tabs.addTab("特別な医療", special);
-        tabs.addTab("心身の状態１", mindBody1);
-        tabs.addTab("心身の状態２", mindBody2);
-        tabs.addTab("生活機能１", seikatsuService1);
-        tabs.addTab("生活機能２", care1);
-        tabs.addTab("生活機能３", care2);
+// [ID:0000789][Satoshi Tokusari] 2014/10 edit-Start 主治医意見書のタブ1行化対応
+//        tabs.addTab("心身の状態１", mindBody1);
+//        tabs.addTab("心身の状態２", mindBody2);
+//        tabs.addTab("生活機能１", seikatsuService1);
+//        tabs.addTab("生活機能２", care1);
+//        tabs.addTab("生活機能３", care2);
+        tabs.addTab("心身１", mindBody1);
+        tabs.addTab("心身２", mindBody2);
+        tabs.addTab("生活１", seikatsuService1);
+        tabs.addTab("生活２", care1);
+        tabs.addTab("生活３", care2);
+// [ID:0000789][Satoshi Tokusari] 2014/10 edit-End
 //      [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 //        tabs.addTab("特記事項・請求", mention);
         tabs.addTab("特記事項", mentionSpecial);
