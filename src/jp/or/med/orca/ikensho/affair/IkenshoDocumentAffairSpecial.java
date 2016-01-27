@@ -264,7 +264,7 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialKoumonPanel.setLayout(new BorderLayout());
     specialMessages.setLayout(new BorderLayout());
     specialTousekis.setLayout(new BorderLayout());
-    specialMonitors.setLayout(new BorderLayout());
+    //specialMonitors.setLayout(new BorderLayout());
     specialJokusous.setLayout(new BorderLayout());
 
     processs.setFocusForeground(IkenshoConstants.COLOR_BACK_PANEL_FOREGROUND);
@@ -284,7 +284,8 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
    ((VRLayout)specialJinkouKokyus.getLayout()).setAutoWrap(false);
 
     specialMonitorCaption.setOpaque(false);
-    specialMonitorCaption.setPreferredSize(new Dimension(140, 60));
+    //specialMonitorCaption.setPreferredSize(new Dimension(140, 60));
+    specialMonitorCaption.setPreferredSize(new Dimension(200, 20));
     sikkins.setText("失禁への対応");
     sikkins.setLabelColumns(7);
     specialCatheters.setLayout(new BorderLayout());
@@ -295,10 +296,12 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialOxRyouhouRyoous.setEnabled(false);
     specialOxRyouhouRyou.setEnabled(false);
     specialJinkouKokyuHousiki.setEnabled(false);
-    specialJinkouKokyuHousiki.setPreferredSize(new Dimension(100, 19));
+//    specialJinkouKokyuHousiki.setPreferredSize(new Dimension(100, 19));
+    specialJinkouKokyuHousiki.setPreferredSize(new Dimension(150, 19));
     specialJinkouKokyuMiddle.setEnabled(false);
     specialJinkouKokyuSettei.setEnabled(false);
-    specialJinkouKokyuSettei.setPreferredSize(new Dimension(250, 19));
+//    specialJinkouKokyuSettei.setPreferredSize(new Dimension(250, 19));
+    specialJinkouKokyuSettei.setPreferredSize(new Dimension(270, 19));
     specialJinkouKokyus.setEnabled(false);
     specialKeikanEiyouMethod.setEnabled(false);
     specialKeikanEiyouMiddle1.setEnabled(false);
@@ -322,7 +325,8 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialKeikanEiyouChange.setEnabled(false);
     specialOther.setEnabled(false);
     specialOtherUse.setBindPath("SOUCHAKU_OTHER_FLAG");
-    specialJidoFukumaku.setPreferredSize(new Dimension(150, 17));
+    //specialJidoFukumaku.setPreferredSize(new Dimension(150, 17));
+    specialJidoFukumaku.setPreferredSize(new Dimension(210, 34));
     specialGroup.add(processs, VRLayout.NORTH);
     specialGroup.add(specials, VRLayout.NORTH);
     specialGroup.add(sikkins, VRLayout.NORTH);
@@ -389,11 +393,11 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialTentekiKannriSiji.add(specialMessages, VRLayout.EAST);
     specialTentekiKannris.add(specialTentekiKannri, BorderLayout.WEST);
     specialTentekiKannris.add(specialTentekiKannriSiji, BorderLayout.CENTER);
-    specialMonitorPanel.add(specialMonitorMessage1, BorderLayout.NORTH);
-    specialMonitorPanel.add(specialMonitorMessage2, BorderLayout.CENTER);
+    //specialMonitorPanel.add(specialMonitorMessage1, BorderLayout.NORTH);
+    //specialMonitorPanel.add(specialMonitorMessage2, BorderLayout.CENTER);
     specialMonitorCaption.add(specialMonitor, VRLayout.FLOW_RETURN);
-    specialMonitorCaption.add(specialMonitorPanel, VRLayout.FLOW_RETURN);
-    specialMonitors.add(specialMonitorSiji, BorderLayout.CENTER);
+    //specialMonitorCaption.add(specialMonitorPanel, VRLayout.FLOW_RETURN);
+    //specialMonitors.add(specialMonitorSiji, BorderLayout.CENTER);
     specialMonitors.add(specialMonitorCaption, BorderLayout.WEST);
     specials.add(specialMonitors, VRLayout.FLOW_RETURN);
     specials.add(specialJokusous, VRLayout.FLOW_RETURN);
@@ -410,16 +414,20 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialOtherUse.setText("その他（その他の装着･使用医療機器）");
     specialOtherUse.setOpaque(false);
     specialJyoumyakuEiyou.setBindPath("CHU_JOU_EIYOU");
-    specialJyoumyakuEiyou.setPreferredSize(new Dimension(140, 20));
+    //specialJyoumyakuEiyou.setPreferredSize(new Dimension(140, 20));
+    specialJyoumyakuEiyou.setPreferredSize(new Dimension(200, 20));
     specialJyoumyakuEiyou.setText("中心静脈栄養");
     specialTentekiKannri.setBindPath("TNT_KNR");
-    specialTentekiKannri.setPreferredSize(new Dimension(140, 25));
+    //specialTentekiKannri.setPreferredSize(new Dimension(140, 25));
+    specialTentekiKannri.setPreferredSize(new Dimension(200, 50));
     specialTentekiKannri.setText("点滴の管理");
     specialTentekiKannri.setVerticalAlignment(javax.swing.SwingConstants.BOTTOM);
-    specialJokusou.setPreferredSize(new Dimension(140, 20));
+    //specialJokusou.setPreferredSize(new Dimension(140, 20));
+    specialJokusou.setPreferredSize(new Dimension(200, 20));
     specialJokusou.setText("褥瘡の処置");
     specialJokusou.setBindPath("JOKUSOU_SHOCHI");
-    specialKoumon.setPreferredSize(new Dimension(140, 20));
+    //specialKoumon.setPreferredSize(new Dimension(140, 20));
+    specialKoumon.setPreferredSize(new Dimension(200, 20));
     specialKoumon.setText("ストーマの処置");
     specialKoumon.setBindPath("JINKOU_KOUMON");
     specialDorenPos.setActionCommand("comboBoxChanged");
@@ -430,10 +438,11 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialRyuchiCatheterChange.setBindPath("RYU_CAT_CHG");
     specialRyuchiCatheterChange.setMaxLength(5);
     specialRyuchiCatheterChange.setPreferredSize(new Dimension(80, 19));
-    getSpecialKeikanEiyou().setPreferredSize(new Dimension(140, 20));
+    //getSpecialKeikanEiyou().setPreferredSize(new Dimension(140, 20));
+    getSpecialKeikanEiyou().setPreferredSize(new Dimension(200, 20));
     getSpecialKeikanEiyou().setText("経管栄養");
     getSpecialKeikanEiyou().setBindPath("KEKN_EIYOU");
-    specialMonitorMessage2.setText("　酸素飽和度等）");
+    //specialMonitorMessage2.setText("　酸素飽和度等）");
     specialRyuchiCatheterSize.setIMEMode(InputSubset.KANJI);
     specialRyuchiCatheterSize.setBindPath("RYU_CAT_SIZE");
     specialRyuchiCatheterSize.setMaxLength(5);
@@ -450,7 +459,8 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialOther.setMaxLength(15);
     specialRyuchiCatheterLaout.setAlignment(FlowLayout.LEFT);
     specialCannula.setOpaque(false);
-    specialCannula.setPreferredSize(new Dimension(120, 30));
+    //specialCannula.setPreferredSize(new Dimension(120, 30));
+    specialCannula.setPreferredSize(new Dimension(200, 30));
     specialCannula.setText("気管カニューレ");
     specialCannula.setBindPath("CANNULA");
     specialKyuinnki.setOpaque(false);
@@ -463,22 +473,25 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialLayout.setFitHLast(true);
     specialLayout.setFitVLast(true);
     specialMonitorPanel.setLayout(new BorderLayout());
-    specialTousinKango.setPreferredSize(new Dimension(140, 20));
+    //specialTousinKango.setPreferredSize(new Dimension(140, 20));
+    specialTousinKango.setPreferredSize(new Dimension(200, 20));
     specialTousinKango.setText("疼痛の看護");
     specialTousinKango.setBindPath("TOUTU");
     specialJinkouKokyuHousiki.setIMEMode(InputSubset.KANJI);
     specialJinkouKokyuHousiki.setMaxLength(5);
     specialJinkouKokyuHousiki.setBindPath("JINKOU_KKY_HOUSIKI");
     specialOtherPanel.setOpaque(false);
-    specialKikanSekkai.setPreferredSize(new Dimension(140, 20));
+    //specialKikanSekkai.setPreferredSize(new Dimension(140, 20));
+    specialKikanSekkai.setPreferredSize(new Dimension(200, 20));
     specialKikanSekkai.setText("気管切開の処置");
     specialKikanSekkai.setBindPath("KKN_SEK_SHOCHI");
-    specialMonitorMessage1.setMinimumSize(new Dimension(45, 15));
-    specialMonitorMessage1.setText("（血圧、心拍、");
+    //specialMonitorMessage1.setMinimumSize(new Dimension(45, 15));
+    //specialMonitorMessage1.setText("（血圧、心拍、");
     specialDoren.setOpaque(false);
     specialDoren.setText("ドレーン");
     specialDoren.setBindPath("DOREN");
-    specialTouseki.setPreferredSize(new Dimension(140, 20));
+    //specialTouseki.setPreferredSize(new Dimension(140, 20));
+    specialTouseki.setPreferredSize(new Dimension(200, 30));
     specialTouseki.setText("透析");
     specialTouseki.setBindPath("TOUSEKI");
     specialKeikanEiyouMethod.setIMEMode(InputSubset.KANJI);
@@ -493,7 +506,8 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialOxRyouhouRyou.setIMEMode(InputSubset.LATIN_DIGITS);
     specialOxRyouhouRyou.setBindPath("OX_RYO_RYO");
     specialOxRyouhouRyou.setMaxLength(5);
-    specialOxRyouhou.setPreferredSize(new Dimension(140, 20));
+    //specialOxRyouhou.setPreferredSize(new Dimension(140, 20));
+    specialOxRyouhou.setPreferredSize(new Dimension(200, 20));
     specialOxRyouhou.setText("酸素療法");
     specialOxRyouhou.setBindPath("OX_RYO");
     specialMessage1.setForeground(Color.blue);
@@ -510,7 +524,8 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialYuekiPump.setBindPath("YUEKI_PUMP");
     specialOtherLaout.setAlignment(FlowLayout.LEFT);
     specialOtherLaout.setHgap(0);
-    specialJinkouKokyu.setPreferredSize(new Dimension(140, 20));
+    //specialJinkouKokyu.setPreferredSize(new Dimension(140, 20));
+    specialJinkouKokyu.setPreferredSize(new Dimension(200, 20));
     specialJinkouKokyu.setText("レスピレーター");
     specialJinkouKokyu.setBindPath("JINKOU_KOKYU");
     specialJinkouKokyuSettei.setIMEMode(InputSubset.KANJI);
@@ -520,7 +535,8 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialRyuchiCatheterMiddle.setText("、");
     specialRyuchiCatheterFoot.setText("日に1回交換");
     specialTousekiKyoukyuu.setOpaque(false);
-    specialTousekiKyoukyuu.setPreferredSize(new Dimension(150, 17));
+    //specialTousekiKyoukyuu.setPreferredSize(new Dimension(150, 17));
+    specialTousekiKyoukyuu.setPreferredSize(new Dimension(200, 34));
     specialTousekiKyoukyuu.setText("透析液供給装置");
     specialTousekiKyoukyuu.setBindPath("TOU_KYOUKYU");
     specialJidoFukumaku.setOpaque(false);
@@ -529,7 +545,8 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialRyuchiCatheter.setOpaque(false);
     specialRyuchiCatheter.setText("留置カテーテル：");
     specialRyuchiCatheter.setBindPath("RYU_CATHETER");
-    specialCatheter.setPreferredSize(new Dimension(140, 20));
+    //specialCatheter.setPreferredSize(new Dimension(140, 20));
+    specialCatheter.setPreferredSize(new Dimension(200, 20));
     specialCatheter.setText("カテーテル");
     specialCatheter.setBindPath("CATHETER");
     getSpecialMessage2().setForeground(Color.blue);
@@ -539,7 +556,7 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     // 2008/02/25 [Masahiko_Higuchi] edit - end
     specialKeikanEiyouMiddle1.setText("）l/min");
     specialKeikanEiyouMiddle1.setText("：チューブサイズ");
-    specialMonitor.setText("モニター測定");
+    specialMonitor.setText("モニター測定(血圧、心拍、　酸素飽和度等）");
     specialMonitor.setBindPath("MONITOR");
 
     specialOxRyouhouRyoous.setMinimumSize(new Dimension(54, 21));
@@ -560,8 +577,8 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     specialMessages.setOpaque(false);
 
 
-    specialMonitorPanel.add(specialMonitorMessage1, BorderLayout.NORTH);
-    specialMonitorPanel.add(specialMonitorMessage2, BorderLayout.CENTER);
+    //specialMonitorPanel.add(specialMonitorMessage1, BorderLayout.NORTH);
+    //specialMonitorPanel.add(specialMonitorMessage2, BorderLayout.CENTER);
     specialOtherPanel.add(specialOtherUse, VRLayout.FLOW);
     specialOtherPanel.add(specialOtherHeses, VRLayout.FLOW);
     specialOtherHeses.add(specialOther, null);
@@ -878,4 +895,15 @@ public class IkenshoDocumentAffairSpecial extends IkenshoTabbableChildAffairCont
     } 
     
 //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
+    /**
+     * 疼痛の看護チェックを返します。
+     * @return
+     */
+    public ACIntegerCheckBox getSpecialTousinKango() {
+    	if (specialTousinKango == null) {
+    		specialTousinKango = new ACIntegerCheckBox();
+    	}
+    	return specialTousinKango;
+    }
+    
 }

@@ -93,11 +93,11 @@ public class IP001001 extends IP001001Event {
         case 10:
             fileName = "CSVFileOutputPatientList.xml";
             break;
-        case 11:
-            fileName = "IkenshoShien1.xml";
+        case 11: //à„étà”å©èëÇP
+            fileName = "IkenshoShien1FromH2604.xml";
             break;
-        case 12:
-            fileName = "IkenshoShien2.xml";
+        case 12: //à„étà”å©èëÇQ
+            fileName = "IkenshoShien2FromH2604.xml";
             break;
         // [ID:0000514][Masahiko Higuchi] 2009/09/16 add begin Åy2009îNìxëŒâûÅFñKñ‚ä≈åÏéwé¶èëÅzì¡ï éwé¶èëÇÃä«óùã@î\
         case 13:
@@ -187,9 +187,9 @@ public class IP001001 extends IP001001Event {
                 formatIndex = 8;
             } else if (fileName.endsWith("seikyuikenshoichiran.xml")) {
                 formatIndex = 9;
-            } else if (fileName.endsWith("ikenshoshien1.xml")) {
+            } else if (fileName.endsWith("ikenshoshien1fromh2604.xml")) { //à„étà”å©èëÇP
                 formatIndex = 11;
-            } else if (fileName.endsWith("ikenshoshien2.xml")) {
+            } else if (fileName.endsWith("ikenshoshien2fromh2604.xml")) { //à„étà”å©èëÇQ
                 formatIndex = 12;
             }
             //[ID:0000639][Shin Fujihara] 2011/03 add begin

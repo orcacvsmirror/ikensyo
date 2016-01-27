@@ -23,6 +23,7 @@ import javax.swing.JLabel;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
 
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.vr.component.VRWindowExpander;
 import jp.nichicom.vr.container.VRStatusBar;
 import jp.nichicom.vr.layout.VRLayout;
@@ -279,8 +280,7 @@ public class ACStatusBar extends VRStatusBar {
         tmrMain.schedule(task, 1000, 1000);
 
         // Mac対応(MacキーボードではCapsLock/NumLockの概念がない)
-        String osName = System.getProperty("os.name");
-        if ((osName != null) && (osName.startsWith("Mac"))) {
+        if (ACOSInfo.isMac()) {
             canLookingKeyState = false;
         } else {
             canLookingKeyState = true;

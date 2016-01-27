@@ -319,6 +319,7 @@ public class IkenshoIkenshoInfoCare2H18 extends IkenshoIkenshoInfoCare2 {
         getSportsValue().setBindPath("UNDOU_RYUIJIKOU");
         getSportsValue().setIMEMode(InputSubset.KANJI);
         getSportsValue().setMaxLength(30);
+        getSportsValue().setColumns(30);
         getSports().setBindPath("UNDOU");
         getOutlookGroup().add(outlooks, VRLayout.FLOW_INSETLINE_RETURN);
         outlooks.add(outlook, null);

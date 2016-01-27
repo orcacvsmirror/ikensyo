@@ -54,6 +54,7 @@ import javax.swing.JRootPane;
 
 import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACTextArea;
@@ -358,6 +359,18 @@ public class IkenshoCommon {
     /** ドレーン部位 */
     public static final int TEIKEI_CATHETER_POS_NAME = 69;
     //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
+    
+    // -------- 平成26年　医師意見書レイアウト変更に伴う追加
+    /** 医師意見書 発生の可能性が高い病態 - 対処方針 */
+    public static final int TEIKEI_TAISHO_HOUSIN_NAME = 70;
+    
+    /** 医師意見書 留意事項 - 行動障害 */
+    public static final int TEIKEI_CARE_SERVICE_ACTION_NAME = 71;
+    
+    /** 医師意見書 留意事項 - 精神症状 */
+    public static final int TEIKEI_CARE_SERVICE_MIND_NAME = 72;
+    
+    
     
     /**
      * 最新文書該当なし
@@ -1421,19 +1434,21 @@ public class IkenshoCommon {
         // 2006/03/02[Tozo Tanaka] : remove end
 
         String[] arg = { "", pdfPath };
-        String osName = System.getProperty("os.name");
-        if (osName.startsWith("Mac")) {
+        if (ACOSInfo.isMac()) {
             // Macならば関連付けで開く
             arg[0] = "open";
         } else {
-            // 2006/03/02[Tozo Tanaka] : add begin
-            String acrobatPath = "";
-            if (ACFrame.getInstance().hasProperty("Acrobat/Path")) {
-                acrobatPath = ACFrame.getInstance().getProperty("Acrobat/Path");
-            }
-            // 2006/03/02[Tozo Tanaka] : add end
-            arg[0] = acrobatPath;
-            if (!new File(acrobatPath).exists()) {
+//            // 2006/03/02[Tozo Tanaka] : add begin
+//            String acrobatPath = "";
+//            if (ACFrame.getInstance().hasProperty("Acrobat/Path")) {
+//                acrobatPath = ACFrame.getInstance().getProperty("Acrobat/Path");
+//            }
+//            // 2006/03/02[Tozo Tanaka] : add end
+//            arg[0] = acrobatPath;
+//            if (!new File(acrobatPath).exists()) {
+        	
+        	arg =  getPrevewArgs(pdfPath);
+        	if (!new File(arg[0]).exists()) {
                 // アクロバットが存在しない
                 ACMessageBox.showExclamation("PDFの設定が正しくありません。"
                         + ACConstants.LINE_SEPARATOR
@@ -1443,6 +1458,65 @@ public class IkenshoCommon {
         }
         Runtime.getRuntime().exec(arg);
     }
+    
+    
+    // 電子証明対応
+    // pdfをプレビューする時のパラメーターを作成する
+    private static String[] getPrevewArgs(String pdfPath) throws Exception {
+    	
+    	// 印字しようとしている帳票が電子証明が必要なものであるかチェック
+    	String singParam = getSignParameter();
+    	
+    	// Adobe Readerのパスを取得
+    	String acrobatPath = "";
+        if (ACFrame.getInstance().hasProperty("Acrobat/Path")) {
+            acrobatPath = ACFrame.getInstance().getProperty("Acrobat/Path");
+        }
+    	
+    	// 電子証明exeのパスを取得
+        String signExePath = "";
+        if (ACFrame.getInstance().hasProperty("SignPDF/Path")) {
+        	signExePath = ACFrame.getInstance().getProperty("SignPDF/Path");
+        }
+        
+        // 電子証明が不要な帳票である、または電子証明機能が有効化されていない場合
+        if (isNullText(singParam) || isNullText(signExePath)) {
+        	// Adobe Readerでのプレビューを実行
+        	return new String[]{acrobatPath, pdfPath};
+        	
+        }
+        
+        // 電子証明実行
+        return new String[]{signExePath, singParam, pdfPath};
+    	
+    }
+    
+    // 電子証明が必要な帳票であるか
+    private static String getSignParameter() throws Exception {
+    	
+    	// 画面タイトルから判断
+    	String title = ACFrame.getInstance().getNowAffair().getTitle();
+    	
+    	if ("医師意見書".equals(title)) {
+    		return "ikensho";
+    	}
+    	if ("主治医意見書".equals(title)) {
+    		return "ikensho";
+    	}
+    	
+    	if ("訪問看護指示書".equals(title)) {
+    		return "sijisho";
+    	}
+    	if ("特別訪問看護指示書".equals(title)) {
+    		return "sijisho";
+    	}
+    	
+    	return null;
+    }
+    
+    
+    
+    
 
     /**
      * プロパティファイルから値を取得します。
@@ -2570,6 +2644,4 @@ public class IkenshoCommon {
     }
 
     // 2006/09/07 [Tozo Tanaka] : add end
-
-
 }

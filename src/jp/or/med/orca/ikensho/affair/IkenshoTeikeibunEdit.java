@@ -3,7 +3,7 @@ package jp.or.med.orca.ikensho.affair;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
+import java.awt.FontMetrics;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -20,7 +20,6 @@ import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.component.table.ACTableColumn;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
-import jp.nichicom.ac.text.ACSQLSafeStringFormat;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -91,6 +90,7 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
     // 2008/01/16 [Masahiko Higuchi] add - end
 
     protected boolean changed = false;
+    private int fontSize;
 
     /**
      * @deprecated このコンストラクタは推奨されません。 IkenshoTeikeibunEdit(String title, int
@@ -128,7 +128,7 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
             input.applySource();
             newRow.setData(whereFieldName, new Integer(getKubun()));
             rows.addData(newRow);
-
+            
             table.revalidate();
             // table.getTable().revalidate();
         } catch (ParseException ex) {
@@ -189,7 +189,10 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
                 .setColumnModel(new VRTableColumnModel(
                         new ACTableColumn[] { new ACTableColumn(0, 450,
                                 getTitle()), }));
-
+        
+        FontMetrics fo =  table.getFontMetrics(table.getFont());
+		fontSize = fo.getAscent();
+        table.setRowHeight(fontSize + 6);
         model = new ACTableModelAdapter(new VRArrayList(),
                 new String[] { dataFieldName });
         table.setModel(model);
@@ -542,7 +545,19 @@ public class IkenshoTeikeibunEdit extends IkenshoDialog {
      */
     private void init() {
         // ウィンドウのサイズ
-        setSize(new Dimension(660, 400));
+    	ACFrame frame = ACFrame.getInstance();
+    	if (frame.isSmall()){
+    		 setSize(new Dimension(660, 400));
+    	}
+    	else if (frame.isMiddle()){
+    		setSize(new Dimension(800,540));
+    	}
+    	else if (frame.isLarge()){
+    		setSize(new Dimension(1024,680));
+    	}
+    	else {
+    		setSize(new Dimension(1150,820));
+    	}
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();

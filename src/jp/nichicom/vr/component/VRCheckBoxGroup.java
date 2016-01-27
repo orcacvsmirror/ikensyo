@@ -2,6 +2,7 @@
 package jp.nichicom.vr.component;
 
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.text.ParseException;

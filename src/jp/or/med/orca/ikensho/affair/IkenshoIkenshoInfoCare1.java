@@ -371,6 +371,7 @@ public class IkenshoIkenshoInfoCare1
     care1OtherName.setPreferredSize(new Dimension(210, 19));
     care1OtherName.setIMEMode(InputSubset.KANJI);
     care1OtherName.setMaxLength(15);
+    care1OtherName.setColumns(15);
     care1OtherName.setBindPath("BYOUTAITA_NM");
     care1OtherTaisyo.setEnabled(false);
     care1OtherTaisyo.setIMEMode(InputSubset.KANJI);

@@ -205,7 +205,11 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         insurerContainer.setText("Λ—³(•Ϋ―Ò)");
         insurerContainer.setLayout(new BorderLayout());
         insurerContainer.add(insurer, null);
-        insurer.setPreferredSize(new Dimension(250, 20));
+        // 0000783 ƒTƒCƒY”χ’²®
+//        insurer.setPreferredSize(new Dimension(250, 20));
+//        insurer.setColumns(28);
+        insurer.setPreferredSize(new Dimension(180, 20));
+      	insurer.setColumns(20);
         insurer.setEditable(false);
         insurer.setBindPath("INSURER_NM");
 
@@ -213,7 +217,10 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         doctorContainer.setText("γt–Ό");
         doctorContainer.setLayout(new BorderLayout());
         doctorContainer.add(doctor, null);
-        doctor.setPreferredSize(new Dimension(200, 20));
+        // 0000783 ƒTƒCƒY”χ’²®
+//        doctor.setPreferredSize(new Dimension(200, 20));
+//        doctor.setColumns(15);
+        doctor.setColumns(8);
         doctor.setEditable(false);
         doctor.setBindPath("DR_NM");
 
@@ -232,6 +239,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         formatKbnIshiContainer.setText("Σ©‘‹ζ•ª");
         formatKbnIshiContainer.setLayout(new BorderLayout());
         formatKbnIshiContainer.add(formatKbnIshi, null);
+        formatKbnIshi.setColumns(6);
         formatKbnIshi.setEditable(false);
         formatKbnIshi.addItem(IKN_NEW);
         formatKbnIshi.addItem(IKN_ISHI);
@@ -281,7 +289,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         // υπE‘ΞΫϊΤE“ϊ•tΑ‹
         taisyoClear.setText("“ϊ•tΑ‹(E)");
         taisyoClear.setMnemonic('E');
-        taisyoClear.setPreferredSize(new Dimension(110, 22));
+//        taisyoClear.setPreferredSize(new Dimension(110, 22));
 
         // ‰Ίƒ{ƒ^ƒ“
         btnGrp.setLayout(new VRLayout());
@@ -317,6 +325,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         taisyoCancelMenu.setMnemonic(taisyoCancel.getMnemonic());
         taisyoCancelMenu.setText(taisyoCancel.getText());
         taisyoCancelMenu.setToolTipText(taisyoCancel.getToolTipText());
+
     }
 
     public void initAffair(ACAffairInfo affair) throws Exception {
@@ -1058,26 +1067,46 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 
         // ColumnModel‚Μ¶¬
         table.setColumnModel(new VRTableColumnModel(new ACTableColumn[] {
-                new ACTableColumn(7, 22, "@",
+//                new ACTableColumn(7, 22, "@",
+//                        new IkenshoCheckBoxTableCellRenderer(),
+//                        outputCheckEditor),
+//                new ACTableColumn(8, 35, "ζΑ", IkenshoConstants.FORMAT_CANCEL,
+//                        tableCellRenderer, null),
+//                new ACTableColumn(0, 150, "γt–Ό", tableCellRenderer, null),
+//                new ACTableColumn(1, 150, "³Ò–Ό", tableCellRenderer, null),
+//                new ACTableColumn(2, 32, "«•Κ", SwingConstants.CENTER,
+//                        IkenshoConstants.FORMAT_SEX, tableCellRenderer, null),
+//                new ACTableColumn(3, 32, "”N—ξ", SwingConstants.RIGHT,
+//                        IkenshoConstants.FORMAT_NOW_AGE, tableCellRenderer,
+//                        null),
+//                // [ID:0000515] [Masahiko Higuchi] replace begin 2009”N“x‘Ξ‰F—v–] γtγ©‘‚Μ’ •[σC³
+//                new ACTableColumn(4, 160, "”ν•Ϋ―Ò”Τ†^σ‹‹Ò”Τ†", tableCellRenderer,
+//                        null),
+//                // [ID:0000515] [Masahiko Higuchi] replace begin 2009”N“x‘Ξ‰F—v–] γtγ©‘‚Μ’ •[σC³
+//                new ACTableColumn(5, 120, "μ¬Λ—“ϊ",
+//                        IkenshoConstants.FORMAT_ERA_YMD, tableCellRenderer,
+//                        null),
+//                new ACTableColumn(6, 120, "Σ©‘‹L“ό“ϊ",
+//                        IkenshoConstants.FORMAT_ERA_YMD, tableCellRenderer,
+//                        null) }));
+                new ACTableColumn(7, 30, "@",
                         new IkenshoCheckBoxTableCellRenderer(),
                         outputCheckEditor),
-                new ACTableColumn(8, 35, "ζΑ", IkenshoConstants.FORMAT_CANCEL,
+                new ACTableColumn(8, 60, "ζΑ", IkenshoConstants.FORMAT_CANCEL,
                         tableCellRenderer, null),
-                new ACTableColumn(0, 150, "γt–Ό", tableCellRenderer, null),
-                new ACTableColumn(1, 150, "³Ò–Ό", tableCellRenderer, null),
-                new ACTableColumn(2, 32, "«•Κ", SwingConstants.CENTER,
+                new ACTableColumn(0, 180, "γt–Ό", tableCellRenderer, null),
+                new ACTableColumn(1, 180, "³Ò–Ό", tableCellRenderer, null),
+                new ACTableColumn(2, 60, "«•Κ", SwingConstants.CENTER,
                         IkenshoConstants.FORMAT_SEX, tableCellRenderer, null),
-                new ACTableColumn(3, 32, "”N—ξ", SwingConstants.RIGHT,
+                new ACTableColumn(3, 60, "”N—ξ", SwingConstants.RIGHT,
                         IkenshoConstants.FORMAT_NOW_AGE, tableCellRenderer,
                         null),
-                // [ID:0000515] [Masahiko Higuchi] replace begin 2009”N“x‘Ξ‰F—v–] γtγ©‘‚Μ’ •[σC³
-                new ACTableColumn(4, 160, "”ν•Ϋ―Ò”Τ†^σ‹‹Ò”Τ†", tableCellRenderer,
+                new ACTableColumn(4, 320, "”ν•Ϋ―Ò”Τ†^σ‹‹Ò”Τ†", tableCellRenderer,
                         null),
-                // [ID:0000515] [Masahiko Higuchi] replace begin 2009”N“x‘Ξ‰F—v–] γtγ©‘‚Μ’ •[σC³
-                new ACTableColumn(5, 120, "μ¬Λ—“ϊ",
+                new ACTableColumn(5, 220, "μ¬Λ—“ϊ",
                         IkenshoConstants.FORMAT_ERA_YMD, tableCellRenderer,
                         null),
-                new ACTableColumn(6, 120, "Σ©‘‹L“ό“ϊ",
+                new ACTableColumn(6, 220, "Σ©‘‹L“ό“ϊ",
                         IkenshoConstants.FORMAT_ERA_YMD, tableCellRenderer,
                         null) }));
         //[ID:0000515][Tozo TANAKA] 2009/09/17 add begin y2009”N“x‘Ξ‰Fε΅γΣ©‘zs’¬‘Ί“Ζ©€–Ϊ‚Μσ‚Ι‘Ξ‰
@@ -3083,18 +3112,6 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 		 VRCSVFile csv = new VRCSVFile(file.getPath()); // CSV¶¬
 		 iwf.setVisible(true); // ƒvƒƒOƒƒXƒo[•\¦
 
-//		// debug begin TODO ν—\’θ
-//		// CSVo—Ν—p‚Μƒf[ƒ^‚πDB‚©‚ηζ“Ύ‚·‚ι
-//		VRArrayList dataDB = TestPrintClass.makeDataVR("");
-//		// CSVo—Ν—(‰Ί€”υ)
-//		int max = dataDB.getDataSize();
-//		iwf.setMaxCount(max); // ƒvƒƒOƒƒXƒo[Ε‘ε’l
-//		StringBuffer sbBuf = new StringBuffer();
-//		String softName = IkenshoCommon.getProperity("Version/SoftName");
-//		VRCSVFile csv = new VRCSVFile(file.getPath()); // CSV¶¬
-//		iwf.setVisible(true); // ƒvƒƒOƒƒXƒo[•\¦
-//		// debug end
-
         // 2009/01/21[Tozo Tanaka] : add begin
         // –ςά7‚©–ςά8‚ª“ό—Ν‚³‚κ‚Δ‚Ά‚ικ‡
         boolean isMedicineViewCountOver6 = getMedicineViewCount() > 6;
@@ -3112,19 +3129,17 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			 if (idx < 0) {
 				 continue;
 			 }
-//			// debug begin TODO ν—\’θ
-//			VRMap tmp = (VRMap) dataDB.getData(i);
-//			String insuredNo = convertInsuredNo(ACCastUtilities.toString(tmp
-//					.getData("INSURED_NO")));
-//			int idx = i;
-//			// debug end
+			 
 			VRMap map = (VRMap) dataDB.getData(idx);
 
 			// s¶¬
 			ArrayList row = new ArrayList();
-			// 001:FormatVersion
-			row.add("I1.0");
-			// 002:SoftName
+			
+			// ----- ƒwƒbƒ_[ξ•ρ
+			
+			// 001:ƒo[ƒWƒ‡ƒ“
+			row.add("I1.2");
+			// 002:ƒ\ƒtƒg–Ό
 			row.add(softName);
 			// 003:ƒ^ƒCƒ€ƒXƒ^ƒ“ƒv
 			row.add(insuredNo + formatDDHHMMSS(map.getData("FD_TIMESTAMP")));
@@ -3150,7 +3165,10 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			row.add(getDataString(map, "KIND"));
 			// 014:‹L“ό“ϊ
 			row.add(formatYYYYMMDD(map.getData("KINYU_DT")));
-
+			
+			
+			// ----- •K{€–Ϊ
+			
 			// 015:³Ò]–Ό‚©‚Θ
 			row.add(getDataString(map, "PATIENT_KN"));
 			// 016:³Ò]–Ό
@@ -3175,6 +3193,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			}
 			sbBuf.append(getDataString(map, "TEL2"));
 			row.add(sbBuf.toString());
+			
 			// 023:γt–Ό
 			row.add(getDataString(map, "DR_NM"));
 			// 024:γ—Γ‹@Φ–Ό
@@ -3193,6 +3212,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			}
 			sbBuf.append(getDataString(map, "MI_TEL2"));
 			row.add(sbBuf.toString());
+			
 			// 028:γ—Γ‹@Φ]FAX”Τ†
 			sbBuf = new StringBuffer();
 			sbBuf.append(getDataString(map, "MI_FAX1"));
@@ -3203,6 +3223,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			}
 			sbBuf.append(getDataString(map, "MI_FAX2"));
 			row.add(sbBuf.toString());
+			
 			// 029:γt‚Μ“―Σ
 			row.add(getDataString(map, "DR_CONSENT"));
 			// 030:ΕIf@“ϊ
@@ -3230,7 +3251,11 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			row.add(sbBuf.toString());
 			// 034:‚»‚Μ‘Ό‚Μ‘Ό‰Θ–Ό
 			row.add(getDataString(map, "TAKA_OTHER"));
-
+			
+			
+			
+			// ----- •a‚ΙΦ‚·‚ιΣ©
+			
 			// 035:f’f–Ό1
 			row.add(getDataString(map, "SINDAN_NM1"));
 			// 036:”­Η”N“ϊ1
@@ -3242,6 +3267,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			}
 			// 037:o¶1
 			row.add(temp);
+			
 			// 038:f’f–Ό2
 			row.add(getDataString(map, "SINDAN_NM2"));
 			// 039:”­Η”N“ϊ2
@@ -3253,6 +3279,7 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			}
 			// 040:o¶2
 			row.add(temp);
+			
 			// 041:f’f–Ό3
 			row.add(getDataString(map, "SINDAN_NM3"));
 			// 042:”­Η”N“ϊ3
@@ -3264,110 +3291,28 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			}
 			// 043:o¶3
 			row.add(temp);
+			
 			// 044:“ό‰@—ο1Jn
 			row.add(formatUnknownDateCustom(map.getData("NYUIN_DT_STA1")));
 			// 045:“ό‰@—ο1I—Ή
 			row.add(formatUnknownDateCustom(map.getData("NYUIN_DT_END1")));
 			// 046:“ό‰@—ο1•a–Ό
 			row.add(getDataString(map, "NYUIN_NM1"));
+			
 			// 047:“ό‰@—ο2Jn
 			row.add(formatUnknownDateCustom(map.getData("NYUIN_DT_STA2")));
 			// 048:“ό‰@—ο2I—Ή
 			row.add(formatUnknownDateCustom(map.getData("NYUIN_DT_END2")));
 			// 049:“ό‰@—ο2•a–Ό
 			row.add(getDataString(map, "NYUIN_NM2"));
+			
 			// 050:Ησ‚Ζ‚µ‚Δ‚Μΐ’θ«
 			row.add(getDataString(map, "SHJ_ANT"));
 			// 051:Ησ•sΐ’θ‚Μ‹ο‘Μ“Iσ‹µ
 			row.add(getDataString(map, "INSECURE_CONDITION"));
 			// 052:Ύ•a‚Μo‰ί]΅—Γ“ΰ—e]΅—Γσ‘Τ
 			sbBuf = new StringBuffer();
-            
-            // [ID:0000438][Tozo TANAKA] 2009/06/02 replace begin yε΅γγ©‘Eγtγ©‘z–ςά–ΌƒeƒLƒXƒg‚Μ’Η‰Α
-//			if (getDataString(map, "MT_STS").length() > 0) {
-//				sbBuf.append((getDataString(map, "MT_STS").replaceAll("\r\n",
-//						VT)).replaceAll("\n", VT)); // 0x0B
-//				sbBuf.append("");
-//			}
-//			if ((getDataString(map, "MEDICINE1").length()
-//					+ getDataString(map, "DOSAGE1").length()
-//					+ getDataString(map, "UNIT1").length()
-//					+ getDataString(map, "USAGE1").length()
-//					+ getDataString(map, "MEDICINE2").length()
-//					+ getDataString(map, "DOSAGE2").length()
-//					+ getDataString(map, "UNIT2").length() + getDataString(map,
-//					"USAGE2").length()) > 0) {
-//				sbBuf.append(getDataString(map, "MEDICINE1") + " ");
-//				sbBuf.append(getDataString(map, "DOSAGE1"));
-//				sbBuf.append(getDataString(map, "UNIT1") + " ");
-//				sbBuf.append(getDataString(map, "USAGE1") + " / ");
-//				sbBuf.append(getDataString(map, "MEDICINE2") + " ");
-//				sbBuf.append(getDataString(map, "DOSAGE2"));
-//				sbBuf.append(getDataString(map, "UNIT2") + " ");
-//				sbBuf.append(getDataString(map, "USAGE2") + "");
-//			}
-//			if ((getDataString(map, "MEDICINE3").length()
-//					+ getDataString(map, "DOSAGE3").length()
-//					+ getDataString(map, "UNIT3").length()
-//					+ getDataString(map, "USAGE3").length()
-//					+ getDataString(map, "MEDICINE4").length()
-//					+ getDataString(map, "DOSAGE4").length()
-//					+ getDataString(map, "UNIT4").length() + getDataString(map,
-//					"USAGE4").length()) > 0) {
-//				sbBuf.append(getDataString(map, "MEDICINE3") + " ");
-//				sbBuf.append(getDataString(map, "DOSAGE3"));
-//				sbBuf.append(getDataString(map, "UNIT3") + " ");
-//				sbBuf.append(getDataString(map, "USAGE3") + " / ");
-//				sbBuf.append(getDataString(map, "MEDICINE4") + " ");
-//				sbBuf.append(getDataString(map, "DOSAGE4"));
-//				sbBuf.append(getDataString(map, "UNIT4") + " ");
-//				sbBuf.append(getDataString(map, "USAGE4") + "");
-//			}
-//			if ((getDataString(map, "MEDICINE5").length()
-//					+ getDataString(map, "DOSAGE5").length()
-//					+ getDataString(map, "UNIT5").length()
-//					+ getDataString(map, "USAGE5").length()
-//					+ getDataString(map, "MEDICINE6").length()
-//					+ getDataString(map, "DOSAGE6").length()
-//					+ getDataString(map, "UNIT6").length() + getDataString(map,
-//					"USAGE6").length()) > 0) {
-//				sbBuf.append(getDataString(map, "MEDICINE5") + " ");
-//				sbBuf.append(getDataString(map, "DOSAGE5"));
-//				sbBuf.append(getDataString(map, "UNIT5") + " ");
-//				sbBuf.append(getDataString(map, "USAGE5") + " / ");
-//				sbBuf.append(getDataString(map, "MEDICINE6") + " ");
-//				sbBuf.append(getDataString(map, "DOSAGE6"));
-//				sbBuf.append(getDataString(map, "UNIT6") + " ");
-//				sbBuf.append(getDataString(map, "USAGE6") + "");
-//			}
-//            // 2009/01/09[Tozo Tanaka] : add begin
-//            if (isMedicineViewCountOver6) {
-//                // –ςά7‚©–ςά8‚ª“ό—Ν‚³‚κ‚Δ‚Ά‚ικ‡
-//                if ((getDataString(map, "MEDICINE7").length()
-//                        + getDataString(map, "DOSAGE7").length()
-//                        + getDataString(map, "UNIT7").length()
-//                        + getDataString(map, "USAGE7").length()
-//                        + getDataString(map, "MEDICINE8").length()
-//                        + getDataString(map, "DOSAGE8").length()
-//                        + getDataString(map, "UNIT8").length() + getDataString(
-//                        map, "USAGE8").length()) > 0) {
-//                    sbBuf.append(getDataString(map, "MEDICINE7") + " ");
-//                    sbBuf.append(getDataString(map, "DOSAGE7"));
-//                    sbBuf.append(getDataString(map, "UNIT7") + " ");
-//                    sbBuf.append(getDataString(map, "USAGE7") + " / ");
-//                    sbBuf.append(getDataString(map, "MEDICINE8") + " ");
-//                    sbBuf.append(getDataString(map, "DOSAGE8"));
-//                    sbBuf.append(getDataString(map, "UNIT8") + " ");
-//                    sbBuf.append(getDataString(map, "USAGE8") + "");
-//                }
-//            }
-//            // 2009/01/09[Tozo Tanaka] : add end
-//			if (sbBuf.length() > 0) {
-//				sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // Εγ‚Μ0x0B‚πν
-//			}
-//			row.add(sbBuf.toString());
-            
-
+			
             //•a‚Μo‰ί{–ςά‚ΜΕ‘εo—Ν•¶”
             final int SICK_PROGRESS_FIELD_LIMIT = 560;
             int totalCharCount = 0;            
@@ -3447,106 +3392,30 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
                     break;
                 }
             }
-            // [ID:0000438][Tozo TANAKA] 2009/06/02 replace end yε΅γγ©‘Eγtγ©‘z–ςά–ΌƒeƒLƒXƒg‚Μ’Η‰Α
+
             if (sbBuf.length() > 0) {
                 sbBuf.delete(sbBuf.length() - 1, sbBuf.length()); // Εγ‚Μ0x0B‚πν
             }
             row.add(sbBuf.toString());
+			
             
             
-			// 053:’u“ΰ—e
-			sbBuf = new StringBuffer();
-			sbBuf.append(getDataString(map, "TNT_KNR"));
-			sbBuf.append(getDataString(map, "CHU_JOU_EIYOU"));
-			sbBuf.append(getDataString(map, "TOUSEKI"));
-			sbBuf.append(getDataString(map, "JINKOU_KOUMON"));
-			sbBuf.append(getDataString(map, "OX_RYO"));
-			sbBuf.append(getDataString(map, "JINKOU_KOKYU"));
-			sbBuf.append(getDataString(map, "KKN_SEK_SHOCHI"));
-			sbBuf.append(getDataString(map, "TOUTU"));
-			sbBuf.append(getDataString(map, "KEKN_EIYOU"));
-			sbBuf.append(getDataString(map, "KYUIN_SHOCHI"));
-			row.add(sbBuf.toString());
-			// 054:’u“ΰ—e]‹zψ’u‰ρ”
-			row.add(getDataString(map, "KYUIN_SHOCHI_CNT"));
-			// 055:’u“ΰ—e]‹zψ’uϊ
-			row.add(getDataString(map, "KYUIN_SHOCHI_JIKI"));
-			// 056:“Α•Κ‚Θ‘Ξ‰
-			row.add(getDataString(map, "MONITOR")
-					+ getDataString(map, "JOKUSOU_SHOCHI"));
-			// 057:Έ‹Φ‚Φ‚Μ‘Ξ‰
-			row.add(getDataString(map, "CATHETER"));
-
-			// 058:s“®γ‚ΜαQ‚Μ—L–³]—L–³
-			sbBuf = new StringBuffer();
-			sbBuf.append(getDataString(map, "KS_CHUYA"));
-			sbBuf.append(getDataString(map, "KS_BOUGEN"));
-			sbBuf.append(getDataString(map, "KS_BOUKOU"));
-			sbBuf.append(getDataString(map, "KS_TEIKOU"));
-			sbBuf.append(getDataString(map, "KS_HAIKAI"));
-			sbBuf.append(getDataString(map, "KS_FUSIMATU"));
-			sbBuf.append(getDataString(map, "KS_FUKETU"));
-			sbBuf.append(getDataString(map, "KS_ISHOKU"));
-			sbBuf.append(getDataString(map, "KS_SEITEKI_MONDAI"));
-			sbBuf.append(getDataString(map, "KS_OTHER"));
-			if ("0000000000".equals(sbBuf.toString())) {
-				row.add("2");
-			} else {
-				row.add("1");
-			}
-			// 059:s“®γ‚ΜαQ‚Μ—L–³]ΪΧ
-			row.add(sbBuf.toString());
-			// 060:s“®γ‚ΜαQ‚Μ—L–³]‚»‚Μ‘Ό“ΰ—e
-			row.add(getDataString(map, "KS_OTHER_NM"));
-			// 061:Έ_E_oΗσ‚Μ—L–³]—L–³
-			row.add(getDataString(map, "SEISIN"));
-			// 062:Έ_E_oΗσ‚Μ—L–³]Ησ–Ό
-			row.add(getDataString(map, "SEISIN_NM"));
-			// 063:Έ_E_oΗσ‚Μ—L–³]ΪΧ
-			sbBuf = new StringBuffer();
-			sbBuf.append(getDataString(map, "SS_SENMO"));
-			sbBuf.append(getDataString(map, "SS_KEMIN_KEIKO"));
-			sbBuf.append(getDataString(map, "SS_GNS_GNC"));
-			sbBuf.append(getDataString(map, "SS_MOUSOU"));
-			sbBuf.append(getDataString(map, "SS_SHIKKEN_TOSHIKI"));
-			sbBuf.append(getDataString(map, "SS_SHITUNIN"));
-			sbBuf.append(getDataString(map, "SS_SHIKKO"));
-			sbBuf.append(getDataString(map, "SS_NINCHI_SHOGAI"));
-			sbBuf.append(getDataString(map, "SS_KIOKU_SHOGAI"));
-			sbBuf.append(getDataString(map, "SS_CHUI_SHOGAI"));
-			sbBuf.append(getDataString(map, "SS_SUIKOU_KINO_SHOGAI"));
-			sbBuf.append(getDataString(map, "SS_SHAKAITEKI_KODO_SHOGAI"));
-			sbBuf.append(getDataString(map, "SS_OTHER"));
-			row.add(sbBuf.toString());
-			// 064:Έ_E_oΗσ‚Μ—L–³]‹L‰―αQi’ZϊE’·ϊj
-			row.add(getDataString(map, "SS_KIOKU_SHOGAI_TANKI")
-					+ getDataString(map, "SS_KIOKU_SHOGAI_CHOUKI"));
-			// 065:Έ_E_oΗσ‚Μ—L–³]‚»‚Μ‘Ό“ΰ—e
-			row.add(getDataString(map, "SS_OTHER_NM"));
-			// 066:Έ_E_oΗσ‚Μ—L–³]κ–εγσf—L–³
-			row.add(getDataString(map, "SENMONI"));
-			// 067:Έ_E_oΗσ‚Μ—L–³]κ–εγσf‰Θ–Ό
-			row.add(getDataString(map, "SENMONI_NM"));
-
-			// 068:‚Δ‚ρ‚©‚ρ]—L–³
-			row.add(getDataString(map, "TENKAN"));
-			// 069:‚Δ‚ρ‚©‚ρ]•p“x
-			row.add(getDataString(map, "TENKAN_HINDO"));
-			// 070:—‚«r
-			row.add(getDataString(map, "KIKIUDE"));
-			// 071:g’·
-			row.add(getDataString(map, "HEIGHT"));
-			// 072:‘Μd
-			row.add(getDataString(map, "WEIGHT"));
-			// 073:‰ί‹6ƒ–‚Μ‘Μd‚Μ•Ο‰»
-			row.add(getDataString(map, "WEIGHT_CHANGE"));
-			// 074:l‡‘Ή
-			row.add(getDataString(map, "SISIKESSON"));
-			// 075:l‡‘Ή•”Κ
-			row.add(getDataString(map, "SISIKESSON_BUI"));
-			// 076:l‡‘Ή’φ“x
-			row.add(getDataString(map, "SISIKESSON_TEIDO"));
-			// 077:–ƒαƒ
+            // ----- Sg‚Μσ‘Τ‚ΙΦ‚·‚ιΣ©
+            
+			// 053:—‚«r
+            row.add(getDataString(map, "KIKIUDE"));
+			// 054:g’·
+            row.add(getDataString(map, "HEIGHT"));
+			// 055:‘Μd
+            row.add(getDataString(map, "WEIGHT"));
+			// 056:‰ί‹6ƒ–‚Μ‘Μd‚Μ•Ο‰»
+            row.add(getDataString(map, "WEIGHT_CHANGE"));
+			// 057:l‡‘Ή
+            row.add(getDataString(map, "SISIKESSON"));
+			// 058:l‡‘Ή•”Κ
+            row.add(getDataString(map, "SISIKESSON_BUI"));
+            
+			// 059:–ƒαƒ
 			sbBuf = new StringBuffer();
 			sbBuf.append(getDataString(map, "MAHI_LEFTARM"));
 			sbBuf.append(getDataString(map, "MAHI_LOWERLEFTLIMB"));
@@ -3558,35 +3427,39 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			} else {
 				row.add("1");
 			}
-			// 078:–ƒαƒ]¶γ
-			row.add(getDataString(map, "MAHI_LEFTARM"));
-			// 079:–ƒαƒ]¶γ]’φ“x
-			row.add(getDataString(map, "MAHI_LEFTARM_TEIDO"));
-			// 080:–ƒαƒ]¶‰Ί
-			row.add(getDataString(map, "MAHI_LOWERLEFTLIMB"));
-			// 081:–ƒαƒ]¶‰Ί]’φ“x
-			row.add(getDataString(map, "MAHI_LOWERLEFTLIMB_TEIDO"));
-			// 082:–ƒαƒ]‰Eγ
+			// 060:–ƒαƒ]‰Eγ
 			row.add(getDataString(map, "MAHI_RIGHTARM"));
-			// 083:–ƒαƒ]‰Eγ]’φ“x
+			// 061:–ƒαƒ]‰Eγ]’φ“x
 			row.add(getDataString(map, "MAHI_RIGHTARM_TEIDO"));
-			// 084:–ƒαƒ]‰E‰Ί
+			// 062:–ƒαƒ]¶γ
+			row.add(getDataString(map, "MAHI_LEFTARM"));
+			// 063:–ƒαƒ]¶γ]’φ“x
+			row.add(getDataString(map, "MAHI_LEFTARM_TEIDO"));
+			// 064:–ƒαƒ]‰E‰Ί
 			row.add(getDataString(map, "MAHI_LOWERRIGHTLIMB"));
-			// 085:–ƒαƒ]‰E‰Ί]’φ“x
+			// 065:–ƒαƒ]‰E‰Ί]’φ“x
 			row.add(getDataString(map, "MAHI_LOWERRIGHTLIMB_TEIDO"));
-			// 086:–ƒαƒ]‚»‚Μ‘Ό
+			// 066:–ƒαƒ]¶‰Ί
+			row.add(getDataString(map, "MAHI_LOWERLEFTLIMB"));
+			// 067:–ƒαƒ]¶‰Ί]’φ“x
+			row.add(getDataString(map, "MAHI_LOWERLEFTLIMB_TEIDO"));
+			// 068:–ƒαƒ]‚»‚Μ‘Ό
 			row.add(getDataString(map, "MAHI_ETC"));
-			// 087:–ƒαƒ]‚»‚Μ‘Ό]•”Κ
+			// 069:–ƒαƒ]‚»‚Μ‘Ό]•”Κ
 			row.add(getDataString(map, "MAHI_ETC_BUI"));
-			// 088:–ƒαƒ]‚»‚Μ‘Ό]’φ“x
+			// 070:–ƒαƒ]‚»‚Μ‘Ό]’φ“x
 			row.add(getDataString(map, "MAHI_ETC_TEIDO"));
-			// 089:‹Ψ—Ν‚Μ’α‰Ί
+			
+			// 071:‹Ψ—Ν‚Μ’α‰Ί
 			row.add(getDataString(map, "KINRYOKU_TEIKA"));
-			// 090:‹Ψ—Ν‚Μ’α‰Ί]•”Κ
+			// 072:‹Ψ—Ν‚Μ’α‰Ί]•”Κ
 			row.add(getDataString(map, "KINRYOKU_TEIKA_BUI"));
-			// 091:‹Ψ—Ν‚Μ’α‰Ί]’φ“x
+			// 073:‹Ψ—Ν‚Μ’α‰Ί]’φ“x
 			row.add(getDataString(map, "KINRYOKU_TEIKA_TEIDO"));
-			// 092:Φί‚ΜSk
+			// 074:‹Ψ—Ν‚Μ’α‰Ί]‰ί‹6ƒ–‚ΜΗσ‚Μ•Ο“®
+			row.add(getDataString(map, "KINRYOKU_TEIKA_CHANGE"));
+			
+			// 075:Φί‚ΜSk
 			String tempKata = getDataString(map, "KATA_KOUSHU_MIGI")
 					+ getDataString(map, "KATA_KOUSHU_HIDARI");
 			String tempMata = getDataString(map, "MATA_KOUSHU_MIGI")
@@ -3602,73 +3475,84 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			} else {
 				row.add("1");
 			}
-			// 093:¨ΦίSk
+			
+			// 076:¨ΦίSk
 			if ("00".equals(tempKata)) {
 				row.add("0");
 			} else {
 				row.add("1");
 			}
-			// 094:¨ΦίSk‰E
+			// 077:¨ΦίSk]‰E
 			row.add(getDataString(map, "KATA_KOUSHU_MIGI"));
-			// 095:¨ΦίSk‰E’φ“x
+			// 078:¨ΦίSk]‰E’φ“x
 			row.add(getDataString(map, "KATA_KOUSHU_MIGI_TEIDO"));
-			// 096:¨ΦίSk¶
+			// 079:¨ΦίSk]¶
 			row.add(getDataString(map, "KATA_KOUSHU_HIDARI"));
-			// 097:¨ΦίSk¶’φ“x
+			// 080:¨ΦίSk]¶’φ“x
 			row.add(getDataString(map, "KATA_KOUSHU_HIDARI_TEIDO"));
-			// 098:ÒΦίSk
-			if ("00".equals(tempMata)) {
-				row.add("0");
-			} else {
-				row.add("1");
-			}
-			// 099:ÒΦίSk‰E
-			row.add(getDataString(map, "MATA_KOUSHU_MIGI"));
-			// 100:ÒΦίSk‰E’φ“x
-			row.add(getDataString(map, "MATA_KOUSHU_MIGI_TEIDO"));
-			// 101:ÒΦίSk¶
-			row.add(getDataString(map, "MATA_KOUSHU_HIDARI"));
-			// 102:ÒΦίSk¶’φ“x
-			row.add(getDataString(map, "MATA_KOUSHU_HIDARI_TEIDO"));
-			// 103:•IΦίSk
+			
+			// 081:•IΦίSk
 			if ("00".equals(tempHiji)) {
 				row.add("0");
 			} else {
 				row.add("1");
 			}
-			// 104:•IΦίSk‰E
+			// 082:•IΦίSk]‰E
 			row.add(getDataString(map, "HIJI_KOUSHU_MIGI"));
-			// 105:•IΦίSk‰E’φ“x
+			// 083:•IΦίSk]‰E’φ“x
 			row.add(getDataString(map, "HIJI_KOUSHU_MIGI_TEIDO"));
-			// 106:•IΦίSk¶
+			// 084:•IΦίSk]¶
 			row.add(getDataString(map, "HIJI_KOUSHU_HIDARI"));
-			// 107:•IΦίSk¶’φ“x
+			// 085:•IΦίSk]¶’φ“x
 			row.add(getDataString(map, "HIJI_KOUSHU_HIDARI_TEIDO"));
-			// 108:•GΦίSk
+			
+			// 086:ÒΦίSk
+			if ("00".equals(tempMata)) {
+				row.add("0");
+			} else {
+				row.add("1");
+			}
+			// 087:ÒΦίSk]‰E
+			row.add(getDataString(map, "MATA_KOUSHU_MIGI"));
+			// 088:ÒΦίSk]‰E’φ“x
+			row.add(getDataString(map, "MATA_KOUSHU_MIGI_TEIDO"));
+			// 089:ÒΦίSk]¶
+			row.add(getDataString(map, "MATA_KOUSHU_HIDARI"));
+			// 090:ÒΦίSk]¶’φ“x
+			row.add(getDataString(map, "MATA_KOUSHU_HIDARI_TEIDO"));
+			
+			// 091:•GΦίSk
 			if ("00".equals(tempHiza)) {
 				row.add("0");
 			} else {
 				row.add("1");
 			}
-			// 109:•GΦίSk‰E
+			// 092:•GΦίSk]‰E
 			row.add(getDataString(map, "HIZA_KOUSHU_MIGI"));
-			// 110:•GΦίSk‰E’φ“x
+			// 093:•GΦίSk]‰E’φ“x
 			row.add(getDataString(map, "HIZA_KOUSHU_MIGI_TEIDO"));
-			// 111:•GΦίSk¶
+			// 094:•GΦίSk]¶
 			row.add(getDataString(map, "HIZA_KOUSHU_HIDARI"));
-			// 112:•GΦίSk¶’φ“x
+			// 095:•GΦίSk]¶’φ“x
 			row.add(getDataString(map, "HIZA_KOUSHU_HIDARI_TEIDO"));
-			// 113:Φί‚ΜSk‚»‚Μ‘Ό
+			
+			// 096:Φί‚ΜSk]‚»‚Μ‘Ό
 			row.add(getDataString(map, "KOUSHU_ETC"));
-			// 114:Φί‚ΜSk‚»‚Μ‘Ό•”Κ
+			// 097:Φί‚ΜSk]‚»‚Μ‘Ό•”Κ
 			row.add(getDataString(map, "KOUSHU_ETC_BUI"));
-			// 115:Φί‚Μ’Ι‚έ
+			// 098:Φί‚ΜSk]‚»‚Μ‘Ό’φ“x
+			row.add(getDataString(map, "KOUSHU_ETC_BUI_TEIDO"));
+			
+			// 099:Φί‚Μ’Ι‚έ
 			row.add(getDataString(map, "KANSETU_ITAMI"));
-			// 116:Φί‚Μ’Ι‚έ]•”Κ
+			// 100:Φί‚Μ’Ι‚έ]•”Κ
 			row.add(getDataString(map, "KANSETU_ITAMI_BUI"));
-			// 117:Φί‚Μ’Ι‚έ]’φ“x
+			// 101:Φί‚Μ’Ι‚έ]’φ“x
 			row.add(getDataString(map, "KANSETU_ITAMI_TEIDO"));
-			// 118:Έ’²E•sΣ‰^“®
+			// 102:Φί‚Μ’Ι‚έ]‰ί‹6ƒ–‚ΜΗσ‚Μ•Ο“®
+			row.add(getDataString(map, "KANSETU_ITAMI_CHANGE"));
+			
+			// 103:Έ’²E•sΣ‰^“®
 			sbBuf = new StringBuffer();
 			sbBuf.append(getDataString(map, "JOUSI_SICCHOU_MIGI"));
 			sbBuf.append(getDataString(map, "JOUSI_SICCHOU_HIDARI"));
@@ -3681,238 +3565,217 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
 			} else {
 				row.add("1");
 			}
-			// 119:Έ’²E•sΣ‰^“®EγE‰E
+			// 104:Έ’²E•sΣ‰^“®]γ]‰E
 			row.add(getDataString(map, "JOUSI_SICCHOU_MIGI"));
-			// 120:Έ’²E•sΣ‰^“®EγE‰EE’φ“x
+			// 105:Έ’²E•sΣ‰^“®]γ]‰E’φ“x
 			row.add(getDataString(map, "JOUSI_SICCHOU_MIGI_TEIDO"));
-			// 121:Έ’²E•sΣ‰^“®EγE¶
+			// 106:Έ’²E•sΣ‰^“®]γ]¶
 			row.add(getDataString(map, "JOUSI_SICCHOU_HIDARI"));
-			// 122:Έ’²E•sΣ‰^“®EγE¶E’φ“x
+			// 107:Έ’²E•sΣ‰^“®]γ]¶’φ“x
 			row.add(getDataString(map, "JOUSI_SICCHOU_HIDARI_TEIDO"));
-			// 123:Έ’²E•sΣ‰^“®E‘Μ²E‰E
+			// 108:Έ’²E•sΣ‰^“®]‘Μ²
 			row.add(getDataString(map, "TAIKAN_SICCHOU_MIGI"));
-			// 124:Έ’²E•sΣ‰^“®E‘Μ²E‰EE’φ“x
+			// 109:Έ’²E•sΣ‰^“®]‘Μ²]’φ“x
 			row.add(getDataString(map, "TAIKAN_SICCHOU_MIGI_TEIDO"));
-			// 125:Έ’²E•sΣ‰^“®E‘Μ²E¶
-			row.add(getDataString(map, "TAIKAN_SICCHOU_HIDARI"));
-			// 126:Έ’²E•sΣ‰^“®E‘Μ²E¶E’φ“x
-			row.add(getDataString(map, "TAIKAN_SICCHOU_HIDARI_TEIDO"));
-			// 127:Έ’²E•sΣ‰^“®E‰ΊE‰E
+			// 110:Έ’²E•sΣ‰^“®]‰Ί]‰E
 			row.add(getDataString(map, "KASI_SICCHOU_MIGI"));
-			// 128:Έ’²E•sΣ‰^“®E‰ΊE‰EE’φ“x
+			// 111:Έ’²E•sΣ‰^“®]‰Ί]‰E’φ“x
 			row.add(getDataString(map, "KASI_SICCHOU_MIGI_TEIDO"));
-			// 129:Έ’²E•sΣ‰^“®E‰ΊE¶
+			// 112:Έ’²E•sΣ‰^“®]‰Ί]¶
 			row.add(getDataString(map, "KASI_SICCHOU_HIDARI"));
-			// 130:Έ’²E•sΣ‰^“®E‰ΊE¶E’φ“x
+			// 113:Έ’²E•sΣ‰^“®]‰Ί]¶’φ“x
 			row.add(getDataString(map, "KASI_SICCHOU_HIDARI_TEIDO"));
-			// 131:ερα
-			row.add(getDataString(map, "JOKUSOU"));
-			// 132:ερα]•”Κ
-			row.add(getDataString(map, "JOKUSOU_BUI"));
-			// 133:ερα]’φ“x
-			row.add(getDataString(map, "JOKUSOU_TEIDO"));
-			// 134:‚»‚Μ‘Ό‚Μ”η•†Ύ³
-			row.add(getDataString(map, "HIFUSIKKAN"));
-			// 135:‚»‚Μ‘Ό‚Μ”η•†Ύ³]•”Κ
-			row.add(getDataString(map, "HIFUSIKKAN_BUI"));
-			// 136:‚»‚Μ‘Ό‚Μ”η•†Ύ³]’φ“x
-			row.add(getDataString(map, "HIFUSIKKAN_TEIDO"));
-
-			// 137:»έ‚ ‚ι‚©‚ά‚½‚Ν΅γ”­¶‚Μ‚‚Άσ‘Τ‚Ζ‚»‚Μ‘Ξ•ϋj(σ‘Τ)
-			sbBuf = new StringBuffer();
-			sbBuf.append(getDataString(map, "NYOUSIKKIN"));
-			sbBuf.append(getDataString(map, "TENTOU_KOSSETU"));
-			sbBuf.append(getDataString(map, "HAIKAI_KANOUSEI"));
-			sbBuf.append(getDataString(map, "JOKUSOU_KANOUSEI"));
-			sbBuf.append(getDataString(map, "ENGESEIHAIEN"));
-			sbBuf.append(getDataString(map, "CHOUHEISOKU"));
-			sbBuf.append(getDataString(map, "EKIKANKANSEN"));
-			sbBuf.append(getDataString(map, "SINPAIKINOUTEIKA"));
-			sbBuf.append(getDataString(map, "ITAMI"));
-			sbBuf.append(getDataString(map, "DASSUI"));
-			sbBuf.append(getDataString(map, "BYOUTAITA"));
-			row.add(sbBuf.toString());
-			// 138:»έ‚ ‚ι‚©‚ά‚½‚Ν΅γ”­¶‚Μ‚‚Άσ‘Τ‚Ζ‚»‚Μ‘Ξ•ϋj(σ‘Τ)E‚»‚Μ‘Ό“ΰ—e
-			row.add(getDataString(map, "BYOUTAITA_NM"));
-			// 139:»έ‚ ‚ι‚©‚ά‚½‚Ν΅γ”­¶‚Μ‚‚Άσ‘Τ‚Ζ‚»‚Μ‘Ξ•ϋj(‘Ξ•ϋj)
-		    sbBuf = new StringBuffer();
-		    VRList words = new VRArrayList();
-		    poolString(map, words, new String[] { 
-		    		"NYOUSIKKIN_TAISHO_HOUSIN",
-					"TENTOU_KOSSETU_TAISHO_HOUSIN",
-					"HAIKAI_KANOUSEI_TAISHO_HOUSIN",
-					"JOKUSOU_KANOUSEI_TAISHO_HOUSIN",
-					"ENGESEIHAIEN_TAISHO_HOUSIN", 
-					"CHOUHEISOKU_TAISHO_HOUSIN",
-					"EKIKANKANSEN_TAISHO_HOUSIN",
-					"SINPAIKINOUTEIKA_TAISHO_HOUSIN", 
-					"ITAMI_TAISHO_HOUSIN",
-					"DASSUI_TAISHO_HOUSIN", 
-					"BYOUTAITA_TAISHO_HOUSIN" });
-		    
-		    if (words.size() > 0) {
-				// ‘Ξ•ϋj‚π•¶’PΚ‚ΕA‹‚µ‚Δ•\¦‰Β”\‚Θ‚Ζ‚±‚λ‚ά‚ΕB
-				final int MAX_LENGTH = 89;
-
-				int inlineSize = 0;
-				sbBuf = new StringBuffer();
-				int end = words.size() - 1;
-				for (int j = 0; j < end; j++) {
-					String text = ACCastUtilities.toString(words.get(j));
-
-					StringBuffer line = new StringBuffer();
-					line.append(text);
-
-					int wordSize = 0;
-					char c = text.charAt(text.length() - 1);
-					if ((c != 'B') && (c != 'A')) {
-						line.append("A");
-					}
-					wordSize += text.getBytes().length;
-
-					if (inlineSize + wordSize > MAX_LENGTH) {
-						// o—Ν‰Β”\‚Θ‚Ζ‚±‚λ‚ά‚Ε’Η‰Α
-						int jEnd = line.length();
-						for (int k = 0; k < jEnd; k++) {
-							String str = line.substring(k, k + 1);
-							sbBuf.append(str);
-							inlineSize += str.getBytes().length;
-							if (inlineSize > MAX_LENGTH) {
-								// sI—Ήƒ`ƒFƒbƒN
-								break;
-							}
-						}
-						break;
-					}
-					inlineSize += wordSize;
-					sbBuf.append(line.toString());
-				}
-				if (inlineSize <= MAX_LENGTH) {
-					// ––”φ’Η‰Α
-					String text = ACCastUtilities.toString(words.get(end));
-
-					StringBuffer line = new StringBuffer();
-					line.append(text);
-
-					int wordSize = 0;
-					char c = text.charAt(text.length() - 1);
-					if ((c != 'B') && (c != 'A')) {
-						line.append("B");
-					}
-					wordSize += text.getBytes().length;
-
-					if (inlineSize + wordSize > MAX_LENGTH) {
-						// o—Ν‰Β”\‚Θ‚Ζ‚±‚λ‚ά‚Ε’Η‰Α
-						int jEnd = line.length();
-						for (int k = 0; k < jEnd; k++) {
-							String str = line.substring(k, k + 1);
-							sbBuf.append(str);
-							inlineSize += str.getBytes().length;
-							if (inlineSize > MAX_LENGTH) {
-								// sI—Ήƒ`ƒFƒbƒN
-								break;
-							}
-						}
-					} else {
-						sbBuf.append(line.toString());
-					}
-				}
-			}
-			row.add(sbBuf.toString());		    
 			
-			// 140:γw“IΟ“_‚©‚η‚Μ—―Σ–€E³
+			// 114:ερα
+			row.add(getDataString(map, "JOKUSOU"));
+			// 115:ερα]•”Κ
+			row.add(getDataString(map, "JOKUSOU_BUI"));
+			// 116:ερα]’φ“x
+			row.add(getDataString(map, "JOKUSOU_TEIDO"));
+			
+			// 117:‚»‚Μ‘Ό‚Μ”η•†Ύ³
+			row.add(getDataString(map, "HIFUSIKKAN"));
+			// 118:‚»‚Μ‘Ό‚Μ”η•†Ύ³]•”Κ
+			row.add(getDataString(map, "HIFUSIKKAN_BUI"));
+			// 119:‚»‚Μ‘Ό‚Μ”η•†Ύ³]’φ“x
+			row.add(getDataString(map, "HIFUSIKKAN_TEIDO"));
+            
+            
+            // -----s“®‹y‚ΡΈ_“™‚Μσ‘Τ‚ΙΦ‚·‚ιΣ© 
+            
+			// 120:s“®γ‚ΜαQ‚Μ—L–³]—L–³
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "KS_CHUYA")); //’‹–ι‹t“]
+			sbBuf.append(getDataString(map, "KS_BOUGEN")); //–\Ύ
+			sbBuf.append(getDataString(map, "KS_JISYOU")); //©
+			sbBuf.append(getDataString(map, "KS_BOUKOU")); //‘ΌQ
+			sbBuf.append(getDataString(map, "KS_TEIKOU")); //x‰‡‚Φ‚Μ’οR
+			sbBuf.append(getDataString(map, "KS_HAIKAI")); //pj
+			sbBuf.append(getDataString(map, "KS_FUSIMATU")); //λ―‚Μ”F―‚ªΆ“ο
+			sbBuf.append(getDataString(map, "KS_FUKETU")); //•s‰sΧ
+			sbBuf.append(getDataString(map, "KS_ISHOKU")); //ΩH
+			sbBuf.append(getDataString(map, "KS_SEITEKI_MONDAI")); //«“Iν’Es“®
+			sbBuf.append(getDataString(map, "KS_OTHER")); //‚»‚Μ‘Ό
+			if ("00000000000".equals(sbBuf.toString())) {
+				row.add("2");
+			} else {
+				row.add("1");
+			}
+			
+			// 121:s“®γ‚ΜαQ‚Μ—L–³]ΪΧ
+			row.add(sbBuf.toString());
+			// 122:s“®γ‚ΜαQ‚Μ—L–³]‚»‚Μ‘Ό“ΰ—e
+			row.add(getDataString(map, "KS_OTHER_NM"));
+			
+			// 123:“ρ²•]‰ΏFΈ_Ησ•]‰Ώ
+			row.add(getDataStringZeroSpace(map, "SK_NIJIKU_SEISHIN"));
+			// 124:“ρ²•]‰ΏF”\—ΝαQ•]‰Ώ
+			row.add(getDataStringZeroSpace(map, "SK_NIJIKU_NORYOKU"));
+			// 125:“ρ²•]‰ΏF”»’θϊ
+			row.add(formatUnknownDateCustom(map.getData("SK_NIJIKU_DT")));
+			
+			// 126:¶αQ•]‰ΏFH–
+			row.add(getDataStringZeroSpace(map, "SK_SEIKATSU_SHOKUJI"));
+			// 127:¶αQ•]‰ΏF¶ƒƒYƒ€
+			row.add(getDataStringZeroSpace(map, "SK_SEIKATSU_RHYTHM"));
+			// 128:¶αQ•]‰ΏF•Ϋ΄
+			row.add(getDataStringZeroSpace(map, "SK_SEIKATSU_HOSEI"));
+			// 129:¶αQ•]‰ΏF‹ΰ‘KΗ—
+			row.add(getDataStringZeroSpace(map, "SK_SEIKATSU_KINSEN_KANRI"));
+			// 130:¶αQ•]‰ΏF•–ςΗ—
+			row.add(getDataStringZeroSpace(map, "SK_SEIKATSU_HUKUYAKU_KANRI"));
+			// 131:¶αQ•]‰ΏF‘ΞlΦW
+			row.add(getDataStringZeroSpace(map, "SK_SEIKATSU_TAIJIN_KANKEI"));
+			// 132:¶αQ•]‰ΏFΠ‰ο“I“K‰‚π–W‚°‚ιs“®
+			row.add(getDataStringZeroSpace(map, "SK_SEIKATSU_SHAKAI_TEKIOU"));
+			// 133:¶αQ•]‰ΏF”»’fϊ
+			row.add(formatUnknownDateCustom(map.getData("SK_SEIKATSU_DT")));
+			
+			// 134:Έ_E_oΗσ‚Μ—L–³]—L–³
+			row.add(getDataString(map, "SEISIN"));
+			// 135:Έ_E_oΗσ‚Μ—L–³]ΪΧ
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "SS_ISHIKI_SHOGAI")); //Σ―αQ
+			sbBuf.append(getDataString(map, "SS_KIOKU_SHOGAI")); //‹L‰―αQ
+			sbBuf.append(getDataString(map, "SS_CHUI_SHOGAI")); //’ΣαQ
+			sbBuf.append(getDataString(map, "SS_SUIKOU_KINO_SHOGAI")); //‹s‹@”\αQ
+			sbBuf.append(getDataString(map, "SS_SHAKAITEKI_KODO_SHOGAI")); //Π‰ο“Is“®αQ
+			sbBuf.append(getDataString(map, "SS_NINCHI_SHOGAI")); //‚»‚Μ‘Ό‚Μ”F’m‹@”\αQ
+			sbBuf.append(getDataString(map, "SS_KIBUN_SHOGAI")); //‹C•ªαQ(—}‚¤‚Β‹C•ªAyηN/ηNσ‘Τ)
+			sbBuf.append(getDataString(map, "SS_SUIMIN_SHOGAI")); //‡–°αQ
+			sbBuf.append(getDataString(map, "SS_GNS_GNC")); //¶o
+			sbBuf.append(getDataString(map, "SS_MOUSOU")); //–Ο‘z
+			sbBuf.append(getDataString(map, "SS_OTHER")); //‚»‚Μ‘Ό
+			row.add(sbBuf.toString());
+			
+			// 136:Έ_E_oΗσ‚Μ—L–³]‚»‚Μ‘Ό“ΰ—e
+			row.add(getDataString(map, "SS_OTHER_NM"));
+			// 137:Έ_E_oΗσ‚Μ—L–³]κ–εγσf—L–³
+			row.add(getDataString(map, "SENMONI"));
+			// 138:Έ_E_oΗσ‚Μ—L–³]κ–εγσf‰Θ–Ό
+			row.add(getDataString(map, "SENMONI_NM"));
+			
+			// 139:‚Δ‚ρ‚©‚ρ]—L–³
+			row.add(getDataString(map, "TENKAN"));
+			// 140:‚Δ‚ρ‚©‚ρ]•p“x
+			row.add(getDataString(map, "TENKAN_HINDO"));
+            
+            
+            // ----- “Α•Κ‚Θγ—Γ
+            
+			// 141:’u“ΰ—e
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "TNT_KNR")); //“_“H‚ΜΗ—
+			sbBuf.append(getDataString(map, "CHU_JOU_EIYOU")); //’†SΓ–¬‰h—{
+			sbBuf.append(getDataString(map, "TOUSEKI")); //“§Ν
+			sbBuf.append(getDataString(map, "JINKOU_KOUMON")); //ƒXƒg[ƒ}‚Μ’u
+			sbBuf.append(getDataString(map, "OX_RYO")); //_‘f—Γ–@
+			sbBuf.append(getDataString(map, "JINKOU_KOKYU")); //ƒƒXƒsƒ[ƒ^
+			sbBuf.append(getDataString(map, "KKN_SEK_SHOCHI")); //‹CΗΨJ‚Μ’u
+			sbBuf.append(getDataString(map, "TOUTU")); //αu’Ι‚ΜΕμ
+			sbBuf.append(getDataString(map, "KEKN_EIYOU")); //oΗ‰h—{(έ‚λ‚¤)
+			sbBuf.append(getDataString(map, "KYUIN_SHOCHI")); //\α‚‹zψ’u
+			sbBuf.append(getDataString(map, "KANKETSUTEKI_DOUNYOU")); //Τ[“I“±”A
+			row.add(sbBuf.toString());
+			
+			// 142:’u“ΰ—e]‹zψ’u‰ρ”
+			row.add(getDataString(map, "KYUIN_SHOCHI_CNT"));
+			// 143:’u“ΰ—e]‹zψ’uϊ
+			row.add(getDataString(map, "KYUIN_SHOCHI_JIKI"));
+			// 144:“Α•Κ‚Θ‘Ξ‰
+			row.add(getDataString(map, "MONITOR")
+					+ getDataString(map, "JOKUSOU_SHOCHI"));
+			// 145:Έ‹Φ‚Φ‚Μ‘Ξ‰
+			row.add(getDataString(map, "CATHETER"));
+            
+            
+            // ----- ƒT[ƒrƒX——p‚ΙΦ‚·‚ιΣ©
+            
+			// 146:»έA”­¶‚Μ‰Β”\«‚ª‚‚Ά•a‘Τ‚Ζ‚»‚Μ‘Ξ•ϋj
+			sbBuf = new StringBuffer();
+			sbBuf.append(getDataString(map, "NYOUSIKKIN")); //”AΈ‹Φ
+			sbBuf.append(getDataString(map, "TENTOU_KOSSETU")); //“]“|Eά
+			sbBuf.append(getDataString(map, "HAIKAI_KANOUSEI")); //pj
+			sbBuf.append(getDataString(map, "JOKUSOU_KANOUSEI")); //ερα
+			sbBuf.append(getDataString(map, "ENGESEIHAIEN")); //‹‰Ί«”x‰
+			sbBuf.append(getDataString(map, "CHOUHEISOKU")); //’°•ΒΗ
+			sbBuf.append(getDataString(map, "EKIKANKANSEN")); //Υ΄υ«
+			sbBuf.append(getDataString(map, "SINPAIKINOUTEIKA")); //S”x‹@”\‚Μ’α‰Ί
+			sbBuf.append(getDataString(map, "ITAMI")); //αu’Ι(‚Ζ‚¤‚Β‚¤)
+			sbBuf.append(getDataString(map, "DASSUI")); //’E…
+			sbBuf.append(getDataString(map, "KOUDO_SHOGAI")); //s“®αQ 
+			sbBuf.append(getDataString(map, "SEISIN_ZOAKU")); //Έ_σ‘Τ‚Μ‘«
+			sbBuf.append(getDataString(map, "KEIREN_HOSSA")); //‚―‚Ά‚κ‚ρ”­μ
+			sbBuf.append(getDataString(map, "BYOUTAITA")); //‚»‚Μ‘Ό
+			row.add(sbBuf.toString());
+			
+			// 147:»έA”­¶‚Μ‰Β”\«‚ª‚‚Ά•a‘Τ‚Ζ‚»‚Μ‘Ξ•ϋjE‚»‚Μ‘Ό“ΰ—e
+			row.add(getDataString(map, "BYOUTAITA_NM"));
+			// 148:»έA”­¶‚Μ‰Β”\«‚ª‚‚Ά•a‘Τ‚Ζ‚»‚Μ‘Ξ•ϋjE‘Ξ•ϋj
+			row.add(getDataString(map, "TAISHO_HOUSIN"));
+			
+			// 149:γw“IΟ“_‚©‚η‚Μ—―Σ–€]³
 			row.add(getDataString(map, "KETUATU"));
-			// 141:γw“IΟ“_‚©‚η‚Μ—―Σ–€E³E—―Σ–€
+			// 150:γw“IΟ“_‚©‚η‚Μ—―Σ–€]³—―Σ–€
 			row.add(getDataString(map, "KETUATU_RYUIJIKOU"));
-			// 142:γw“IΟ“_‚©‚η‚Μ—―Σ–€E‹‰Ί
+			
+			// 151:γw“IΟ“_‚©‚η‚Μ—―Σ–€]‹‰Ί
 			row.add(getDataString(map, "ENGE"));
-			// 143:γw“IΟ“_‚©‚η‚Μ—―Σ–€E‹‰ΊE—―Σ–€
+			// 152:γw“IΟ“_‚©‚η‚Μ—―Σ–€]‹‰Ί—―Σ–€
 			row.add(getDataString(map, "ENGE_RYUIJIKOU"));
-			// 144:γw“IΟ“_‚©‚η‚Μ—―Σ–€EΫH
+			
+			// 153:γw“IΟ“_‚©‚η‚Μ—―Σ–€]ΫH
 			row.add(getDataString(map, "SESHOKU"));
-			// 145:γw“IΟ“_‚©‚η‚Μ—―Σ–€EΫHE—―Σ–€
+			// 154:γw“IΟ“_‚©‚η‚Μ—―Σ–€]ΫH—―Σ–€
 			row.add(getDataString(map, "SESHOKU_RYUIJIKOU"));
-			// 146:γw“IΟ“_‚©‚η‚Μ—―Σ–€EΪ“®
+			
+			// 155:γw“IΟ“_‚©‚η‚Μ—―Σ–€]Ϊ“®
 			row.add(getDataString(map, "IDOU"));
-			// 147:γw“IΟ“_‚©‚η‚Μ—―Σ–€EΪ“®E—―Σ–€
+			// 156:γw“IΟ“_‚©‚η‚Μ—―Σ–€]Ϊ“®—―Σ–€
 			row.add(getDataString(map, "IDOU_RYUIJIKOU"));
-			// 148:γw“IΟ“_‚©‚η‚Μ—―Σ–€E‚»‚Μ‘Ό
+			
+			// 157:γw“IΟ“_‚©‚η‚Μ—―Σ–€]s“®αQ
+			row.add(getDataString(map, "SFS_KOUDO"));
+			// 158:γw“IΟ“_‚©‚η‚Μ—―Σ–€]s“®αQ—―Σ–€
+			row.add(getDataString(map, "SFS_KOUDO_RYUIJIKOU"));
+			
+			// 159:γw“IΟ“_‚©‚η‚Μ—―Σ–€]Έ_Ησ
+			row.add(getDataString(map, "SFS_SEISIN"));
+			// 160:γw“IΟ“_‚©‚η‚Μ—―Σ–€]Έ_Ησ—―Σ–€
+			row.add(getDataString(map, "SFS_SEISIN_RYUIJIKOU"));
+			
+			// 161:γw“IΟ“_‚©‚η‚Μ—―Σ–€]‚»‚Μ‘Ό
 			row.add(getDataString(map, "KAIGO_OTHER"));
-			// 149:΄υΗ‚Μ—L–³
+			// 162:΄υΗ‚Μ—L–³
 			row.add(getDataString(map, "KANSENSHOU"));
-			// 150:΄υΗ‚Μ—L–³EΪΧ
+			// 163:΄υΗ‚Μ—L–³]ΪΧ
 			row.add(getDataString(map, "KANSENSHOU_NM"));
-
-			// 151:“Α‹L–€
+            
+            
+            // ----- ‚»‚Μ‘Ό“Α‹L‚·‚Χ‚«–€
+			// 164:“Α‹L–€
 			row.add((getDataString(map, "IKN_TOKKI").replaceAll("\r\n", VT))
 					.replaceAll("\n", VT));
-			// 152:“ρ²•]‰Ώ:Έ_Ησ
-			temp = getDataString(map, "SK_NIJIKU_SEISHIN");
-			if (!("0".equals(temp))) {
-				row.add(temp);
-			} else {
-				row.add("");
-			}
-			// 153:“ρ²•]‰Ώ:”\—ΝαQ
-			temp = getDataString(map, "SK_NIJIKU_NORYOKU");
-			if (!("0".equals(temp))) {
-				row.add(temp);
-			} else {
-				row.add("");
-			}
-			// 154:“ρ²•]‰Ώ:”»’θϊ
-			row.add(formatUnknownDateCustom(map.getData("SK_NIJIKU_DT")));
-			// 155:¶αQ•]‰Ώ:H–
-			temp = getDataString(map, "SK_SEIKATSU_SHOKUJI");
-			if (!("0".equals(temp))) {
-				row.add(temp);
-			} else {
-				row.add("");
-			}
-			// 156:¶αQ•]‰Ώ:¶ƒƒYƒ€
-			temp = getDataString(map, "SK_SEIKATSU_RHYTHM");
-			if (!("0".equals(temp))) {
-				row.add(temp);
-			} else {
-				row.add("");
-			}
-			// 157:¶αQ•]‰Ώ:•Ϋ΄
-			temp = getDataString(map, "SK_SEIKATSU_HOSEI");
-			if (!("0".equals(temp))) {
-				row.add(temp);
-			} else {
-				row.add("");
-			}
-			// 158:¶αQ•]‰Ώ:‹ΰ‘KΗ—
-			temp = getDataString(map, "SK_SEIKATSU_KINSEN_KANRI");
-			if (!("0".equals(temp))) {
-				row.add(temp);
-			} else {
-				row.add("");
-			}
-			// 159:¶αQ•]‰Ώ:•–ςΗ—
-			temp = getDataString(map, "SK_SEIKATSU_HUKUYAKU_KANRI");
-			if (!("0".equals(temp))) {
-				row.add(temp);
-			} else {
-				row.add("");
-			}
-			// 160:¶αQ•]‰Ώ:‘ΞlΦW
-			temp = getDataString(map, "SK_SEIKATSU_TAIJIN_KANKEI");
-			if (!("0".equals(temp))) {
-				row.add(temp);
-			} else {
-				row.add("");
-			}
-			// 161:¶αQ•]‰Ώ:Π‰ο“I“K‰‚π–W‚°‚ιs“®
-			temp = getDataString(map, "SK_SEIKATSU_SHAKAI_TEKIOU");
-			if (!("0".equals(temp))) {
-				row.add(temp);
-			} else {
-				row.add("");
-			}
-			// 162:¶αQ•]‰Ώ:”»’fϊ
-			row.add(formatUnknownDateCustom(map.getData("SK_SEIKATSU_DT")));
 
 			// 1ƒƒR[ƒh’Η‰Α
 			csv.addRow(row);
@@ -4714,7 +4577,26 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         sb.append(", IKN_ORIGIN.SK_SEIKATSU_HUKUYAKU_KANRI");
         sb.append(", IKN_ORIGIN.SK_SEIKATSU_TAIJIN_KANKEI");
         sb.append(", IKN_ORIGIN.SK_SEIKATSU_SHAKAI_TEKIOU");
-        sb.append(", IKN_ORIGIN.SK_SEIKATSU_DT");        
+        sb.append(", IKN_ORIGIN.SK_SEIKATSU_DT");
+        
+        // --- H26γtΣ©‘ƒƒCƒAƒEƒg•ΟX
+        sb.append(", COMMON_IKN_SIS.KANKETSUTEKI_DOUNYOU"); //Τ[“I“±”A
+        sb.append(", IKN_ORIGIN.KINRYOKU_TEIKA_CHANGE"); //‹Ψ—Ν’α‰Ί 6ƒ–‚Μ•Ο“®
+        sb.append(", IKN_ORIGIN.KOUSHU_ETC_BUI_TEIDO"); //Φί‚ΜSk‚»‚Μ‘Ό’φ“x
+        sb.append(", IKN_ORIGIN.KANSETU_ITAMI_CHANGE"); //Φί‚Μ’Ι‚έ 6ƒ–‚Μ•Ο“®
+        sb.append(", IKN_ORIGIN.KS_JISYOU"); //©
+        sb.append(", IKN_ORIGIN.SS_ISHIKI_SHOGAI"); //Σ―αQ
+        sb.append(", IKN_ORIGIN.SS_KIBUN_SHOGAI"); //‹C•ªαQ
+        sb.append(", IKN_ORIGIN.SS_SUIMIN_SHOGAI"); //‡–°αQ
+        sb.append(", IKN_ORIGIN.KOUDO_SHOGAI"); //s“®αQ
+        sb.append(", IKN_ORIGIN.SEISIN_ZOAKU"); //Έ_σ‘Τ‚Μ‘«
+        sb.append(", IKN_ORIGIN.KEIREN_HOSSA"); //‚―‚Ά‚κ‚ρ”­μ
+        sb.append(", IKN_ORIGIN.TAISHO_HOUSIN"); //‘Ξ•ϋj
+        sb.append(", IKN_ORIGIN.SFS_KOUDO"); //s“®αQ‚Ι‚Β‚Ά‚Δ
+        sb.append(", IKN_ORIGIN.SFS_KOUDO_RYUIJIKOU"); //s“®αQ‚Ι‚Β‚Ά‚Δ—―Σ–€
+        sb.append(", IKN_ORIGIN.SFS_SEISIN"); //Έ_αQ‚Ι‚Β‚Ά‚Δ
+        sb.append(", IKN_ORIGIN.SFS_SEISIN_RYUIJIKOU"); //Έ_αQ‚Ι‚Β‚Ά‚Δ—―Σ–€
+        
         sb.append(" FROM");
         sb.append(" COMMON_IKN_SIS,IKN_ORIGIN,IKN_BILL");
         sb.append(" WHERE");
@@ -4782,6 +4664,24 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         }
         return String.valueOf(tmp);
     }
+    
+    /**
+     * VRHashMap‚Μƒf[ƒ^‚π•¶—ρ‚Εζ“Ύ‚µ‚ά‚·B
+     * ’l‚ªu0v‚Μκ‡‚ΝA‹σ”’‚π•Τ‚µ‚ά‚·
+     *
+     * @param map VRHashMap
+     * @param key String
+     * @return String
+     */
+    private String getDataStringZeroSpace(VRMap map, String key) {
+    	
+    	String value = getDataString(map, key);
+		if ("0".equals(value)) {
+			return "";
+		}
+		return value;
+    }
+    
 
     /**
      * _——Φ‚πƒrƒbƒg—ρ‚Ι•Ο·‚µ‚ά‚·B
@@ -4987,6 +4887,13 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         int endRow = data.getDataSize();
         int page = (int) Math.ceil((double) endRow / 21);
         int row = 1;
+        
+        String formatVersion = "";
+        if (IKN_NEW.equals(formatKbnIshi.getSelectedItem())) {
+        	formatVersion = "(•½¬18”N“xƒtƒH[ƒ}ƒbƒg)";
+        }else{
+        	formatVersion = "(•½¬26”N“xƒtƒH[ƒ}ƒbƒg)";
+        }
 
         // σόƒf[ƒ^Jnέ’θιΎ
         pd.beginPrintEdit();
@@ -4994,7 +4901,6 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         // ’ •[ζ“Ύ
         String path = ACFrame.getInstance().getExeFolderPath() + separator
                 + "format" + separator + "CSVFileOutputPatientList.xml";
-//        pd.addFormat("daicho", path);
         ACChotarouXMLUtilities.addFormat(pd, "daicho", "CSVFileOutputPatientList.xml");
 
         VRMap tmp = (VRMap) data.getData(0);
@@ -5012,38 +4918,21 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
             // “ϊ•tϊΤJn
             if (taisyoFrom.getDate() != null) {
                 Date taisyoFromDate = taisyoFrom.getDate();
-                IkenshoCommon.addString(pd, "dateRange.data.fromY",
-                        VRDateParser.format(taisyoFromDate, "ggg@ee"));
-                IkenshoCommon.addString(pd, "dateRange.data.fromM",
-                        VRDateParser.format(taisyoFromDate, "MM"));
-                IkenshoCommon.addString(pd, "dateRange.data.fromD",
-                        VRDateParser.format(taisyoFromDate, "dd"));
-                // IkenshoCommon.addString(pd, "dateRange.data.fromY",
-                // taisyoFrom.getEra() + " " + taisyoFrom.getYear());
-                // IkenshoCommon.addString(pd, "dateRange.data.fromM",
-                // dayFormat.format(Long.parseLong(taisyoFrom.getMonth())));
-                // IkenshoCommon.addString(pd, "dateRange.data.fromD",
-                // dayFormat.format(Long.parseLong(taisyoFrom.getDay())));
+                IkenshoCommon.addString(pd, "dateRange.data.fromY", VRDateParser.format(taisyoFromDate, "ggg@ee"));
+                IkenshoCommon.addString(pd, "dateRange.data.fromM", VRDateParser.format(taisyoFromDate, "MM"));
+                IkenshoCommon.addString(pd, "dateRange.data.fromD", VRDateParser.format(taisyoFromDate, "dd"));
             }
             // “ϊ•tϊΤI—Ή
             if (taisyoTo.getDate() != null) {
                 Date taisyoToDate = taisyoTo.getDate();
-                IkenshoCommon.addString(pd, "dateRange.data.toY", VRDateParser
-                        .format(taisyoToDate, "ggg@ee"));
-                IkenshoCommon.addString(pd, "dateRange.data.toM", VRDateParser
-                        .format(taisyoToDate, "MM"));
-                IkenshoCommon.addString(pd, "dateRange.data.toD", VRDateParser
-                        .format(taisyoToDate, "dd"));
-                // IkenshoCommon.addString(pd, "dateRange.data.toY",
-                // taisyoTo.getEra() + " " + taisyoTo.getYear());
-                // IkenshoCommon.addString(pd, "dateRange.data.toM",
-                // dayFormat.format(Long.parseLong(taisyoTo.getMonth())));
-                // IkenshoCommon.addString(pd, "dateRange.data.toD",
-                // dayFormat.format(Long.parseLong(taisyoTo.getDay())));
+                IkenshoCommon.addString(pd, "dateRange.data.toY", VRDateParser.format(taisyoToDate, "ggg@ee"));
+                IkenshoCommon.addString(pd, "dateRange.data.toM", VRDateParser.format(taisyoToDate, "MM"));
+                IkenshoCommon.addString(pd, "dateRange.data.toD", VRDateParser.format(taisyoToDate, "dd"));
             }
             // ƒtƒH[ƒ}ƒbƒg
-            IkenshoCommon.addString(pd, "formatVersion", "("
-                    +ACCastUtilities.toString( formatKbn.getSelectedItem()) + "ƒtƒH[ƒ}ƒbƒg)");
+//            IkenshoCommon.addString(pd, "formatVersion", "("
+//                    +ACCastUtilities.toString( formatKbn.getSelectedItem()) + "ƒtƒH[ƒ}ƒbƒg)");
+            IkenshoCommon.addString(pd, "formatVersion", formatVersion);
 
             for (int j = 0; (j < 21) && (row < endRow + 1); j++, row++) {
                 VRMap map = (VRMap) data.getData(row - 1);

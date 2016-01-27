@@ -1360,6 +1360,10 @@ public class IkenshoIkenshoInfo extends IkenshoTabbableAffairContainer {
     protected void doUpdateHumanPicture(IkenshoFirebirdDBManager dbm)
             throws SQLException {
         // êlëÃê}
+    	if (mindBody2 == null) {
+    		return;
+    	}
+    	
         StringBuffer sb = new StringBuffer();
         sb.append("UPDATE");
         sb.append(" IKN_ORIGIN");

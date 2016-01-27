@@ -6,7 +6,7 @@ import javax.swing.plaf.ColorUIResource;
 import javax.swing.plaf.InsetsUIResource;
 import javax.swing.plaf.metal.MetalLookAndFeel;
 
-import sun.awt.AppContext;
+//import sun.awt.AppContext;
 
 /**
  * VRデザインを実装するLook&Feelです。
@@ -21,13 +21,13 @@ import sun.awt.AppContext;
  */
 public class VRLookAndFeel extends MetalLookAndFeel {
 
-    private static boolean METAL_LOOK_AND_FEEL_INITED = false;
+    //private static boolean METAL_LOOK_AND_FEEL_INITED = false;
 
-    private static VRTheme currentTheme;
+    //private static VRTheme currentTheme;
 
-    private static boolean isOnlyOneContext = true;
+    //private static boolean isOnlyOneContext = true;
 
-    private static AppContext cachedAppContext;
+    //private static AppContext cachedAppContext;
 
     private static VRTheme vrTheme;
 
@@ -239,7 +239,6 @@ public class VRLookAndFeel extends MetalLookAndFeel {
 
     public UIDefaults getDefaults() {
         setCurrentVRTheme(new VRTheme());
-
         return super.getDefaults();
     }
 

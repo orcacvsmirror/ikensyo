@@ -16,6 +16,7 @@ import java.util.Map;
 import javax.swing.SwingConstants;
 
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACBindListCellRenderer;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
@@ -1203,6 +1204,7 @@ public class IkenshoIkenshoInfoMention extends
         mentionShisetsu2.setEnabled(false);
         mentionShisetsu2.setEditable(false);
         mentionShisetsu2.setBindPath("INST_SEL_PR2");
+        mentionShisetsu2.setColumns(23);
         getMentionShisetsus().setText("施設選択（優先度）");
         mentionShisetsu2Head.setEnabled(false);
         mentionShisetsu2Head.setText("　２．");
@@ -1219,6 +1221,7 @@ public class IkenshoIkenshoInfoMention extends
         mentionShisetsu1.setPreferredSize(new Dimension(250, 19));
         mentionShisetsu1.setEditable(false);
         mentionShisetsu1.setBindPath("INST_SEL_PR1");
+        mentionShisetsu1.setColumns(18);
         getMentionTokkiGroup().setLayout(mentionTokkiGroupLayout);
         getMentionTokkiGroup().setText("その他特記すべき事項");
         mentionHasegawa2.setColumns(3);
@@ -1249,6 +1252,17 @@ public class IkenshoIkenshoInfoMention extends
         getMentionTokki().setMaxRows(8);
         getMentionTokki().setRows(9);
         getMentionTokki().setIMEMode(InputSubset.KANJI);
+//        if (IkenshoMainMenu.getMojiSize().equals("Middle")){
+//        	getMentionTokki().setPreferredSize(new Dimension(730, 220));
+//        	
+//        }
+//        else if (IkenshoMainMenu.getMojiSize().equals("Large")){
+//        	getMentionTokki().setPreferredSize(new Dimension(980, 300));
+//        	
+//        }
+//        else if (IkenshoMainMenu.getMojiSize().equals("oversize")){
+//        	getMentionTokki().setPreferredSize(new Dimension(1060, 360));
+//        }
 //      [ID:0000514][Tozo TANAKA] 2009/09/09 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         mentionAddHokensha.setToolTipText("「保険者登録」画面を表示します。");
         mentionAddHokensha.setMnemonic('H');
@@ -1271,7 +1285,6 @@ public class IkenshoIkenshoInfoMention extends
         mentionSendDate.setAllowedFutureDate(true);
         mentionSendDate.setAgeVisible(false);
 
-        String osName = System.getProperty("os.name");
         // [ID:0000555][Tozo TANAKA] 2009/09/14 replace begin 【2009年度対応：追加案件】医師意見書の受給者番号対応
 //        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
 //            // Macは"桁数表示を削る"
@@ -1279,7 +1292,7 @@ public class IkenshoIkenshoInfoMention extends
 //        } else {
 //            mentionHiHokenNos.setText("被保険者番号（英数10桁）");
 //        }
-        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
+        if (ACOSInfo.isMac()) {
             // Macは"桁数表示を削る"
             mentionHiHokenNos.setText(getInsuredNoText());
         } else {

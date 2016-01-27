@@ -165,6 +165,7 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
           VRLayout mindBody1JiritsuGroupLayout = new VRLayout();
           mindBody1JiritsuGroupLayout.setFitHLast(true);
           mindBody1JiritsuGroupLayout.setHgap(0);
+          mindBody1JiritsuGroupLayout.setVgap(0);
           mindBody1JiritsuGroup.setLayout(mindBody1JiritsuGroupLayout);
           addJiritsuGroup();
       }
@@ -236,12 +237,9 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
       if(mindBody1SyougaiJiritsuPanel==null){
           mindBody1SyougaiJiritsuPanel = new ACLabelContainer();
           mindBody1SyougaiJiritsuPanel.setLayout(new BorderLayout());
-//        mindBody1SyougaiJiritsuPanel.setText("áŠQ˜Vl‚Ì“úí¶Šˆ©—§“x" +
-//                                             IkenshoConstants.LINE_SEPARATOR +
-//                                             "iQ‚½‚«‚è“xj");
-        mindBody1SyougaiJiritsuPanel.setText("áŠQ‚—îÒ‚Ì“úí¶Šˆ©—§“x" +
-                IkenshoConstants.LINE_SEPARATOR +
-                "iQ‚½‚«‚è“xj");
+        mindBody1SyougaiJiritsuPanel.setText("áŠQ˜Vl‚Ì“úí¶Šˆ©—§“x" +
+                                             IkenshoConstants.LINE_SEPARATOR +
+                                             "iQ‚½‚«‚è“xj");
         mindBody1SyougaiJiritsuPanel.setHorizontalAlignment(SwingConstants.RIGHT);
         addSyougaiRoujinJiritsu();
       }
@@ -719,6 +717,7 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     getMindBody1Shinkei().setEnabled(false);
     getMindBody1Shinkei().setPreferredSize(new Dimension(400, 19));
     getMindBody1Shinkei().setMaxLength(30);
+    getMindBody1Shinkei().setColumns(30);
     getMindBody1Shinkei().setBindPath("SEISIN_NM");
     getMindBody1Shinkei().setIMEMode(InputSubset.KANJI);
     mindBody1Syokuji.setModel(new VRListModelAdapter(new
@@ -744,6 +743,7 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1RikaiKiokuLayout.setFitHLast(true);
     mindBody1RikaiKiokuLayout.setHgrid(200);
     mindBody1RikaiKiokuLayout.setHgap(0);
+    mindBody1RikaiKiokuLayout.setVgap(0);
     mindBody1RikaiKiokuLayout.setLabelMargin(100);
     getMindBody1SyougaiJiritsu().setModel(new VRListModelAdapter(new
         VRArrayList(Arrays.asList(new
@@ -841,6 +841,7 @@ public class IkenshoDocumentAffairMindBody1 extends IkenshoTabbableChildAffairCo
     mindBody1ShinkeiProJyusin.setPreferredSize(new Dimension(200, 19));
     mindBody1ShinkeiProJyusin.setBindPath("SENMONI_NM");
     mindBody1ShinkeiProJyusin.setMaxLength(15);
+    mindBody1ShinkeiProJyusin.setColumns(15);
     mindBody1ShinkeiProJyusin.setIMEMode(InputSubset.KANJI);
     mindBody1MondaiHaikai.setEnabled(false);
     mindBody1MondaiHaikai.setText("œpœj");

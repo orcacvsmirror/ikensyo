@@ -3,6 +3,7 @@ package jp.nichicom.vr.component.table;
 
 import java.awt.Color;
 import java.awt.Cursor;
+import java.awt.FontMetrics;
 import java.awt.Point;
 import java.awt.event.ComponentEvent;
 import java.awt.event.FocusEvent;
@@ -43,7 +44,7 @@ import jp.nichicom.vr.util.adapter.VRTableModelAdapter;
  * @see VRTableModelAdapter
  * @see VRTableHeaderRenderer
  */
-public class VRTable extends JTable implements VRTablar {
+public abstract class VRTable extends JTable implements VRTablar {
     /**
      * <code>ストライプカラーの初期設定色</code>
      */
@@ -473,11 +474,13 @@ public class VRTable extends JTable implements VRTablar {
         super.tableChanged(e);
         revalidate();
     }
+    
 
     /**
      * コンストラクタ実行後に必ず呼ばれる初期化処理です。
      */
     protected void initComponent() {
+    	
         addComponentListener(this);
         // 変数初期化
         sortSequence = new HashMap();
@@ -493,6 +496,11 @@ public class VRTable extends JTable implements VRTablar {
         setExtendLastColumn(false);
         // イベント設定
         getTableHeader().addMouseListener(this);
+        
+        FontMetrics fo = getFontMetrics(getFont());
+        setRowHeight(fo.getHeight());
+        
+        
         // 擬似フォーカストラバーサル
         addKeyListener(new KeyAdapter() {
             public void keyPressed(KeyEvent e) {

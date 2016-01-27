@@ -8,19 +8,14 @@ import java.awt.Font;
 import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.FocusEvent;
 import java.awt.im.InputSubset;
 import java.text.ParseException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 
 import javax.swing.ComboBoxModel;
-import javax.swing.JTextArea;
 import javax.swing.SwingConstants;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
-import javax.swing.text.JTextComponent;
 
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
 import jp.nichicom.ac.component.ACComboBox;
@@ -35,7 +30,6 @@ import jp.nichicom.ac.text.ACTextFieldDocument;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.bind.VRBindPathParser;
-import jp.nichicom.vr.bind.VRBindSource;
 import jp.nichicom.vr.component.AbstractVRTextArea;
 import jp.nichicom.vr.component.AbstractVRTextField;
 import jp.nichicom.vr.component.VRButton;
@@ -59,119 +53,104 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContainer {
 
   private VRLabel sickTitle = new VRLabel();
-  private ACLabelContainer sickNames1 = new ACLabelContainer();
-  private ACLabelContainer sickNames2 = new ACLabelContainer();
-  private ACLabelContainer sickNames3 = new ACLabelContainer();
+  
   private VRPanel sickStableAndOutlook;
   private ACGroupBox sickProgressGroup = new ACGroupBox();
   private ACGroupBox sickNameGroup = new ACGroupBox();
   private VRLayout sickNameGroupLayout = new VRLayout();
-  private VRLabel sickMedicineDosageHead5 = new VRLabel();
-  //private ACComboBox sickMedicineDosageUnit5 = new ACComboBox();
-  private IkenshoOptionComboBox sickMedicineDosageUnit5 = new IkenshoOptionComboBox();
-//  private JScrollPane sickProgressSroll = new JScrollPane();
-  private VRLabel sickMedicineUsageHead5 = new VRLabel();
-  private VRLayout sickNames1Layout = new VRLayout();
-  private VRLayout sickNames2Layout = new VRLayout();
-  private VRLayout sickNames3Layout = new VRLayout();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineDosageUnit4 = new IkenshoOptionComboBox();
-  private IkenshoOptionComboBox sickMedicineDosageUnit3 = new IkenshoOptionComboBox();
-  private IkenshoOptionComboBox sickMedicineDosageUnit6 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private ACLabelContainer sickMedicines1 = new ACLabelContainer();
-  private IkenshoEraDateTextField sickDate3 = new IkenshoEraDateTextField();
-  private VRLabel sickMedicineUsageHead6 = new VRLabel();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineName1 = new IkenshoOptionComboBox();
-  private IkenshoOptionComboBox sickMedicineDosageUnit2 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private ACTextField sickMedicineDosage6 = new IkenshoACTextField();
-  private VRLabel sickMedicineDosageHead3 = new VRLabel();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineName6 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private ACLabelContainer sickMedicines5 = new ACLabelContainer();
-  private VRLabel sickMedicineDosageHead1 = new VRLabel();
+  
   private ACLabelContainer sickProgresss;
   private ACGroupBox sickStableGroup;
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineName4 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private ACLabelContainer sickMedicines2 = new ACLabelContainer();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineDosageUnit1 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private VRLabel sickMedicineUsageHead4 = new VRLabel();
-  private ACTextField sickMedicineDosage2 = new IkenshoACTextField();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickName1 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private VRLabel sickMedicineUsageHead2 = new VRLabel();
-  
-  //2009/01/22 [Tozo Tanaka] Replace - begin
-//  private ACTextArea sickProgress = new ACTextArea();
   private IkenshoACTextArea sickProgress = new IkenshoACTextArea();
-  //2009/01/22 [Tozo Tanaka] Replace - end
   
   private VRLayout sickLayout = new VRLayout();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineName5 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private VRLabel sickMedicineUsageHead3 = new VRLabel();
-  private ACParentHesesPanelContainer sickDates2;
   private ACGroupBox sickOutlookGroup;
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineUsage2 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private ACTextField sickMedicineDosage4 = new IkenshoACTextField();
-  private IkenshoSpecialSickButton sickSpecial3;
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineUsage1 = new IkenshoOptionComboBox();
-  private IkenshoOptionComboBox sickMedicineName3 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private ACParentHesesPanelContainer sickDates3;
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineUsage3 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private IkenshoEraDateTextField sickDate2 = new IkenshoEraDateTextField();
-  private VRLabel sickMedicineDosageHead6 = new VRLabel();
-  private ACLabelContainer sickMedicines6 = new ACLabelContainer();
-  private IkenshoSpecialSickButton sickSpecial1;
-  private ACTextField sickMedicineDosage5 = new IkenshoACTextField();
-  private ACLabelContainer sickMedicines3 = new ACLabelContainer();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineUsage5 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private ACParentHesesPanelContainer sickDates1;
-  private ACTextField sickMedicineDosage1 = new IkenshoACTextField();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickName3 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
   private ACClearableRadioButtonGroup sickStable;
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineName2 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private VRLabel sickMedicineDosageHead4 = new VRLabel();
-  private ACTextField sickMedicineDosage3 = new IkenshoACTextField();
-  private ACLabelContainer sickMedicines4 = new ACLabelContainer();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickName2 = new IkenshoOptionComboBox();
-  private IkenshoOptionComboBox sickMedicineUsage6 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private IkenshoSpecialSickButton sickSpecial2;
-  private IkenshoEraDateTextField sickDate1 = new IkenshoEraDateTextField();
-  private VRLabel sickMedicineUsageHead1 = new VRLabel();
-//2007/10/18 [Masahiko Higuchi] Replace - begin 業務遷移コンボ対応 ACComboBox⇒IkenshoOptionComboBox
-  private IkenshoOptionComboBox sickMedicineUsage4 = new IkenshoOptionComboBox();
-//2007/10/18 [Masahiko Higuchi] Replace - end
-  private VRLabel sickMedicineDosageHead2 = new VRLabel();
   private ACClearableRadioButtonGroup sickOutlook = new ACClearableRadioButtonGroup();
   private VRLayout sickStableLayout = new VRLayout();
   private FlowLayout sickOutlookLayout = new FlowLayout();
   private ACLabelContainer sickStables = new ACLabelContainer();
   private ACLabelContainer sickOutlooks = new ACLabelContainer();
   private VRLayout sickProgressGroupLayout = new VRLayout();
+  
+  // 傷病名1
+  private ACLabelContainer sickNames1 = new ACLabelContainer();
+  private VRLayout sickNames1Layout = new VRLayout();
+  private IkenshoOptionComboBox sickName1 = new IkenshoOptionComboBox();
+  private IkenshoSpecialSickButton sickSpecial1;
+  private ACParentHesesPanelContainer sickDates1;
+  private IkenshoEraDateTextField sickDate1 = new IkenshoEraDateTextField();
+  
+  // 傷病名2
+  private ACLabelContainer sickNames2 = new ACLabelContainer();
+  private VRLayout sickNames2Layout = new VRLayout();
+  private IkenshoOptionComboBox sickName2 = new IkenshoOptionComboBox();
+  private IkenshoSpecialSickButton sickSpecial2;
+  private ACParentHesesPanelContainer sickDates2;
+  private IkenshoEraDateTextField sickDate2 = new IkenshoEraDateTextField();
+  
+  // 傷病名3
+  private ACLabelContainer sickNames3 = new ACLabelContainer();
+  private VRLayout sickNames3Layout = new VRLayout();
+  private IkenshoOptionComboBox sickName3 = new IkenshoOptionComboBox();
+  private IkenshoSpecialSickButton sickSpecial3;
+  private ACParentHesesPanelContainer sickDates3;
+  private IkenshoEraDateTextField sickDate3 = new IkenshoEraDateTextField();
+  
+  
+  //薬剤1
+  private ACLabelContainer sickMedicines1 = new ACLabelContainer();
+  private IkenshoOptionComboBox sickMedicineName1 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineDosageHead1 = new VRLabel();
+  private ACTextField sickMedicineDosage1 = new IkenshoACTextField();
+  private IkenshoOptionComboBox sickMedicineDosageUnit1 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineUsageHead1 = new VRLabel();
+  private IkenshoOptionComboBox sickMedicineUsage1 = new IkenshoOptionComboBox();
+  
+  //薬剤2
+  private ACLabelContainer sickMedicines2 = new ACLabelContainer();
+  private IkenshoOptionComboBox sickMedicineName2 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineDosageHead2 = new VRLabel();
+  private ACTextField sickMedicineDosage2 = new IkenshoACTextField();
+  private IkenshoOptionComboBox sickMedicineDosageUnit2 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineUsageHead2 = new VRLabel();
+  private IkenshoOptionComboBox sickMedicineUsage2 = new IkenshoOptionComboBox();
+  
+  //薬剤3
+  private ACLabelContainer sickMedicines3 = new ACLabelContainer();
+  private IkenshoOptionComboBox sickMedicineName3 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineDosageHead3 = new VRLabel();
+  private ACTextField sickMedicineDosage3 = new IkenshoACTextField();
+  private IkenshoOptionComboBox sickMedicineDosageUnit3 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineUsageHead3 = new VRLabel();
+  private IkenshoOptionComboBox sickMedicineUsage3 = new IkenshoOptionComboBox();
+  
+  //薬剤4
+  private ACLabelContainer sickMedicines4 = new ACLabelContainer();
+  private IkenshoOptionComboBox sickMedicineName4 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineDosageHead4 = new VRLabel();
+  private ACTextField sickMedicineDosage4 = new IkenshoACTextField();
+  private IkenshoOptionComboBox sickMedicineDosageUnit4 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineUsageHead4 = new VRLabel();
+  private IkenshoOptionComboBox sickMedicineUsage4 = new IkenshoOptionComboBox();
+  
+  //薬剤5
+  private ACLabelContainer sickMedicines5 = new ACLabelContainer();
+  private IkenshoOptionComboBox sickMedicineName5 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineDosageHead5 = new VRLabel();
+  private ACTextField sickMedicineDosage5 = new IkenshoACTextField();
+  private IkenshoOptionComboBox sickMedicineDosageUnit5 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineUsageHead5 = new VRLabel();
+  private IkenshoOptionComboBox sickMedicineUsage5 = new IkenshoOptionComboBox();
+  
+  //薬剤6
+  private ACLabelContainer sickMedicines6 = new ACLabelContainer();
+  private IkenshoOptionComboBox sickMedicineName6 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineDosageHead6 = new VRLabel();
+  private ACTextField sickMedicineDosage6 = new IkenshoACTextField();
+  private IkenshoOptionComboBox sickMedicineDosageUnit6 = new IkenshoOptionComboBox();
+  private VRLabel sickMedicineUsageHead6 = new VRLabel();
+  private IkenshoOptionComboBox sickMedicineUsage6 = new IkenshoOptionComboBox();
   
   //2009/01/06 [Tozo Tanaka] Add - begin
   //薬剤7
@@ -1097,23 +1076,27 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     
     sickMedicineDosageUnit5.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageUnit5.setMaxLength(4);
+    sickMedicineDosageUnit5.setColumns(4);
     sickMedicineDosageUnit5.setBindPath("UNIT5");
-    sickMedicineDosageUnit5.setPreferredSize(new Dimension(100, 19));
+    //sickMedicineDosageUnit5.setPreferredSize(new Dimension(100, 19));
     sickMedicineDosageHead5.setText("　　　");
     sickMedicineUsageHead5.setText("　　　");
     sickNames1.setText("１．");
-    sickMedicineDosageUnit4.setPreferredSize(new Dimension(100, 19));
+    //sickMedicineDosageUnit4.setPreferredSize(new Dimension(100, 19));
     sickMedicineDosageUnit4.setBindPath("UNIT4");
     sickMedicineDosageUnit4.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageUnit4.setMaxLength(4);
-    sickMedicineDosageUnit3.setPreferredSize(new Dimension(100, 19));
+    sickMedicineDosageUnit4.setColumns(4);
+    //sickMedicineDosageUnit3.setPreferredSize(new Dimension(100, 19));
     sickMedicineDosageUnit3.setBindPath("UNIT3");
     sickMedicineDosageUnit3.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageUnit3.setMaxLength(4);
-    sickMedicineDosageUnit6.setPreferredSize(new Dimension(100, 19));
+    sickMedicineDosageUnit3.setColumns(4);
+    //sickMedicineDosageUnit6.setPreferredSize(new Dimension(100, 19));
     sickMedicineDosageUnit6.setBindPath("UNIT6");
     sickMedicineDosageUnit6.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageUnit6.setMaxLength(4);
+    sickMedicineDosageUnit6.setColumns(4);
     sickMedicines1.setText("薬剤名１．");
     sickDate3.setBindPath("HASHOU_DT3");
     sickDate3.setRequestedRange(IkenshoEraDateTextField.RNG_YEAR);
@@ -1127,10 +1110,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     // [ID:0000752][Shin Fujihara] 2012/11 edit end 2012年度対応 薬剤名項目の入力文字数拡張
     sickMedicineName1.setBindPath("MEDICINE1");
     sickMedicineName1.setIMEMode(InputSubset.KANJI);
-    sickMedicineDosageUnit2.setPreferredSize(new Dimension(100, 19));
+    //sickMedicineDosageUnit2.setPreferredSize(new Dimension(100, 19));
     sickMedicineDosageUnit2.setBindPath("UNIT2");
     sickMedicineDosageUnit2.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageUnit2.setMaxLength(4);
+    sickMedicineDosageUnit2.setColumns(4);
     getStableAndOutlook().setLayout(new VRLayout());
     sickMedicineDosage6.setMaxLength(4);
     // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
@@ -1156,6 +1140,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
                           IkenshoConstants.LINE_SEPARATOR + "5行以内）");
     getSickStableGroup().setText("症状としての安定性");
     getSickStableGroup().setLayout(sickStableLayout);
+    getSickStableGroup().setVgap(10);
     // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
     //sickMedicineName4.setPreferredSize(new Dimension(220, 19));
     //sickMedicineName4.setMaxLength(12);
@@ -1166,10 +1151,11 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicines2.setToolTipText("");
     sickMedicines2.setText("　　　２．");
     sickNames3.setText("３．");
-    sickMedicineDosageUnit1.setPreferredSize(new Dimension(100, 19));
+    //sickMedicineDosageUnit1.setPreferredSize(new Dimension(100, 19));
     sickMedicineDosageUnit1.setBindPath("UNIT1");
     sickMedicineDosageUnit1.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageUnit1.setMaxLength(4);
+    sickMedicineDosageUnit1.setColumns(4);
     sickMedicineUsageHead4.setText("　　　");
     sickMedicineDosage2.setMaxLength(4);
     // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
@@ -1187,7 +1173,10 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
 //    sickProgress.setColumns(86);
     sickProgress.setLineWrap(true);
     // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
-    sickProgress.setRows(12);
+//    sickProgress.setRows(12);
+    sickProgress.setRows(11);
+    sickProgress.fitTextArea();
+    // [ID:0000509][Masahiko Higu
     // [ID:0000509][Masahiko Higuchi] 2009/06 edit end
     sickProgress.setBindPath("MT_STS");
     // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴い調整
@@ -1215,6 +1204,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     getOutlookGroup().setLayout(sickOutlookLayout);
     sickMedicineUsage2.setPreferredSize(new Dimension(180, 19));
     sickMedicineUsage2.setMaxLength(10);
+    sickMedicineUsage2.setColumns(10);
     sickMedicineUsage2.setBindPath("USAGE2");
     sickMedicineUsage2.setIMEMode(InputSubset.KANJI);
     sickMedicineDosage4.setMaxLength(4);
@@ -1230,6 +1220,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickTitle.setBackground(IkenshoConstants.COLOR_PANEL_TITLE_BACKGROUND);
     sickMedicineUsage1.setPreferredSize(new Dimension(180, 19));
     sickMedicineUsage1.setMaxLength(10);
+    sickMedicineUsage1.setColumns(10);
     sickMedicineUsage1.setBindPath("USAGE1");
     sickMedicineUsage1.setIMEMode(InputSubset.KANJI);
     // [ID:0000752][Shin Fujihara] 2012/11 edit begin 2012年度対応 薬剤名項目の入力文字数拡張
@@ -1244,6 +1235,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     getSickDates3().setBeginText("発症年月日（");
     sickMedicineUsage3.setPreferredSize(new Dimension(180, 19));
     sickMedicineUsage3.setMaxLength(10);
+    sickMedicineUsage3.setColumns(10);
     sickMedicineUsage3.setBindPath("USAGE3");
     sickMedicineUsage3.setIMEMode(InputSubset.KANJI);
     sickDate2.setBindPath("HASHOU_DT2");
@@ -1264,6 +1256,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicines3.setToolTipText("");
     sickMedicineUsage5.setPreferredSize(new Dimension(180, 19));
     sickMedicineUsage5.setMaxLength(10);
+    sickMedicineUsage5.setColumns(10);
     sickMedicineUsage5.setBindPath("USAGE5");
     sickMedicineUsage5.setIMEMode(InputSubset.KANJI);
     getSickDates1().setBeginText("発症年月日（");
@@ -1305,6 +1298,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickProgressGroup.setText("障害の直接の原因となっている傷病の経過及び投薬内容を含む治療内容");
     sickMedicineUsage6.setPreferredSize(new Dimension(180, 19));
     sickMedicineUsage6.setMaxLength(10);
+    sickMedicineUsage6.setColumns(10);
     sickMedicineUsage6.setBindPath("USAGE6");
     sickMedicineUsage6.setIMEMode(InputSubset.KANJI);
     sickNameGroup.setText("診断名（特定疾病または障害の直接の原因となっている傷病名については１．に記入）及び発症年月日");
@@ -1316,6 +1310,7 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineUsageHead1.setText("　用法");
     sickMedicineUsage4.setPreferredSize(new Dimension(180, 19));
     sickMedicineUsage4.setMaxLength(10);
+    sickMedicineUsage4.setColumns(10);
     sickMedicineUsage4.setBindPath("USAGE4");
     sickMedicineUsage4.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageHead2.setText("　　　");
@@ -1369,11 +1364,13 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineDosage8.setIMEMode(InputSubset.LATIN);
     sickMedicineDosageUnit8.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageUnit8.setMaxLength(4);
+    sickMedicineDosageUnit8.setColumns(4);
     sickMedicineDosageUnit8.setBindPath("UNIT8");
-    sickMedicineDosageUnit8.setPreferredSize(new Dimension(100, 19));
+    //sickMedicineDosageUnit8.setPreferredSize(new Dimension(100, 19));
     sickMedicineUsageHead8.setText("　　　");
     sickMedicineUsage8.setPreferredSize(new Dimension(180, 19));
     sickMedicineUsage8.setMaxLength(10);
+    sickMedicineUsage8.setColumns(10);
     sickMedicineUsage8.setBindPath("USAGE8");
     sickMedicineUsage8.setIMEMode(InputSubset.KANJI);
     // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴いサイズ指定を可能とする。
@@ -1407,11 +1404,13 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     sickMedicineDosage7.setIMEMode(InputSubset.LATIN);
     sickMedicineDosageUnit7.setIMEMode(InputSubset.KANJI);
     sickMedicineDosageUnit7.setMaxLength(4);
+    sickMedicineDosageUnit7.setColumns(4);
     sickMedicineDosageUnit7.setBindPath("UNIT7");
-    sickMedicineDosageUnit7.setPreferredSize(new Dimension(100, 19));
+    //sickMedicineDosageUnit7.setPreferredSize(new Dimension(100, 19));
     sickMedicineUsageHead7.setText("　　　");
     sickMedicineUsage7.setPreferredSize(new Dimension(180, 19));
     sickMedicineUsage7.setMaxLength(10);
+    sickMedicineUsage7.setColumns(10);
     sickMedicineUsage7.setBindPath("USAGE7");
     sickMedicineUsage7.setIMEMode(InputSubset.KANJI);
     // [ID:0000509][Masahiko Higuchi] 2009/06 edit begin 画面調整に伴いサイズ指定を可能とする。
@@ -1885,8 +1884,9 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     public VRButton createMedicinesClearButton() {
         VRButton btn = new VRButton("一行クリア");
         Font bfont = btn.getFont();
-        Font font = new Font(bfont.getName(), bfont.getStyle(), bfont.getSize() - 2);
+        Font font = bfont.deriveFont(bfont.getSize2D() - 2f);
         btn.setFont(font);
+        
         btn.setMargin(new Insets(0, 0, 0, 0));
         
         //クリア実行
@@ -1926,7 +1926,8 @@ public class IkenshoDocumentAffairSick extends IkenshoTabbableChildAffairContain
     private void sickMedicineNameSetting(IkenshoOptionComboBox combo) {
     	combo.setMaxLength(IkenshoConstants.SICK_MEDICINE_NAME_MAX_LENGTH);
         combo.setPreferredSize(new Dimension(170, 19));
-        combo.setOptionSize(170);
+//        combo.setOptionSize(170);
+        combo.setOptionSize(220);
     }
     // [ID:0000752][Shin Fujihara] 2012/11 add end 2012年度対応 薬剤名項目の入力文字数拡張
     

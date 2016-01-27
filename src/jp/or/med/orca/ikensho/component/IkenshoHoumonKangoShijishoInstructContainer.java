@@ -1,28 +1,26 @@
 package jp.or.med.orca.ikensho.component;
 
 import java.awt.BorderLayout;
+import java.awt.Dimension;
+import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.geom.Dimension2D;
 import java.awt.im.InputSubset;
-import java.sql.SQLException;
-import java.util.Map;
 
 import javax.swing.JComponent;
 
-import jp.nichicom.ac.component.ACButton;
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.event.ACFollowDisabledItemListener;
 import jp.nichicom.ac.container.ACPanel;
-import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACDBManager;
-import jp.nichicom.ac.text.ACTextUtilities;
-import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.component.VRButton;
 import jp.nichicom.vr.component.VRLabel;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.util.VRArrayList;
 import jp.or.med.orca.ikensho.affair.IkenshoExtraSpecialNoteDialog;
 
 /** TODO <HEAD_IKENSYO> */
@@ -69,7 +67,34 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
     public void setText(String text) {
         this.text.setText(text);
     }
-
+    /**
+     * テキストの大きさを設定します。
+     * 
+     * @param text 本文
+     */
+    public void fitTextArea() {
+    	
+    	// Macの場合は、部品に任せる
+    	if (ACOSInfo.isMac()) {
+    		this.text.fitTextArea();
+    		return;
+    	}
+    	
+    	// Windowsの場合はMSゴシック例外処理
+    	int column = getColumns();
+    	// 高さの計算はJavaに任せる
+    	int height = (int)text.getPreferredSize().getHeight();
+    	
+    	FontMetrics fo = getFontMetrics(text.getFont());
+    	//int width = fo.charWidth('ｍ') * (column / 2) + 24;
+    	//text.setPreferredSize(new Dimension(width, height));
+    	
+    	int fontWidth = fo.charWidth('ｍ');
+    	// (fontWidth * 2 / 3)はキャレット & 環境依存による余白バッファ
+    	int width = fontWidth * (column / 2) + (fontWidth * 2 / 3);
+    	text.getViewport().setPreferredSize(new Dimension(width, height));
+    	
+    }
     /**
      * 本文の最大入力行数 を返します。
      * 
@@ -87,21 +112,6 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
     public void setMaxRows(int maxRows) {
         text.setMaxRows(maxRows);
     }
-
-    // /**
-    // * 本文の行数を制限するかを返します。
-    // * @return 本文の行数を制限するか
-    // */
-    // public boolean isUseMaxRows() {
-    // return text.isUseMaxRows();
-    // }
-    // /**
-    // * 本文の行数を制限するかを設定します。
-    // * @param useMaxRows 本文の行数を制限するか
-    // */
-    // public void setUseMaxRows(boolean useMaxRows) {
-    // text.setUseMaxRows(useMaxRows);
-    // }
 
     /**
      * 本文の行数を取得します。
@@ -138,22 +148,6 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
     public void setColumns(int columns) {
         this.text.setColumns(columns);
     }
-
-    // /**
-    // * 本文の列数制限を取得します。
-    // * @return 本文の列数制限
-    // */
-    // public int getMaxColumns(){
-    // return text.getMaxColumns();
-    // }
-    //
-    // /**
-    // * 本文の列数制限を設定します。
-    // * @param maxColumns 本文の列数制限
-    // */
-    // public void setMaxColumns(int maxColumns){
-    // this.text.setMaxColumns(maxColumns);
-    // }
 
     /**
      * 本文の文字数制限を取得します。
@@ -199,7 +193,6 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
     public String getTitle() {
         return title.getText();
     }
-
     /**
      * タイトルを設定します。
      * 
@@ -207,7 +200,6 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
      */
     public void setTitle(String title) {
         this.title.setText(title);
-        // ★テスト
         this.text.setAlertLabel(this.title);
     }
 
@@ -263,7 +255,6 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
      */
     public void setCheckText(String checkText) {
         this.check.setText(checkText);
-        // ★テスト
         this.text.setAlertCheck(this.check);
     }
 
@@ -386,6 +377,7 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
      */
     private void jbInit() throws Exception {
         this.setLayout(new VRLayout());
+        
         text.setLineWrap(true);
         text.setMaxLength(120);
         text.setMaxRows(5);
@@ -393,6 +385,17 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
         text.setIMEMode(InputSubset.KANJI);
         text.setEnabled(false);
         text.setColumns(104);
+        
+        // Windowsの場合は、MSゴシックの使用を強制し、LineSpaceを詰める
+        if (!ACOSInfo.isMac()) {
+        	Font oldFont = text.getFont();
+        	if (oldFont == null) {
+        		text.getMainContent().setFont(new Font("ＭＳ ゴシック", Font.PLAIN, 12));
+        	} else {
+        		text.getMainContent().setFont(new Font("ＭＳ ゴシック", oldFont.getStyle(), oldFont.getSize()));
+        	}
+        }
+        
         titles.setLayout(new BorderLayout());
         spacer.setText(" 　");
         showSelect.setEnabled(false);
@@ -400,7 +403,6 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
         this.add(spacer, VRLayout.WEST);
         this.add(buttuns, VRLayout.EAST);
         this.add(text, VRLayout.FLOW);
-
         // [ID:0000514][Tozo TANAKA] 2009/09/09 replace begin
         // 【2009年度対応：訪問看護指示書】特別指示書の管理機能
         buttuns.add(showSelect, VRLayout.FLOW_RETURN);
@@ -435,6 +437,7 @@ public class IkenshoHoumonKangoShijishoInstructContainer extends VRPanel {
         ((VRLayout) buttuns.getLayout()).setHgrid(0);
         // [ID:0000514][Tozo TANAKA] 2009/09/09 add end
         // 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+        
     }
 
     /**

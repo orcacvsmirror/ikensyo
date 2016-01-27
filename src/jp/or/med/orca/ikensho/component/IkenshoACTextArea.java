@@ -1,6 +1,8 @@
 package jp.or.med.orca.ikensho.component;
 
 import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FontMetrics;
 import java.awt.Insets;
 import java.awt.Point;
 import java.awt.Rectangle;
@@ -78,6 +80,7 @@ public class IkenshoACTextArea extends AbstractACScrollPane implements VRTextAre
         getMainContent().setText(text);
         getMainContent().setRows(rows);
         getMainContent().setColumns(columns);
+        
     }
 
     /**
@@ -778,6 +781,23 @@ public class IkenshoACTextArea extends AbstractACScrollPane implements VRTextAre
     protected JComponent createJView() {
         return getMainContent();
     }
+    
+    
+    
+    /**
+     * 指定されたFont、Row,Col,にマッチするようサイズを変更
+     * ・
+     */
+    public void fitTextArea() {
+    	
+    	int width = getColumns();
+    	int height = getRows();
+    	
+    	FontMetrics fo = getFontMetrics(getFont());
+    	setPreferredSize(new Dimension(fo.charWidth('m') *	(width / 2) + 76, fo.getHeight() * height + 6));
+    }
+    
+    
     
 //    /**
 //     * 変換対象の文字種別 を返します。

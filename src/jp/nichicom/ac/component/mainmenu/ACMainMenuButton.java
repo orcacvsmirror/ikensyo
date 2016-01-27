@@ -179,7 +179,7 @@ public class ACMainMenuButton
 
 
   }
-  private void jbInit() throws Exception {
+  private void jbInit() throws Exception{
     setOpaque(false);
     setBorder(null);
     setContentAreaFilled(false);
@@ -193,5 +193,4 @@ public class ACMainMenuButton
       setFont(new java.awt.Font(nowFont.getName(), nowFont.getStyle(), 18));
     }
   }
-
 }

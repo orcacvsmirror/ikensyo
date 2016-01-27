@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACTextField;
@@ -287,8 +288,7 @@ public class IkenshoIshiShowHelp extends ACAffairDialog {
 
         addThis();
         
-        String osName = System.getProperty("os.name", "").toLowerCase();
-        if (osName.startsWith("mac")) {
+        if (ACOSInfo.isMac()) {
             getBrowser().setText("open");
         }else{
             getBrowser().setText("C:\\Program Files\\Internet Explorer\\iexplore.exe");
@@ -302,7 +302,8 @@ public class IkenshoIshiShowHelp extends ACAffairDialog {
      */
     protected void initPosition() {
         // ウィンドウのサイズ
-        setSize(new Dimension(520, 180));
+        //setSize(new Dimension(520, 180));
+    	setSize(new Dimension(900, 270));
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();

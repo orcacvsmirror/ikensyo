@@ -221,6 +221,7 @@ public VRMap createSourceInnerBindComponent() {
     otherStationNmContainer.add(otherStationNmCaption, null);
     stationName.setPreferredSize(new Dimension(400, 20));
     stationName.setMaxLength(30);
+    stationName.setColumns(30);
     stationName.setIMEMode(InputSubset.KANJI);
     stationName.setBindPath("STATION_NM");
     otherStationNmCaption.setText("“a");
@@ -238,6 +239,7 @@ public VRMap createSourceInnerBindComponent() {
     otherStationSijiContainer.add(otherStationSijiCaption, null);
     otherStationName.setPreferredSize(new Dimension(400, 20));
     otherStationName.setMaxLength(30);
+    otherStationName.setColumns(30);
     otherStationName.setIMEMode(InputSubset.KANJI);
     otherStationName.setBindPath("OTHER_STATION_NM");
     otherStationSijiCaption.setText("“a");
@@ -258,6 +260,7 @@ public VRMap createSourceInnerBindComponent() {
     kyuinStationSijiContainer.add(kyuinStationSijiCaption, null);
     kyuinStationName.setPreferredSize(new Dimension(400, 20));
     kyuinStationName.setMaxLength(30);
+    kyuinStationName.setColumns(30);
     kyuinStationName.setIMEMode(InputSubset.KANJI);
     kyuinStationName.setBindPath("KYUIN_STATION_NM");
     kyuinStationSijiCaption.setText("“a");

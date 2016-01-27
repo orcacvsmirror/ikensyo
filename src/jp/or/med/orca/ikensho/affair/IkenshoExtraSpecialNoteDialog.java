@@ -3,6 +3,7 @@ package jp.or.med.orca.ikensho.affair;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.FontMetrics;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -15,7 +16,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACTextArea;
 import jp.nichicom.ac.component.table.ACTable;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.util.ACMessageBox;
@@ -61,6 +61,7 @@ public class IkenshoExtraSpecialNoteDialog
 
   private String initText;
   protected int tkbKbn;
+  private int fontSize;			
 
   /**
    * モーダルモードで表示し、入力したテキスト内容を返します。
@@ -285,6 +286,9 @@ public class IkenshoExtraSpecialNoteDialog
     submit.setMnemonic('S');
     close.setText("閉じる(C)");
     close.setMnemonic('C');
+    FontMetrics fo =  table.getFontMetrics(table.getFont());					
+    fontSize = fo.getAscent();					
+    table.setRowHeight(fontSize + 6);
 
   }
 
@@ -292,8 +296,20 @@ public class IkenshoExtraSpecialNoteDialog
   * 位置を初期化します。
   */
  private void init() {
-    //ウィンドウのサイズ
-    setSize(new Dimension(700, 500));
+	// ウィンドウのサイズ
+	ACFrame frame = ACFrame.getInstance();
+	if (frame.isSmall()){
+		setSize(new Dimension(700, 500));
+	}
+	else if (frame.isMiddle()){
+		setSize(new Dimension(880,620));
+	}
+	else if (frame.isLarge()){
+		setSize(new Dimension(1180,780));
+	}
+	else {
+		setSize(new Dimension(1280,920));
+	}
     //ウィンドウを中央に配置
     Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
     Dimension frameSize = this.getSize();

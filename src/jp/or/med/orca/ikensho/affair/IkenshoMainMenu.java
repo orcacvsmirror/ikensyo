@@ -3,6 +3,8 @@ package jp.or.med.orca.ikensho.affair;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
+import java.awt.Dimension;
+import java.awt.Font;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseAdapter;
@@ -10,19 +12,18 @@ import java.awt.event.MouseEvent;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileReader;
 import java.io.InputStreamReader;
-import java.io.Reader;
-import java.net.MalformedURLException;
 import java.net.URL;
 
 import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 import javax.swing.SwingConstants;
+import javax.swing.SwingUtilities;
 import javax.swing.border.BevelBorder;
 
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.component.ACEditorPane;
 import jp.nichicom.ac.component.ACLabel;
@@ -35,6 +36,7 @@ import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.ac.util.splash.ACSplashChaine;
 import jp.nichicom.vr.bind.VRBindPathParser;
+import jp.nichicom.vr.component.VRButton;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.text.VRCharType;
@@ -43,30 +45,41 @@ import jp.nichicom.vr.util.VRList;
 import jp.nichicom.vr.util.VRMap;
 import jp.nichicom.vr.util.logging.VRLogger;
 import jp.or.med.orca.ikensho.IkenshoConstants;
+import jp.or.med.orca.ikensho.component.PropertyUtil;
 import jp.or.med.orca.ikensho.event.IkenshoHiddenCommandKeyListener;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
-import jp.or.med.orca.ikensho.component.*;
 
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoMainMenu extends VRPanel implements ACAffairable {
-    public static void main(String[] args) {
-        try {
-
-            ACFrame.setVRLookAndFeel();
-
-            ACFrame.getInstance().setFrameEventProcesser(
-                    new IkenshoFrameEventProcesser());
-            ACFrame.getInstance().next(
-                    new ACAffairInfo(IkenshoMainMenu.class.getName(),
-                            new VRHashMap(), "「医見書Ver2.5」メインメニュー"));
-            ACFrame frame = ACFrame.getInstance();
-            frame.setVisible(true);
-            // frame.show();
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
+	
+	public static void main(String[] args) {
+    	SwingUtilities.invokeLater(new Runnable() {
+			public void run() {
+				main();					
+			}
+		});
     }
+	
+	private static void main() {
+		try {
+	        ACFrame.setVRLookAndFeel();
+	
+	        ACFrame frame = ACFrame.getInstance();
+	        frame.setFrameEventProcesser(new IkenshoFrameEventProcesser());
+	        
+	        // 前回選択していた画面設定を復元
+	        frame.resumeScreenSize();
+	        
+	        frame.next(new ACAffairInfo(IkenshoMainMenu.class.getName(),
+	                        new VRHashMap(), "「医見書Ver2.5」メインメニュー"));
+	        
+	        frame.setVisible(true);
+	        
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
 
     private String systemVersionText;
 
@@ -85,8 +98,16 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
     private ACMainMenuButton other = new ACMainMenuButton("その他の機能(O)");
     private ACMainMenuButton setting = new ACMainMenuButton("設定(S)");
     private ACMainMenuButton close = new ACMainMenuButton("システムの終了(E)");
+    private VRButton sizeChange1 = new VRButton("標準");
+    private VRButton sizeChange2 = new VRButton("中");
+    private VRButton sizeChange3 = new VRButton("大");
+    private VRButton sizeChange4 = new VRButton("特大");
     private VRPanel closeBtnPnl = new VRPanel();
-
+    
+    private VRPanel sizeChangeBtnPnl1 = new VRPanel();
+    private VRPanel sizeChangeBtnPnl2 = new VRPanel();
+    private VRPanel sizeChangeBtnPnl3 = new VRPanel();
+    private VRPanel sizeChangeBtnPnl4 = new VRPanel();
     private IkenshoHiddenCommandKeyListener cmd = new IkenshoHiddenCommandKeyListener();
     private JLabel systemVersion = new JLabel();
     private VRPanel versionPanel = new VRPanel();
@@ -106,7 +127,7 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
     // 2007/10/22 [Masahiko Higuchi] Addition - begin バージョンアップお知らせ機能対応
     private ACEditorPane editor;
     // 2007/10/22 [Masahiko Higuchi] Addition - end
-
+    
     public IkenshoMainMenu() {
         try {
             jbInit();
@@ -162,11 +183,18 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
         VRPanel menuIkenshoShijishoPanel = new VRPanel(new VRLayout());
         VRPanel menuSeikyuushoAndBasicPanel = new VRPanel(new VRLayout());
         VRPanel menuOtherAndSettingPanel = new VRPanel(new VRLayout());
-        VRPanel menuClosePanel = new VRPanel(new VRLayout());
+        VRPanel menuChangePanel1 = new VRPanel(new VRLayout());
+        VRPanel menuClosePanel = new VRPanel(new VRLayout());   
         VRPanel htmlPanel = new VRPanel();
         VRLayout htmlLayout = new VRLayout();
+        menuChangePanel1.setPreferredSize(new Dimension(80,50));
+        sizeChangeBtnPnl1.setPreferredSize(new Dimension(80,50));
         // 終了ボタンの左側の領域に配置
         ACLabel hiddenLabel = new ACLabel("   ");
+        ACLabel ChangehiddenLabel = new ACLabel("");
+        ACLabel ChangehiddenLabel2 = new ACLabel("");
+        ACLabel ChangehiddenLabel3 = new ACLabel("");
+        ACLabel ChangehiddenLabel4 = new ACLabel("");
         // 2007/10/22 [Masahiko Higuchi] Addition - end
         // 2007/10/22 [Masahiko Higuchi] Replace - begin バージョンアップお知らせ機能対応
         this.add(titleBar, VRLayout.WEST);
@@ -188,11 +216,20 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
         VRLayout menusLayout = new VRLayout();
         menusLayout.setHgap(10);
         // 2007/10/22 [Masahiko Higuchi] Replace - begin バージョンアップお知らせ機能対応
-        menusLayout.setVgap(2);
+//        menusLayout.setVgap(2);
+        menusLayout.setVgap(6);
         // 2007/10/22 [Masahiko Higuchi] Replace - end
         menus.setLayout(menusLayout);
 		// 2007/10/22 [Masahiko Higuchi] Replace - begin バージョンアップお知らせ機能対応
         htmlPanel.setLayout(htmlLayout);
+        menuChangePanel1.add(ChangehiddenLabel, VRLayout.CLIENT);
+        menuChangePanel1.add(ChangehiddenLabel2, VRLayout.CLIENT);
+        menuChangePanel1.add(ChangehiddenLabel3, VRLayout.CLIENT);
+        menuChangePanel1.add(ChangehiddenLabel4, VRLayout.CLIENT);
+        menuChangePanel1.add(sizeChangeBtnPnl1, VRLayout.CLIENT);
+        menuChangePanel1.add(sizeChangeBtnPnl2, VRLayout.CLIENT);
+        menuChangePanel1.add(sizeChangeBtnPnl3, VRLayout.CLIENT);
+        menuChangePanel1.add(sizeChangeBtnPnl4, VRLayout.CLIENT);
         menuIkenshoShijishoPanel.add(ikenshoShijisho, VRLayout.CLIENT);
         menuSeikyuushoAndBasicPanel.add(seikyuusho, VRLayout.CLIENT);
         menuSeikyuushoAndBasicPanel.add(basic, VRLayout.CLIENT);
@@ -200,17 +237,22 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
         menuOtherAndSettingPanel.add(setting, VRLayout.CLIENT);
         menuClosePanel.add(hiddenLabel, VRLayout.CLIENT);
         menuClosePanel.add(closeBtnPnl, VRLayout.CLIENT);
+        
         htmlPanel.add(editor);
         // 背景色は白に設定
         menuIkenshoShijishoPanel.setBackground(Color.white);
         menuSeikyuushoAndBasicPanel.setBackground(Color.white);
         menuOtherAndSettingPanel.setBackground(Color.white);
+        menuChangePanel1.setBackground(Color.white);
+//        menuClosePanel1.setBackground(Color.white);
         menuClosePanel.setBackground(Color.white);
         editor.setBackground(Color.white);
         // メニューにボタンの配置
+        menus.add(menuChangePanel1,VRLayout.NORTH);
         menus.add(menuIkenshoShijishoPanel,VRLayout.NORTH);
         menus.add(menuSeikyuushoAndBasicPanel,VRLayout.NORTH);
         menus.add(menuOtherAndSettingPanel,VRLayout.NORTH);
+//        menus.add(menuClosePanel1,VRLayout.NORTH);
         menus.add(menuClosePanel,VRLayout.NORTH);
         menus.add(editor,VRLayout.CLIENT);
         // 2007/10/22 [Masahiko Higuchi] Replace - end
@@ -271,8 +313,44 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
         // close.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
         close.setIcon(new ImageIcon(getClass().getClassLoader().getResource(
                 "jp/or/med/orca/ikensho/images/menu/menuicon_17.png")));
-
+        sizeChangeBtnPnl1.setLayout(new BorderLayout());
+        sizeChangeBtnPnl1.setOpaque(false);
+//        sizeChangeBtnPnl1.setPreferredSize(new Dimension(40,50));
+        sizeChange1.setPreferredSize(new Dimension(60,40));
+        sizeChangeBtnPnl1.add(sizeChange1, BorderLayout.CENTER);
+		// 2007/10/22 [Masahiko Higuchi] Replace - end
+        sizeChange1.setToolTipText("画面のサイズを800×600に設定します。");
+        // close.setBackground(new java.awt.Color(102, 102, 255));
+        // close.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
+        sizeChangeBtnPnl2.setLayout(new BorderLayout());
+        sizeChangeBtnPnl2.setOpaque(false);
+        sizeChange2.setPreferredSize(new Dimension(60,40));
+        sizeChangeBtnPnl2.add(sizeChange2, BorderLayout.CENTER);
+		// 2007/10/22 [Masahiko Higuchi] Replace - end
+        sizeChange2.setToolTipText("画面のサイズを1024×730に設定します。");
+        // close.setBackground(new java.awt.Color(102, 102, 255));
+        // close.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
+        sizeChangeBtnPnl3.setLayout(new BorderLayout());
+        sizeChangeBtnPnl3.setOpaque(false);
+        sizeChange3.setPreferredSize(new Dimension(60,40));
+        sizeChangeBtnPnl3.add(sizeChange3, BorderLayout.CENTER);
+		// 2007/10/22 [Masahiko Higuchi] Replace - end
+        sizeChange3.setToolTipText("画面のサイズを1280×960に設定します。");
+        // close.setBackground(new java.awt.Color(102, 102, 255));
+        // close.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
+        sizeChangeBtnPnl4.setLayout(new BorderLayout());
+        sizeChangeBtnPnl4.setOpaque(false);
+        sizeChange4.setPreferredSize(new Dimension(60,40));
+        sizeChangeBtnPnl4.add(sizeChange4, BorderLayout.CENTER);
+		// 2007/10/22 [Masahiko Higuchi] Replace - end
+        sizeChange4.setToolTipText("画面のサイズを1440×1050に設定します。");
+        // close.setBackground(new java.awt.Color(102, 102, 255));
+        // close.setFont(new java.awt.Font("Dialog", java.awt.Font.PLAIN, 18));
         setting.addKeyListener(cmd);
+        //setGamenSize();
+        
+        // 画面サイズの微調整
+        setAdjust();
     }
 
     private void event() {
@@ -506,7 +584,63 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
                 }
             }
         });
-
+        
+        sizeChange1.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                	if (ACFrame.getInstance().isSmall()) {
+                		return;
+                	}
+                	
+                	ACFrame.getInstance().setSmall();
+                	setAdjust();
+                } catch (Exception ex) {
+                    IkenshoCommon.showExceptionMessage(ex);
+                }
+            }
+        });
+        sizeChange2.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                	if (ACFrame.getInstance().isMiddle()) {
+                		return;
+                	}
+                	
+                	ACFrame.getInstance().setMiddle();
+                	setAdjust();
+                } catch (Exception ex) {
+                    IkenshoCommon.showExceptionMessage(ex);
+                }
+            }
+        });
+        sizeChange3.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                	if (ACFrame.getInstance().isLarge()) {
+                		return;
+                	}
+                	
+                	ACFrame.getInstance().setLarge();
+                	setAdjust();
+                } catch (Exception ex) {
+                    IkenshoCommon.showExceptionMessage(ex);
+                }
+            }
+        });
+        sizeChange4.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent e) {
+                try {
+                	if (ACFrame.getInstance().isOverSize()) {
+                		return;
+                	}
+                	
+                	ACFrame.getInstance().setOverSize();
+                	setAdjust();
+                } catch (Exception ex) {
+                    IkenshoCommon.showExceptionMessage(ex);
+                }
+            }
+        });
         // システムの終了
         close.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent e) {
@@ -856,6 +990,52 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
             th.start();
         }
         
+    }
+    
+    
+    public void setAdjust() throws Exception{
+
+    	// UI変更を画面に適用
+    	for(int i = 0; i < versionPanel.getComponentCount(); i++) {
+    		versionPanel.getComponent(i).setFont(ACFrame.getInstance().getViewFont());
+    	}
+    	
+    	Font buttonFont = null;
+    	Font sizeFont = null;
+    	
+    	ACFrame frame = ACFrame.getInstance();
+    	
+    	if (ACOSInfo.isMac()) {
+    		if (frame.isSmall() || frame.isMiddle()) {
+    			buttonFont = new java.awt.Font("Dialog", Font.PLAIN, 18);
+    			sizeFont = new java.awt.Font("Dialog", Font.PLAIN, 15);
+    		}
+    	} else {
+    		if (frame.isSmall() || frame.isMiddle()) {
+    			buttonFont = new java.awt.Font("Dialog", Font.PLAIN, 18);
+    		}
+    		sizeFont = new java.awt.Font("Meiryo", Font.PLAIN, 15);
+    	}
+    	
+    	if (buttonFont != null) {
+    		ikenshoShijisho.setFont(buttonFont);
+	    	seikyuusho.setFont(buttonFont);
+	    	basic.setFont(buttonFont);
+	    	setting.setFont(buttonFont);
+	    	other.setFont(buttonFont);
+	    	close.setFont(buttonFont);
+    	}
+    	
+    	if (sizeFont != null) {
+	    	sizeChange1.setFont(sizeFont);
+	    	sizeChange2.setFont(sizeFont);
+	    	sizeChange3.setFont(sizeFont);
+	    	sizeChange4.setFont(sizeFont);
+    	}
+    	
+    	// 1.4対応　再描画実行
+    	ACFrame.getInstance().validate();
+    	
     }
     
 }

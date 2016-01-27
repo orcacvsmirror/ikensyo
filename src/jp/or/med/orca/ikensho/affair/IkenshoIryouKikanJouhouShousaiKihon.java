@@ -169,6 +169,7 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
         kihonPnl5Layout.setFitVLast(true);
         kihonPnl5.setLayout(kihonPnl5Layout);
         kihonPnl5.add(bikouContainer, VRLayout.FLOW_INSETLINE);
+        
         bikouContainer.setText("îıçl");
         bikouContainer.add(bikouScr, null);
         bikouScr.getViewport().add(bikou);

@@ -1,80 +1,206 @@
 <?xml version="1.0" encoding="Shift_JIS"?>
-<project basedir="." default="compile" name="コンパイル">
-	<property name="SourceDir" value="src" />
-	<property name="ClassDir" value="bin" />
-	<property name="JarNameOfMain" value="Ikensyo.jar" />
-	<property name="JarNameOfPDFCustom" value="PDF-Custom.jar" />
-	<property name="JarNameOfConvert" value="convert.jar" />
-	<!-- コンパイルに必要なクラスパス -->
-	<path id="BuildClasspath">
-		<pathelement path="lib/firebirdsql-full.jar" />
-		<pathelement path="lib/iText.jar" />
-		<pathelement path="lib/iTextAsian.jar" />
-		<pathelement path="lib/ac-impl.jar" />
-		<pathelement path="lib/vr-impl.jar" />
-		<pathelement path="lib/bridge.jar" />
-	</path>
-	<target name="compile">
-		<!-- コンパイル -->
-		<delete dir="${ClassDir}" />
-		<mkdir dir="${ClassDir}" />
-		<javac source="1.4" target="1.4" srcdir="src" destdir="${ClassDir}" includeAntRuntime="true" nowarn="on" classpathref="BuildClasspath">
-			<compilerarg value="-Xlint:deprecation" />
-			<compilerarg value="-Xlint:unchecked" />
-			<include name="jp/or/med/orca/ikensho/**/*" />
-		</javac>
-		<!-- リソース複写 -->
-		<copy todir="${ClassDir}" >
-	      <fileset dir="${SourceDir}">
-	        <exclude name="**/*.java"/>
-	      </fileset>
-	    </copy>
-		<!-- Jar生成 -->
-		<delete file="${JarNameOfMain}" />
-		<jar jarfile="${JarNameOfMain}" basedir="${ClassDir}">
-			<include name="jp/or/**/*" />
-			<exclude name="**/*.java" />
-			<exclude name="jp/or/med/orca/ikensho/convert/**/*" />
-			<exclude name="jp/or/med/orca/ikensho/pdf/ip/ip001/**/*" />
-			<manifest>
-				<attribute name="Main-Class" value="jp.or.med.orca.ikensho.affair.IkenshoStarter" />
-				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar lib/iText.jar lib/iTextAsian.jar lib/ac-impl.jar lib/vr-impl.jar lib/bridge.jar" />
-			</manifest>
-		</jar>
-		<delete file="${JarNameOfConvert}" />
-		<jar jarfile="${JarNameOfConvert}" basedir="${ClassDir}">
-			<include name="jp/or/med/orca/ikensho/convert/**/*" />
-			<exclude name="jp/or/med/orca/ikensho/convert/**/*Patch*" />
-			<exclude name="**/*.java" />
-			<manifest>
-				<attribute name="Main-Class" value="jp.or.med.orca.ikensho.convert.IkenshoMacConvertStarter" />
-				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar lib/iText.jar lib/iTextAsian.jar lib/ac-impl.jar lib/vr-impl.jar lib/bridge.jar ${JarNameOfMain}" />
-			</manifest>
-		</jar>
-		<delete file="${JarNameOfPDFCustom}" />
-		<jar jarfile="${JarNameOfPDFCustom}" basedir="${ClassDir}">
-			<include name="jp/or/med/orca/ikensho/pdf/**/*" />
-			<exclude name="**/*.java" />
-			<manifest>
-				<attribute name="Main-Class" value="jp.or.med.orca.ikensho.pdf.IkenshoPDFCustomStarter" />
-				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar lib/iText.jar lib/iTextAsian.jar lib/ac-impl.jar lib/vr-impl.jar lib/bridge.jar ${JarNameOfMain}" />
-			</manifest>
-		</jar>
-		<delete dir="${ClassDir}" />
-	</target>
-
-	<target name="onlineUpdater">
-		<delete dir="${ClassDir}" />
-		<mkdir dir="${ClassDir}" />
-		<javac source="1.4" target="1.4" srcdir="${SourceDir}" destdir="${ClassDir}" nowarn="on" includes="jp/nichicom/update/**/*" />
-		<delete file="update.jar" />
-		<jar jarfile="update.jar" basedir="${ClassDir}">
-			<include name="jp/nichicom/update/**/*" />
-			<exclude name="**/*.java" />
-			<manifest>
-				<attribute name="Main-Class" value="jp.nichicom.update.MainFrame" />
-				<attribute name="Class-Path" value=". lib/firebirdsql-full.jar" />
-			</manifest>
-		</jar>
-	</target>
+<project basedir="." default="all" name="jar生成">
+    
+    <property name="src.dir" value="src" />
+    <property name="dest.dir" value="dest" />
+    
+    <property name="vr.title" value="VR Libraly" />
+    <property name="vr.version" value="1.0" />
+    
+    <property name="ac.title" value="AC Libraly" />
+    <property name="ac.version" value="1.0" />
+    
+    <property name="bridge.title" value="Bridge Libraly" />
+    <property name="bridge.version" value="1.0" />
+    
+    <property name="specification.vendor" value="Nippon Computer Corporation. (http://www.nck.co.jp)" />
+    <property name="implementation.vendor" value="Nippon Computer Corporation." />
+    <property name="implementation.vendor.id" value="http://www.nck.co.jp" />
+    
+    <!-- コンパイルに必要なクラスパス -->
+    <path id="build.classpath">
+        <pathelement path="lib/firebirdsql-full.jar" />
+        <pathelement path="lib/iText.jar" />
+        <pathelement path="lib/iTextAsian.jar" />
+    </path>
+    
+    <target name="clean">
+        <delete dir="${dest.dir}" />
+    </target>
+    
+    <!-- ビルド -->
+    <target name="build">
+        
+        <mkdir dir="${dest.dir}" />
+        
+        <javac encoding="ms932" source="1.4" target="1.4" srcdir="${src.dir}" includeAntRuntime="true" destdir="${dest.dir}" nowarn="on" classpathref="build.classpath" >
+            <compilerarg value="-Xlint:deprecation" />
+            <compilerarg value="-Xlint:unchecked" />
+        </javac>
+        
+        <!-- 画像ファイルをコピー -->
+        <copy todir="${dest.dir}" >
+            <fileset dir="${src.dir}">
+                <include name="**/*.png"/>
+                <include name="**/*.jpg"/>
+                <include name="**/*.gif"/>
+            </fileset>
+		</copy>
+    </target>
+    
+    
+    <!-- VRライブラリのjar作成 -->
+    <target name="vr" depends="build">       
+        
+        <!-- 出力済み資産を削除 -->
+        <mkdir dir="lib" />
+        <delete file="lib/vr-impl.jar" />
+        <delete file="lib/vr-src.jar" />
+        
+        <!-- jarファイル生成 -->
+        <jar jarfile="lib/vr-impl.jar" basedir="${dest.dir}" update="false">
+            <include name="jp/nichicom/vr/**/*" />
+            <exclude name="**/*.java" />
+            <include name="**/calendar.xml" />
+            <exclude name="**/licence.txt" />
+            <manifest>
+                <attribute name="Specification-Title" value="${vr.title}" />
+                <attribute name="Specification-Version" value="${vr.version}" />
+                <attribute name="Specification-Vendor" value="${specification.vendor}" />
+                <attribute name="Implementation-Title" value="${vr.title}" />
+                <attribute name="Implementation-Version" value="${vr.version}" />
+                <attribute name="Implementation-Vendor" value="${implementation.vendor}" />
+                <attribute name="Implementation-Vendor-Id" value="${implementation.vendor.id}" />
+            </manifest>
+        </jar>
+        <jar jarfile="lib/vr-src.jar" basedir="${src.dir}" update="false">
+            <include name="jp/nichicom/vr/**/*.java" />
+            <manifest>
+                <attribute name="Specification-Title" value="${vr.title}" />
+                <attribute name="Specification-Version" value="${vr.version}" />
+                <attribute name="Specification-Vendor" value="${specification.vendor}" />
+                <attribute name="Implementation-Title" value="${vr.title}" />
+                <attribute name="Implementation-Version" value="${vr.version}" />
+                <attribute name="Implementation-Vendor" value="${implementation.vendor}" />
+                <attribute name="Implementation-Vendor-Id" value="${implementation.vendor.id}" />
+            </manifest>
+        </jar>
+    </target>
+    
+    
+    <!-- ACライブラリのjar作成 -->
+    <target name="ac" depends="build">
+        
+        <!-- 出力済み資産を削除 -->
+        <mkdir dir="lib" />
+        <delete file="lib/ac-impl.jar" />
+        <delete file="lib/ac-src.jar" />
+        
+        <!-- jarファイル生成 -->
+        <jar jarfile="lib/ac-impl.jar" basedir="${dest.dir}" update="false">
+            <include name="jp/nichicom/ac/**/*" />
+            <exclude name="**/*.java" />
+            <exclude name="**/licence.txt" />
+            <manifest>
+                <attribute name="Specification-Title" value="${ac.title}" />
+                <attribute name="Specification-Version" value="${ac.version}" />
+                <attribute name="Specification-Vendor" value="${specification.vendor}" />
+                <attribute name="Implementation-Title" value="${ac.title}" />
+                <attribute name="Implementation-Version" value="${ac.version}" />
+                <attribute name="Implementation-Vendor" value="${implementation.vendor}" />
+                <attribute name="Implementation-Vendor-Id" value="${implementation.vendor.id}" />
+            </manifest>
+        </jar>
+        <jar jarfile="lib/ac-src.jar" basedir="${src.dir}" update="false">
+            <include name="jp/nichicom/ac/**/*.java" />
+            <manifest>
+                <attribute name="Specification-Title" value="${ac.title}" />
+                <attribute name="Specification-Version" value="${ac.version}" />
+                <attribute name="Specification-Vendor" value="${specification.vendor}" />
+                <attribute name="Implementation-Title" value="${ac.title}" />
+                <attribute name="Implementation-Version" value="${ac.version}" />
+                <attribute name="Implementation-Vendor" value="${implementation.vendor}" />
+                <attribute name="Implementation-Vendor-Id" value="${implementation.vendor.id}" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <!-- bridgeライブラリのjar作成 -->
+    <target name="bridge" depends="build">
+        
+        <!-- 出力済み資産を削除 -->
+        <delete file="lib/bridge.jar" />
+        <delete file="lib/bridge-src.jar" />
+        
+        <jar jarfile="lib/bridge.jar" basedir="${dest.dir}" update="false">
+            <include name="jp/nichicom/bridge/**/*" />
+            <exclude name="**/*.java" />
+            <exclude name="**/licence.txt" />
+            <manifest>
+                <attribute name="Specification-Title" value="${bridge.title}" />
+                <attribute name="Specification-Version" value="${bridge.version}" />
+                <attribute name="Specification-Vendor" value="${specification.vendor}" />
+                <attribute name="Implementation-Title" value="${bridge.title}" />
+                <attribute name="Implementation-Version" value="${bridge.version}" />
+                <attribute name="Implementation-Vendor" value="${implementation.vendor}" />
+                <attribute name="Implementation-Vendor-Id" value="${implementation.vendor.id}" />
+            </manifest>
+        </jar>
+        
+        <jar jarfile="lib/bridge-src.jar" basedir="${src.dir}" update="false">
+            <include name="jp/nichicom/bridge/**/*.java" />
+            <manifest>
+                <attribute name="Specification-Title" value="${bridge.title}" />
+                <attribute name="Specification-Version" value="${bridge.version}" />
+                <attribute name="Specification-Vendor" value="${specification.vendor}" />
+                <attribute name="Implementation-Title" value="${bridge.title}" />
+                <attribute name="Implementation-Version" value="${bridge.version}" />
+                <attribute name="Implementation-Vendor" value="${implementation.vendor}" />
+                <attribute name="Implementation-Vendor-Id" value="${implementation.vendor.id}" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <!-- 医見書本体のjar作成 -->
+    <target name="starter" depends="build">
+        <delete file="Ikensyo.jar" />
+        <jar jarfile="Ikensyo.jar" basedir="${dest.dir}" includes="jp/or/**/*" excludes="*.java" update="false">
+            <exclude name="jp/or/med/orca/ikensho/convert/**/*" />
+            <exclude name="jp/or/med/orca/ikensho/pdf/ip/ip001/**/*" />
+            <manifest>
+                <attribute name="Main-Class" value="jp.or.med.orca.ikensho.affair.IkenshoMainMenu" />
+                <attribute name="Class-Path" value=". lib/ac-impl.jar lib/vr-impl.jar lib/bridge.jar lib/firebirdsql-full.jar lib/iText.jar lib/iTextAsian.jar" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <!-- データ移行ツールのjar作成 -->
+    <target name="convert" depends="build">
+        <delete file="convert.jar" />
+        <jar jarfile="convert.jar" basedir="${dest.dir}" update="false">
+            <include name="jp/or/med/orca/ikensho/convert/**/*" />
+            <exclude name="jp/or/med/orca/ikensho/convert/**/*Patch*" />
+            <exclude name="**/*.java" />
+            <manifest>
+                <attribute name="Main-Class" value="jp.or.med.orca.ikensho.convert.IkenshoMacConvert" />
+                <attribute name="Class-Path" value=". lib/ac-impl.jar lib/vr-impl.jar lib/firebirdsql-full.jar Ikensyo.jar" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <!-- 帳票カスタマイズツールのjar作成 -->
+    <target name="pdf-custom" depends="build">
+        <delete file="PDF-Custom.jar" />
+        <jar jarfile="PDF-Custom.jar" basedir="${dest.dir}" update="false">
+            <include name="jp/or/med/orca/ikensho/pdf/**/*" />
+            <exclude name="**/*.java" />
+            <manifest>
+                <attribute name="Main-Class" value="jp.or.med.orca.ikensho.pdf.ip.ip001.IP001" />
+                <attribute name="Class-Path" value=". lib/ac-impl.jar lib/vr-impl.jar lib/bridge.jar lib/firebirdsql-full.jar lib/iText.jar lib/iTextAsian.jar Ikensyo.jar" />
+            </manifest>
+        </jar>
+    </target>
+    
+    <target name="all" depends="clean,vr,ac,bridge,starter,convert,pdf-custom" />
+    
 </project>

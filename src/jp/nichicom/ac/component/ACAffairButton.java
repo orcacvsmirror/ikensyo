@@ -1,6 +1,7 @@
 package jp.nichicom.ac.component;
 
 import java.awt.Dimension;
+import java.awt.FontMetrics;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -38,19 +39,27 @@ public class ACAffairButton extends ACButton {
 
     protected void initComponent() {
         super.initComponent();
-
         // MacÇÃéûÇÕèàóùÇçsÇÌÇ»Ç¢ÅB
-        if (isColorIgnore()) {
-            return;
-        }
+//        if (isColorIgnore()) {
+//            return;
+//        }
         this.setHorizontalTextPosition(javax.swing.SwingConstants.CENTER);
         this.setVerticalTextPosition(javax.swing.SwingConstants.BOTTOM);
         this.setIconTextGap(0);
         this.setMargin(new java.awt.Insets(0, 4, 0, 4));
         this.setContentAreaFilled(true);
         this.setForeground(java.awt.Color.white);
-        this.setMinimumSize(new Dimension(90, 44));
-        this.setPreferredSize(new Dimension(90, 44));
+        //if (IkenshoMainMenu.getMojiSize().equals("Small")){
+//        if (ACScreenMode.isSmall()) {
+//        	this.setMinimumSize(new Dimension(90, 44));
+//        	this.setPreferredSize(new Dimension(90, 44));
+//        }
+        
+        FontMetrics fo = getFontMetrics(getFont());
+        int width = fo.stringWidth("ÅÅÅÅÅÅÅÅ(M)") + 24;
+        int height = fo.getHeight() + 28;
+        this.setPreferredSize(new Dimension(width, height));
+        
         this.setBackground(new java.awt.Color(0, 51, 153));
     }
 

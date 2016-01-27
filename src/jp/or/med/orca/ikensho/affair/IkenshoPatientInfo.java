@@ -2,7 +2,6 @@ package jp.or.med.orca.ikensho.affair;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.MouseEvent;
 import java.awt.im.InputSubset;
@@ -1204,23 +1203,34 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
         }
 
         ikenshoTable.setColumnModel(new VRTableColumnModel(new VRTableColumn[] {
-                new VRTableColumn(0, 30, "最新", SwingConstants.CENTER,
+//                new VRTableColumn(0, 30, "最新", SwingConstants.CENTER,
+//                        ikenshoNewFormat),
+//                new VRTableColumn(1, 50, "作成No.", SwingConstants.RIGHT),
+//                new VRTableColumn(2, 100, "区分", IkenshoFormatTypeFormat.getInstance()),
+//                new VRTableColumn(3, 120, "記入日",
+                new VRTableColumn(0, 50, "最新", SwingConstants.CENTER,
                         ikenshoNewFormat),
-                new VRTableColumn(1, 50, "作成No.", SwingConstants.RIGHT),
-                new VRTableColumn(2, 100, "区分", IkenshoFormatTypeFormat.getInstance()),
-                new VRTableColumn(3, 120, "記入日",
+                new VRTableColumn(1, 90, "作成No.", SwingConstants.RIGHT),
+                new VRTableColumn(2, 160, "区分", IkenshoFormatTypeFormat.getInstance()),
+                new VRTableColumn(3, 200, "記入日",
                         IkenshoConstants.FORMAT_ERA_YMD),
                 new VRTableColumn(4, 70, "請求", SwingConstants.CENTER,
                         IkenshoConstants.FORMAT_HAKKOU),
                 new VRTableColumn(5, 70, "CSV出力", SwingConstants.CENTER,
                         IkenshoConstants.FORMAT_FD_OUTPUT), }));
 
+//        sijishoTable.setColumnModel(new VRTableColumnModel(new VRTableColumn[] {
+//                new VRTableColumn(0, 30, "最新", SwingConstants.CENTER,
+//                        sijishoNewFormat),
+//                // [ID:0000514][Tozo TANAKA] 2009/09/07 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//                new VRTableColumn(2, 120, "区分", ShijishoFormatTypeFormat.getInstance()),
+//                // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+//                new VRTableColumn(1, 320, "記入日",
+//                        IkenshoConstants.FORMAT_ERA_YMD), }));
         sijishoTable.setColumnModel(new VRTableColumnModel(new VRTableColumn[] {
-                new VRTableColumn(0, 30, "最新", SwingConstants.CENTER,
+                new VRTableColumn(0, 50, "最新", SwingConstants.CENTER,
                         sijishoNewFormat),
-                // [ID:0000514][Tozo TANAKA] 2009/09/07 add begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
-                new VRTableColumn(2, 120, "区分", ShijishoFormatTypeFormat.getInstance()),
-                // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
+                new VRTableColumn(2, 160, "区分", ShijishoFormatTypeFormat.getInstance()), 
                 new VRTableColumn(1, 320, "記入日",
                         IkenshoConstants.FORMAT_ERA_YMD), }));
 
@@ -1247,7 +1257,8 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
     private void jbInit() throws Exception {
         update.setIconPath(IkenshoConstants.BUTTON_IMAGE_PATH_UPDATE);
         update.setMnemonic('S');
-        update.setText("更新(S)");
+//        update.setText("更新(S)");
+        update.setText("　更新(S)　");
         buttons.setTitle("患者最新基本情報");
         sijishoDetail.setMnemonic('J');
         sijishoDetail.setText("編集(J)");

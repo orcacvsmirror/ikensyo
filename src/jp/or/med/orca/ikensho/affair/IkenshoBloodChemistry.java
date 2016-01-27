@@ -62,7 +62,13 @@ public class IkenshoBloodChemistry extends IkenshoDialog {
      */
     private void init() {
         // ウィンドウのサイズ
-        setSize(new Dimension(200, 130));
+//        setSize(new Dimension(200, 130));
+        try {
+			//IkenshoLayoutAdjustment.AllAdjustment(this);
+        	pack();
+		} catch (Exception e) {
+
+		}
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();

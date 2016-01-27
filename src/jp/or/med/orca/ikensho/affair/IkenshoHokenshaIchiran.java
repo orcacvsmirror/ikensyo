@@ -110,6 +110,7 @@ public class IkenshoHokenshaIchiran extends IkenshoAffairContainer implements AC
         deleteMenu.setMnemonic('D');
         deleteMenu.setText("削除(D)");
         deleteMenu.setToolTipText(delete.getToolTipText());
+
     }
 
     public void initAffair(ACAffairInfo affair) throws Exception {
@@ -379,13 +380,20 @@ public class IkenshoHokenshaIchiran extends IkenshoAffairContainer implements AC
         //ColumnModelの生成
         table.setColumnModel(new VRTableColumnModel(
             new VRTableColumn[] {
-            new VRTableColumn(0, 70, "保険者番号"),
-            new VRTableColumn(1, 167, "保険者名称"),
-            new VRTableColumn(2, 50, "区分", SwingConstants.CENTER, IkenshoInsurerTypeFormat.getInstance()),
-            new VRTableColumn(3, 167, "意見書作成料請求先"),
-            new VRTableColumn(4, 167, "診察・検査料請求先"),
-            new VRTableColumn(5, 50, "FD出力", SwingConstants.CENTER, IkenshoConstants.FORMAT_UMU),
-            new VRTableColumn(6, 150, "請求パターン", IkenshoConstants.FORMAT_SEIKYUSHO_OUTPUT_PATTERN)
+            //new VRTableColumn(0, 70, "保険者番号"),
+            //new VRTableColumn(1, 167, "保険者名称"),
+            //new VRTableColumn(2, 50, "区分", SwingConstants.CENTER, IkenshoInsurerTypeFormat.getInstance()),
+            //new VRTableColumn(3, 167, "意見書作成料請求先"),
+            //new VRTableColumn(4, 167, "診察・検査料請求先"),
+            //new VRTableColumn(5, 50, "FD出力", SwingConstants.CENTER, IkenshoConstants.FORMAT_UMU),
+            //new VRTableColumn(6, 150, "請求パターン", IkenshoConstants.FORMAT_SEIKYUSHO_OUTPUT_PATT
+            new VRTableColumn(0, 140, "保険者番号"),
+            new VRTableColumn(1, 260, "保険者名称"),
+            new VRTableColumn(2, 120, "区分", SwingConstants.CENTER, IkenshoInsurerTypeFormat.getInstance()),
+            new VRTableColumn(3, 260, "意見書作成料請求先"),
+            new VRTableColumn(4, 260, "診察・検査料請求先"),
+            new VRTableColumn(5, 100, "FD出力", SwingConstants.CENTER, IkenshoConstants.FORMAT_UMU),
+            new VRTableColumn(6, 300, "請求パターン", IkenshoConstants.FORMAT_SEIKYUSHO_OUTPUT_PATTERN)
         })
             );
     }

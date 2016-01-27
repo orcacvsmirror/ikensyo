@@ -53,7 +53,9 @@ public class IkenshoIkenshoInfoMentionSpecial extends
         
         getMentionTokki().setColumns(94);
         getMentionTokki().setMaxRows(9);
-        getMentionTokki().setRows(10);
+        getMentionTokki().setRows(9);
+        getMentionTokki().fitTextArea();
+        
     }
 
     protected void addComponent() {

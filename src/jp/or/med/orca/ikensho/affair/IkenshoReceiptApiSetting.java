@@ -5,33 +5,20 @@ import java.awt.Dimension;
 import java.awt.Frame;
 import java.awt.Toolkit;
 import java.awt.event.WindowEvent;
-import java.awt.im.InputSubset;
-import java.text.Format;
 
-import javax.swing.JLabel;
 import javax.swing.JPanel;
-import javax.swing.SwingConstants;
 
-import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.component.ACButton;
-import jp.nichicom.ac.component.ACCheckBox;
-import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
-import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.util.ACMessageBox;
 import jp.nichicom.vr.container.VRPanel;
 import jp.nichicom.vr.layout.VRLayout;
-import jp.nichicom.vr.text.VRCharType;
-import jp.nichicom.vr.util.VRArrayList;
-import jp.nichicom.vr.util.VRMap;
 import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
-import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
-import jp.or.med.orca.ikensho.sql.IkenshoPassiveCheck;
 import jp.or.med.orca.ikensho.util.IkenshoSnapshot;
 
 /** TODO <HEAD_IKENSYO> */
@@ -106,7 +93,8 @@ public class IkenshoReceiptApiSetting extends IkenshoDialog {
 
     public void init() throws Exception {
         // 画面サイズ
-        setSize(new Dimension(350, 200));
+//        setSize(new Dimension(350, 200));
+    	setSize(new Dimension(450, 300));
 
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

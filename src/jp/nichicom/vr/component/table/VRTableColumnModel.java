@@ -9,8 +9,6 @@ import javax.swing.JTable;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 
-import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
-
 /**
  * <code>VRTableColumn</code>に対応したテーブルカラムモデルです。
  * <p>
@@ -27,7 +25,11 @@ import sun.reflect.ReflectionFactory.GetReflectionFactoryAction;
 public class VRTableColumnModel extends DefaultTableColumnModel implements
         VRTableColumnModelar {
 
-    private JTable table;
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 1L;
+	private JTable table;
 
     /**
      * コンストラクタです。
@@ -124,7 +126,12 @@ public class VRTableColumnModel extends DefaultTableColumnModel implements
      */
     protected class VRTableColumnModelVector extends Vector {
 
-        public synchronized Object elementAt(int index) {
+        /**
+		 * 
+		 */
+		private static final long serialVersionUID = 1L;
+
+		public synchronized Object elementAt(int index) {
             return super.elementAt(toRealColumnCount(index));
         }
 

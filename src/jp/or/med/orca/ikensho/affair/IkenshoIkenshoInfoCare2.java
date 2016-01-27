@@ -581,6 +581,7 @@ public class IkenshoIkenshoInfoCare2 extends
 
         getCare2KansenName().setIMEMode(InputSubset.KANJI);
         getCare2KansenName().setMaxLength(30);
+        getCare2KansenName().setColumns(30);
         getCare2KansenName().setBindPath("KANSENSHOU_NM");
         getCare2KansenName().setEnabled(false);
         getCare2KansenName().setPreferredSize(new Dimension(400, 19));
@@ -613,11 +614,13 @@ public class IkenshoIkenshoInfoCare2 extends
         care2HoumonsKango.setUnderlineBindPath("HOUMON_KANGO_UL");
         care2ServiceOtherValue.setIMEMode(InputSubset.KANJI);
         care2ServiceOtherValue.setMaxLength(50);
+        care2ServiceOtherValue.setColumns(50);
         care2ServiceOtherValue.setBindPath("KAIGO_OTHER");
         care2SesshokuValue.setEnabled(false);
         care2SesshokuValue.setPreferredSize(new Dimension(380, 19));
         care2SesshokuValue.setIMEMode(InputSubset.KANJI);
         care2SesshokuValue.setMaxLength(30);
+        care2SesshokuValue.setColumns(30);
         care2SesshokuValue.setBindPath("SESHOKU_RYUIJIKOU");
         care2TsuushyoReha.setCheckBindPath("TUUSHO_REHA");
         care2TsuushyoReha.setText("通所リハビリテーション");
@@ -629,6 +632,7 @@ public class IkenshoIkenshoInfoCare2 extends
         care2KetsuattsuValue.setPreferredSize(new Dimension(380, 19));
         care2KetsuattsuValue.setIMEMode(InputSubset.KANJI);
         care2KetsuattsuValue.setMaxLength(30);
+        care2KetsuattsuValue.setColumns(30);
         care2KetsuattsuValue.setBindPath("KETUATU_RYUIJIKOU");
         getServiceOthers().setText("・その他");
         care2Move.setBindPath("IDOU");
@@ -646,6 +650,7 @@ public class IkenshoIkenshoInfoCare2 extends
         care2EngeValue.setPreferredSize(new Dimension(380, 19));
         care2EngeValue.setIMEMode(InputSubset.KANJI);
         care2EngeValue.setMaxLength(30);
+        care2EngeValue.setColumns(30);
         care2EngeValue.setBindPath("ENGE_RYUIJIKOU");
         care2Sesshoku.setBindPath("SESHOKU");
         care2HoumonShikaShinryou.setCheckBindPath("HOUMONSIKA_SINRYOU");
@@ -673,6 +678,7 @@ public class IkenshoIkenshoInfoCare2 extends
         care2MoveValue.setPreferredSize(new Dimension(380, 19));
         care2MoveValue.setIMEMode(InputSubset.KANJI);
         care2MoveValue.setMaxLength(30);
+        care2MoveValue.setColumns(30);
         care2MoveValue.setBindPath("IDOU_RYUIJIKOU");
         care2Ketsuattsu.setBindPath("KETUATU");
         care2HoumonEiyou.setCheckBindPath("HOUMONEIYOU_SHOKUJISIDOU");

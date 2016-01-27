@@ -3,6 +3,7 @@ package jp.nichicom.vr.component;
 
 import java.awt.Component;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.LayoutManager;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -35,6 +36,7 @@ import jp.nichicom.vr.bind.event.VRBindModelEvent;
 import jp.nichicom.vr.bind.event.VRBindModelEventListener;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
+import jp.or.med.orca.ikensho.affair.IkenshoMainMenu;
 
 /**
  * バインド機構を実装したラジオボタングループです。

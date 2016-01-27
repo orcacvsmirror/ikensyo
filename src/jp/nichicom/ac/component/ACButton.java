@@ -5,6 +5,7 @@ import java.awt.Color;
 import javax.swing.Action;
 import javax.swing.Icon;
 
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.io.ACResourceIconPooler;
 import jp.nichicom.vr.component.VRButton;
 
@@ -75,8 +76,8 @@ public class ACButton extends VRButton {
             return;
         }
         setEnvironmentChecked(true);
-        String osName = System.getProperty("os.name");
-        if ((osName == null) || (osName.indexOf("Mac") < 0)) {
+        
+        if (!ACOSInfo.isMac()) {
             // MacˆÈŠO‚ÍF•ÏX‚ð‹–‚·
             setColorIgnore(false);
         } else {

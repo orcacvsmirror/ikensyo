@@ -11,8 +11,6 @@ import java.text.NumberFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -228,13 +226,17 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         // •ÛŒ¯ŽÒ‘I‘ðƒRƒ“ƒ{ƒ{ƒbƒNƒX
         hokenjyaContainer.setText("ˆË—ŠŒ³i•ÛŒ¯ŽÒj");
         hokenjyaCombo.setEditable(false);
-        hokenjyaCombo.setPreferredSize(new Dimension(250, 20));
+//        hokenjyaCombo.setPreferredSize(new Dimension(250, 20));
+        hokenjyaCombo.setPreferredSize(new Dimension(350, 20));
+        hokenjyaCombo.setColumns(28);
         hokenjyaCombo.setBindPath("hokenjya");
         hokenjyaContainer.add(hokenjyaCombo, null);
         // ˆãŽtŽ–¼ƒRƒ“ƒ{ƒ{ƒbƒNƒX
         doctorContainer.setText("ˆãŽtŽ–¼");
         doctorCombo.setEditable(false);
-        doctorCombo.setPreferredSize(new Dimension(200, 20));
+//        doctorCombo.setPreferredSize(new Dimension(200, 20));
+        doctorCombo.setPreferredSize(new Dimension(230, 20));
+        doctorCombo.setColumns(15);
         doctorCombo.setBindPath("doctroName");
         doctorContainer.add(doctorCombo, null);
 
@@ -313,6 +315,7 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         formatTypeContainer.setText("ˆÓŒ©‘‹æ•ª");
         formatType.setEditable(false);
         formatType.setBlankable(true);
+        formatType.setColumns(6);
         formatType.setModel(new String[]{"ŽåŽ¡ˆãˆÓŒ©‘","ˆãŽtˆÓŒ©‘"});
         formatTypeContainer.add(formatType);
         
@@ -407,29 +410,52 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         table
                 .setColumnModel(new VRTableColumnModel(
                         new ACTableColumn[] {
-                                new ACTableColumn(0, 50, "”­sÏ",
+//                                new ACTableColumn(0, 50, "”­sÏ",
+//                                        SwingConstants.CENTER,
+//                                        IkenshoSeikyushoHakkouKubunReserveFormat
+//                                                .getInstance()),
+//                                new ACTableColumn(1, 50, "‹æ•ª", IkenshoFormatTypeFormat.getInstance()),
+//                                new ACTableColumn(2, 180, "Ž–¼",
+//                                        tableCellRenderer, null),
+//                                new ACTableColumn(3, 50, "”N—î",
+//                                        SwingConstants.RIGHT,
+//                                        tableCellRenderer, null),
+//                                // [ID:0000515] [Masahiko Higuchi] replace begin 2009”N“x‘Î‰žF—v–] ˆãŽtˆãŒ©‘‚Ì’ •[ˆóŽšC³
+//                                new ACTableColumn(4, 160, "”í•ÛŒ¯ŽÒ”Ô†^Žó‹‹ŽÒ”Ô†",
+//                                        tableCellRenderer, null),
+//                                // [ID:0000515] [Masahiko Higuchi] replace end
+//                                new ACTableColumn(5, 150, "ˆãŽtŽ–¼",
+//                                        tableCellRenderer, null),
+//                                new ACTableColumn(6, 110, "ì¬ˆË—Š“ú",
+//                                        IkenshoConstants.FORMAT_ERA_YMD,
+//                                        tableCellRenderer, null),
+//                                new ACTableColumn(7, 110, "ˆÓŒ©‘‹L“ü“ú",
+//                                        IkenshoConstants.FORMAT_ERA_YMD,
+//                                        tableCellRenderer, null),
+//                                new ACTableColumn(8, 110, "ˆÓŒ©‘‘—•t“ú",
+//                                        IkenshoConstants.FORMAT_ERA_YMD,
+//                                        tableCellRenderer, null) }));
+                                new ACTableColumn(0, 85, "”­sÏ",
                                         SwingConstants.CENTER,
                                         IkenshoSeikyushoHakkouKubunReserveFormat
                                                 .getInstance()),
-                                new ACTableColumn(1, 50, "‹æ•ª", IkenshoFormatTypeFormat.getInstance()),
+                                new ACTableColumn(1, 150, "‹æ•ª", IkenshoFormatTypeFormat.getInstance()),
                                 new ACTableColumn(2, 180, "Ž–¼",
                                         tableCellRenderer, null),
-                                new ACTableColumn(3, 50, "”N—î",
+                                new ACTableColumn(3, 60, "”N—î",
                                         SwingConstants.RIGHT,
                                         tableCellRenderer, null),
-                                // [ID:0000515] [Masahiko Higuchi] replace begin 2009”N“x‘Î‰žF—v–] ˆãŽtˆãŒ©‘‚Ì’ •[ˆóŽšC³
-                                new ACTableColumn(4, 160, "”í•ÛŒ¯ŽÒ”Ô†^Žó‹‹ŽÒ”Ô†",
+                                new ACTableColumn(4, 320, "”í•ÛŒ¯ŽÒ”Ô†^Žó‹‹ŽÒ”Ô†",
                                         tableCellRenderer, null),
-                                // [ID:0000515] [Masahiko Higuchi] replace end
-                                new ACTableColumn(5, 150, "ˆãŽtŽ–¼",
+                                new ACTableColumn(5, 180, "ˆãŽtŽ–¼",
                                         tableCellRenderer, null),
-                                new ACTableColumn(6, 110, "ì¬ˆË—Š“ú",
+                                new ACTableColumn(6, 220, "ì¬ˆË—Š“ú",
                                         IkenshoConstants.FORMAT_ERA_YMD,
                                         tableCellRenderer, null),
-                                new ACTableColumn(7, 110, "ˆÓŒ©‘‹L“ü“ú",
+                                new ACTableColumn(7, 220, "ˆÓŒ©‘‹L“ü“ú",
                                         IkenshoConstants.FORMAT_ERA_YMD,
                                         tableCellRenderer, null),
-                                new ACTableColumn(8, 110, "ˆÓŒ©‘‘—•t“ú",
+                                new ACTableColumn(8, 200, "ˆÓŒ©‘‘—•t“ú",
                                         IkenshoConstants.FORMAT_ERA_YMD,
                                         tableCellRenderer, null) }));
 
@@ -1366,7 +1392,8 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         switch(formatType){
         case IkenshoConstants.IKENSHO_LOW_ISHI_IKENSHO:
             //ˆãŽtˆÓŒ©‘‚Ìê‡‚Íƒ^ƒCƒgƒ‹‚ð•ÏX
-            IkenshoCommon.addString(pd, "lblTitle", "áŠQŽÒŽ©—§Žx‰‡–@@ˆãŽtˆÓŒ©‘ì¬—¿EŒŸ¸—¿¿‹i‘Š‡j‘");
+            //IkenshoCommon.addString(pd, "lblTitle", "áŠQŽÒŽ©—§Žx‰‡–@@ˆãŽtˆÓŒ©‘ì¬—¿EŒŸ¸—¿¿‹i‘Š‡j‘");
+        	IkenshoCommon.addString(pd, "lblTitle", "áŠQŽÒ‘‡Žx‰‡–@@ˆãŽtˆÓŒ©‘ì¬—¿EŒŸ¸—¿¿‹i‘Š‡j‘");
             break;
         }
         
@@ -2291,8 +2318,11 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
             kensaCostTotalTemp = getKensaTotal(map);
             if (kensaCostTotalTemp.compareTo(new BigDecimal("0")) > 0) {
                 kensaCount++;
-                kensaCostTotal += kensaCostTotalTemp.multiply(
-                        new BigDecimal(10)).intValue();
+                
+                //Java 1.5‘Î‰ž
+                //kensaCostTotal += kensaCostTotalTemp.multiply(new BigDecimal(10)).intValue();
+                kensaCostTotal += kensaCostTotalTemp.multiply(new BigDecimal("10")).intValue();
+                
                 // kensaTaxTotal += (int)
                 // Math.floor(kensaCostTotalTemp.multiply(new
                 // BigDecimal("10")).multiply(new

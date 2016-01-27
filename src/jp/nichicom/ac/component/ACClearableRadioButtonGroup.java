@@ -7,7 +7,6 @@ import java.util.ArrayList;
 
 import javax.swing.JRadioButton;
 import javax.swing.event.ListSelectionEvent;
-
 /**
  * クリアボタン対応のラジオグループです。
  * <p>

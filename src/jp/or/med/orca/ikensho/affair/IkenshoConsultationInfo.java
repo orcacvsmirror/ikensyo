@@ -27,13 +27,11 @@ import javax.swing.SwingConstants;
 import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACButton;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
-import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACOneDecimalDoubleTextField;
-import jp.nichicom.ac.component.ACRadioButtonItem;
 import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.component.ACValueArrayRadioButtonGroup;
 import jp.nichicom.ac.component.event.ACFollowDisabledItemListener;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
@@ -41,7 +39,6 @@ import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
-import jp.nichicom.ac.util.adapter.ACListModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
 import jp.nichicom.vr.component.VRLabel;
@@ -939,9 +936,41 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
     private void init() {
         // ウィンドウのサイズ
         // 2009/01/06 [Tozo Tanaka] Replace - begin
-        setSize(new Dimension(770, getHeight()));
+        //setSize(new Dimension(770, getHeight()));
         // setSize(new Dimension(770, 590));
         // 2009/01/06 [Tozo Tanaka] Replace - end
+    	
+    	ACFrame frame = ACFrame.getInstance();
+    	
+    	if ( !ACOSInfo.isMac() ) {
+	    	if (frame.isSmall()){
+	    		setSize(new Dimension(800,600));
+	    	}
+	    	else if (frame.isMiddle()){
+	    		setSize(new Dimension(1024,730));
+	    	}
+	    	else if (frame.isLarge()){
+	       		setSize(new Dimension(1280,960));
+	       	}
+	       	else {
+	       		setSize(new Dimension(1440,1050));
+	       	}
+    	}
+    	else {
+    		if (frame.isSmall()){
+	    		setSize(new Dimension(800,680));
+	    	}
+	    	else if (frame.isMiddle()){
+	    		setSize(new Dimension(1024,800));
+	    	}
+	    	else if (frame.isLarge()){
+	       		setSize(new Dimension(1280,960));
+	       	}
+	       	else {
+	       		setSize(new Dimension(1440,1050));
+	       	}
+    	}
+       	
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();
@@ -1671,7 +1700,7 @@ public class IkenshoConsultationInfo extends IkenshoDialog {
         toConsultationPanel.add(toConsultationNo, VRLayout.FLOW);
         toConsultationPanel.add(toConsultationNoFoot, VRLayout.FLOW);
         hiddenParameters.add(outputPattern, null);
-
+        
     }
 
     protected class IkenshoTreeFollowChecker {

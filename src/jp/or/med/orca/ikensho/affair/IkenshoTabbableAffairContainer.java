@@ -16,6 +16,7 @@ import javax.swing.JComboBox;
 import javax.swing.JTabbedPane;
 
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.core.ACAffairInfo;
@@ -270,13 +271,15 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     if (IkenshoConstants.AFFAIR_MODE_INSERT.equals(nowMode)) {
       removeUpdateTrigger(update);
       addInsertTrigger(update);
-      update.setText("登録(S)");
+//      update.setText("登録(S)");
+      update.setText("　登録(S)　");
       update.setToolTipText("現在の内容を登録します。");
     }
     else if (IkenshoConstants.AFFAIR_MODE_UPDATE.equals(nowMode)) {
       removeInsertTrigger(update);
       addUpdateTrigger(update);
-      update.setText("更新(S)");
+//      update.setText("更新(S)");
+      update.setText("　更新(S)　");
       update.setToolTipText("現在の内容を更新します。");
 
     }
@@ -2123,7 +2126,8 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     update.setToolTipText("現在の内容を登録します。");
     print.setIconPath(IkenshoConstants.BUTTON_IMAGE_PATH_PRINT);
     print.setMnemonic('P');
-    print.setText("印刷(P)");
+//    print.setText("印刷(P)");
+    print.setText("　印刷(P)　");
     print.setToolTipText("現在の内容を印刷します。");
     editorDateCaption.setText("記入日");
     editorNameCaption.setText("氏　名");
@@ -2136,8 +2140,7 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     editorName.setText("藤原　マイト");
     editorDates.setFormat(IkenshoConstants.FORMAT_ERA_YMD);
 
-    String osName = System.getProperty("os.name");
-    if ( (osName == null) || (osName.indexOf("Mac") < 0)) {
+    if ( !ACOSInfo.isMac()) {
       //Mac以外は着色
       editorNameCaption.setForeground(IkenshoConstants.COLOR_TITLE_FOREGROUND);
       editorDateCaption.setForeground(IkenshoConstants.COLOR_TITLE_FOREGROUND);
@@ -2159,6 +2162,7 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     tabPanel.add(tabs, BorderLayout.CENTER);
     this.add(buttons, VRLayout.NORTH);
     this.add(tabPanel, VRLayout.CLIENT);
+   
   }
 
   /**

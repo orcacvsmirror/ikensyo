@@ -173,27 +173,49 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 		table.setModel(getTableModelAdapter());
 
 		table.setColumnModel(new VRTableColumnModel(new ACTableColumn[] {
-				new ACTableColumn(8, 22, "　",
+//				new ACTableColumn(8, 22, "　",
+//						new IkenshoCheckBoxTableCellRenderer(),
+//						deleteCheckEditor),
+//				getPatientEnabledColumn(),
+//				new ACTableColumn(0, 50, "患者ID"),
+//				new ACTableColumn(1, 110, "氏名"),
+//				new ACTableColumn(2, 130, "ふりがな"),
+//				new ACTableColumn(3, 32, "性別", SwingConstants.CENTER,
+//						IkenshoConstants.FORMAT_SEX),
+//				getPatientBirthColumn(),
+//				new ACTableColumn(4, 32, "年齢", SwingConstants.RIGHT,
+//						IkenshoConstants.FORMAT_NOW_AGE),
+//				new ACTableColumn(5, 150, "最新主治医意見書記入日",
+//						IkenshoConstants.FORMAT_ERA_YMD),
+//				new ACTableColumn(9, 150, "最新医師意見書記入日",
+//						IkenshoConstants.FORMAT_ERA_YMD),
+//				new ACTableColumn(6, 120, "最新指示書記入日",
+//						IkenshoConstants.FORMAT_ERA_YMD),
+//				new ACTableColumn(13, 140, "最新特別指示書記入日",
+//						IkenshoConstants.FORMAT_ERA_YMD),
+//				new ACTableColumn(7, 120, "最終更新日",
+//						IkenshoConstants.FORMAT_ERA_HMS), }));
+				new ACTableColumn(8, 30, "　",
 						new IkenshoCheckBoxTableCellRenderer(),
 						deleteCheckEditor),
 				getPatientEnabledColumn(),
-				new ACTableColumn(0, 50, "患者ID"),
-				new ACTableColumn(1, 110, "氏名"),
-				new ACTableColumn(2, 130, "ふりがな"),
-				new ACTableColumn(3, 32, "性別", SwingConstants.CENTER,
+				new ACTableColumn(0, 90, "患者ID"),
+				new ACTableColumn(1, 180, "氏名"),
+				new ACTableColumn(2, 240, "ふりがな"),
+				new ACTableColumn(3, 60, "性別", SwingConstants.CENTER,
 						IkenshoConstants.FORMAT_SEX),
 				getPatientBirthColumn(),
-				new ACTableColumn(4, 32, "年齢", SwingConstants.RIGHT,
+				new ACTableColumn(4, 60, "年齢", SwingConstants.RIGHT,
 						IkenshoConstants.FORMAT_NOW_AGE),
-				new ACTableColumn(5, 150, "最新主治医意見書記入日",
+				new ACTableColumn(5, 260, "最新主治医意見書記入日",
 						IkenshoConstants.FORMAT_ERA_YMD),
-				new ACTableColumn(9, 150, "最新医師意見書記入日",
+				new ACTableColumn(9, 260, "最新医師意見書記入日",
 						IkenshoConstants.FORMAT_ERA_YMD),
-				new ACTableColumn(6, 120, "最新指示書記入日",
+				new ACTableColumn(6, 200, "最新指示書記入日",
 						IkenshoConstants.FORMAT_ERA_YMD),
-				new ACTableColumn(13, 140, "最新特別指示書記入日",
+				new ACTableColumn(13, 260, "最新特別指示書記入日",
 						IkenshoConstants.FORMAT_ERA_YMD),
-				new ACTableColumn(7, 120, "最終更新日",
+				new ACTableColumn(7, 220, "最終更新日",
 						IkenshoConstants.FORMAT_ERA_HMS), }));
 
 		if (table.getRowCount() > 0) {
@@ -902,7 +924,7 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 		detailMenu.setText("患者情報(E)");
 		table.setPopupMenu(popup);
 		table.setPopupMenuEnabled(true);
-
+		
 		ikenshoMenu.setText("意見書(I)");
 		ikenshoMenu.setToolTipText("選択された患者の意見書を新規に作成します。");
 		ikenshoMenu.setMnemonic('I');
@@ -935,7 +957,7 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 		popup.add(ikenshoMenu);
 		popup.add(sijishoMenu);
 		popup.add(deleteMenu);
-
+		
 		// 2011/10 [MantisID:0000655] [Masahiko.Higuchi] Addition - begin
 		getReceiptCheck().addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -1426,7 +1448,7 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 		if (patientEnabledColumn == null) {
 			patientEnabledColumn = new ACTableColumn(10);
 			patientEnabledColumn.setHeaderValue("有効");
-			patientEnabledColumn.setColumns(3);
+			patientEnabledColumn.setColumns(5);
 			patientEnabledColumn.setHorizontalAlignment(SwingConstants.CENTER);
 			patientEnabledColumn
 					.setRendererType(ACTableCellViewer.RENDERER_TYPE_ICON);
@@ -1453,7 +1475,7 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 		if (patientBirthColumn == null) {
 			patientBirthColumn = new ACTableColumn(11);
 			patientBirthColumn.setHeaderValue("生年月日");
-			patientBirthColumn.setColumns(10);
+			patientBirthColumn.setColumns(18);
 			patientBirthColumn.setFormat(new ACDateFormat("ggge年MM月dd日"));
 		}
 		return patientBirthColumn;

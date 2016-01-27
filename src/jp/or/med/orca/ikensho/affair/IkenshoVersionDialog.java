@@ -149,7 +149,8 @@ public class IkenshoVersionDialog extends IkenshoDialog {
         message.setEditable(false);
         message.getViewport().setBackground(Color.white);
         message.setOpaque(false);
-        message.setPreferredSize(new Dimension(2, 135));
+//        message.setPreferredSize(new Dimension(2, 135));
+        message.setPreferredSize(new Dimension(2, 210));
         footer.setLayout(new BorderLayout());
         this.getContentPane().add(contents, BorderLayout.CENTER);
         buttons.setLayout(new VRLayout());
@@ -177,7 +178,8 @@ public class IkenshoVersionDialog extends IkenshoDialog {
     }
 
     private void init() throws Exception {
-        setSize(new Dimension(500, 380));
+//        setSize(new Dimension(500, 380));
+        setSize(new Dimension(900, 700));
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();
         if (frameSize.height > screenSize.height) {

@@ -53,15 +53,15 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
             ex.printStackTrace();
         }
     }
-
-    private void jbInit() {
+//    private void jbInit() {
+    private void jbInit() throws Exception {
         buttons.setTitle("特記事項一覧");
         this.add(buttons, VRLayout.NORTH);
         this.add(client, VRLayout.CLIENT);
 
         //ボタン
         buttons.add(detail, BorderLayout.EAST);
-        detail.setText("編集(E)");
+        detail.setText("　編集(E)　");
         detail.setMnemonic('E');
         detail.setActionCommand("詳細情報(E)");
         detail.setToolTipText("選択された定型文の編集画面に移ります。");
@@ -458,11 +458,16 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
         //ColumnModelの生成
         table.setColumnModel(new VRTableColumnModel(
             new VRTableColumn[] {
-                    new VRTableColumn(2, 60, "主-意見書", SwingConstants.CENTER),
-                    new VRTableColumn(3, 40, "指示書", SwingConstants.CENTER),
-                    new VRTableColumn(6, 60, "医-意見書", SwingConstants.CENTER),
-            new VRTableColumn(4, 370, "分類"),
-            new VRTableColumn(5, 270, "項目名")
+//                    new VRTableColumn(2, 60, "主-意見書", SwingConstants.CENTER),
+//                    new VRTableColumn(3, 40, "指示書", SwingConstants.CENTER),
+//                    new VRTableColumn(6, 60, "医-意見書", SwingConstants.CENTER),
+//            		  new VRTableColumn(4, 370, "分類"),
+//                    new VRTableColumn(5, 270, "項目名")
+                    new VRTableColumn(2, 120, "主-意見書", SwingConstants.CENTER),
+                    new VRTableColumn(3, 120, "指示書", SwingConstants.CENTER),
+                    new VRTableColumn(6, 120, "医-意見書", SwingConstants.CENTER),
+                    new VRTableColumn(4, 650, "分類"),
+                    new VRTableColumn(5, 350, "項目名")
             }));
     }
 

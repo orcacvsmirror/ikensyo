@@ -20,6 +20,7 @@ import java.util.Map;
 import javax.swing.SwingConstants;
 
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.component.ACAffairButtonBar;
 import jp.nichicom.ac.component.ACButton;
@@ -336,22 +337,38 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
         //2011/10 [MantisID:0000655] [Shin.Fujihara] Delete - end
         //2011/10 [MantisID:0000655] [Shin.Fujihara] Addition - begin
         patients.setColumnModel(new VRTableColumnModel(new ACTableColumn[] {
-                new ACTableColumn(0, 36, "No.", SwingConstants.RIGHT),
-                new ACTableColumn(8, 22, "　",
+//                new ACTableColumn(0, 36, "No.", SwingConstants.RIGHT),
+//                new ACTableColumn(8, 22, "　",
+//                        new IkenshoCheckBoxTableCellRenderer(),
+//                        deleteCheckEditor),
+//                new ACTableColumn(9, 32, "重複", SwingConstants.CENTER),
+//                new ACTableColumn(1, 100, "氏名"),
+//                new ACTableColumn(2, 120, "ふりがな"),
+//                new ACTableColumn(3, 32, "性別", SwingConstants.CENTER,
+//                        IkenshoConstants.FORMAT_SEX),
+//                new ACTableColumn(4, 32, "年齢", SwingConstants.RIGHT,
+//                        IkenshoConstants.FORMAT_NOW_AGE),
+//                new ACTableColumn(4, 110, "生年月日",
+//                        IkenshoConstants.FORMAT_ERA_YMD),
+//                new ACTableColumn(5, 63, "郵便番号"),
+//                new ACTableColumn(6, 280, "住所"),
+//                new ACTableColumn(7, 120, "連絡先（TEL）"), }));
+                new ACTableColumn(0, 50, "No.", SwingConstants.RIGHT),
+                new ACTableColumn(8, 30, "　",
                         new IkenshoCheckBoxTableCellRenderer(),
                         deleteCheckEditor),
-                new ACTableColumn(9, 32, "重複", SwingConstants.CENTER),
-                new ACTableColumn(1, 100, "氏名"),
-                new ACTableColumn(2, 120, "ふりがな"),
-                new ACTableColumn(3, 32, "性別", SwingConstants.CENTER,
+                new ACTableColumn(9, 60, "重複", SwingConstants.CENTER),
+                new ACTableColumn(1, 180, "氏名"),
+                new ACTableColumn(2, 240, "ふりがな"),
+                new ACTableColumn(3, 60, "性別", SwingConstants.CENTER,
                         IkenshoConstants.FORMAT_SEX),
-                new ACTableColumn(4, 32, "年齢", SwingConstants.RIGHT,
+                new ACTableColumn(4, 60, "年齢", SwingConstants.RIGHT,
                         IkenshoConstants.FORMAT_NOW_AGE),
-                new ACTableColumn(4, 110, "生年月日",
+                new ACTableColumn(4, 200, "生年月日",
                         IkenshoConstants.FORMAT_ERA_YMD),
-                new ACTableColumn(5, 63, "郵便番号"),
-                new ACTableColumn(6, 280, "住所"),
-                new ACTableColumn(7, 120, "連絡先（TEL）"), }));
+                new ACTableColumn(5, 160, "郵便番号"),
+                new ACTableColumn(6, 480, "住所"),
+                new ACTableColumn(7, 160, "連絡先（TEL）"), }));
 
         patientsModelAdapter = new ACTableModelAdapter(importPatients,
                 new String[] { "SERIAL_ID", "PATIENT_NM", "PATIENT_KN", "SEX",
@@ -534,9 +551,8 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
         }
 
         boolean encode = false;
-        String osName = System.getProperty("os.name");
         // Mac以外であれば文字コード変換を行う。
-        if ((osName != null) && (osName.indexOf("Mac") < 0)) {
+        if (!ACOSInfo.isMac()) {
             encode = true;
         }
 
@@ -956,9 +972,8 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
                     if (processer instanceof IkenshoFrameEventProcesser) {
                         // 2011/10 [MantisID:0000655] [Masahiko.Higuchi] edit -
                         // begin
-                        String osName = System.getProperty("os.name");
                         // Mac以外であればストップスプラッシュを使う
-                        if ((osName != null) && (osName.indexOf("Mac") < 0)) {
+                        if (!ACOSInfo.isMac()) {
                             splash = new ACStopButtonSplash();
                         } else {
                             splash = new ACSplash();
@@ -1009,9 +1024,8 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
                     if (processer instanceof IkenshoFrameEventProcesser) {
                         // 2011/10 [MantisID:0000655] [Masahiko.Higuchi] edit -
                         // begin
-                        String osName = System.getProperty("os.name");
                         // Mac以外であればストップスプラッシュを使う
-                        if ((osName != null) && (osName.indexOf("Mac") < 0)) {
+                        if (!ACOSInfo.isMac()) {
                             splash = new ACStopButtonSplash();
                         } else {
                             splash = new ACSplash();
@@ -1601,9 +1615,8 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
         // 2011/10 [MantisID:0000655] [Masahiko.Higuchi] Addition - end
         // 2011/10 [MantisID:0000655] [Masahiko.Higuchi] edit - begin
         getFilterRightPanel().add(previewPage, VRLayout.FLOW);
-        String osName = System.getProperty("os.name");
         // Mac以外であれば横に並べる
-        if ((osName != null) && (osName.indexOf("Mac") < 0)) {
+        if (!ACOSInfo.isMac()) {
             getFilterRightPanel().add(nextPage, VRLayout.FLOW);
         } else {
             getFilterRightPanel().add(nextPage, VRLayout.FLOW_RETURN);
@@ -1742,7 +1755,6 @@ public class IkenshoReceiptSoftAccess extends IkenshoAffairContainer implements
                 patients.repaint();
             }
         });
-
         // 2006/02/09[Tozo Tanaka] : add end
 
     }

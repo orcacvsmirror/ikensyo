@@ -1,6 +1,5 @@
 package jp.or.med.orca.ikensho.affair;
 
-import java.awt.Dimension;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -14,6 +13,7 @@ import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACAffairButton;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
+import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRHashMap;
@@ -23,8 +23,19 @@ import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
 
+	//心身の状態１
     protected IkenshoIshiIkenshoInfoMindBody1 ishiMindBody1;
-    protected IkenshoIshiIkenshoInfoMindBody3 ishiMindBody3;
+    //心身の状態２
+    protected IkenshoIshiIkenshoInfoMindBody2 ishiMindBody2;
+    
+    //行動及び精神１
+    protected IkenshoIshiIkenshoInfoActionAndMind1 ishiAction1;
+    //行動及び精神２
+    protected IkenshoIshiIkenshoInfoActionAndMind2 ishiAction2;
+    
+    //サービス利用に関する意見
+    protected IkenshoIshiIkenshoInfoCare1 care1;
+    
     protected IkenshoIshiIkenshoInfoSpecialMention1 ishiSpesicalMention1;
     protected IkenshoIshiIkenshoInfoSick2 ishiSick2;
     protected ACAffairButton showHelp;
@@ -37,9 +48,9 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         if(showHelp==null){
         	// 2009/01/06 [Mizuki Tsutsumi] : edit begin
         	//showHelp = new ACAffairButton("記載例(H)");
-        	showHelp = new ACAffairButton("例(H)");
+        	showHelp = new ACAffairButton("　例(H)　");
             // 2009/01/06 [Mizuki Tsutsumi] : edit end
-        	showHelp.setPreferredSize(new Dimension(67, 44));
+        	//showHelp.setPreferredSize(new Dimension(67, 44));
             showHelp.setIconPath(ACConstants.ICON_PATH_QUESTION_24);
             showHelp.setMnemonic('H');
             showHelp.setToolTipText("記載例を表示します。");
@@ -59,14 +70,6 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         // ステータスバー
         setStatusText("医師意見書");
         buttons.setText("医師意見書");
-        // ヒントボタン対応
-        if(mention instanceof IkenshoIshiIkenshoInfoSpecialMention2){
-            ((IkenshoIshiIkenshoInfoSpecialMention2) mention)
-                    .setFollowDisabledComponents(new JComponent[] { tabs,
-                            update,
-                print, buttons.getBackButton() });
-        }
-        
         buttons.add(getShowHelp(), VRLayout.EAST);
     }
     /**
@@ -77,61 +80,76 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
     }
     
     protected void addTabs(){
-        // 新規
+        // 申請者タブ
         applicant = new IkenshoIshiIkenshoInfoApplicant();
-        // 新規
+        // --- 1.傷病に関する意見
+        // 傷病名１タブ
         sick = new IkenshoIshiIkenshoInfoSick1();
-        // 新規
+        // 傷病名２タブ
         ishiSick2 = new IkenshoIshiIkenshoInfoSick2();
-        // 新規
-        special = new IkenshoIshiIkenshoInfoSpecial();
-        // 新規
-        care1 = new IkenshoIshiIkenshoInfoCare1();
-        // 新規
-        care2 = new IkenshoIshiIkenshoInfoCare2();
-        // 新規
+        
+        // --- 2.身体の状態に関する意見
+        // 心身の状態１タブ
         ishiMindBody1 = new IkenshoIshiIkenshoInfoMindBody1();
-        // 新規
-        mindBody2 = new IkenshoIshiIkenshoInfoMindBody2();
-        // 新規
-        ishiMindBody3 = new IkenshoIshiIkenshoInfoMindBody3();
-        // 新規
-        ishiSpesicalMention1 = new IkenshoIshiIkenshoInfoSpecialMention1();
-        // 新規
-        mention = new IkenshoIshiIkenshoInfoSpecialMention2();
+        // 心身の状態２タブ
+        ishiMindBody2 = new IkenshoIshiIkenshoInfoMindBody2();
+        
+        //--- 3.行動及び精神等の状態に関する意見
+        // 行動及び精神１
+        ishiAction1 = new IkenshoIshiIkenshoInfoActionAndMind1();
+        ishiAction1.setFollowDisabledComponents(new JComponent[] { tabs, update, print, buttons.getBackButton() });
+        
+        // 行動及び精神２
+        ishiAction2 = new IkenshoIshiIkenshoInfoActionAndMind2();
+        
+        //--- 4.特別な医療
+        // 特別な医療タブ
+        special = new IkenshoIshiIkenshoInfoSpecial();
+        
+        //--- 5.サービス利用に関する意見
+        care1 = new IkenshoIshiIkenshoInfoCare1();
+        
+        //--- 6.特記事項
+        mention = new IkenshoIshiIkenshoInfoSpecialMention1();
+        
+        //--- 医療機関
         organ = new IkenshoIkenshoInfoOrgan();
+        
+        // 診療点数のダイアログ
         bill = new IkenshoIkenshoInfoBill();
 
         // Add
         tabs.addTab("申請者", applicant);
         tabs.addTab("傷病１", sick);
         tabs.addTab("傷病２", ishiSick2);
+        
+        tabs.addTab("身体の状態１", ishiMindBody1);
+        tabs.addTab("身体の状態２", ishiMindBody2);
+        
+        tabs.addTab("行動及び精神１", ishiAction1);
+        tabs.addTab("行動及び精神２", ishiAction2);
+        
         tabs.addTab("特別な医療", special);
-        tabs.addTab("心身の状態１", ishiMindBody1);
-        tabs.addTab("心身の状態２", mindBody2);
-        tabs.addTab("心身の状態３",ishiMindBody3);
-        tabs.addTab("生活機能１", care1);
-        tabs.addTab("生活機能２", care2);
-        tabs.addTab("特記事項１",ishiSpesicalMention1);
-        tabs.addTab("特記事項２・請求", mention);
+        tabs.addTab("生活機能", care1);
+        
+        tabs.addTab("特記事項・請求", mention);
         tabs.addTab("医療機関", organ);
         tabPanel.add(bill, BorderLayout.SOUTH);
-
+        
+        
         tabArray.clear();
         tabArray.add(applicant);
         tabArray.add(sick);
         tabArray.add(ishiSick2);
-        tabArray.add(special);
         tabArray.add(ishiMindBody1);
-        tabArray.add(mindBody2);
-        tabArray.add(ishiMindBody3);
+        tabArray.add(ishiMindBody2);
+        tabArray.add(ishiAction1);
+        tabArray.add(ishiAction2);
+        tabArray.add(special);
         tabArray.add(care1);
-        tabArray.add(care2);
-        tabArray.add(ishiSpesicalMention1);
         tabArray.add(mention);
         tabArray.add(organ);
         tabArray.add(bill);
-
         
     }
     
@@ -204,8 +222,10 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
      * 印刷
      */
     protected boolean showPrintSetting(IkenshoIkenshoInfoPrintParameter param) {
+//        IkenshoIkenshoPrintSettingIshi i = new IkenshoIkenshoPrintSettingIshi(
+//                originalData, mindBody2.getPicture());
         IkenshoIkenshoPrintSettingIshi i = new IkenshoIkenshoPrintSettingIshi(
-                originalData, mindBody2.getPicture());
+                originalData, null);
         return i.showModal(param);
     }
     
@@ -423,9 +443,27 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         sb.append(" ,CREATE_DT");
         sb.append(" ,KOUSIN_DT");
         sb.append(" ,LAST_TIME");
-
         
-        appendInsertIkenshoKeys(sb);
+        
+        // --------------------------------------
+        // 平成26年度　医師意見書追加項目
+        // --------------------------------------
+        sb.append(" ,KINRYOKU_TEIKA_CHANGE"); //筋力低下
+        sb.append(" ,KOUSHU_ETC_BUI_TEIDO"); //関節の拘縮その他程度
+        sb.append(" ,KANSETU_ITAMI_CHANGE"); //関節の痛み
+        sb.append(" ,KS_JISYOU"); //自傷
+        sb.append(" ,SS_ISHIKI_SHOGAI"); //意識障害
+        sb.append(" ,SS_KIBUN_SHOGAI"); //気分障害
+        sb.append(" ,SS_SUIMIN_SHOGAI"); //睡眠障害
+        sb.append(" ,KOUDO_SHOGAI"); //行動障害
+        sb.append(" ,SEISIN_ZOAKU"); //精神状態の増悪
+        sb.append(" ,KEIREN_HOSSA"); //けいれん発作
+        sb.append(" ,TAISHO_HOUSIN"); //対処方針
+        sb.append(" ,SFS_KOUDO"); //行動障害について
+        sb.append(" ,SFS_KOUDO_RYUIJIKOU"); //行動障害について留意事項
+        sb.append(" ,SFS_SEISIN"); //精神障害について
+        sb.append(" ,SFS_SEISIN_RYUIJIKOU"); //精神障害について留意事項
+
         
         sb.append(" )");
         sb.append(" VALUES");
@@ -812,8 +850,98 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         sb.append(",CURRENT_TIMESTAMP");
         sb.append(",CURRENT_TIMESTAMP");
         
-        appendInsertIkenshoValues(sb);
-
+        
+        // --------------------------------------
+        // 平成26年度　医師意見書追加項目
+        // --------------------------------------
+        //筋力低下
+        if (isChecked(originalData, "KINRYOKU_TEIKA")) {
+        	sb.append(",");
+        	sb.append(getDBSafeNumber("KINRYOKU_TEIKA_CHANGE", originalData));
+        	
+        } else {
+        	sb.append(",0");
+        }
+        
+        //関節の拘縮その他程度
+        if (isChecked(originalData, "KOUSHU")) {
+        	sb.append(",");
+        	sb.append(getDBSafeNumber("KOUSHU_ETC_BUI_TEIDO", originalData));
+        } else {
+        	sb.append(",0");
+        }
+        
+        //関節の痛み
+        if (isChecked(originalData, "KANSETU_ITAMI")) {
+        	sb.append(",");
+        	sb.append(getDBSafeNumber("KANSETU_ITAMI_CHANGE", originalData));
+        } else {
+        	sb.append(",0");
+        }
+        
+        //自傷
+        if (isChecked(originalData, "MONDAI_FLAG")) {
+        	sb.append(",");
+        	sb.append(getDBSafeNumber("KS_JISYOU", originalData));
+        } else {
+        	sb.append(",0");
+        }
+        
+        
+        if (isChecked(originalData, "SEISIN")) {
+	        //意識障害
+	        sb.append(",");
+	        sb.append(getDBSafeNumber("SS_ISHIKI_SHOGAI", originalData));
+	        //気分障害
+	        sb.append(",");
+	        sb.append(getDBSafeNumber("SS_KIBUN_SHOGAI", originalData));
+	        //睡眠障害
+	        sb.append(",");
+	        sb.append(getDBSafeNumber("SS_SUIMIN_SHOGAI", originalData));
+        } else {
+        	sb.append(",0,0,0");
+        }
+        
+        
+        //行動障害
+        sb.append(",");
+        sb.append(getDBSafeNumber("KOUDO_SHOGAI", originalData));
+        //精神状態の増悪
+        sb.append(",");
+        sb.append(getDBSafeNumber("SEISIN_ZOAKU", originalData));
+        //けいれん発作
+        sb.append(",");
+        sb.append(getDBSafeNumber("KEIREN_HOSSA", originalData));
+        //対処方針
+        sb.append(",");
+        if (isCheckdByotai(originalData)) {
+        	sb.append(getDBSafeString("TAISHO_HOUSIN", originalData));
+        } else {
+        	sb.append("''");
+        }
+        
+        //行動障害について
+        sb.append(",");
+        sb.append(getDBSafeNumber("SFS_KOUDO", originalData));
+        //行動障害について留意事項
+        if (isChecked(originalData, "SFS_KOUDO", 2)) {
+            sb.append(",");
+            sb.append(getDBSafeString("SFS_KOUDO_RYUIJIKOU", originalData));
+        } else {
+        	sb.append(",''");
+        }
+        
+        //精神障害について
+        sb.append(",");
+        sb.append(getDBSafeNumber("SFS_SEISIN", originalData));
+        //精神障害について留意事項
+        if (isChecked(originalData, "SFS_SEISIN", 2)) {
+	        sb.append(",");
+	        sb.append(getDBSafeString("SFS_SEISIN_RYUIJIKOU", originalData));
+        } else {
+        	sb.append(",''");
+        }
+        
         sb.append(")");
         
         dbm.executeUpdate(sb.toString());
@@ -823,27 +951,88 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         hasOriginalDocument = true;
         
     }
-
-    /**
-     * overrideして意見書挿入時のSQLバリュー句を追加します。
-     * 
-     * @throws ParseException 解析例外
-     * @param sb 追加先
-     */
-    protected void appendInsertIkenshoValues(StringBuffer sb)
-    throws ParseException {
-        
+    
+    
+    private boolean isChecked(VRMap map, String key) {
+    	return isChecked(map, key, 1);
+    }
+    
+    private boolean isChecked(VRMap map, String key, int tureValue) {
+    	
+    	try {
+        	int value = ACCastUtilities.toInt(VRBindPathParser.get(key, map), 0);
+        	return value == tureValue;
+    	} catch(Exception e) {
+    		e.printStackTrace();
+    	}
+    	
+    	return false;
+    }
+    
+    // ５．サービス利用に関する意見
+    // (1)現在、発生の可能性が高い病態とその対処方針にチェックが設定されているか
+    private boolean isCheckdByotai(VRMap map) {
+    	//尿失禁
+    	if (isChecked(map, "NYOUSIKKIN")) {
+    		return true;
+    	}
+    	//転倒・骨折
+    	if (isChecked(map, "TENTOU_KOSSETU")) {
+    		return true;
+    	}
+    	//徘徊
+		if (isChecked(map, "HAIKAI_KANOUSEI")) {
+			return true;
+		}
+		//褥瘡
+		if (isChecked(map, "JOKUSOU_KANOUSEI")) {
+			return true;
+		}
+		//嚥下性肺炎
+		if (isChecked(map, "ENGESEIHAIEN")) {
+			return true;
+		}
+		//腸閉塞
+		if (isChecked(map, "CHOUHEISOKU")) {
+			return true;
+		}
+		//易感染性
+		if (isChecked(map, "EKIKANKANSEN")) {
+			return true;
+		}
+		//心肺機能の低下
+		if (isChecked(map, "SINPAIKINOUTEIKA")) {
+			return true;
+		}
+		//疼痛
+		if (isChecked(map, "ITAMI")) {
+			return true;
+		}
+		//脱水
+		if (isChecked(map, "DASSUI")) {
+			return true;
+		}
+		//行動障害
+		if (isChecked(map, "KOUDO_SHOGAI")) {
+			return true;
+		}
+		//精神状態の増悪
+		if (isChecked(map, "SEISIN_ZOAKU")) {
+			return true;
+		}
+		//けいれん発作
+		if (isChecked(map, "KEIREN_HOSSA")) {
+			return true;
+		}
+		//その他
+		if (isChecked(map, "BYOUTAITA")) {
+			return true;
+		}
+		
+		return false;
     }
     
     
-    /**
-     * overrideして意見書挿入時のSQLキー句を追加します。
-     * 
-     * @param sb 追加先
-     */
-    protected void appendInsertIkenshoKeys(StringBuffer sb) {
-        
-    }
     
     
     /**
@@ -870,10 +1059,21 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         sb.append(getDBSafeString("NYUIN_NM2",originalData));   
         sb.append(",KYUIN_SHOCHI = ");
         sb.append(getDBSafeNumber("KYUIN_SHOCHI",originalData));
+        
+        // 親のチェックがついてないときは空白で更新
         sb.append(",KYUIN_SHOCHI_CNT = ");
-        sb.append(getDBSafeString("KYUIN_SHOCHI_CNT",originalData));
+        if (isChecked(originalData, "KYUIN_SHOCHI")) {
+        	sb.append(getDBSafeString("KYUIN_SHOCHI_CNT",originalData));
+        } else {
+        	sb.append("''");
+        }
         sb.append(",KYUIN_SHOCHI_JIKI = ");
-        sb.append(getDBSafeNumber("KYUIN_SHOCHI_JIKI",originalData));
+        if (isChecked(originalData, "KYUIN_SHOCHI")) {
+        	sb.append(getDBSafeNumber("KYUIN_SHOCHI_JIKI",originalData));
+        } else {
+        	sb.append("0");
+        }
+        
         // 行動上の障害
         IkenshoCommon.addFollowCheckNumberUpdate(sb, originalData,
                 "MONDAI_FLAG", new String[] { "KS_CHUYA", "KS_BOUGEN",
@@ -1003,6 +1203,107 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
 //        }catch (Exception e) { }
         // Delete - end [kamitsukasa.kazuyoshi]
         
+        
+        
+        // --------------------------------------
+        // 平成26年度　医師意見書追加項目
+        // --------------------------------------
+        
+        //筋力低下
+        sb.append(",KINRYOKU_TEIKA_CHANGE = ");
+        if (isChecked(originalData, "KINRYOKU_TEIKA")) {
+        	sb.append(getDBSafeNumber("KINRYOKU_TEIKA_CHANGE", originalData));
+        } else {
+        	sb.append("0");
+        }
+        
+        //関節の拘縮その他程度
+        sb.append(",KOUSHU_ETC_BUI_TEIDO = ");
+        if (isChecked(originalData, "KOUSHU")) {
+        	sb.append(getDBSafeNumber("KOUSHU_ETC_BUI_TEIDO", originalData));
+        } else {
+        	sb.append("0");
+        }
+        //関節の痛み
+        sb.append(",KANSETU_ITAMI_CHANGE = ");
+        if (isChecked(originalData, "KANSETU_ITAMI")) {
+        	sb.append(getDBSafeNumber("KANSETU_ITAMI_CHANGE", originalData));
+        } else {
+        	sb.append("0");
+        }
+        
+        //自傷
+        sb.append(",KS_JISYOU = ");
+        if (isChecked(originalData, "MONDAI_FLAG")) {
+        	sb.append(getDBSafeNumber("KS_JISYOU", originalData));
+        } else {
+        	sb.append("0");
+        }
+        
+        boolean isCheckedMind = isChecked(originalData, "SEISIN");
+        //意識障害
+        sb.append(",SS_ISHIKI_SHOGAI = ");
+        if (isCheckedMind) {
+        	sb.append(getDBSafeNumber("SS_ISHIKI_SHOGAI", originalData));
+        } else {
+        	sb.append("0");
+        }
+        //気分障害
+        sb.append(",SS_KIBUN_SHOGAI = ");
+        if (isCheckedMind) {
+        	sb.append(getDBSafeNumber("SS_KIBUN_SHOGAI", originalData));
+        } else {
+        	sb.append("0");
+        }
+        //睡眠障害
+        sb.append(",SS_SUIMIN_SHOGAI = ");
+        if (isCheckedMind) {
+        	sb.append(getDBSafeNumber("SS_SUIMIN_SHOGAI", originalData));
+        } else {
+        	sb.append("0");
+        }
+        
+        
+        //行動障害
+        sb.append(",KOUDO_SHOGAI = ");
+        sb.append(getDBSafeNumber("KOUDO_SHOGAI", originalData));
+        //精神状態の増悪
+        sb.append(",SEISIN_ZOAKU = ");
+        sb.append(getDBSafeNumber("SEISIN_ZOAKU", originalData));
+        //けいれん発作
+        sb.append(",KEIREN_HOSSA = ");
+        sb.append(getDBSafeNumber("KEIREN_HOSSA", originalData));
+        //対処方針
+        sb.append(",TAISHO_HOUSIN = ");
+        if (isCheckdByotai(originalData)) {
+        	sb.append(getDBSafeString("TAISHO_HOUSIN", originalData));
+        } else {
+        	sb.append("''");
+        }
+        
+        //行動障害について
+        sb.append(",SFS_KOUDO = ");
+        sb.append(getDBSafeNumber("SFS_KOUDO", originalData));
+        //行動障害について留意事項
+        sb.append(",SFS_KOUDO_RYUIJIKOU = ");
+        if (isChecked(originalData, "SFS_KOUDO", 2)) {
+        	sb.append(getDBSafeString("SFS_KOUDO_RYUIJIKOU", originalData));
+        } else {
+        	sb.append("''");
+        }
+        
+        //精神障害について
+        sb.append(",SFS_SEISIN = ");
+        sb.append(getDBSafeNumber("SFS_SEISIN", originalData));
+        //精神障害について留意事項
+        sb.append(",SFS_SEISIN_RYUIJIKOU = ");
+        if (isChecked(originalData, "SFS_SEISIN", 2)) {
+        	sb.append(getDBSafeString("SFS_SEISIN_RYUIJIKOU", originalData));
+        } else {
+        	sb.append("''");
+        }
+        
+        
     }
     
     protected void doUpdateDifferenceItemSenmoni(StringBuffer sb)throws Exception{
@@ -1127,6 +1428,39 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         }
         
     }
+    
+    
+    // 意見書、指示書共通項目の更新処理
+    // 医師意見書のみ間歇的導尿の項目を追加
+    /**
+     * overrideして共通文書挿入時のSQLキー句を追加します。
+     * @param sb 追加先
+     */
+    protected void appendInsertCommonDocumentKeys(StringBuffer sb){
+    	sb.append(" ,KANKETSUTEKI_DOUNYOU");
+    }
+    /**
+     * overrideして共通文書挿入時のSQLバリュー句を追加します。
+     * @throws ParseException 解析例外
+     * @param sb 追加先
+     */
+    protected void appendInsertCommonDocumentValues(StringBuffer sb)throws
+        ParseException{
+        sb.append(",");
+        sb.append(getDBSafeNumber("KANKETSUTEKI_DOUNYOU", originalData));
+    }
+    /**
+     * overrideして共通文書更新時のSQLキー句を追加します。
+     * @param sb 追加先
+     * @throws ParseException 解析例外
+     */
+    protected void appendUpdateCommonDocumentStetement(StringBuffer sb)throws
+        ParseException{
+        //間歇的導尿
+        sb.append(",KANKETSUTEKI_DOUNYOU = ");
+        sb.append(getDBSafeString("KANKETSUTEKI_DOUNYOU", originalData));
+    }
+    
 
     
     /**

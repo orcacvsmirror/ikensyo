@@ -17,7 +17,11 @@ import jp.nichicom.vr.layout.VRLayout;
  */
 
 public class ACParentHesesPanelContainer extends ACPanel {
-    private ACLabel hesesBegin = new ACLabel();
+    /**
+	 *
+	 */
+	private static final long serialVersionUID = 1L;
+	private ACLabel hesesBegin = new ACLabel();
     private ACLabel hesesEnd = new ACLabel();
 
     public String getBeginText() {
@@ -66,10 +70,10 @@ public class ACParentHesesPanelContainer extends ACPanel {
         }
     }
 
-    private void jbInit() throws Exception {
+    private void jbInit() {
         hesesBegin.setText("Åi");
         hesesEnd.setText("Åj");
-        setHgap(2);
+        setHgap(6);
 
         setVgap(0);
         this.setOpaque(false);

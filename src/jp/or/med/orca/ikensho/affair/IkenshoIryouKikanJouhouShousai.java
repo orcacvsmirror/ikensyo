@@ -74,7 +74,8 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
         buttons.setTitle("ˆã—Ã‹@ŠÖî•ñÚ×");
         buttons.add(update, VRLayout.EAST);
 
-        update.setText("“o˜^(S)");
+//        update.setText("“o˜^(S)");
+        update.setText("@“o˜^(S)@");
         update.setMnemonic('S');
         update.setActionCommand("“o˜^(S)");
         update.setToolTipText("Œ»İ‚Ì“à—e‚ğ“o˜^‚µ‚Ü‚·B");
@@ -84,6 +85,7 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
         tabPnl.add(tabs, BorderLayout.CENTER);
         tabs.addTab("Šî–{î•ñ", kihon);
         tabs.addTab("¿‹‘ŠÖ˜Aî•ñ", kanren);
+
     }
 
     public void initAffair(ACAffairInfo affair) throws Exception {

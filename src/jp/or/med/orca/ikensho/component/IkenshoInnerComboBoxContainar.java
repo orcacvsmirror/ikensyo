@@ -64,6 +64,7 @@ public class IkenshoInnerComboBoxContainar extends ACLabelContainer {
     public void initialize(){
         // 今回のコンボのサイズを規定
         combo.setPreferredSize(new Dimension(50,19));
+        combo.setColumns(2);
         combo.setEditable(false);
         combo.setBlankable(false);
     }

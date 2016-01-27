@@ -55,7 +55,7 @@ public class ACToggleButton extends JToggleButton {
         this.setIconTextGap(0);
         this.setMargin(new java.awt.Insets(0, 4, 0, 4));
         this.setContentAreaFilled(true);
-
+        
         this.addActionListener(new ActionListener() {
           /**
            * ƒ{ƒ^ƒ“‰Ÿ‰º‚Ì“®ì

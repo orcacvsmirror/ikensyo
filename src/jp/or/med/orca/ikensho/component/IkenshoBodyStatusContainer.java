@@ -11,7 +11,6 @@ import javax.swing.JComponent;
 import javax.swing.ListModel;
 
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.component.event.ACFollowDisabledItemListener;
 import jp.nichicom.ac.container.ACParentHesesPanelContainer;
@@ -260,7 +259,8 @@ public class IkenshoBodyStatusContainer
         "åy", "íÜ", "èd"}))));
     rank.setEnabled(false);
     check.setOpaque(false);
-    check.setPreferredSize(new Dimension(150, 23));
+//    check.setPreferredSize(new Dimension(150, 23));
+    check.setPreferredSize(new Dimension(210, 23));
     pos.setMaxLength(10);
     pos.setEnabled(false);
     pos.setIMEMode(InputSubset.KANJI);
@@ -283,6 +283,7 @@ public class IkenshoBodyStatusContainer
     heses.add(ranks, null);
     ranks.add(rank, null);
     this.add(check, BorderLayout.WEST);
+    
   }
 
 }

@@ -479,9 +479,10 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
      */
     public IkenshoIkenshoPrintSetting(VRMap data, IkenshoHumanPicture picture)
             throws HeadlessException {
-        super(ACFrame.getInstance(), "「主治医意見書」印刷設定", true);
+//    	super(ACFrame.getInstance());
+//        super(ACFrame.getInstance(), "「主治医意見書」印刷設定", true);
         this.picture = picture;
-
+        this.setTitle("「主治医意見書」印刷設定");
         try {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
@@ -1862,9 +1863,20 @@ public class IkenshoIkenshoPrintSetting extends IkenshoDialog {
         // ウィンドウのサイズ
         //[ID:0000515][Tozo TANAKA] 2009/09/10 replace begin 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
 //        setSize(new Dimension(700, 420));
-        setPackSize();
-        //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応 
-        
+        //[ID:0000515][Tozo TANAKA] 2009/09/10 replace end 【2009年度対応：主治医意見書】市町村独自項目の印字に対応
+    	ACFrame frame = ACFrame.getInstance();
+    	if (frame.isSmall()){
+   		 setSize(new Dimension(700, 420));
+    	}
+    	else if (frame.isMiddle()){
+    		setSize(new Dimension(900,540));
+    	}
+    	else if (frame.isLarge()){
+    		setSize(new Dimension(1150,680));
+    	}
+    	else {
+    		setSize(new Dimension(1400,820));
+    	}
         
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

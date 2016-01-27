@@ -23,7 +23,6 @@ import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
 import jp.or.med.orca.ikensho.component.IkenshoBodyStatusContainer;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
-import jp.or.med.orca.ikensho.component.IkenshoOptionComboBox;
 import jp.or.med.orca.ikensho.component.picture.IkenshoHumanPicture;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
@@ -426,9 +425,11 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
     mindBody2Pos.setLayout(mindBody2PosLayout);
     mindBody2DownJyoushiLeft.setEnabled(false);
     mindBody2DownJyoushiLeft.setText("左");
+    mindBody2DownJyoushiLeft.setPreferredSize(new Dimension(70, 20));
     mindBody2DownJyoushiLeft.setBindPath("JOUSI_SICCHOU_HIDARI");
     mindBody2DownKashiRight.setEnabled(false);
     mindBody2DownKashiRight.setText("右");
+    mindBody2DownKashiRight.setPreferredSize(new Dimension(70, 20));
     mindBody2DownKashiRight.setBindPath("KASI_SICCHOU_MIGI");
     mindBody2DownJyoushi.setEnabled(false);
     mindBody2DownJyoushi.setText("・上肢");
@@ -438,6 +439,7 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
     mindBody2ConnectKoushuku.setBindPath("KOUSHU_FLAG");
     getContaintsGroup().setLayout(new BorderLayout());
     getContaintsGroup().setText("身体の状態");
+    getContaintsGroup().setVgap(20);
     mindBody2Title.setText("３．心身の状態に関する意見（続き）");
     mindBody2ConnectHijiLeft.setEnabled(false);
     mindBody2ConnectHijiLeft.setText("左");
@@ -448,7 +450,8 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
     mindBody2ConnectHeight.setColumns(6);
     mindBody2ConnectHeight.setHorizontalAlignment(SwingConstants.RIGHT);
     mindBody2ConnectHeight.setBindPath("HEIGHT");
-    mindBody2DownFuzuii.setPreferredSize(new Dimension(130, 23));
+//    mindBody2DownFuzuii.setPreferredSize(new Dimension(130, 23));
+    mindBody2DownFuzuii.setPreferredSize(new Dimension(210, 32));
     mindBody2DownFuzuii.setText("失調・不随意運動");
     mindBody2DownFuzuii.setVerticalAlignment(javax.swing.SwingConstants.TOP);
     mindBody2DownFuzuii.setBindPath("SICCHOU_FLAG");
@@ -472,9 +475,11 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
     mindBody2DownTaikanLeft.setEnabled(false);
     mindBody2DownTaikanLeft.setText("左");
     mindBody2DownTaikanLeft.setBindPath("TAIKAN_SICCHOU_HIDARI");
+    mindBody2DownTaikanLeft.setPreferredSize(new Dimension(70, 20));
     mindBody2ConnectKataRight.setEnabled(false);
     mindBody2ConnectKataRight.setText("右");
     mindBody2ConnectKataRight.setBindPath("KATA_KOUSHU_MIGI");
+    mindBody2ConnectKataRight.setPreferredSize(new Dimension(70, 20));
     mindBody2ConnectHiza.setEnabled(false);
     mindBody2ConnectHiza.setText("・膝関節");
     mindBody2Client.setLayout(new BorderLayout());
@@ -542,6 +547,7 @@ public class IkenshoIkenshoInfoMindBody2 extends IkenshoTabbableChildAffairConta
     addContaints();
     this.add(mindBody2Title, VRLayout.NORTH);
     this.add(getContaintsGroup(), VRLayout.CLIENT);
+    
   }
   /**
    * タイトルラベルを返します。

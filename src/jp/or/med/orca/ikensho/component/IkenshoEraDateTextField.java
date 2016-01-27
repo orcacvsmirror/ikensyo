@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import jp.nichicom.ac.ACCommon;
 import jp.nichicom.ac.component.ACAgeTextField;
 import jp.nichicom.ac.component.ACComboBox;
+import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACFrameEventProcesser;
 import jp.nichicom.vr.bind.VRBindPathParser;
@@ -49,11 +50,14 @@ public class IkenshoEraDateTextField extends JPanel implements
 
     protected ACComboBox era = new ACComboBox();
     protected IkenshoModifiedCheckTextField year = new IkenshoModifiedCheckTextField();
-    protected JLabel yearUnit = new JLabel();
+    protected ACLabel yearUnit = new ACLabel();
+//    protected JLabel yearUnit = new JLabel();
     protected IkenshoModifiedCheckTextField month = new IkenshoModifiedCheckTextField();
-    protected JLabel monthUnit = new JLabel();
+//    protected JLabel monthUnit = new JLabel();
+    protected ACLabel monthUnit = new ACLabel();
     protected IkenshoModifiedCheckTextField day = new IkenshoModifiedCheckTextField();
-    protected JLabel dayUnit = new JLabel();
+//    protected JLabel dayUnit = new JLabel();
+    protected ACLabel dayUnit = new ACLabel();
     protected ACAgeTextField age = new ACAgeTextField();
 
     private boolean allowedUnknown;

@@ -5,6 +5,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.Arrays;
 
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.container.ACLabelContainer;
@@ -223,6 +224,7 @@ public class IkenshoIkenshoInfoMindBody2H18 extends IkenshoIkenshoInfoMindBody2 
     mahiLegLeftDown.setCheckText("左下肢");
     mahiLegRightDown.setCheckText("右下肢");
     mahiOther.setCheckText("その他");
+    mahiOther.getComboBox().setColumns(12);
     mahis.setFocusBackground(IkenshoConstants.COLOR_DOUBLE_BACK_PANEL_BACKGROUND);
     getBodyWeightContainer().add(getWeightChanges(), null);
     mahi.setText("麻痺");
@@ -285,8 +287,7 @@ public class IkenshoIkenshoInfoMindBody2H18 extends IkenshoIkenshoInfoMindBody2 
         // 2006/07/10
         // 医師意見書対応 - 麻痺コンテナ並び順変更のため
         // Addition - begin [Masahiko Higuchi]
-        String osName = System.getProperty("os.name");
-        if ((osName != null) && (osName.indexOf("Mac") >= 0)) {
+        if (ACOSInfo.isMac()) {
             // Macは右に並べる
             getMahiLegRightUp().getCheckBox().setPreferredSize(null);
             getMahiLegLeftUp().getCheckBox().setPreferredSize(null);

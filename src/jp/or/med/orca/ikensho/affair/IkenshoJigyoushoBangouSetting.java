@@ -64,10 +64,15 @@ public class IkenshoJigyoushoBangouSetting extends IkenshoDialog {
         try {
             setDefaultCloseOperation(DISPOSE_ON_CLOSE);
             jbInit();
-            pack();
+            
             IkenshoSnapshot.getInstance().setRootContainer(client); // スナップショット対象設定
             initComponent(affair);
+            
             event();
+            
+            pack();
+            moveCenter();
+            
         } catch (Exception ex) {
             ex.printStackTrace();
         }
@@ -92,7 +97,8 @@ public class IkenshoJigyoushoBangouSetting extends IkenshoDialog {
         insurerNmContainer.setText("保険者番号");
         insurerNmContainer.add(insurerNm, null);
         insurerNm.setEditable(false);
-        insurerNm.setPreferredSize(new Dimension(280, 19));
+        insurerNm.setPreferredSize(new Dimension(340, 19));
+//        insurerNm.setPreferredSize(new Dimension(450, 19));
         insurerNm.setBindPath("INSURER_NM");
 
         VRLayout insurerNoPnlLayout = new VRLayout();
@@ -116,8 +122,10 @@ public class IkenshoJigyoushoBangouSetting extends IkenshoDialog {
         jigyoushoNoContainerLayout.setAutoWrap(false);
         jigyoushoNoContainer.add(jigyoushoNoField, VRLayout.FLOW);
         jigyoushoNoContainer.add(jigyoushoNoCaption, VRLayout.FLOW);
-        jigyoushoNoField.setColumns(10);
+//        jigyoushoNoField.setColumns(10);
+        jigyoushoNoField.setColumns(15);
         jigyoushoNoField.setMaxLength(10);
+        
         jigyoushoNoField.setIMEMode(InputSubset.LATIN_DIGITS);
         jigyoushoNoField.setCharType(VRCharType.ONLY_DIGIT);
         // jigyoushoNoField.setCharType(VRCharType.ONLY_ALNUM);
@@ -141,18 +149,19 @@ public class IkenshoJigyoushoBangouSetting extends IkenshoDialog {
 
     private void initComponent(VRMap affair) throws Exception {
         // ウィンドウのサイズ
-        setSize(new Dimension(470, 110));
-        // ウィンドウを中央に配置
-        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-        Dimension frameSize = this.getSize();
-        if (frameSize.height > screenSize.height) {
-            frameSize.height = screenSize.height;
-        }
-        if (frameSize.width > screenSize.width) {
-            frameSize.width = screenSize.width;
-        }
-        this.setLocation((screenSize.width - frameSize.width) / 2,
-                (screenSize.height - frameSize.height) / 2);
+//        setSize(new Dimension(470, 150));
+    	setSize(new Dimension(800, 150));
+//        // ウィンドウを中央に配置
+//        Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+//        Dimension frameSize = this.getSize();
+//        if (frameSize.height > screenSize.height) {
+//            frameSize.height = screenSize.height;
+//        }
+//        if (frameSize.width > screenSize.width) {
+//            frameSize.width = screenSize.width;
+//        }
+//        this.setLocation((screenSize.width - frameSize.width) / 2,
+//                (screenSize.height - frameSize.height) / 2);
 
         // 保険者一覧をDBから取得・コンボに設定する
         IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
@@ -225,6 +234,23 @@ public class IkenshoJigyoushoBangouSetting extends IkenshoDialog {
         // スナップショット撮影
         IkenshoSnapshot.getInstance().snapshot();
     }
+    
+    
+    private void moveCenter() {
+	      // ウィンドウを中央に配置
+	      Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+	      Dimension frameSize = this.getSize();
+	      if (frameSize.height > screenSize.height) {
+	          frameSize.height = screenSize.height;
+	      }
+	      if (frameSize.width > screenSize.width) {
+	          frameSize.width = screenSize.width;
+	      }
+	      this.setLocation((screenSize.width - frameSize.width) / 2,
+	              (screenSize.height - frameSize.height) / 2);
+    }
+    
+    
     /**
      * 選択している保険者データの特定バインドパスの値を返します。
      * @param bindPath 取得対象のバインドパス

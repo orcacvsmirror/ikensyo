@@ -939,7 +939,7 @@ public interface VRComponentar {
      * @see #getPropertyChangeListeners
      * @since 1.3
      */
-    public EventListener[] getListeners(Class listenerType);
+    //public EventListener[] getListeners(Class listenerType);
 
     /**
      * Gets the locale of this component.
@@ -2326,7 +2326,7 @@ public interface VRComponentar {
      *             focus traversal operation for this Component
      * @since 1.4
      */
-    public void setFocusTraversalKeys(int id, Set keystrokes);
+    //public void setFocusTraversalKeys(int id, Set keystrokes);
 
     /**
      * Sets whether focus traversal keys are enabled for this Component.

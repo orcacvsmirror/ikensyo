@@ -290,7 +290,7 @@ public class ACTable extends JScrollPane implements VRTablar, KeyListener,
     }
 
     public TableCellEditor getDefaultEditor(Class columnClass) {
-        return getTable().getDefaultEditor(columnClass);
+        return getTable().getDefaultEditor1(columnClass);
     }
 
     /**
@@ -733,7 +733,7 @@ public class ACTable extends JScrollPane implements VRTablar, KeyListener,
     }
 
     public void setDefaultEditor(Class columnClass, TableCellEditor editor) {
-        getTable().setDefaultEditor(columnClass, editor);
+        getTable().setDefaultEditor1(columnClass, editor);
     }
 
     /**
@@ -747,7 +747,7 @@ public class ACTable extends JScrollPane implements VRTablar, KeyListener,
      * @see #setDefaultEditor
      */
     public void setDefaultRenderer(Class columnClass, TableCellRenderer renderer) {
-        getTable().setDefaultRenderer(columnClass, renderer);
+        getTable().setDefaultRenderer1(columnClass, renderer);
     }
 
     public void setDragEnabled(boolean b) {
@@ -1176,5 +1176,21 @@ public class ACTable extends JScrollPane implements VRTablar, KeyListener,
             getPopupMenu().show((Component) e.getSource(), e.getX(), e.getY());
         }
     }
+
+	public TableCellEditor getDefaultEditor1(Class columnClass) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	public void setDefaultEditor1(Class columnClass, TableCellEditor editor) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
+	public void setDefaultRenderer1(Class columnClass,
+			TableCellRenderer renderer) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
 
 }

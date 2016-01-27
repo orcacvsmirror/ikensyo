@@ -413,15 +413,24 @@ public class IkenshoHoumonKangoStationJouhouIchiran extends IkenshoAffairContain
         //ColumnModelの生成
         table.setColumnModel(new VRTableColumnModel(
             new VRTableColumn[] {
-            new VRTableColumn(0, 150, "代表者名"),
-            new VRTableColumn(1, 150, "ステーション名"),
-            new VRTableColumn(2, 80, "郵便番号"),
-            new VRTableColumn(3, 200, "所在地"),
-            new VRTableColumn(4, 120, "連絡先(電話)"),
-            new VRTableColumn(5, 120, "連絡先(FAX)"),
-            new VRTableColumn(6, 120, "連絡先(携帯)"),
-            new VRTableColumn(7, 200, "緊急時連絡先"),
-            new VRTableColumn(8, 200, "不在時対応法"),
+//          new VRTableColumn(0, 150, "代表者名"),
+//          new VRTableColumn(1, 150, "ステーション名"),
+//          new VRTableColumn(2, 80, "郵便番号"),
+//          new VRTableColumn(3, 200, "所在地"),
+//          new VRTableColumn(4, 120, "連絡先(電話)"),
+//          new VRTableColumn(5, 120, "連絡先(FAX)"),
+//          new VRTableColumn(6, 120, "連絡先(携帯)"),
+//          new VRTableColumn(7, 200, "緊急時連絡先"),
+//          new VRTableColumn(8, 200, "不在時対応法"),            		
+            new VRTableColumn(0, 180, "代表者名"),
+            new VRTableColumn(1, 180, "ステーション名"),
+            new VRTableColumn(2, 120, "郵便番号"),
+            new VRTableColumn(3, 260, "所在地"),
+            new VRTableColumn(4, 160, "連絡先(電話)"),
+            new VRTableColumn(5, 160, "連絡先(FAX)"),
+            new VRTableColumn(6, 160, "連絡先(携帯)"),
+            new VRTableColumn(7, 260, "緊急時連絡先"),
+            new VRTableColumn(8, 260, "不在時対応法"),
             new VRTableColumn(9, 300, "備考")
         })
             );

@@ -36,13 +36,13 @@ public class IkenshoTokubetsuHoumonKangoShijishoIryoukikan extends
         //[ID:0000731][Shin Fujihara] 2012/04/20 add end 【2009年度対応：訪問看護指示書】たん吸引指示追加
         
         getTokubertsuKinkyuRenraku().setColumns(100);
-        getTokubertsuKinkyuRenraku().setRows(3);
+        getTokubertsuKinkyuRenraku().setRows(2);
         getTokubertsuKinkyuRenraku().setMaxRows(2);
         getTokubertsuKinkyuRenraku().setMaxLength(200);
         getTokubertsuKinkyuRenraku().setLineWrap(true);
         getTokubertsuKinkyuRenraku().setIMEMode(InputSubset.KANJI);
         getTokubertsuKinkyuRenraku().setBindPath("TOKUBETSU_KINKYU_RENRAKU");
-        
+        getTokubertsuKinkyuRenraku().fitTextArea();
         getTokubertsuKinkyuRenrakuContainer().setText("　　　");
 
         

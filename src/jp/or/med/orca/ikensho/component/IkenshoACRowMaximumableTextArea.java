@@ -1,8 +1,6 @@
 package jp.or.med.orca.ikensho.component;
 
 import java.awt.Dimension;
-import java.awt.Font;
-import java.awt.FontMetrics;
 import java.awt.Insets;
 import java.awt.event.FocusEvent;
 import java.awt.im.InputSubset;
@@ -10,9 +8,9 @@ import java.text.ParseException;
 
 import javax.swing.text.Document;
 
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.component.ACRowMaximumableTextArea;
 import jp.nichicom.ac.text.ACTextAreaDocument;
-import jp.nichicom.vr.component.AbstractVRTextField;
 import jp.nichicom.vr.component.VRTextArea;
 
 /**
@@ -28,7 +26,6 @@ import jp.nichicom.vr.component.VRTextArea;
 
 public class IkenshoACRowMaximumableTextArea extends ACRowMaximumableTextArea {
 
-    private boolean runComposition;
     protected InputSubset imeMode;
 
     protected int maxRows = 0;
@@ -136,7 +133,7 @@ public class IkenshoACRowMaximumableTextArea extends ACRowMaximumableTextArea {
             }
             
             double per=1.0;
-            if (!runComposition) {
+            if (!ACOSInfo.isMac()) {
                 //Macの補正率は0.55
                 per = 0.55;
                 // [ID:0000438][Tozo TANAKA] 2009/06/08 add begin 【主治医医見書・医師医見書】薬剤名テキストの追加
@@ -180,46 +177,13 @@ public class IkenshoACRowMaximumableTextArea extends ACRowMaximumableTextArea {
     protected Document createDocument() {
         return new ACTextAreaDocument(this);
     }
-
-    protected void initComponent() {
-        super.initComponent();
-        String osName = System.getProperty("os.name");
-
-        Font nowFont = getFont();
-        if ((osName == null) || (osName.indexOf("Mac") < 0)) {
-            // Mac以外は"ＭＳ ゴシック"
-            if (nowFont == null) {
-                setFont(new Font("ＭＳ ゴシック", Font.PLAIN, 12));
-            } else {
-                setFont(new Font("ＭＳ ゴシック", nowFont.getStyle(), nowFont
-                        .getSize()));
-            }
-            runComposition = true;
-        } else {
-            // Mac
-            String ver = System.getProperty("os.version", "");
-            if("10.4.0".compareTo(ver)>=0){
-                // 10.4未満は"Osaka"
-                if (nowFont == null) {
-                    setFont(new Font("Osaka", Font.PLAIN, 12));
-                } else {
-                    setFont(new Font("Osaka", nowFont.getStyle(), nowFont.getSize()));
-                }
-            }else{
-                //10.4以上は何もしない
-            }
-            runComposition = false;
-        }
-
-        setInsertTab(true);
-//        new ACTextComponentPopupMenu().addInvoker(this);
-    }
-
+    
     /**
      * フォーカス取得時の追加処理を行ないます。
      * 
      * @param e イベント情報
      */
+    /*
     protected void processFocusGained(FocusEvent e) {
         InputSubset ime = this.getIMEMode();
         if (ime == null) {
@@ -239,6 +203,7 @@ public class IkenshoACRowMaximumableTextArea extends ACRowMaximumableTextArea {
 
         super.processFocusGained(e);
     }
+    */
 
     /**
      * フォーカス喪失時の追加処理を行ないます。

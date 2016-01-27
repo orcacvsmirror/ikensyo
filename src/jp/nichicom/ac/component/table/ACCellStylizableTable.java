@@ -310,4 +310,20 @@ public class ACCellStylizableTable extends VRTable {
 //        }
 //        super.removeNotify();
 //    }
+
+	public TableCellEditor getDefaultEditor1(Class columnClass) {
+		// TODO 自動生成されたメソッド・スタブ
+		return null;
+	}
+
+	public void setDefaultEditor1(Class columnClass, TableCellEditor editor) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
+
+	public void setDefaultRenderer1(Class columnClass,
+			TableCellRenderer renderer) {
+		// TODO 自動生成されたメソッド・スタブ
+		
+	}
 }

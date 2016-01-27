@@ -1,12 +1,10 @@
 package jp.or.med.orca.ikensho.affair;
 
-import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.or.med.orca.ikensho.component.IkenshoDocumentTabTitleLabel;
 import jp.or.med.orca.ikensho.component.IkenshoHoumonKangoShijishoInstructContainer;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
-import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
 /** TODO <HEAD_IKENSYO> */
 public class IkenshoHoumonKangoShijishoRyuiShiji
@@ -147,12 +145,21 @@ public class IkenshoHoumonKangoShijishoRyuiShiji
 //    ryuiShijiGrp.add(tokki, VRLayout.NORTH);
     this.add(getRyuuiShijiTitle(), VRLayout.NORTH);
     this.add(getRyuiShijiGrp(), VRLayout.CLIENT);
-    
-    seikatsuShidouRyuijikou.setRows(4);
-    rehabilitation.setRows(4);
-    jyokusou.setRows(4);
-    kikiSousaShien.setRows(4);
-    other.setRows(4);
+//    seikatsuShidouRyuijikou.setRows(4);
+//	rehabilitation.setRows(4);
+//	jyokusou.setRows(4);
+//	kikiSousaShien.setRows(4);
+//	other.setRows(4);
+	seikatsuShidouRyuijikou.setRows(4);
+	rehabilitation.setRows(4);
+	jyokusou.setRows(4);
+	kikiSousaShien.setRows(4);
+	other.setRows(4);
+	seikatsuShidouRyuijikou.fitTextArea();
+	rehabilitation.fitTextArea();
+	jyokusou.fitTextArea();
+	kikiSousaShien.fitTextArea();
+	other.fitTextArea();
     // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
   }
 

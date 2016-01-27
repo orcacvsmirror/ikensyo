@@ -69,7 +69,7 @@ public class IkenshoTaxSetting extends IkenshoDialog {
     public void jbInit() throws Exception {
         contentPane = (JPanel) getContentPane();
         contentPane.setLayout(new BorderLayout());
-
+        
         contentPane.add(taxGrp, BorderLayout.CENTER);
         contentPane.add(btnGrp, BorderLayout.SOUTH);
 
@@ -100,7 +100,7 @@ public class IkenshoTaxSetting extends IkenshoDialog {
 
     public void init() throws Exception {
         // 画面サイズ
-        setSize(new Dimension(260, 120));
+        //setSize(new Dimension(260, 120));
 
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

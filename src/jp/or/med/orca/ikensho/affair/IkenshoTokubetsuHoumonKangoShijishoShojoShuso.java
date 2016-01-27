@@ -8,6 +8,7 @@ import javax.swing.JTextField;
 
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.component.ACLabel;
+import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.text.ACTextUtilities;
 import jp.nichicom.ac.util.ACDateUtilities;
@@ -28,7 +29,8 @@ public class IkenshoTokubetsuHoumonKangoShijishoShojoShuso extends
     
     //[ID:0000687][Shin Fujihara] 2012/03/12 add begin 【2012年度対応：「一時的に訪問看護が頻回に必要な理由」追加】
     protected ACLabel adviceLabel1;
-    protected JTextField adviceText2;
+//    protected JTextField adviceText2;
+    protected ACTextField adviceText2;
     protected ACLabel adviceLabel3;
     protected ACLabel adviceLabel4;
     //[ID:0000687][Shin Fujihara] 2012/03/12 add end
@@ -53,7 +55,7 @@ public class IkenshoTokubetsuHoumonKangoShijishoShojoShuso extends
         
         
         getTokubetsuShuso().setColumns(100);
-        getTokubetsuShuso().setRows(15);
+        getTokubetsuShuso().setRows(14);
         getTokubetsuShuso().setMaxRows(14);
         getTokubetsuShuso().setMaxLength(700);
         getTokubetsuShuso().setShowSelectVisible(false);
@@ -61,7 +63,7 @@ public class IkenshoTokubetsuHoumonKangoShijishoShojoShuso extends
         getTokubetsuShuso().setTextBindPath("TOKUBETSU_SHOJO_SHUSO");
         getTokubetsuShuso().setCaption("症状・主訴");
         getTokubetsuShuso().setTitle("症状・主訴（700文字/14行以内）");
-        
+        getTokubetsuShuso().fitTextArea();
         //[ID:0000687][Shin Fujihara] 2012/03/12 add begin 【2012年度対応：「一時的に訪問看護が頻回に必要な理由」追加】
         VRLayout layout = new VRLayout();
         layout.setHgap(4);
@@ -137,7 +139,8 @@ public class IkenshoTokubetsuHoumonKangoShijishoShojoShuso extends
      */
     protected JTextField getAdviceText2() {
         if (adviceText2 == null) {
-            adviceText2 = new JTextField();
+//            adviceText2 = new JTextField();
+        	adviceText2 = new ACTextField();
             adviceText2.setOpaque(false );
             adviceText2.setBorder(null);
             adviceText2.setForeground(Color.red);

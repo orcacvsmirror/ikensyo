@@ -119,7 +119,8 @@ public class IkenshoRenkeiIJyouhouShousai extends IkenshoAffairContainer
         client.add(bikouContainer, VRLayout.FLOW_INSETLINE_RETURN);
 
         // ìoò^É{É^Éì
-        update.setText("ìoò^(S)");
+//        update.setText("ìoò^(S)");
+        update.setText("Å@ìoò^(S)Å@");
         update.setMnemonic('S');
         update.setActionCommand("ìoò^(S)");
         update.setToolTipText("åªç›ÇÃì‡óeÇìoò^ÇµÇ‹Ç∑ÅB");
@@ -204,7 +205,6 @@ public class IkenshoRenkeiIJyouhouShousai extends IkenshoAffairContainer
         fuzaijiTaiou.setBindPath("FUZAIJI_TAIOU");
         fuzaijiTaiou.setIMEMode(InputSubset.KANJI);
 
-        // îıçl
         bikouContainer.setLayout(new BorderLayout());
         bikouScrPane.getViewport().add(bikou);
         bikouContainer.add(bikouScrPane, java.awt.BorderLayout.CENTER);
@@ -213,6 +213,7 @@ public class IkenshoRenkeiIJyouhouShousai extends IkenshoAffairContainer
         bikou.setIMEMode(InputSubset.KANJI);
         bikou.setMaxLength(200);
         bikou.setLineWrap(true);
+
     }
 
     public void initAffair(ACAffairInfo affair) throws Exception {

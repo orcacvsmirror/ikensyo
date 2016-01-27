@@ -239,10 +239,14 @@ public class IkenshoIryouKikanJouhouShousaiKanren extends
 
         // ColumnModel‚Ì¶¬
         table.setColumnModel(new VRTableColumnModel(new VRTableColumn[] {
-                new VRTableColumn(0, 90, "•ÛŒ¯Ò”Ô†"),
-                new VRTableColumn(1, 300, "•ÛŒ¯Ò–¼Ì"),
-                new VRTableColumn(2, 160, "•ÛŒ¯Ò‹æ•ª", IkenshoInsurerTypeFormat.getInstance()),
-                new VRTableColumn(3, 150, "–‹ÆŠ”Ô†") }));
+//                new VRTableColumn(0, 90, "•ÛŒ¯Ò”Ô†"),
+//                new VRTableColumn(1, 300, "•ÛŒ¯Ò–¼Ì"),
+//                new VRTableColumn(2, 160, "•ÛŒ¯Ò‹æ•ª", IkenshoInsurerTypeFormat.getInstance()),
+//                new VRTableColumn(3, 150, "–‹ÆŠ”Ô†") }));
+        		 new VRTableColumn(0, 180, "•ÛŒ¯Ò”Ô†"),
+                 new VRTableColumn(1, 450, "•ÛŒ¯Ò–¼Ì"),
+                 new VRTableColumn(2, 240, "•ÛŒ¯Ò‹æ•ª", IkenshoInsurerTypeFormat.getInstance()),
+                 new VRTableColumn(3, 240, "–‹ÆŠ”Ô†") }));
     }
 
     private void event() throws Exception {

@@ -42,6 +42,7 @@ import java.util.Iterator;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.io.ACAgeEncorder;
 import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.util.splash.ACSplash;
@@ -1260,9 +1261,8 @@ protected void execData(final Map rec) throws IOException, Exception {
             //2006/02/11[Tozo Tanaka] : add begin
             //TODO canChange?
             boolean encode = false;
-            String osName = System.getProperty("os.name");
             //Mac以外であれば文字コード変換を行う。
-            if ((osName != null) && (osName.indexOf("Mac") < 0)) {
+            if (!ACOSInfo.isMac()) {
                 encode = true;
             }
             //2006/02/11[Tozo Tanaka] : add end

@@ -195,7 +195,7 @@ public class IkenshoSettingDB extends IkenshoDialog {
         //setSize(new Dimension(680, 350));
     	// [ID:0000729][Masahiko.Higuchi]del - end
     	// [ID:0000729][Masahiko.Higuchi]add - begin 2012年度対応
-    	setSize(new Dimension(700, 350));
+    	//setSize(new Dimension(700, 350));
     	// [ID:0000729][Masahiko.Higuchi]add - end
         //ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();

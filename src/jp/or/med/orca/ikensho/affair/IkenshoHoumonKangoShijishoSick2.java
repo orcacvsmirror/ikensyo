@@ -1,5 +1,7 @@
 package jp.or.med.orca.ikensho.affair;
 
+import java.awt.Dimension;
+import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.im.InputSubset;
@@ -35,7 +37,8 @@ public class IkenshoHoumonKangoShijishoSick2 extends IkenshoDocumentAffairSick {
             limitArea = new IkenshoTextFieldDocumentLimit();
             limitArea.setColumns(100);
             limitArea.setLineWrap(true);
-            limitArea.setRows(11);
+//            limitArea.setRows(11);
+            limitArea.setRows(10);
             limitArea.setMaxRows(10);
             limitArea.setBindPath("MT_STS");
             limitArea.setMaxLength(500);
@@ -44,6 +47,7 @@ public class IkenshoHoumonKangoShijishoSick2 extends IkenshoDocumentAffairSick {
             limitArea.setIMEMode(InputSubset.KANJI);
             getSickMedicineValueWarning().setText(getSickProgressName() + "は {0}文字以上／{1}行以上の入力では、帳票は2枚で印刷されます(現在 {2}文字 {3}行)");
             limitArea.setAlertLabel(getSickMedicineValueWarning());
+            limitArea.fitTextArea();
         }
         return (IkenshoACTextArea)limitArea;
     }
@@ -368,14 +372,14 @@ public class IkenshoHoumonKangoShijishoSick2 extends IkenshoDocumentAffairSick {
                         getSickMedicineUsage(5), getSickMedicineUsage(6) });
         
         
-//      [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
-
+//      [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+        recentLoad.setMargin(new Insets(2, 7, 2, 7));
         recentLoad.setLoadRecentSetting(
                 dbm,
                 getMasterAffair().getPatientNo(),
                 "TOKUBETSU_SHOJO_SHUSO",
                 "1",
-                "読込(L)",
+                "<html>読込<br>(L)</html>",
                 'L',
                 "最新の特別訪問看護指示書に登録した「症状・主訴」を読み込みます。" + ACConstants.LINE_SEPARATOR
                         + "よろしいですか？");

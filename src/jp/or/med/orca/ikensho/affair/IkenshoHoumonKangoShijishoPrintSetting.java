@@ -1484,7 +1484,20 @@ public class IkenshoHoumonKangoShijishoPrintSetting extends IkenshoDialog {
      */
     private void init() {
         // ウィンドウのサイズ
-        setSize(new Dimension(600, 200));
+//        setSize(new Dimension(600, 200));
+    	ACFrame frame = ACFrame.getInstance();
+    	if (frame.isSmall()){
+    		setSize(new Dimension(600, 200));
+    	}
+    	else if (frame.isMiddle()){
+    		setSize(new Dimension(650,230));
+    	}
+    	else if (frame.isLarge()){
+    		setSize(new Dimension(850,260));
+    	}
+    	else {
+    		setSize(new Dimension(1150,290));
+    	}
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();

@@ -47,7 +47,7 @@ public class IkenshoHoumonKangoShijishoTenteki
     tenteki.setMaxLength(250);
 //    tenteki.setRows(4);
 //    tenteki.setMaxRows(tenteki.getRows());
-    tenteki.setMaxRows(5);
+//    tenteki.setMaxRows(5);
     //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace end
     tokki.setCode(IkenshoCommon.TEIKEI_HOUMON_TOKKI);
     //[ID:0000634][Masahiko.Higuchi] 2011/02/24 replace begin y2011”N“x‘Î‰F–K–âŠÅŒìw¦‘z’ •[ˆóš•¶š”‚ÌŠg‘å
@@ -85,12 +85,13 @@ public class IkenshoHoumonKangoShijishoTenteki
     this.add(getGroup(), VRLayout.CLIENT);
 
     //[ID:0000634][Masahiko.higuchi] 2011/02/24 replace begin y2011”N“x‘Î‰F–K–âŠÅŒìw¦‘z’ •[ˆóš•¶š”‚ÌŠg‘å
-    tenteki.setRows(6);
-    tokki.setRows(11);
+    tenteki.setRows(5);
+    tokki.setRows(10);
 	//[ID:0000634][Masahiko.higuchi] 2011/02/24 replace end
     tenteki.setColumns(100);
     tokki.setColumns(100);
-    
+    tenteki.fitTextArea();
+	tokki.fitTextArea();
     // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end y2009”N“x‘Î‰F–K–âŠÅŒìw¦‘z“Á•Êw¦‘‚ÌŠÇ—‹@”\  
   }
 

@@ -148,7 +148,7 @@ public interface VRTableModelar extends TableModel, Serializable {
      * @see #getTableModelListeners
      * @since 1.3
      */
-    public EventListener[] getListeners(Class listenerType);
+//    public EventListener[] getListeners(Class listenerType);
 
     /**
      * 親テーブルを返します。

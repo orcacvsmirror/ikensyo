@@ -337,8 +337,9 @@ public class IkenshoIkenshoInfoSickH18 extends IkenshoIkenshoInfoSick {
 //                               "（250文字" + IkenshoConstants.LINE_SEPARATOR +
 //                               "または5行以内）");
 //
-    getNotStableState().setPreferredSize(new Dimension(400,20));
+//    getNotStableState().setPreferredSize(new Dimension(400,20));
     getNotStableState().setMaxLength(30);
+    getNotStableState().setColumns(30);
     getNotStableState().setIMEMode(InputSubset.KANJI);
 //    getSickNameGroup().setText("診断名（特定疾病または生活機能低下の直接の原因となっている傷病名については１．に記入）及び発症年月日");
 //    getProgressGroup().setText("生活機能低下の直接の原因となっている傷病または特定疾病の経過及び投薬内容を含む治療内容");

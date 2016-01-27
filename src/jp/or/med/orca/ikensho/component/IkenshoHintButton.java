@@ -1,6 +1,5 @@
 package jp.or.med.orca.ikensho.component;
 
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
@@ -83,10 +82,12 @@ public class IkenshoHintButton
    * @throws Exception èâä˙âªó·äO
    */
   private void jbInit() throws Exception {
+	this.setTextUnPushed("Å@Å@");
     this.setIconPathUnPushed(IkenshoConstants.IMAGE_PATH_HINT_BUTTON);
-    this.setMaximumSize(new Dimension(29, 20));
-    this.setPreferredSize(new Dimension(50, 20));
+    this.setVerticalTextPosition(javax.swing.SwingConstants.CENTER); 
     this.setTextPushed("ñﬂÇÈ");
+//	this.setMaximumSize(new Dimension(29, 20));
+//	this.setPreferredSize(new Dimension(50, 20));
   }
 
   /**

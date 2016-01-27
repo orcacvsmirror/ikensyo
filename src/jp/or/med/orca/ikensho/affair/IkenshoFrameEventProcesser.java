@@ -9,6 +9,7 @@ import java.util.Iterator;
 import java.util.Map;
 
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.core.ACDefaultFrameEventProcesser;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.ac.core.ACPDFCreatable;
@@ -94,8 +95,9 @@ public class IkenshoFrameEventProcesser extends ACDefaultFrameEventProcesser
         }
 
         String[] arg = { "", pdfPath };
-        String osName = System.getProperty("os.name");
-        if (osName.startsWith("Mac")) {
+
+        // Mac‚È‚çŠÖ˜A•t‚¯‚ÅŠJ‚­
+        if (ACOSInfo.isMac()) {
             arg[0] = "open";
         } else {
             arg[0] = acrobatPath;

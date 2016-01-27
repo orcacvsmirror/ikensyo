@@ -415,7 +415,20 @@ public class IkenshoSeikyuPrintSetting extends IkenshoDialog implements
     // コンポーネントの初期化
     private void init() {
         // ウィンドウのサイズ
-        setSize(new Dimension(730, 440));
+//        setSize(new Dimension(730, 440));
+    	ACFrame frame = ACFrame.getInstance();
+    	if (frame.isSmall()){
+      		 setSize(new Dimension(730, 470));
+       	}
+       	else if (frame.isMiddle()){
+       		setSize(new Dimension(900,540));
+       	}
+       	else if (frame.isLarge()){
+       		setSize(new Dimension(1150,680));
+       	}
+       	else {
+       		setSize(new Dimension(1400,820));
+       	}
         // ウィンドウを中央に配置
         Dimension screenSize = Toolkit.getDefaultToolkit().getScreenSize();
         Dimension frameSize = this.getSize();

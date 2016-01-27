@@ -443,8 +443,9 @@ public class ACMessageBoxDialog extends JDialog {
         messages.add(message, VRLayout.FLOW);
         ok.setIcon(ACResourceIconPooler.getInstance().getImage(
                 ACConstants.ICON_PATH_OK_24));
-
+        
         setResizable(false);
+        
     }
 
 }

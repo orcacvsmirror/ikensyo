@@ -28,7 +28,7 @@ public class IkenshoTokubetsuHoumonKangoShijishoTenteki extends
         
         
         getTokubetsuTenteki().setColumns(100);
-        getTokubetsuTenteki().setRows(15);
+        getTokubetsuTenteki().setRows(14);
         getTokubetsuTenteki().setMaxRows(14);
         getTokubetsuTenteki().setMaxLength(700);
         getTokubetsuTenteki().setShowSelectVisible(false);
@@ -36,7 +36,7 @@ public class IkenshoTokubetsuHoumonKangoShijishoTenteki extends
         getTokubetsuTenteki().setTextBindPath("TOKUBETSU_CHUSHA_SHIJI");
         getTokubetsuTenteki().setCaption("点滴注射指示内容");
         getTokubetsuTenteki().setTitle("点滴注射指示内容（投与薬剤・投与量・投与方法等）（700文字/14行以内）");
-        
+        getTokubetsuTenteki().fitTextArea();
         getTokubetsuGroup().add(getTokubetsuTenteki(), VRLayout.NORTH);
         this.add(getTokubetsuGroup(), VRLayout.CLIENT);
     }

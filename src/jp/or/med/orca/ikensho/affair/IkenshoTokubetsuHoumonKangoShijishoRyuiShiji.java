@@ -1,5 +1,7 @@
 package jp.or.med.orca.ikensho.affair;
 
+import java.awt.Dimension;
+
 import jp.nichicom.ac.ACConstants;
 import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.vr.layout.VRLayout;
@@ -29,9 +31,10 @@ public class IkenshoTokubetsuHoumonKangoShijishoRyuiShiji extends
         
         
         getTokubetsuRyuijiko().setColumns(100);
-        getTokubetsuRyuijiko().setRows(15);
+        getTokubetsuRyuijiko().setRows(14);
         getTokubetsuRyuijiko().setMaxRows(14);
         getTokubetsuRyuijiko().setMaxLength(700);
+        getTokubetsuRyuijiko().fitTextArea();
         getTokubetsuRyuijiko().setShowSelectVisible(false);
         getTokubetsuRyuijiko().setCheckVisible(false);
         getTokubetsuRyuijiko().setTextBindPath("TOKUBETSU_RYUI");

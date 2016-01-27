@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.SwingConstants;
 
 import jp.nichicom.ac.ACConstants;
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.core.ACAffairInfo;
 import jp.nichicom.ac.core.ACFrame;
 import jp.nichicom.vr.component.VRLabel;
@@ -131,8 +132,8 @@ public class ACAffairButtonBar extends VRPanel{
     this.add(back, VRLayout.WEST);
     this.add(title, VRLayout.WEST);
 
-    String osName = System.getProperty("os.name");
-    if ( (osName != null) && (osName.indexOf("Mac") < 0)) {
+    // Mac‚Å‚È‚¯‚ê‚ÎF‚ð•t‚¯‚é
+    if ( !ACOSInfo.isMac() ) {
       title.setForeground(java.awt.Color.white);
       this.setBackground(new java.awt.Color(0, 51, 153));
     }

@@ -467,6 +467,7 @@ public class VRTableCellViewer extends AbstractCellEditor implements
 
         applyTableCellColor(table, value, isSelected, hasFocus, row, column,
                 cmp);
+        
         return cmp;
     }
 

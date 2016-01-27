@@ -1,16 +1,15 @@
 package jp.nichicom.ac.component;
 
-import java.awt.Font;
 import java.awt.event.FocusEvent;
 import java.awt.im.InputSubset;
 import java.text.ParseException;
 
 import javax.swing.text.Document;
 
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.container.ACParentHesesPanelContainer;
 import jp.nichicom.ac.text.ACTextFieldDocument;
 import jp.nichicom.vr.component.VRTextField;
-import jp.nichicom.vr.util.logging.VRLogger;
 
 /**
  * テキストフィールドです。
@@ -25,8 +24,6 @@ import jp.nichicom.vr.util.logging.VRLogger;
 
 public class ACTextField extends VRTextField {
     private InputSubset imeMode;
-
-    private boolean runComposition;
 
     /**
      * Constructs a new <code>TextField</code>. A default model is created,
@@ -141,28 +138,7 @@ public class ACTextField extends VRTextField {
     protected void initComponent() {
         super.initComponent();
 
-        // Mac対応
-        runComposition = !System.getProperty("os.name").startsWith("Mac");
-
         setFocusSelcetAll(true);
-
-        String osName = System.getProperty("os.name","").toLowerCase();
-        if ((osName != null) && (osName.indexOf("mac") >= 0)) {
-            // Mac
-
-            String ver = System.getProperty("os.version", "");
-            if("10.4.0".compareTo(ver)>=0){
-                // 10.4未満は"Osaka"
-                Font nowFont = getFont();
-                if (nowFont == null) {
-                    setFont(new Font("Osaka", Font.PLAIN, 12));
-                } else {
-                    setFont(new Font("Osaka", nowFont.getStyle(), nowFont.getSize()));
-                }
-            }else{
-                //10.4以上は何もしない
-            }
-        }
         
         new ACTextComponentPopupMenu().addInvoker(this);
     }
@@ -174,7 +150,7 @@ public class ACTextField extends VRTextField {
                 // ひらがなの場合だけはコンポジションを有効にする
                 if (ime == InputSubset.KANJI) {
                     // Mac対応
-                    if (runComposition) {
+                    if (!ACOSInfo.isMac()) {
                         this.getInputContext().setCompositionEnabled(true);
                     }
                 }

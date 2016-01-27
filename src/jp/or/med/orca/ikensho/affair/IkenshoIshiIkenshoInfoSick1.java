@@ -1,5 +1,6 @@
 package jp.or.med.orca.ikensho.affair;
 
+import java.awt.Dimension;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.im.InputSubset;
@@ -372,8 +373,9 @@ public class IkenshoIshiIkenshoInfoSick1 extends IkenshoIkenshoInfoSickH18 {
             nyuinrekiSickCombo1 = new IkenshoOptionComboBox();
             nyuinrekiSickCombo1.setBindPath("NYUIN_NM1");
             nyuinrekiSickCombo1.setMaxLength(30);
-            nyuinrekiSickCombo1.setColumns(25);
+//            nyuinrekiSickCombo1.setColumns(25);
             nyuinrekiSickCombo1.setIMEMode(InputSubset.KANJI);
+            nyuinrekiSickCombo1.setPreferredSize(new Dimension(200,20));
         }
         return nyuinrekiSickCombo1;
     }
@@ -399,8 +401,9 @@ public class IkenshoIshiIkenshoInfoSick1 extends IkenshoIkenshoInfoSickH18 {
             nyuinrekiSickCombo2 = new IkenshoOptionComboBox();
             nyuinrekiSickCombo2.setBindPath("NYUIN_NM2");
             nyuinrekiSickCombo2.setMaxLength(30);
-            nyuinrekiSickCombo2.setColumns(25);
+//            nyuinrekiSickCombo2.setColumns(25);
             nyuinrekiSickCombo2.setIMEMode(InputSubset.KANJI);
+            nyuinrekiSickCombo2.setPreferredSize(new Dimension(200,20));
         }
         return nyuinrekiSickCombo2;
     }

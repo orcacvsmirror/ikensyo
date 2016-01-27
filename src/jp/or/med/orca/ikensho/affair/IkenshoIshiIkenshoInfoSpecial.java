@@ -1,8 +1,7 @@
 package jp.or.med.orca.ikensho.affair;
 
+import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.awt.im.InputSubset;
@@ -10,20 +9,16 @@ import java.util.Arrays;
 
 import jp.nichicom.ac.component.ACCheckBox;
 import jp.nichicom.ac.component.ACClearableRadioButtonGroup;
-import jp.nichicom.ac.component.ACComboBox;
 import jp.nichicom.ac.component.ACIntegerCheckBox;
 import jp.nichicom.ac.component.ACLabel;
 import jp.nichicom.ac.component.ACTextField;
-import jp.nichicom.ac.component.ACValueArrayRadioButtonGroup;
-import jp.nichicom.ac.container.ACGroupBox;
 import jp.nichicom.ac.container.ACLabelContainer;
 import jp.nichicom.ac.container.ACPanel;
 import jp.nichicom.ac.container.ACParentHesesPanelContainer;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRArrayList;
 import jp.nichicom.vr.util.adapter.VRListModelAdapter;
-import jp.or.med.orca.ikensho.lib.IkenshoCommon;
-import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
+import jp.or.med.orca.ikensho.component.IkenshoSpecialSijiContainer;
 
 public class IkenshoIshiIkenshoInfoSpecial extends IkenshoIkenshoInfoSpecial {
 
@@ -40,6 +35,11 @@ public class IkenshoIshiIkenshoInfoSpecial extends IkenshoIkenshoInfoSpecial {
     protected ACLabel specialKyuinShochiCountDayComment;
     // 吸引処置ラジオグループ
     protected ACClearableRadioButtonGroup kyuinShochiStatesRadio;
+    
+    //間歇(かんけつ)的導尿
+    protected ACLabelContainer kanketuDounyou = new ACLabelContainer();
+    //protected IkenshoSpecialSijiContainer kanketuDounyouSiji = new IkenshoSpecialSijiContainer();
+    protected ACIntegerCheckBox kanketuDounyouCheck;
     
     private VRListModelAdapter kyuinShochiListModel;
     
@@ -59,10 +59,13 @@ public class IkenshoIshiIkenshoInfoSpecial extends IkenshoIkenshoInfoSpecial {
      * @throws Exception
      */
     private void jbInit() throws Exception {
-        specialTitle.setText("２．特別な医療（現在、定期的に、あるいは頻回に受けている医療）");
+        specialTitle.setText("４．特別な医療（現在、定期的あるいは頻回に受けている医療）");
         
         // 項目設定
-        getSpecialKyuinShochiMainCheck().setText("吸引処置");
+        // 疼痛の看護 => 疼痛の管理に変更
+        getSpecialTousinKango().setText("疼痛の管理");
+        
+        getSpecialKyuinShochiMainCheck().setText("喀痰吸引処置");
         getSpecialKyuinShochiCountDayComment().setText("回／日,");
         getKyuinShochiPanel().setOpaque(false);
         getSpecialKeikanEiyou().setText("経管栄養(胃ろう)");
@@ -72,7 +75,7 @@ public class IkenshoIshiIkenshoInfoSpecial extends IkenshoIkenshoInfoSpecial {
         getSpecialKyuinShochiHases().setBeginText("（回数");
         
         // サイズ設定
-        getSpecialKyuinShochiMainCheck().setPreferredSize(new Dimension(140, 5));
+        //getSpecialKyuinShochiMainCheck().setPreferredSize(new Dimension(140, 5));
         // 自動折り返しなし
         getSpecialKyuinShochiHases().setAutoWrap(false);
         
@@ -82,7 +85,8 @@ public class IkenshoIshiIkenshoInfoSpecial extends IkenshoIkenshoInfoSpecial {
         getSpecialKyuinShochiHases().add(getKyuinShochiStatesRadio(),VRLayout.FLOW);
         getKyuinShochiPanel().add(getSpecialKyuinShochiHases(),VRLayout.FLOW);
         getSpecialKyuinShochiContainer().add(getSpecialKyuinShochiMainCheck(),VRLayout.WEST);
-        getSpecialKyuinShochiContainer().add(getKyuinShochiPanel(),VRLayout.WEST);
+        getSpecialKyuinShochiContainer().add(getKyuinShochiPanel(),VRLayout.CLIENT);
+        
         
         // チェックボックス状態変更処理
         kyuinShochiCheckAction(getSpecialKyuinShochiMainCheck().isSelected());
@@ -95,6 +99,7 @@ public class IkenshoIshiIkenshoInfoSpecial extends IkenshoIkenshoInfoSpecial {
     protected void addProcess() {
         super.addProcess();
         getProcesss().add(getSpecialKyuinShochiContainer(),VRLayout.FLOW_RETURN);
+        getProcesss().add(getKanketuDounyou(),VRLayout.FLOW_RETURN);
     }
     
     /**
@@ -174,6 +179,7 @@ public class IkenshoIshiIkenshoInfoSpecial extends IkenshoIkenshoInfoSpecial {
         if(specialKyuinShochiMainCheck == null){
             specialKyuinShochiMainCheck = new ACIntegerCheckBox();
             specialKyuinShochiMainCheck.setBindPath("KYUIN_SHOCHI");
+            specialKyuinShochiMainCheck.setPreferredSize(new Dimension(200, 20));
         }
         return specialKyuinShochiMainCheck;
     }
@@ -222,6 +228,29 @@ public class IkenshoIshiIkenshoInfoSpecial extends IkenshoIkenshoInfoSpecial {
             kyuinShochiStatesRadio.setBindPath("KYUIN_SHOCHI_JIKI");
         }
         return kyuinShochiStatesRadio;
+    }
+    
+    
+    protected ACLabelContainer getKanketuDounyou() {
+    	if (kanketuDounyou == null) {
+    		kanketuDounyou = new ACLabelContainer();
+    		kanketuDounyou.setLayout(new BorderLayout());
+    		
+    		IkenshoSpecialSijiContainer cnt = new IkenshoSpecialSijiContainer();
+    		kanketuDounyou.add(cnt, BorderLayout.CENTER);
+    		kanketuDounyou.add(getKanketuDounyouCheck(), BorderLayout.WEST);
+    	}
+    	return kanketuDounyou;
+    }
+    
+    protected ACIntegerCheckBox getKanketuDounyouCheck() {
+    	if (kanketuDounyouCheck == null) {
+    		kanketuDounyouCheck = new ACIntegerCheckBox();
+    		kanketuDounyouCheck.setText("間歇的導尿");
+    		kanketuDounyouCheck.setBindPath("KANKETSUTEKI_DOUNYOU");
+    		kanketuDounyouCheck.setPreferredSize(new Dimension(200, 20));
+    	}
+    	return kanketuDounyouCheck;
     }
     
 //    public void initDBCopmponent(IkenshoFirebirdDBManager dbm) throws Exception {

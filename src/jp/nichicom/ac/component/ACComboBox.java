@@ -496,25 +496,6 @@ public class ACComboBox extends VRComboBox {
 
     protected void initComponent() {
         super.initComponent();
-
-        String osName = System.getProperty("os.name", "").toLowerCase();
-        if (osName.indexOf("mac") >= 0) {
-            // Mac
-            String ver = System.getProperty("os.version", "");
-            if ("10.4.0".compareTo(ver) >= 0) {
-                // 10.4ñ¢ñûÇÕ"Osaka"
-                Font nowFont = getFont();
-                if (nowFont == null) {
-                    setFont(new Font("Osaka", Font.PLAIN, 12));
-                } else {
-                    setFont(new Font("Osaka", nowFont.getStyle(), nowFont
-                            .getSize()));
-                }
-            } else {
-                // 10.4à»è„ÇÕâΩÇ‡ÇµÇ»Ç¢
-            }
-        }
-
     }
 
     /**

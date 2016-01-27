@@ -9,6 +9,7 @@ import java.text.ParseException;
 
 import javax.swing.text.Document;
 
+import jp.nichicom.ac.ACOSInfo;
 import jp.nichicom.ac.text.ACTextAreaDocument;
 import jp.nichicom.vr.component.VRTextArea;
 
@@ -25,7 +26,6 @@ import jp.nichicom.vr.component.VRTextArea;
 
 public class ACRowMaximumableTextArea extends VRTextArea {
 
-    private boolean runComposition;
     protected InputSubset imeMode;
 
     protected int maxRows = 0;
@@ -175,33 +175,6 @@ public class ACRowMaximumableTextArea extends VRTextArea {
 
     protected void initComponent() {
         super.initComponent();
-        String osName = System.getProperty("os.name");
-
-        Font nowFont = getFont();
-        if ((osName == null) || (osName.indexOf("Mac") < 0)) {
-            // Mac以外は"ＭＳ ゴシック"
-            if (nowFont == null) {
-                setFont(new Font("ＭＳ ゴシック", Font.PLAIN, 12));
-            } else {
-                setFont(new Font("ＭＳ ゴシック", nowFont.getStyle(), nowFont
-                        .getSize()));
-            }
-            runComposition = true;
-        } else {
-            // Mac
-            String ver = System.getProperty("os.version", "");
-            if("10.4.0".compareTo(ver)>=0){
-                // 10.4未満は"Osaka"
-                if (nowFont == null) {
-                    setFont(new Font("Osaka", Font.PLAIN, 12));
-                } else {
-                    setFont(new Font("Osaka", nowFont.getStyle(), nowFont.getSize()));
-                }
-            }else{
-                //10.4以上は何もしない
-            }
-            runComposition = false;
-        }
 
         setInsertTab(true);
         new ACTextComponentPopupMenu().addInvoker(this);
@@ -221,7 +194,7 @@ public class ACRowMaximumableTextArea extends VRTextArea {
             // ひらがなの場合だけはコンポジションを有効にする
             if (ime == InputSubset.KANJI) {
                 // Mac対応
-                if (runComposition) {
+            	if (!ACOSInfo.isMac()) {
                     this.getInputContext().setCompositionEnabled(true);
                 }
             }

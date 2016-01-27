@@ -427,7 +427,7 @@ public interface VRTablar extends VRJComponentar, TableModelListener,
      * @see #setDefaultEditor
      * @see #getColumnClass
      */
-    public TableCellEditor getDefaultEditor(Class columnClass);
+    public TableCellEditor getDefaultEditor1(Class columnClass);
 
     /**
      * Returns the cell renderer to be used when no renderer has been set in a
@@ -444,7 +444,7 @@ public interface VRTablar extends VRJComponentar, TableModelListener,
      * @see #setDefaultRenderer
      * @see #getColumnClass
      */
-    public TableCellRenderer getDefaultRenderer(Class columnClass);
+//    public TableCellRenderer getDefaultRenderer(Class columnClass);
 
     /**
      * Gets the value of the <code>dragEnabled</code> property.
@@ -1020,7 +1020,7 @@ public interface VRTablar extends VRJComponentar, TableModelListener,
      * @see #getDefaultEditor
      * @see #setDefaultRenderer
      */
-    public void setDefaultEditor(Class columnClass, TableCellEditor editor);
+    public void setDefaultEditor1(Class columnClass, TableCellEditor editor);
 
     /**
      * Sets a default cell renderer to be used if no renderer has been set in a
@@ -1032,7 +1032,7 @@ public interface VRTablar extends VRJComponentar, TableModelListener,
      * @see #getDefaultRenderer
      * @see #setDefaultEditor
      */
-    public void setDefaultRenderer(Class columnClass, TableCellRenderer renderer);
+    public void setDefaultRenderer1(Class columnClass, TableCellRenderer renderer);
 
     //
     // Managing TableUI
