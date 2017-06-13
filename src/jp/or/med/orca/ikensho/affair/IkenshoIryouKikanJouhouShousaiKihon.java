@@ -8,6 +8,9 @@ import java.awt.im.InputSubset;
 import javax.swing.JScrollPane;
 
 import jp.nichicom.ac.component.ACIntegerCheckBox;
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+import jp.nichicom.ac.component.ACKanaSendTextField;
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
 import jp.nichicom.ac.component.ACRowMaximumableTextArea;
 import jp.nichicom.ac.component.ACTextField;
 import jp.nichicom.ac.container.ACLabelContainer;
@@ -26,7 +29,12 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
     private VRLabel note1 = new VRLabel();
     private VRPanel kihonPnl2 = new VRPanel();
     private ACLabelContainer drNmContainer = new ACLabelContainer();
-    private ACTextField drNm = new ACTextField();
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-Start 医師の並び順の変更対応
+//    private ACTextField drNm = new ACTextField();
+    private  ACKanaSendTextField drNm = new ACKanaSendTextField();
+    private ACLabelContainer drNmHrContainer = new ACLabelContainer();
+    private ACTextField drNmHr = new ACTextField();
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-End
     private ACLabelContainer miNmContainer = new ACLabelContainer();
     private ACTextField miNm = new ACTextField();
     private ACLabelContainer miPostCdContainer = new ACLabelContainer();
@@ -58,7 +66,11 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
     private ACIntegerCheckBox miInvalid = new ACIntegerCheckBox();
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-End
-  
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+    private VRPanel kihonPnl7 = new VRPanel();
+    private VRPanel kihonPnl8 = new VRPanel();
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
+     
     public IkenshoIryouKikanJouhouShousaiKihon() {
         try {
             jbInit();
@@ -74,6 +86,10 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
         tabKihonLayout.setLabelMargin(90);
         this.setLayout(tabKihonLayout);
         this.add(kihonPnl1, VRLayout.NORTH);
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+        this.add(kihonPnl7, VRLayout.NORTH);
+        this.add(kihonPnl8, VRLayout.NORTH);
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
         this.add(kihonPnl2, VRLayout.NORTH);
         this.add(kihonPnl3, VRLayout.NORTH);
         this.add(kihonPnl4, VRLayout.NORTH);
@@ -106,30 +122,70 @@ public class IkenshoIryouKikanJouhouShousaiKihon extends IkenshoTabbableChildAff
         kihonPnl2Layout.setLabelMargin(90);
         kihonPnl2.setLayout(kihonPnl2Layout);
         kihonPnl2.setBorder(new VRFrameBorder("",new Color(204, 204, 255)));
-        kihonPnl2.add(drNmContainer, VRLayout.FLOW_INSETLINE_RETURN);
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-Start 医師の並び順の変更対応
+//        kihonPnl2.add(drNmContainer, VRLayout.FLOW_INSETLINE_RETURN);      
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-End
         kihonPnl2.add(miNmContainer, VRLayout.FLOW_INSETLINE_RETURN);
         kihonPnl2.add(miPostCdContainer, VRLayout.FLOW_INSETLINE_RETURN);
         kihonPnl2.add(miAddressContainer, VRLayout.FLOW_INSETLINE_RETURN);
         kihonPnl2.add(miTelContainer, VRLayout.FLOW_INSETLINE);
         kihonPnl2.add(miFaxContainer, VRLayout.FLOW_RETURN);
-        drNmContainer.setText("医師氏名");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+        VRLayout kihonPnl7Layout = new VRLayout();
+        kihonPnl7Layout.setLabelMargin(90);
+        kihonPnl7.setLayout(kihonPnl7Layout);
+        kihonPnl7.setBorder(new VRFrameBorder("",new Color(204, 204, 255)));
+        kihonPnl7.add(drNmContainer, VRLayout.FLOW_INSETLINE_RETURN);
+        VRLayout kihonPnl8Layout = new VRLayout();
+        kihonPnl8Layout.setLabelMargin(96);
+        kihonPnl8.setLayout(kihonPnl8Layout);
+        kihonPnl8.add(drNmHrContainer, VRLayout.FLOW_INSETLINE_RETURN);
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-Start 医師の並び順の変更対応
+//        drNmContainer.setText("医師氏名");
+        // 拡大時、レイアウト調整のため、半角スペースを追加。
+        drNmContainer.setText("     医師氏名");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-End
         drNmContainer.add(drNm, null);
         drNmContainer.setHorizontalAlignment(ACLabelContainer.RIGHT);
         drNm.setColumns(15);
         drNm.setMaxLength(15);
         drNm.setIMEMode(InputSubset.KANJI);
         drNm.setBindPath("DR_NM");
-        miNmContainer.setText("医療機関名");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+        drNm.setKanaField(drNmHr);
+        // 拡大時、並び位置を医師氏名にあわせるため、半角スペース6文字にする。
+        drNmHrContainer.setText("      ふりがな");
+        drNmHrContainer.add(drNmHr, null);
+        drNmHrContainer.setHorizontalAlignment(ACLabelContainer.RIGHT);
+        drNmHr.setColumns(30);
+        drNmHr.setMaxLength(30);
+        drNmHr.setIMEMode(InputSubset.KANJI);
+        drNmHr.setBindPath("DR_KN");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-Start 医師の並び順の変更対応
+//        miNmContainer.setText("医療機関名");
+        // 拡大時、レイアウト調整のため、半角スペースを追加。
+        miNmContainer.setText(" 医療機関名");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-End
         miNmContainer.add(miNm, null);
         miNm.setColumns(30);
         miNm.setMaxLength(30);
         miNm.setIMEMode(InputSubset.KANJI);
         miNm.setBindPath("MI_NM");
-        miPostCdContainer.setText("郵便番号");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-Start 医師の並び順の変更対応
+//        miPostCdContainer.setText("郵便番号");
+        // 拡大時、レイアウト調整のため、半角スペースを追加。
+        miPostCdContainer.setText(" 郵便番号");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-End
         miPostCdContainer.add(miPostCd, null);
         miPostCd.setAddressTextField(miAddress);
         miPostCd.setBindPath("MI_POST_CD");
-        miAddressContainer.setText("所在地");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-Start 医師の並び順の変更対応
+//        miAddressContainer.setText("所在地");
+        // 拡大時、レイアウト調整のため、半角スペースを追加。
+        miAddressContainer.setText(" 所在地");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-End
         miAddressContainer.add(miAddress, null);
         miAddress.setColumns(45);
         miAddress.setMaxLength(45);

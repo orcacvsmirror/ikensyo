@@ -392,10 +392,19 @@ public class IkenshoIryouKikanJouhouIchiran extends IkenshoAffairContainer imple
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
         sb.append( ",INVALID_FLAG" );
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+        sb.append( ",DR_KN" );
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
         sb.append( " FROM" );
         sb.append( " DOCTOR" );
         sb.append( " ORDER BY" );
-        sb.append( " DR_NM" );
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-Start 医師の並び順の変更対応
+//        sb.append( " DR_NM" );
+        //医師氏名コンボボックスの並び順に合わせる
+        sb.append(" DR_KN");
+        sb.append(" NULLS FIRST");
+        sb.append(" ,DR_NM");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 edit-End
         data = (VRArrayList) dbm.executeQuery(sb.toString());
 
         if (data.getDataSize() > 0) {
@@ -470,6 +479,9 @@ public class IkenshoIryouKikanJouhouIchiran extends IkenshoAffairContainer imple
             "INVALID_FLAG",
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-End
             "DR_NM",
+// [ID:0000801][Ryosuke Koinuma]  2014/10 add-Start 医師の並び順の変更対応
+            "DR_KN",
+// [ID:0000801][Ryosuke Koinuma]  2014/10 add-End
             "MI_NM",
             "MI_POST_CD",
             "MI_ADDRESS",
@@ -505,17 +517,33 @@ public class IkenshoIryouKikanJouhouIchiran extends IkenshoAffairContainer imple
 //            new VRTableColumn(8, 260, "緊急時連絡先"),
 //            new VRTableColumn(9, 260, "不在時対応法"),
 //            new VRTableColumn(10, 300, "備考")
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-Start 医師の並び順の変更対応
+//            getEnabledColumn(),
+//            new VRTableColumn(2, 180, "医師氏名"),
+//            new VRTableColumn(3, 260, "医療機関名"),
+//            new VRTableColumn(4, 120, "郵便番号"),
+//            new VRTableColumn(5, 260, "所在地"),
+//            new VRTableColumn(6, 160, "連絡先(電話)"),
+//            new VRTableColumn(7, 160, "連絡先(FAX)"),
+//            new VRTableColumn(8, 160, "連絡先(携帯)"),
+//            new VRTableColumn(9, 260, "緊急時連絡先"),
+//            new VRTableColumn(10, 260, "不在時対応法"),
+//            new VRTableColumn(11, 300, "備考")
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
             getEnabledColumn(),
             new VRTableColumn(2, 180, "医師氏名"),
-            new VRTableColumn(3, 260, "医療機関名"),
-            new VRTableColumn(4, 120, "郵便番号"),
-            new VRTableColumn(5, 260, "所在地"),
-            new VRTableColumn(6, 160, "連絡先(電話)"),
-            new VRTableColumn(7, 160, "連絡先(FAX)"),
-            new VRTableColumn(8, 160, "連絡先(携帯)"),
-            new VRTableColumn(9, 260, "緊急時連絡先"),
-            new VRTableColumn(10, 260, "不在時対応法"),
-            new VRTableColumn(11, 300, "備考")
+            new VRTableColumn(3, 260, "ふりがな"),
+            new VRTableColumn(4, 260, "医療機関名"),
+            new VRTableColumn(5, 120, "郵便番号"),
+            new VRTableColumn(6, 260, "所在地"),
+            new VRTableColumn(7, 160, "連絡先(電話)"),
+            new VRTableColumn(8, 160, "連絡先(FAX)"),
+            new VRTableColumn(9, 160, "連絡先(携帯)"),
+            new VRTableColumn(10, 260, "緊急時連絡先"),
+            new VRTableColumn(11, 260, "不在時対応法"),
+            new VRTableColumn(12, 300, "備考")
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
 // [ID:0000787][Satoshi Tokusari] 2014/10 edit-End
         })
             );

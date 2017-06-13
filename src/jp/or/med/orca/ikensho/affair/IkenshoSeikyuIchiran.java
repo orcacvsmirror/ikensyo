@@ -390,10 +390,15 @@ public class IkenshoSeikyuIchiran extends IkenshoAffairContainer implements
         }
         // 医師名コンボボックス
         doctorList = (VRArrayList) dbm
-// [ID:0000787][Satoshi Tokusari] 2014/10 edit-Start 医療機関情報の無効化対応
-//                .executeQuery("SELECT DISTINCT DR_NM FROM DOCTOR ORDER BY DR_NM");
-                .executeQuery("SELECT DISTINCT DR_NM FROM DOCTOR WHERE INVALID_FLAG = 0 ORDER BY DR_NM");
-// [ID:0000787][Satoshi Tokusari] 2014/10 edit-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-Start 医師の並び順の変更対応
+//// [ID:0000787][Satoshi Tokusari] 2014/10 edit-Start 医療機関情報の無効化対応
+////                .executeQuery("SELECT DISTINCT DR_NM FROM DOCTOR ORDER BY DR_NM");
+//                .executeQuery("SELECT DISTINCT DR_NM FROM DOCTOR WHERE INVALID_FLAG = 0 ORDER BY DR_NM");
+//// [ID:0000787][Satoshi Tokusari] 2014/10 edit-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+                .executeQuery("SELECT DISTINCT DR_NM FROM DOCTOR WHERE INVALID_FLAG = 0 ORDER BY DR_KN NULLS FIRST ,DR_NM");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
         // 空白行を追加
         VRMap spaceMap = new VRHashMap();
         spaceMap.setData("DR_NM", "");

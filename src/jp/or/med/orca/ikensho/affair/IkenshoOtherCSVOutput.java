@@ -610,16 +610,27 @@ public class IkenshoOtherCSVOutput extends IkenshoAffairContainer implements
         // ˆãt–¼
         sb = new StringBuffer();
         sb.append(" SELECT");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start ˆãt‚Ì•À‚Ñ‡‚Ì•ÏX‘Î‰
+        sb.append(" DISTINCT");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
         sb.append(" DR_NM");
         sb.append(" FROM");
         sb.append(" DOCTOR");
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-Start ˆã—Ã‹@ŠÖî•ñ‚Ì–³Œø‰»‘Î‰
         sb.append(" WHERE INVALID_FLAG = 0");
 //[ID:0000787][Satoshi Tokusari] 2014/10 add-End
-        sb.append(" GROUP BY");
-        sb.append(" DR_NM");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-Start ˆãt‚Ì•À‚Ñ‡‚Ì•ÏX‘Î‰
+//        sb.append(" GROUP BY");
+//        sb.append(" DR_NM");
+//        sb.append(" ORDER BY");
+//        sb.append(" DR_NM");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start ˆãt‚Ì•À‚Ñ‡‚Ì•ÏX‘Î‰
         sb.append(" ORDER BY");
-        sb.append(" DR_NM");
+        sb.append(" DR_KN");
+        sb.append(" NULLS FIRST");
+        sb.append(" ,DR_NM");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
         try {
             IkenshoFirebirdDBManager dbm = new IkenshoFirebirdDBManager();
             VRArrayList tbl = (VRArrayList) dbm.executeQuery(sb.toString());

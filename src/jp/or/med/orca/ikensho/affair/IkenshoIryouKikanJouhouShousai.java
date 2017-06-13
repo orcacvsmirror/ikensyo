@@ -293,6 +293,9 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
             sb.append( ",INVALID_FLAG" );
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+            sb.append( ",DR_KN" );
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
             sb.append( " FROM" );
             sb.append( " DOCTOR" );
             sb.append( " WHERE" );
@@ -454,6 +457,9 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
                 sbDoctor.append(",INVALID_FLAG=" + getDBSafeNumber("INVALID_FLAG", doctorData));
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+                sbDoctor.append(",DR_KN=" + getDBSafeString("DR_KN", doctorData));
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
                 sbDoctor.append(" WHERE");
                 sbDoctor.append(" DR_CD=" + drCd);
             }
@@ -489,6 +495,9 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
                 sbDoctor.append(",INVALID_FLAG");
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+                sbDoctor.append(",DR_KN");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
                 sbDoctor.append(" )");
                 sbDoctor.append(" VALUES(");
                 sbDoctor.append(" " + getDBSafeString("DR_NM", doctorData));
@@ -518,6 +527,9 @@ public class IkenshoIryouKikanJouhouShousai extends IkenshoAffairContainer imple
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-Start 医療機関情報の無効化対応
                 sbDoctor.append("," + getDBSafeString("INVALID_FLAG", doctorData));
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+                sbDoctor.append("," + getDBSafeString("DR_KN", doctorData));
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
                 sbDoctor.append(" )");
             }
 

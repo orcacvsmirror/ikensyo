@@ -248,10 +248,17 @@ public class IkenshoDocumentAffairOrgan extends
         sb.append(" INVALID_FLAG = 0");
 // [ID:0000787][Satoshi Tokusari] 2014/10 add-End
         sb.append(" ORDER BY");
-// [ID:0000787][Satoshi Tokusari] 2014/10 edit-Start 医療機関情報の無効化対応
-//        sb.append(" DR_CD");
-        sb.append(" DR_NM");
-// [ID:0000787][Satoshi Tokusari] 2014/10 edit-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-Start 医師の並び順の変更対応
+//// [ID:0000787][Satoshi Tokusari] 2014/10 edit-Start 医療機関情報の無効化対応
+////        sb.append(" DR_CD");
+//        sb.append(" DR_NM");
+//// [ID:0000787][Satoshi Tokusari] 2014/10 edit-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 del-End
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-Start 医師の並び順の変更対応
+        sb.append(" DR_KN");
+        sb.append(" NULLS FIRST");
+        sb.append(" ,DR_NM");
+// [ID:0000801][Ryosuke Koinuma] 2016/10 add-End
         doctors = (VRArrayList) dbm.executeQuery(sb.toString());
 
         organDoctorName.setFormat(new IkenshoHashableComboFormat(doctors,
