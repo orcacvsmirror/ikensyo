@@ -30,6 +30,7 @@ import jp.nichicom.ac.lang.ACCastUtilities;
 import jp.nichicom.ac.sql.ACPassiveKey;
 import jp.nichicom.ac.text.ACSingleSelectFormat;
 import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.ac.util.ACMessageBoxDialogPlus;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.bind.VRBindSource;
@@ -525,7 +526,18 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
                     sb.append(" COMMON_IKN_SIS");
                     sb.append(whereStatement);
                     sb.append(" AND (DOC_KBN = ");
-                    sb.append(IkenshoConstants.DOC_KBN_SIJISHO);
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//                    sb.append(IkenshoConstants.DOC_KBN_SIJISHO);
+                    String kbn = getDBSafeNumber("FORMAT_KBN", (VRMap) sijishoArray.getData(row));
+                    if (kbn.equals("0") || kbn.equals("1"))
+                    {
+                        sb.append(IkenshoConstants.DOC_KBN_SIJISHO);
+                    }
+                    else
+                    {
+                        sb.append(IkenshoConstants.DOC_KBN_SEISHIN);
+                    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
                     sb.append(")");
                     dbm.executeUpdate(sb.toString());
 
@@ -901,18 +913,42 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
 //                            IkenshoHoumonKangoShijisho.class.getName(), param,
 //                            "訪問看護指示書"));
             ACAffairInfo affair = null;
-            switch (ACMessageBox.showYesNoCancel("作成する指示書の種類を選択してください。",
-                   "訪問看護指示書(H)", 'H', "特別訪問看護指示書(T)", 'T')) {
-            case ACMessageBox.RESULT_YES:
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//            switch (ACMessageBox.showYesNoCancel("作成する指示書の種類を選択してください。",
+//                   "訪問看護指示書(H)", 'H', "特別訪問看護指示書(T)", 'T')) {
+//            case ACMessageBox.RESULT_YES:
+//                affair = new ACAffairInfo(
+//                      IkenshoHoumonKangoShijisho.class.getName(), param,
+//                      "訪問看護指示書");
+//                break;
+//            case ACMessageBox.RESULT_NO:
+//                affair = new ACAffairInfo(
+//                        IkenshoTokubetsuHoumonKangoShijisho.class.getName(), param,
+//                        "特別訪問看護指示書");
+//                break;
+            switch (ACMessageBox.showMessage(
+                    "作成する指示書の種類を選択してください。",
+                    "訪問看護指示書(H) ", 'H',
+                    "特別訪問看護指示書(T)", 'T',
+                    "精神科訪問看護指示書(I)", 'I',
+                    "精神科特別訪問看護指示書(U)", 'U')) {
+            case ACMessageBoxDialogPlus.RESULT_SELECT1:
                 affair = new ACAffairInfo(
-                      IkenshoHoumonKangoShijisho.class.getName(), param,
-                      "訪問看護指示書");
+                        IkenshoHoumonKangoShijisho.class.getName(), param, "訪問看護指示書");
                 break;
-            case ACMessageBox.RESULT_NO:
+            case ACMessageBoxDialogPlus.RESULT_SELECT2:
                 affair = new ACAffairInfo(
-                        IkenshoTokubetsuHoumonKangoShijisho.class.getName(), param,
-                        "特別訪問看護指示書");
+                        IkenshoTokubetsuHoumonKangoShijisho.class.getName(), param, "特別訪問看護指示書");
                 break;
+            case ACMessageBoxDialogPlus.RESULT_SELECT3:
+                affair = new ACAffairInfo(
+                        IkenshoSeishinkaHoumonKangoShijisho.class.getName(), param, "精神科訪問看護指示書");
+                break;
+            case ACMessageBoxDialogPlus.RESULT_SELECT4:
+                affair = new ACAffairInfo(
+                        IkenshoSeishinkaTokubetsuHoumonKangoShijisho.class.getName(), param, "精神科特別訪問看護指示書");
+                break;
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
             default:
                 return;
             }
@@ -1023,6 +1059,18 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
                         IkenshoTokubetsuHoumonKangoShijisho.class.getName(), param,
                         "特別訪問看護指示書");
                 break;
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+            case 2:
+                affair = new ACAffairInfo(
+                        IkenshoSeishinkaHoumonKangoShijisho.class.getName(), param,
+                        "精神科訪問看護指示書");
+                break;
+            case 3:
+                affair = new ACAffairInfo(
+                        IkenshoSeishinkaTokubetsuHoumonKangoShijisho.class.getName(), param,
+                        "精神科特別訪問看護指示書");
+                break;
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
             default:
                 return;
             }
@@ -1335,14 +1383,20 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
         sexs.add(sex, null);
         names.add(name, null);
         contents.add(document, BorderLayout.CENTER);
-        document.add(ikensho, VRLayout.CLIENT);
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//        document.add(ikensho, VRLayout.CLIENT);
+        document.add(ikensho, VRLayout.NORTH);
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
         ikensho.setLayout(new BorderLayout());
         ikensho.add(ikenshoButtons, BorderLayout.NORTH);
         ikenshoButtons.add(ikenshoDetail, null);
         ikensho.add(ikenshoTable, BorderLayout.CENTER);
         ikensho.setText("主治医意見書・医師意見書");
         ikensho.setForeground(IkenshoConstants.COLOR_BORDER_TEXT_FOREGROUND);
-        document.add(sijisho, VRLayout.EAST);
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//        document.add(sijisho, VRLayout.EAST);
+        document.add(sijisho, VRLayout.CLIENT);
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
         sijisho.setLayout(new BorderLayout());
         sijisho.add(sijishoButtons, BorderLayout.NORTH);
         sijishoButtons.add(sijishoDetail, null);
@@ -1357,7 +1411,10 @@ public class IkenshoPatientInfo extends IkenshoAffairContainer implements
         sijishoButtons.add(sijishoDelete, null);
         // [ID:0000514][Tozo TANAKA] 2009/09/07 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         //sijisho.setText("訪問看護指示書");
-        sijisho.setText("訪問看護指示書・特別訪問看護指示書");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//        sijisho.setText("訪問看護指示書・特別訪問看護指示書");
+        sijisho.setText("訪問看護指示書・特別訪問看護指示書・精神科訪問看護指示書・精神科特別訪問看護指示書");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
         // [ID:0000514][Tozo TANAKA] 2009/09/07 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
         ikenshoDetail
                 .setBackground(IkenshoConstants.COLOR_BUTTON_YELLOW_FOREGROUND);

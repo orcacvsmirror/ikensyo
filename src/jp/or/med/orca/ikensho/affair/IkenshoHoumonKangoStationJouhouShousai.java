@@ -149,7 +149,10 @@ public class IkenshoHoumonKangoStationJouhouShousai extends IkenshoAffairContain
        nm.setIMEMode(InputSubset.KANJI);
 
        // [ID:0000514][Masahiko Higuchi] 2009/09/25 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能
-       coloredLabel.setText("「（特別）訪問看護指示書」に印刷される項目");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//       coloredLabel.setText("「（特別）訪問看護指示書」に印刷される項目");
+       coloredLabel.setText("「各種指示書」に印刷される項目");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
        // [ID:0000514][Masahiko Higuchi] 2009/09/25 replace end
        coloredLabel.setForeground(new Color(0x003300));
 

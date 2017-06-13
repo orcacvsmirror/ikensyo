@@ -1,6 +1,7 @@
 package jp.or.med.orca.ikensho.affair;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.sql.SQLException;
@@ -18,6 +19,7 @@ import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.layout.VRLayout;
 import jp.nichicom.vr.util.VRHashMap;
 import jp.nichicom.vr.util.VRMap;
+import jp.or.med.orca.ikensho.IkenshoConstants;
 import jp.or.med.orca.ikensho.lib.IkenshoCommon;
 import jp.or.med.orca.ikensho.sql.IkenshoFirebirdDBManager;
 
@@ -71,6 +73,16 @@ public class IkenshoIshiIkenshoInfo extends IkenshoIkenshoInfoH18 {
         setStatusText("医師意見書");
         buttons.setText("医師意見書");
         buttons.add(getShowHelp(), VRLayout.EAST);
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+        // 色の変更
+        Color c = IkenshoConstants.COLOR_DISTINCTION;
+        buttons.getBackButton().setBackground(c);
+        buttons.getBackToMainMenuButton().setBackground(c);
+        showHelp.setBackground(c);
+        update.setBackground(c);
+        print.setBackground(c);
+        buttons.setBackground(c);
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End 
     }
     /**
      * 記載例へのアクセス画面を表示します。

@@ -613,5 +613,9 @@ public class IkenshoDocumentAffairOrgan extends
         return addresss;
     }
 //  [ID:0000514][Tozo TANAKA] 2009/09/09 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
-
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+    protected IkenshoDocumentTabTitleLabel getTitle() {
+        return organTitle;
+    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 }

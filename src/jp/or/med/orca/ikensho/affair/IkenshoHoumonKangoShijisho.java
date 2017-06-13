@@ -197,7 +197,39 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
                         }
                     }
                 }
-
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+                // 精神科訪問看護指示書⇔精神科特別訪問看護指示書間で引き継ぐ
+                for(int i = 0, iEnd = array.size(); i < iEnd; i++) {
+                    VRMap data = (VRMap) array.getData(i);
+                    String kbn = ACCastUtilities.toString(VRBindPathParser.get("FORMAT_KBN", data));
+                    if ("2".equals(kbn) || "3".equals(kbn)) {
+                        setStringData(data, "FUKUSU_HOUMON");
+                        setStringData(data, "TANJIKAN_HOUMON");
+                        break;
+                    }
+                }
+                // 各種指示書（特別を除く）間で引き継ぐ
+                for(int i = 0, iEnd = array.size(); i < iEnd; i++) {
+                    VRMap data = (VRMap) array.getData(i);
+                    String kbn = ACCastUtilities.toString(VRBindPathParser.get("FORMAT_KBN", data));
+                    if ("0".equals(kbn) || "2".equals(kbn)) {
+                        setStringData(data, "SIJI_TOKKI");
+                        break;
+                    }
+                }
+                // 特別指示書間で引き継ぐ
+                for(int i = 0, iEnd = array.size(); i < iEnd; i++) {
+                    VRMap data = (VRMap) array.getData(i);
+                    String kbn = ACCastUtilities.toString(VRBindPathParser.get("FORMAT_KBN", data));
+                    if ("1".equals(kbn) || "3".equals(kbn)) {
+                        setStringData(data, "TOKUBETSU_SHOJO_SHUSO");
+                        setStringData(data, "TOKUBETSU_RYUI");
+                        setStringData(data, "TOKUBETSU_CHUSHA_SHIJI");
+                        setStringData(data, "TOKUBETSU_KINKYU_RENRAKU");
+                        break;
+                    }
+                }
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
                 VRBindPathParser.set("HOUMON_SIJISYO", originalData,
                         new Integer(0));
                 VRBindPathParser.set("TENTEKI_SIJISYO", originalData,
@@ -223,6 +255,15 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
               
         }
     }
+
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+    private void setStringData(VRMap data, String name) throws Exception {
+        Object obj = VRBindPathParser.get(name, data);
+        if (obj != null) {
+            VRBindPathParser.set(name, originalData, String.valueOf(obj));
+        }
+    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 
     protected void doReservedPassiveCustom() throws ParseException {
         reservedPassive(PASSIVE_CHECK_KEY_SIJISYO, originalArray);
@@ -596,7 +637,10 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
 //                    }
 //                });
         getJiritudo().setFollowDisabledComponents(new JComponent[] { tabs, update,
-                print, buttons.getBackButton() });
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//                print, buttons.getBackButton() });
+                print, read, buttons.getBackButton() });
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
 
         getApplicant()
                 .addWriteDateChangeListener(new IkenshoWriteDateChangeListener() {
@@ -626,7 +670,10 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
         read.setIconPath(IkenshoConstants.BUTTON_IMAGE_PATH_FIND);
         read.setMnemonic('V');
         read.setText("読込(V)");
-        read.setToolTipText("最新の訪問看護指示書の情報を読み込みます。");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//        read.setToolTipText("最新の訪問看護指示書の情報を読み込みます。");
+        read.setToolTipText("最新の" + getDocumentName() + "の情報を読み込みます。");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start
         buttons.add(read, VRLayout.EAST);
         read.addActionListener(null);
         read.addActionListener(new ActionListener(){
@@ -909,14 +956,25 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
             sb.append(".EDA_NO)");
 
             sb.append("AND(");
-            sb.append("(COMMON_IKN_SIS.DOC_KBN != 2)");
-            sb.append("OR");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//            sb.append("(COMMON_IKN_SIS.DOC_KBN != 2)");
+//            sb.append("OR");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
             sb.append("(");
             sb.append("(COMMON_IKN_SIS.DOC_KBN = 2)");
             sb.append("AND(");
             sb.append(getCustomDocumentTableName());
             sb.append(".FORMAT_KBN != 1)");
             sb.append(")");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+            sb.append("OR");
+            sb.append("(");
+            sb.append("(COMMON_IKN_SIS.DOC_KBN = 3)");
+            sb.append("AND(");
+            sb.append(getCustomDocumentTableName());
+            sb.append(".FORMAT_KBN != 3)");
+            sb.append(")");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
             sb.append(")");
 
             sb.append(" WHERE");
@@ -933,7 +991,10 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
             if (array.getDataSize() > 0) {
             
                 // 読込前確認メッセージ表示
-                if (ACMessageBox.showOkCancel("最新の訪問看護指示書の情報を読み込みます。"
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//                if (ACMessageBox.showOkCancel("最新の訪問看護指示書の情報を読み込みます。"
+                if (ACMessageBox.showOkCancel("最新の" + getDocumentName() + "の情報を読み込みます。"
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
                         + ACConstants.LINE_SEPARATOR + "よろしいですか？",
                         ACMessageBox.FOCUS_CANCEL) != ACMessageBox.RESULT_OK) {
                     return;
@@ -950,7 +1011,6 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
                 for (int i = 0; i < end; i++) {
                     data.setData(keeps[i], originalData.getData(keeps[i]));
                 }
-
                 originalData.putAll(data);
                 // 適用
                 originalArray = new VRArrayList();
@@ -961,10 +1021,30 @@ public class IkenshoHoumonKangoShijisho extends IkenshoTabbableAffairContainer {
                     originalArray.addData(originalData);
                 }
             } else {
-            	ACMessageBox.show("読込対象となる訪問看護指示書の情報がありません。");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//            	ACMessageBox.show("読込対象となる訪問看護指示書の情報がありません。");
+                ACMessageBox.show("読込対象となる" + getDocumentName() + "の情報がありません。");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
             }
         } catch (Exception ex) {
         }        
     }
 // [ID:0000786][Satoshi Tokusari] 2014/10 add-End
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+    /**
+     * 文書名 を返します。
+     * @return 文書名
+     */
+    protected String getDocumentName() {
+        return "訪問看護指示書";
+    }
+    
+    /**
+     * 改頁対象項目取得処理
+     * @return 改頁項目
+     */
+    protected StringBuffer getWarningMessage() {
+        return warningMessage;
+    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 }

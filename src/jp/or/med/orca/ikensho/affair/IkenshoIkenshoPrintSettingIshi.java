@@ -330,6 +330,21 @@ public class IkenshoIkenshoPrintSettingIshi extends
 				"ShojoAntei", "ShojoFuantei", "ShojoFumei" }, -1,
 				"INSECURE_CONDITION", "ShojoFuanteiJokyo", 2);
 
+// [ID:0000792][Satoshi Tokusari] 2015/11 add-Start Çó‚ÌˆÀ’è«‚ÌˆóšŒ©’¼‚µ‘Î‰
+        switch(ACCastUtilities.toInt(VRBindPathParser.get("SHJ_ANT", data) , 0)) {
+        case 1:
+            // ˆÀ’è
+            IkenshoCommon.addString(pd, "ShojoFuanteiJokyo", "ˆÀ’è");
+            break;
+        case 2:
+            // •sˆÀ’è
+            break;
+        case 3:
+            // •s–¾
+            IkenshoCommon.addString(pd, "ShojoFuanteiJokyo", "•s–¾");
+            break;
+        }
+// [ID:0000792][Satoshi Tokusari] 2015/11 add-End
 
         StringBuffer sbSickProgress = new StringBuffer();
 

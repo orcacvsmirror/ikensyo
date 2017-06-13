@@ -19,6 +19,12 @@ public class ShijishoFormatTypeFormat extends Format {
     protected static final String TYPE_TOKUBETSU_HOUMONKANGO_SHIJISHO = "1";
     protected static final String TEXT_HOUMONKANGO_SHIJISHO = "訪問看護指示書";
     protected static final String TEXT_TOKUBETSU_HOUMONKANGO_SHIJISHO = "特別訪問看護指示書";
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+    protected static final String TYPE_SEISHIN_SHIJISHO = "2";
+    protected static final String TYPE_TOKUBETSU_SEISHIN_SHIJISHO = "3";
+    protected static final String TEXT_SEISHIN_SHIJISHO = "精神科訪問看護指示書";
+    protected static final String TEXT_TOKUBETSU_SEISHIN_SHIJISHO = "精神科特別訪問看護指示書";
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 
     /**
      * コンストラクタです。<br />
@@ -41,6 +47,14 @@ public class ShijishoFormatTypeFormat extends Format {
     public Object parseObject(String source, ParsePosition pos) {
         if (TEXT_TOKUBETSU_HOUMONKANGO_SHIJISHO.equals(source)) {
             return new Integer(TYPE_TOKUBETSU_HOUMONKANGO_SHIJISHO);
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+        }
+        else if (TEXT_TOKUBETSU_SEISHIN_SHIJISHO.equals(source)) {
+            return new Integer(TYPE_TOKUBETSU_SEISHIN_SHIJISHO);
+        }
+        else if (TEXT_SEISHIN_SHIJISHO.equals(source)) {
+            return new Integer(TYPE_SEISHIN_SHIJISHO);
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
         } else {
             return new Integer(TYPE_HOUMONKANGO_SHIJISHO);
         }
@@ -53,6 +67,14 @@ public class ShijishoFormatTypeFormat extends Format {
 
         if (TYPE_TOKUBETSU_HOUMONKANGO_SHIJISHO.equals(val)) {
             toAppendTo.append(TEXT_TOKUBETSU_HOUMONKANGO_SHIJISHO);
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+        }
+        else if (TYPE_TOKUBETSU_SEISHIN_SHIJISHO.equals(val)) {
+            toAppendTo.append(TEXT_TOKUBETSU_SEISHIN_SHIJISHO);
+        }
+        else if (TYPE_SEISHIN_SHIJISHO.equals(val)) {
+            toAppendTo.append(TEXT_SEISHIN_SHIJISHO);
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
         } else {
             toAppendTo.append(TEXT_HOUMONKANGO_SHIJISHO);
         }

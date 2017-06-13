@@ -381,7 +381,10 @@ public class IkenshoHoumonKangoShijishoSick2 extends IkenshoDocumentAffairSick {
                 "1",
                 "<html>読込<br>(L)</html>",
                 'L',
-                "最新の特別訪問看護指示書に登録した「症状・主訴」を読み込みます。" + ACConstants.LINE_SEPARATOR
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+//                "最新の特別訪問看護指示書に登録した「症状・主訴」を読み込みます。" + ACConstants.LINE_SEPARATOR
+                "最新の（精神科）特別訪問看護指示書に登録した「症状・主訴」を読み込みます。" + ACConstants.LINE_SEPARATOR
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
                         + "よろしいですか？");
         
 // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  

@@ -388,4 +388,29 @@ public class IkenshoDocumentAffairApplicant extends IkenshoTabbableChildAffairCo
 	}
   // add end 2006/12/20 kamitsukasa
   
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+    /**
+     * applicantNameを取得します。
+     * @return applicantName
+     */
+    protected ACKanaSendTextField getApplicantName() {
+        return applicantName;
+    }
+    
+    /**
+     * applicantSexを取得します。
+     * @return applicantSex
+     */
+    protected ACClearableRadioButtonGroup getApplicantSex() {
+        return applicantSex;
+    }
+    
+    /**
+     * applicantBirthを取得します。
+     * @return applicantBirth
+     */
+    protected IkenshoEraDateTextField getApplicantBirth() {
+        return applicantBirth;
+    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 }

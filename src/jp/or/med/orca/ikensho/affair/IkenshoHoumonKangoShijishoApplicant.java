@@ -452,4 +452,21 @@ public class IkenshoHoumonKangoShijishoApplicant
 
     // [ID:0000514][Tozo TANAKA] 2009/09/07 add end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
   
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+    /**
+     * sijishoKind を返却します。
+     * @return sijishoKind
+     */
+    protected ACGroupBox getShijishoKind() {
+        return sijishoKind;
+    }
+    
+    /**
+     * tenteki を返却します。
+     * @return tenteki
+     */
+    protected ACGroupBox getTenteki() {
+        return tenteki;
+    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 }

@@ -130,8 +130,11 @@ public class IkenshoHoumonKangoShijishoTenteki
                 "1",
                 "読込(L)",
                 'L',
-                "最新の特別訪問看護指示書に登録した「点滴注射指示内容」を読み込みます。" + ACConstants.LINE_SEPARATOR
-                        + "よろしいですか？", true);
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//                "最新の特別訪問看護指示書に登録した「点滴注射指示内容」を読み込みます。" + ACConstants.LINE_SEPARATOR
+                "最新の（精神科）特別訪問看護指示書に登録した「点滴注射指示内容」を読み込みます。" + ACConstants.LINE_SEPARATOR
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
+                + "よろしいですか？", true);
         
         tokki.setLoadRecentSetting(
                 dbm,
@@ -140,7 +143,10 @@ public class IkenshoHoumonKangoShijishoTenteki
                 "1",
                 "読込(M)",
                 'M',
-                "最新の特別訪問看護指示書に登録した「留意事項及び指示事項」を読み込みます。" + ACConstants.LINE_SEPARATOR
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//                "最新の特別訪問看護指示書に登録した「留意事項及び指示事項」を読み込みます。" + ACConstants.LINE_SEPARATOR
+                "最新の（精神科）特別訪問看護指示書に登録した「留意事項及び指示事項」を読み込みます。" + ACConstants.LINE_SEPARATOR
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
                         + "よろしいですか？", true);
     }
     
@@ -182,4 +188,21 @@ public class IkenshoHoumonKangoShijishoTenteki
   		}
     }
     //[ID:0000635][Shin Fujihara] 2011/02/28 add end 【2010年度要望対応】
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+    /**
+     * tenteki を返します。
+     * @return tenteki
+     */
+    protected IkenshoHoumonKangoShijishoInstructContainer getTenteki() {
+        return tenteki;
+    }
+    
+    /**
+     * tokki を返します。
+     * @return tokki
+     */
+    protected IkenshoHoumonKangoShijishoInstructContainer getTokki() {
+        return tokki;
+    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 }

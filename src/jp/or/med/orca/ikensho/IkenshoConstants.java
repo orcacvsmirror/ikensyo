@@ -59,7 +59,9 @@ public interface IkenshoConstants {
   public static final String AFFAIR_MODE_INSERT = "I";
   public static final String DOC_KBN_IKENSHO = "1";
   public static final String DOC_KBN_SIJISHO = "2";
-
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+  public static final String DOC_KBN_SEISHIN = "3";
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
   public static final int IKENSHO_LOW_DEFAULT = 0;
   public static final int IKENSHO_LOW_H18 = 1;
   public static final int IKENSHO_LOW_ISHI_IKENSHO = 2;
@@ -196,7 +198,10 @@ public interface IkenshoConstants {
   public static final Color COLOR_PANEL_TITLE_BACKGROUND =new java.awt.Color(0, 51,
       153);
 
-
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+  public static final Color COLOR_BASE = new java.awt.Color(0, 51,153);
+  public static final Color COLOR_DISTINCTION = new java.awt.Color(204,102,153);
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 
   public static final ACDateFormat FORMAT_YMD_HMS = new ACDateFormat(
       "yyyy/M/d HH:mm:ss");

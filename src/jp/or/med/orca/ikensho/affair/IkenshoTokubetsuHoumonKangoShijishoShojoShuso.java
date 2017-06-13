@@ -189,8 +189,11 @@ public class IkenshoTokubetsuHoumonKangoShijishoShojoShuso extends
                 "0",
                 "読込(L)",
                 'L',
-                "最新の訪問看護指示書に登録した「症状・治療状態」を読み込みます。" + ACConstants.LINE_SEPARATOR
-                        + "よろしいですか？", true);
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+//                "最新の訪問看護指示書に登録した「症状・治療状態」を読み込みます。" + ACConstants.LINE_SEPARATOR
+                "最新の（精神科）訪問看護指示書に登録した「症状・治療状態」を読み込みます。" + ACConstants.LINE_SEPARATOR
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
+                + "よろしいですか？", true);
         
     }
     

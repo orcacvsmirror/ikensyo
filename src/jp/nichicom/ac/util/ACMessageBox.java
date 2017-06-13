@@ -477,4 +477,39 @@ public class ACMessageBox extends JOptionPane {
         return new ACMessageBoxDialog(frame, title, modal);
     }
 
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+    /**
+     * ４つのボタンのキャプションを変更したメッセージボックスを表示します。
+     *
+     * @param message 本文
+     * @param text1 ①ボタンのキャプション
+     * @param mnemonic1 ①ボタンのニーモニック
+     * @param text2 ②ボタンのキャプション
+     * @param mnemonic2 ②ボタンのニーモニック
+     * @param text3 ③ボタンのキャプション
+     * @param mnemonic3 ③ボタンのニーモニック
+     * @param text4 ④ボタンのキャプション
+     * @param mnemonic4 ④ボタンのニーモニック
+     * @return 選択したオペレーション
+     */
+    public static int showMessage(String message,
+            String text1, char mnemonic1, String text2, char mnemonic2,
+            String text3, char mnemonic3, String text4, char mnemonic4) {
+        ACMessageBoxDialogPlus dialog = getInstance().createDialogPlus(
+                ACFrame.getInstance(), getDefaultTitle(), true);
+        dialog.showInner(message, text1, mnemonic1, text2, mnemonic2, text3, mnemonic3, text4, mnemonic4);
+        return dialog.getResult();
+    }
+    /**
+     * 拡張ダイアログを生成します。
+     *
+     * @param frame 親フレーム
+     * @param title タイトル
+     * @param modal モーダルであるか
+     * @return ダイアログ
+     */
+    protected ACMessageBoxDialogPlus createDialogPlus(Frame frame, String title, boolean modal) {
+        return new ACMessageBoxDialogPlus(frame, title, modal);
+    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 }

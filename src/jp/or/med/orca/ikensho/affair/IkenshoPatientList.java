@@ -1,6 +1,7 @@
 package jp.or.med.orca.ikensho.affair;
 
 import java.awt.Component;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
@@ -10,6 +11,9 @@ import java.awt.im.InputSubset;
 import java.text.Format;
 import java.text.ParseException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 import javax.swing.JMenuItem;
 import javax.swing.JPopupMenu;
@@ -41,6 +45,7 @@ import jp.nichicom.ac.text.ACDateFormat;
 import jp.nichicom.ac.text.ACHashMapFormat;
 import jp.nichicom.ac.util.ACDateUtilities;
 import jp.nichicom.ac.util.ACMessageBox;
+import jp.nichicom.ac.util.ACMessageBoxDialogPlus;
 import jp.nichicom.ac.util.adapter.ACTableModelAdapter;
 import jp.nichicom.vr.bind.VRBindPathParser;
 import jp.nichicom.vr.component.table.VRTableColumnModel;
@@ -131,6 +136,32 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 	private static final ACPassiveKey PASSIVE_CHECK_BILL_KEY = new ACPassiveKey(
 			"IKN_BILL", new String[] { "PATIENT_NO" }, new Format[] { null },
 			"IKN_BILL_LAST_TIME", "LAST_TIME");
+// [ID:0000788][Satoshi Tokusari] 2015/11 add-Start 患者情報一覧の項目幅見直し対応
+    // ＤＢ項目、ヘッダー名、カラムサイズ
+    // フォーマット（0：なし、1：チェック、2：有効、3：性別、4：年齢、5：日付、6：日時、7：非表示）
+    private static final String[][] columnsList = new String[][] {
+        { "DELETE_FLAG", "　", "2", "1" },
+        { "SHOW_FLAG", "有効", "3", "2" },
+        { "CHART_NO", "患者ID", "4", "0" },
+        { "PATIENT_NM", "氏名", "8", "0" },
+        { "PATIENT_KN", "ふりがな", "9", "0" },
+        { "SEX", "性別", "3", "3"},
+        { "BIRTHDAY", "生年月日", "9", "5" },
+        { "BIRTHDAY", "年齢", "3", "4" },
+        { "IKN_ORIGIN_KINYU_DT", "最新主治医意見書記入日", "12", "5" },
+        { "IKN_ORIGIN_KINYU_DT_ISHI", "最新医師意見書記入日", "11", "5" },
+        { "SIS_ORIGIN_KINYU_DT", "最新指示書記入日", "9", "5" },
+        { "SIS_ORIGIN_KINYU_DT_TOKUBETSU", "最新特別指示書記入日", "11", "5" },
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+        { "SIS_ORIGIN_KINYU_DT_SEISHIN", "最新精神指示書記入日", "11", "5" },
+        { "SIS_ORIGIN_KINYU_DT_TK_SEISHIN", "最新精神特別指示書記入日", "13", "5" },
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
+        { "KOUSIN_DT", "最終更新日", "14", "6" },
+// [ID:0000799][Satoshi Tokusari] 2015/11 add-Start 患者一覧画面の[一覧印刷]ソート対応
+        { "IKN_ORIGIN_LASTDAY", "", "0", "7" },
+// [ID:0000799][Satoshi Tokusari] 2015/11 add-End
+        } ;
+// [ID:0000788][Satoshi Tokusari] 2015/11 add-End
 
 	public void initAffair(ACAffairInfo affair) throws Exception {
 		addDeleteTrigger(delete);
@@ -165,58 +196,64 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 		// 検索処理
 		doFind();
 
-		setTableModelAdapter(new ACTableModelAdapter(data, new String[] {
-				"CHART_NO", "PATIENT_NM", "PATIENT_KN", "SEX", "BIRTHDAY",
-				"IKN_ORIGIN_KINYU_DT", "SIS_ORIGIN_KINYU_DT", "KOUSIN_DT",
-				"DELETE_FLAG", "IKN_ORIGIN_KINYU_DT_ISHI", "SHOW_FLAG",
-				"BIRTHDAY", "PATIENT_NO", "SIS_ORIGIN_KINYU_DT_TOKUBETSU" }));
-		table.setModel(getTableModelAdapter());
-
-		table.setColumnModel(new VRTableColumnModel(new ACTableColumn[] {
-//				new ACTableColumn(8, 22, "　",
+// [ID:0000788][Satoshi Tokusari] 2015/11 edit-Start 患者情報一覧の項目幅見直し対応
+//		setTableModelAdapter(new ACTableModelAdapter(data, new String[] {
+//				"CHART_NO", "PATIENT_NM", "PATIENT_KN", "SEX", "BIRTHDAY",
+//				"IKN_ORIGIN_KINYU_DT", "SIS_ORIGIN_KINYU_DT", "KOUSIN_DT",
+//				"DELETE_FLAG", "IKN_ORIGIN_KINYU_DT_ISHI", "SHOW_FLAG",
+//				"BIRTHDAY", "PATIENT_NO", "SIS_ORIGIN_KINYU_DT_TOKUBETSU" }));
+//		table.setModel(getTableModelAdapter());
+//
+//		table.setColumnModel(new VRTableColumnModel(new ACTableColumn[] {
+////				new ACTableColumn(8, 22, "　",
+////						new IkenshoCheckBoxTableCellRenderer(),
+////						deleteCheckEditor),
+////				getPatientEnabledColumn(),
+////				new ACTableColumn(0, 50, "患者ID"),
+////				new ACTableColumn(1, 110, "氏名"),
+////				new ACTableColumn(2, 130, "ふりがな"),
+////				new ACTableColumn(3, 32, "性別", SwingConstants.CENTER,
+////						IkenshoConstants.FORMAT_SEX),
+////				getPatientBirthColumn(),
+////				new ACTableColumn(4, 32, "年齢", SwingConstants.RIGHT,
+////						IkenshoConstants.FORMAT_NOW_AGE),
+////				new ACTableColumn(5, 150, "最新主治医意見書記入日",
+////						IkenshoConstants.FORMAT_ERA_YMD),
+////				new ACTableColumn(9, 150, "最新医師意見書記入日",
+////						IkenshoConstants.FORMAT_ERA_YMD),
+////				new ACTableColumn(6, 120, "最新指示書記入日",
+////						IkenshoConstants.FORMAT_ERA_YMD),
+////				new ACTableColumn(13, 140, "最新特別指示書記入日",
+////						IkenshoConstants.FORMAT_ERA_YMD),
+////				new ACTableColumn(7, 120, "最終更新日",
+////						IkenshoConstants.FORMAT_ERA_HMS), }));
+//				new ACTableColumn(8, 30, "　",
 //						new IkenshoCheckBoxTableCellRenderer(),
 //						deleteCheckEditor),
 //				getPatientEnabledColumn(),
-//				new ACTableColumn(0, 50, "患者ID"),
-//				new ACTableColumn(1, 110, "氏名"),
-//				new ACTableColumn(2, 130, "ふりがな"),
-//				new ACTableColumn(3, 32, "性別", SwingConstants.CENTER,
+//				new ACTableColumn(0, 90, "患者ID"),
+//				new ACTableColumn(1, 180, "氏名"),
+//				new ACTableColumn(2, 240, "ふりがな"),
+//				new ACTableColumn(3, 60, "性別", SwingConstants.CENTER,
 //						IkenshoConstants.FORMAT_SEX),
 //				getPatientBirthColumn(),
-//				new ACTableColumn(4, 32, "年齢", SwingConstants.RIGHT,
+//				new ACTableColumn(4, 60, "年齢", SwingConstants.RIGHT,
 //						IkenshoConstants.FORMAT_NOW_AGE),
-//				new ACTableColumn(5, 150, "最新主治医意見書記入日",
+//				new ACTableColumn(5, 260, "最新主治医意見書記入日",
 //						IkenshoConstants.FORMAT_ERA_YMD),
-//				new ACTableColumn(9, 150, "最新医師意見書記入日",
+//				new ACTableColumn(9, 260, "最新医師意見書記入日",
 //						IkenshoConstants.FORMAT_ERA_YMD),
-//				new ACTableColumn(6, 120, "最新指示書記入日",
+//				new ACTableColumn(6, 200, "最新指示書記入日",
 //						IkenshoConstants.FORMAT_ERA_YMD),
-//				new ACTableColumn(13, 140, "最新特別指示書記入日",
+//				new ACTableColumn(13, 260, "最新特別指示書記入日",
 //						IkenshoConstants.FORMAT_ERA_YMD),
-//				new ACTableColumn(7, 120, "最終更新日",
+//				new ACTableColumn(7, 220, "最終更新日",
 //						IkenshoConstants.FORMAT_ERA_HMS), }));
-				new ACTableColumn(8, 30, "　",
-						new IkenshoCheckBoxTableCellRenderer(),
-						deleteCheckEditor),
-				getPatientEnabledColumn(),
-				new ACTableColumn(0, 90, "患者ID"),
-				new ACTableColumn(1, 180, "氏名"),
-				new ACTableColumn(2, 240, "ふりがな"),
-				new ACTableColumn(3, 60, "性別", SwingConstants.CENTER,
-						IkenshoConstants.FORMAT_SEX),
-				getPatientBirthColumn(),
-				new ACTableColumn(4, 60, "年齢", SwingConstants.RIGHT,
-						IkenshoConstants.FORMAT_NOW_AGE),
-				new ACTableColumn(5, 260, "最新主治医意見書記入日",
-						IkenshoConstants.FORMAT_ERA_YMD),
-				new ACTableColumn(9, 260, "最新医師意見書記入日",
-						IkenshoConstants.FORMAT_ERA_YMD),
-				new ACTableColumn(6, 200, "最新指示書記入日",
-						IkenshoConstants.FORMAT_ERA_YMD),
-				new ACTableColumn(13, 260, "最新特別指示書記入日",
-						IkenshoConstants.FORMAT_ERA_YMD),
-				new ACTableColumn(7, 220, "最終更新日",
-						IkenshoConstants.FORMAT_ERA_HMS), }));
+        setTableModelAdapter(new ACTableModelAdapter(data, getDbName()));
+        table.setModel(getTableModelAdapter());
+		table.setColumnModel(new VRTableColumnModel(getColumns()));
+		table.setExtendLastColumn(false);
+// [ID:0000788][Satoshi Tokusari] 2015/11 edit-End
 
 		if (table.getRowCount() > 0) {
 			int sel = 0;
@@ -239,6 +276,95 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 		}
 
 	}
+
+// [ID:0000788][Satoshi Tokusari] 2015/11 add-Start 患者情報一覧の項目幅見直し対応
+    /**
+     * ＤＢの項目名を取得します。
+     *
+     * @return ＤＢの項目名
+     */
+    private String[] getDbName () {
+        String[] dbName = new String[columnsList.length];
+        for (int i = 0; i < columnsList.length; i++) {
+            dbName[i] = (String)columnsList[i][0];
+        }
+        return dbName;
+    };
+
+    /**
+     * グリッドカラムを取得します。
+     *
+     * @return グリッドカラム
+     */
+    private ACTableColumn[] getColumns () {
+        ACTableColumn[] columns = new ACTableColumn[columnsList.length];
+        for (int i = 0; i < columnsList.length; i ++ ) {
+            columns[i] = getColumn(columnsList[i], i);
+        }
+        return columns;
+    }
+
+    /**
+     * グリッドカラムを取得します。
+     *
+     * @return グリッドカラム
+     */
+    private ACTableColumn getColumn (String[] columnData, int index) {
+        // インスタンス生成
+        ACTableColumn column = new ACTableColumn(index);
+        // identifier
+        column.setIdentifier(columnData[0]);
+        // ヘッダー名
+        column.setHeaderValue(columnData[1]);
+        // カラムサイズ
+        column.setColumns(Integer.parseInt(columnData[2]));
+        // フォーマットその他
+        switch (Integer.parseInt(columnData[3])) {
+        case 1:
+            // チェック
+            column.setCellRenderer(new IkenshoCheckBoxTableCellRenderer());
+            column.setCellEditor(deleteCheckEditor);
+            column.setEditable(true);
+            break;
+        case 2:
+            // 有効
+            column.setHorizontalAlignment(SwingConstants.CENTER);
+            column.setFormat(new ACHashMapFormat(new String[]
+                    {"jp/nichicom/ac/images/icon/pix16/btn_080.png",
+                    "jp/nichicom/ac/images/icon/pix16/btn_079.png" },
+                    new Integer[] { new Integer(0), new Integer(1), }));
+            column.setRendererType(ACTableCellViewer.RENDERER_TYPE_ICON);
+            column.setSortable(false);
+            break;
+        case 3:
+            // 性別
+            column.setHorizontalAlignment(SwingConstants.CENTER);
+            column.setFormat(IkenshoConstants.FORMAT_SEX);
+            break;
+        case 4:
+            // 年齢
+            column.setHorizontalAlignment(SwingConstants.CENTER);
+            column.setFormat(IkenshoConstants.FORMAT_NOW_AGE);
+            break;
+        case 5:
+            // 日付
+            column.setFormat(IkenshoConstants.FORMAT_ERA_YMD);
+            break;
+        case 6:
+            // 日時
+            column.setFormat(IkenshoConstants.FORMAT_ERA_HMS);
+            break;
+// [ID:0000799][Satoshi Tokusari] 2015/11 add-Start 患者一覧画面の[一覧印刷]ソート対応
+        case 7:
+            // 非表示
+            column.setVisible(false);
+            break;
+// [ID:0000799][Satoshi Tokusari] 2015/11 add-End
+        }
+
+        return column;
+    };
+// [ID:0000788][Satoshi Tokusari] 2015/11 add-End
 
 	/**
 	 * 選択処理を行います。
@@ -391,8 +517,36 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 	}
 
 	protected void printTableActionPerformed(ActionEvent e) throws Exception {
+// [ID:0000799][Satoshi Tokusari] 2015/11 add-Start 患者一覧画面の[一覧印刷]ソート対応
+        HashMap column = table.getSortSequence();
+        Iterator ite = column.entrySet().iterator();
+        String key = "";
+        String value = "";
+        while (ite.hasNext()) {
+            Map.Entry map = (Map.Entry)ite.next();
+            key = (String)map.getKey();
+            value = (String)map.getValue();
+            break;
+        }
+        String header = "ふりがな";
+        if (!key.equals("")) {
+            if (key.equals("DELETE_FLAG")) {
+                header = "チェック";
+            }
+            else {
+                header = (String)table.getColumn(key).getHeaderValue();
+            }
+        }
+        String sort = "降順";
+        if (!value.equals("DESC")) {
+            sort = "昇順";
+        }
+// [ID:0000799][Satoshi Tokusari] 2015/11 add-End
 		if (ACMessageBox.showOkCancel("患者情報一覧の印刷", "一覧表を出力してもよろしいですか？"
-				+ IkenshoConstants.LINE_SEPARATOR + "（ふりがな順に印刷されます）", "印刷(O)",
+// [ID:0000799][Satoshi Tokusari] 2015/11 edit-Start 患者一覧画面の[一覧印刷]ソート対応
+//				+ IkenshoConstants.LINE_SEPARATOR + "（ふりがな順に印刷されます）", "印刷(O)",
+				+ IkenshoConstants.LINE_SEPARATOR + "（" + header + "順（" + sort + "）に印刷されます）", "印刷(O)",
+// [ID:0000799][Satoshi Tokusari] 2015/11 edit-End
 				'O') != ACMessageBox.RESULT_OK) {
 			return;
 		}
@@ -428,94 +582,144 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 			pd.beginPageEdit("daicho");
 			for (; i < pageEnd; i++) {
 				int index = i - offset;
-				VRMap map = (VRMap) data.getData(i);
-				// 患者ID
-				IkenshoCommon.addString(pd, map, "CHART_NO", "table.h" + index
-						+ ".w1");
-				// 氏名
-				IkenshoCommon.addString(pd, map, "PATIENT_NM", "table.h"
-						+ index + ".w2");
-				// ふりがな
-				IkenshoCommon.addString(pd, map, "PATIENT_KN", "table.h"
-						+ index + ".w3");
-				// 性別
-				Object sex = VRBindPathParser.get("SEX", map);
-				if (sex instanceof Integer) {
-					switch (((Integer) sex).intValue()) {
-					case 1:
-						IkenshoCommon.addString(pd, "table.h" + index + ".w4",
-								"男性");
-						break;
-					case 2:
-						IkenshoCommon.addString(pd, "table.h" + index + ".w4",
-								"女性");
-						break;
-					}
-				}
-				// 年齢
-				IkenshoCommon.addString(pd, "table.h" + index + ".w5",
-						IkenshoConstants.FORMAT_NOW_AGE.format(VRBindPathParser
-								.get("BIRTHDAY", map)));
-				// 生年月日
-				IkenshoCommon.addString(pd, "table.h" + index + ".w6",
-						IkenshoConstants.FORMAT_ERA_YMD.format(VRBindPathParser
-								.get("BIRTHDAY", map)));
-				// 最終診察日
-				// if (IkenshoCommon.getNewDocumentStatus(data, i,
-				// "IKN_ORIGIN_CREATE_DT",
-				// data, i, "SIS_ORIGIN_CREATE_DT") ==
-				// IkenshoCommon.NEW_DOC_IKENSHO) {
-				if (VRBindPathParser.has("IKN_ORIGIN_LASTDAY", map)) {
-					Object sinsatu = VRBindPathParser.get("IKN_ORIGIN_LASTDAY",
-							map);
-					if (sinsatu != null) {
-						IkenshoCommon
-								.addString(pd, "table.h" + index + ".w7",
-										IkenshoConstants.FORMAT_ERA_YMD
-												.format(sinsatu));
-					}
-				}
-				// }
-				// 最新意見書記入日
-				Object ikensho = VRBindPathParser.get("IKN_ORIGIN_KINYU_DT",
-						map);
-				if (ikensho != null) {
-					IkenshoCommon.addString(pd, "table.h" + index + ".w8",
-							IkenshoConstants.FORMAT_ERA_YMD.format(ikensho));
-				}
-				// 最新指示書記入日
-				Object sijisho = VRBindPathParser.get("SIS_ORIGIN_KINYU_DT",
-						map);
-				if (sijisho != null) {
-					IkenshoCommon.addString(pd, "table.h" + index + ".w9",
-							IkenshoConstants.FORMAT_ERA_YMD.format(sijisho));
-				}
-
-				// 2006/07/05
-				// 医師意見書対応
-				// Addition - begin [Masahiko.Higuchi]
-				// 最新医師意見書記入日
-				Object isiIkensho = VRBindPathParser.get(
-						"IKN_ORIGIN_KINYU_DT_ISHI", map);
-				if (isiIkensho != null) {
-					IkenshoCommon.addString(pd, "table.h" + index + ".w10",
-							IkenshoConstants.FORMAT_ERA_YMD.format(isiIkensho));
-				}
-				// Addition - end
-
-				// [ID:0000514][Tozo TANAKA] 2009/09/07 add begin
-				// 【2009年度対応：訪問看護指示書】特別指示書の管理機能
-				Object tokubetsuShijisho = VRBindPathParser.get(
-						"SIS_ORIGIN_KINYU_DT_TOKUBETSU", map);
-				if (tokubetsuShijisho != null) {
-					// ★帳票定義体次第
-					IkenshoCommon.addString(pd, "table.h" + index + ".w11",
-							IkenshoConstants.FORMAT_ERA_YMD
-									.format(tokubetsuShijisho));
-				}
-				// [ID:0000514][Tozo TANAKA] 2009/09/07 add end
-				// 【2009年度対応：訪問看護指示書】特別指示書の管理機能
-
+// [ID:0000799][Satoshi Tokusari] 2015/11 edit-Start 患者一覧画面の[一覧印刷]ソート対応
+//				VRMap map = (VRMap) data.getData(i);
+//				// 患者ID
+//				IkenshoCommon.addString(pd, map, "CHART_NO", "table.h" + index
+//						+ ".w1");
+//				// 氏名
+//				IkenshoCommon.addString(pd, map, "PATIENT_NM", "table.h"
+//						+ index + ".w2");
+//				// ふりがな
+//				IkenshoCommon.addString(pd, map, "PATIENT_KN", "table.h"
+//						+ index + ".w3");
+//				// 性別
+//				Object sex = VRBindPathParser.get("SEX", map);
+//				if (sex instanceof Integer) {
+//					switch (((Integer) sex).intValue()) {
+//					case 1:
+//						IkenshoCommon.addString(pd, "table.h" + index + ".w4",
+//								"男性");
+//						break;
+//					case 2:
+//						IkenshoCommon.addString(pd, "table.h" + index + ".w4",
+//								"女性");
+//						break;
+//					}
+//				}
+//				// 年齢
+//				IkenshoCommon.addString(pd, "table.h" + index + ".w5",
+//						IkenshoConstants.FORMAT_NOW_AGE.format(VRBindPathParser
+//								.get("BIRTHDAY", map)));
+//				// 生年月日
+//				IkenshoCommon.addString(pd, "table.h" + index + ".w6",
+//						IkenshoConstants.FORMAT_ERA_YMD.format(VRBindPathParser
+//								.get("BIRTHDAY", map)));
+//				// 最終診察日
+//				// if (IkenshoCommon.getNewDocumentStatus(data, i,
+//				// "IKN_ORIGIN_CREATE_DT",
+//				// data, i, "SIS_ORIGIN_CREATE_DT") ==
+//				// IkenshoCommon.NEW_DOC_IKENSHO) {
+//				if (VRBindPathParser.has("IKN_ORIGIN_LASTDAY", map)) {
+//					Object sinsatu = VRBindPathParser.get("IKN_ORIGIN_LASTDAY",
+//							map);
+//					if (sinsatu != null) {
+//						IkenshoCommon
+//								.addString(pd, "table.h" + index + ".w7",
+//										IkenshoConstants.FORMAT_ERA_YMD
+//												.format(sinsatu));
+//					}
+//				}
+//				// }
+//				// 最新意見書記入日
+//				Object ikensho = VRBindPathParser.get("IKN_ORIGIN_KINYU_DT",
+//						map);
+//				if (ikensho != null) {
+//					IkenshoCommon.addString(pd, "table.h" + index + ".w8",
+//							IkenshoConstants.FORMAT_ERA_YMD.format(ikensho));
+//				}
+//				// 最新指示書記入日
+//				Object sijisho = VRBindPathParser.get("SIS_ORIGIN_KINYU_DT",
+//						map);
+//				if (sijisho != null) {
+//					IkenshoCommon.addString(pd, "table.h" + index + ".w9",
+//							IkenshoConstants.FORMAT_ERA_YMD.format(sijisho));
+//				}
+//
+//				// 2006/07/05
+//				// 医師意見書対応
+//				// Addition - begin [Masahiko.Higuchi]
+//				// 最新医師意見書記入日
+//				Object isiIkensho = VRBindPathParser.get(
+//						"IKN_ORIGIN_KINYU_DT_ISHI", map);
+//				if (isiIkensho != null) {
+//					IkenshoCommon.addString(pd, "table.h" + index + ".w10",
+//							IkenshoConstants.FORMAT_ERA_YMD.format(isiIkensho));
+//				}
+//				// Addition - end
+//
+//				// [ID:0000514][Tozo TANAKA] 2009/09/07 add begin
+//				// 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+//				Object tokubetsuShijisho = VRBindPathParser.get(
+//						"SIS_ORIGIN_KINYU_DT_TOKUBETSU", map);
+//				if (tokubetsuShijisho != null) {
+//					// ★帳票定義体次第
+//					IkenshoCommon.addString(pd, "table.h" + index + ".w11",
+//							IkenshoConstants.FORMAT_ERA_YMD
+//									.format(tokubetsuShijisho));
+//				}
+//				// [ID:0000514][Tozo TANAKA] 2009/09/07 add end
+//				// 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+                // 患者ID
+                IkenshoCommon.addString(pd, "table.h" + index + ".w1", table.getValueAt(i, table.getColumn("CHART_NO").getModelIndex()));
+                // 氏名
+                IkenshoCommon.addString(pd, "table.h" + index + ".w2", table.getValueAt(i, table.getColumn("PATIENT_NM").getModelIndex()));
+                // ふりがな
+                IkenshoCommon.addString(pd, "table.h" + index + ".w3", table.getValueAt(i, table.getColumn("PATIENT_KN").getModelIndex()));
+                // 性別
+                String sex = "男性";
+                if (String.valueOf(table.getValueAt(i, table.getColumn("SEX").getModelIndex())).equals("2")) {
+                    sex = "女性";
+                }
+                IkenshoCommon.addString(pd, "table.h" + index + ".w4", sex);
+                // 年齢
+                IkenshoCommon.addString(pd, "table.h" + index + ".w5", 
+                        IkenshoConstants.FORMAT_NOW_AGE.format(
+                                table.getValueAt(i, table.getColumn("BIRTHDAY").getModelIndex())));
+                // 生年月日
+                IkenshoCommon.addString(pd, "table.h" + index + ".w6", 
+                        IkenshoConstants.FORMAT_ERA_YMD.format(
+                                table.getValueAt(i, table.getColumn("BIRTHDAY").getModelIndex())));
+                // 最終診察日　※画面上非表示のため、identifierからインデックス取得不可
+                IkenshoCommon.addString(pd, "table.h" + index + ".w7", 
+                        IkenshoConstants.FORMAT_ERA_YMD.format(table.getValueAt(i, 15)));
+                // 最新意見書記入日
+                IkenshoCommon.addString(pd, "table.h" + index + ".w8", 
+                        IkenshoConstants.FORMAT_ERA_YMD.format(
+                                table.getValueAt(i, table.getColumn("IKN_ORIGIN_KINYU_DT").getModelIndex())));
+                // 最新医師意見書記入日
+                IkenshoCommon.addString(pd, "table.h" + index + ".w10", 
+                        IkenshoConstants.FORMAT_ERA_YMD.format(
+                                table.getValueAt(i, table.getColumn("IKN_ORIGIN_KINYU_DT_ISHI").getModelIndex())));
+                // 最新指示書記入日
+                IkenshoCommon.addString(pd, "table.h" + index + ".w9", 
+                        IkenshoConstants.FORMAT_ERA_YMD.format(
+                                table.getValueAt(i, table.getColumn("SIS_ORIGIN_KINYU_DT").getModelIndex())));
+                // 最新特別指示書記入日
+                IkenshoCommon.addString(pd, "table.h" + index + ".w11", 
+                        IkenshoConstants.FORMAT_ERA_YMD.format(
+                                table.getValueAt(i, table.getColumn("SIS_ORIGIN_KINYU_DT_TOKUBETSU").getModelIndex())));
+// [ID:0000799][Satoshi Tokusari] 2015/11 edit-End
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+                // 最新精神指示書記入日
+                IkenshoCommon.addString(pd, "table.h" + index + ".w12", 
+                        IkenshoConstants.FORMAT_ERA_YMD.format(
+                                table.getValueAt(i, table.getColumn("SIS_ORIGIN_KINYU_DT_SEISHIN").getModelIndex())));
+                // 最新精神特別指示書記入日
+                IkenshoCommon.addString(pd, "table.h" + index + ".w13", 
+                        IkenshoConstants.FORMAT_ERA_YMD.format(
+                                table.getValueAt(i, table.getColumn("SIS_ORIGIN_KINYU_DT_TK_SEISHIN").getModelIndex())));
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 			}
 			pd.endPageEdit();
 		}
@@ -669,21 +873,48 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 			param.setData("AFFAIR_MODE", IkenshoConstants.AFFAIR_MODE_INSERT);
 
 			ACAffairInfo affair = null;
-			switch (ACMessageBox.showYesNoCancel("作成する指示書の種類を選択してください。",
-					"訪問看護指示書(H)", 'H', "特別訪問看護指示書(T)", 'T')) {
-			case ACMessageBox.RESULT_YES:
-				affair = new ACAffairInfo(
-						IkenshoHoumonKangoShijisho.class.getName(), param,
-						"訪問看護指示書");
-				break;
-			case ACMessageBox.RESULT_NO:
-				affair = new ACAffairInfo(
-						IkenshoTokubetsuHoumonKangoShijisho.class.getName(),
-						param, "特別訪問看護指示書");
-				break;
-			default:
-				return;
-			}
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//			switch (ACMessageBox.showYesNoCancel("作成する指示書の種類を選択してください。",
+//					"訪問看護指示書(H)", 'H', "特別訪問看護指示書(T)", 'T')) {
+//			case ACMessageBox.RESULT_YES:
+//				affair = new ACAffairInfo(
+//						IkenshoHoumonKangoShijisho.class.getName(), param,
+//						"訪問看護指示書");
+//				break;
+//			case ACMessageBox.RESULT_NO:
+//				affair = new ACAffairInfo(
+//						IkenshoTokubetsuHoumonKangoShijisho.class.getName(),
+//						param, "特別訪問看護指示書");
+//				break;
+//			default:
+//				return;
+//			}
+            switch (ACMessageBox.showMessage(
+                    "作成する指示書の種類を選択してください。",
+                    "訪問看護指示書(H) ", 'H',
+                    "特別訪問看護指示書(T)", 'T',
+                    "精神科訪問看護指示書(I)", 'I',
+                    "精神科特別訪問看護指示書(U)", 'U')) {
+            case ACMessageBoxDialogPlus.RESULT_SELECT1:
+                affair = new ACAffairInfo(
+                        IkenshoHoumonKangoShijisho.class.getName(), param, "訪問看護指示書");
+                break;
+            case ACMessageBoxDialogPlus.RESULT_SELECT2:
+                affair = new ACAffairInfo(
+                        IkenshoTokubetsuHoumonKangoShijisho.class.getName(), param, "特別訪問看護指示書");
+                break;
+            case ACMessageBoxDialogPlus.RESULT_SELECT3:
+                affair = new ACAffairInfo(
+                        IkenshoSeishinkaHoumonKangoShijisho.class.getName(), param, "精神科訪問看護指示書");
+                break;
+            case ACMessageBoxDialogPlus.RESULT_SELECT4:
+                affair = new ACAffairInfo(
+                        IkenshoSeishinkaTokubetsuHoumonKangoShijisho.class.getName(), param, "精神科特別訪問看護指示書");
+                break;
+            default:
+                return;
+            }
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
 			ACFrame.getInstance().next(affair);
 
 		}
@@ -1144,7 +1375,10 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 			// 【2009年度対応：訪問看護指示書】特別指示書の管理機能
 			// reportCombo.setModel(new String[]{"主治医意見書","医師意見書","訪問看護指示書"});
 			reportCombo.setModel(new String[] { "主治医意見書", "医師意見書", "訪問看護指示書",
-					"特別訪問看護指示書" });
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+//					"特別訪問看護指示書" });
+			        "特別訪問看護指示書", "精神科訪問看護指示書", "精神科特別訪問看護指示書" });
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 			// [ID:0000514][Tozo TANAKA] 2009/09/07 replace end
 			// 【2009年度対応：訪問看護指示書】特別指示書の管理機能
 		}
@@ -1553,6 +1787,14 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 			break;
 		// [ID:0000514][Tozo TANAKA] 2009/09/07 add end
 		// 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+        case 5:
+            keyParam.setData("SIS_ORIGIN_KINYU_DT_SEISHIN", new Boolean(true));
+            break;
+        case 6:
+            keyParam.setData("SIS_ORIGIN_KINYU_DT_TK_SEISHIN", new Boolean(true));
+            break;
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 		}
 
 		// 最新記入日
@@ -1716,6 +1958,12 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 		sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_MAX_EDA_TOKUBETSU,");
 		// [ID:0000514][Tozo TANAKA] 2009/09/07 add end
 		// 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_KINYU_DT_SEISHIN,");
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_MAX_EDA_SEISHIN,");
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_KINYU_DT_TK_SEISHIN,");
+        sb.append(" SIS_ORIGIN_NEW.SIS_ORIGIN_MAX_EDA_TK_SEISHIN,");
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 		sb.append(" PATIENT.LAST_TIME");
 		sb.append(" FROM");
 		sb.append(" PATIENT LEFT OUTER JOIN IKN_ORIGIN_NEW(PATIENT.PATIENT_NO) ON PATIENT.PATIENT_NO = IKN_ORIGIN_NEW.IKN_ORIGIN_PATIENT_NO");
@@ -1962,6 +2210,38 @@ public class IkenshoPatientList extends IkenshoAffairContainer implements
 
 					// [ID:0000514][Tozo TANAKA] 2009/09/07 add end
 					// 【2009年度対応：訪問看護指示書】特別指示書の管理機能
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+                } else if (sqlParam.containsKey("SIS_ORIGIN_KINYU_DT_SEISHIN")) {
+                    sb.append(" AND");
+                    sb.append(" SIS_ORIGIN_KINYU_DT_SEISHIN IS NOT NULL");
+                    // 最新記入日（開始）
+                    if (sqlParam.containsKey("KINYU_DT_FROM")) {
+                        sb.append(" AND");
+                        sb.append(" SIS_ORIGIN_KINYU_DT_SEISHIN >= ");
+                        sb.append(getDBSafeDate("KINYU_DT_FROM", sqlParam));
+                    }
+                    // 最新記入日（終了）
+                    if (sqlParam.containsKey("KINYU_DT_TO")) {
+                        sb.append(" AND");
+                        sb.append(" SIS_ORIGIN_KINYU_DT_SEISHIN <= ");
+                        sb.append(getDBSafeDate("KINYU_DT_TO", sqlParam));
+                    }
+                } else if (sqlParam.containsKey("SIS_ORIGIN_KINYU_DT_TK_SEISHIN")) {
+                    sb.append(" AND");
+                    sb.append(" SIS_ORIGIN_KINYU_DT_TK_SEISHIN IS NOT NULL");
+                    // 最新記入日（開始）
+                    if (sqlParam.containsKey("KINYU_DT_FROM")) {
+                        sb.append(" AND");
+                        sb.append(" SIS_ORIGIN_KINYU_DT_TK_SEISHIN >= ");
+                        sb.append(getDBSafeDate("KINYU_DT_FROM", sqlParam));
+                    }
+                    // 最新記入日（終了）
+                    if (sqlParam.containsKey("KINYU_DT_TO")) {
+                        sb.append(" AND");
+                        sb.append(" SIS_ORIGIN_KINYU_DT_TK_SEISHIN <= ");
+                        sb.append(getDBSafeDate("KINYU_DT_TO", sqlParam));
+                    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
 
 				} else {
 					// 何も選択されていない場合（帳票種類）

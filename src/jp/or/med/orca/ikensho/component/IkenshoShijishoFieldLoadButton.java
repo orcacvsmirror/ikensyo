@@ -137,13 +137,27 @@ public class IkenshoShijishoFieldLoadButton extends ACButton {
             sb.append(" ON");
             sb.append(" (SIS_ORIGIN.PATIENT_NO = COMMON_IKN_SIS.PATIENT_NO)");
             sb.append("AND(SIS_ORIGIN.EDA_NO = COMMON_IKN_SIS.EDA_NO)");
-            sb.append("AND(COMMON_IKN_SIS.DOC_KBN = 2)");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//            sb.append("AND(COMMON_IKN_SIS.DOC_KBN = 2)");
+            sb.append("AND((COMMON_IKN_SIS.DOC_KBN = 2) OR (COMMON_IKN_SIS.DOC_KBN = 3))");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
             sb.append(" WHERE");
             sb.append(" (SIS_ORIGIN.PATIENT_NO = ");
             sb.append(getLoadRecentPatientNo());
             sb.append(")");
-            sb.append(" AND(SIS_ORIGIN.FORMAT_KBN = ");
-            sb.append(getLoadRecentFormatKbn());
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//            sb.append(" AND(SIS_ORIGIN.FORMAT_KBN = ");
+//            sb.append(getLoadRecentFormatKbn());
+            if (getLoadRecentFieldName().equals("TENTEKI_SIJI")) {
+                sb.append(" AND(SIS_ORIGIN.FORMAT_KBN = 0");
+            }
+            else if (getLoadRecentFormatKbn().equals("0")) {
+                sb.append(" AND(SIS_ORIGIN.FORMAT_KBN = 0 OR SIS_ORIGIN.FORMAT_KBN = 2");
+            }
+            else {
+                sb.append(" AND(SIS_ORIGIN.FORMAT_KBN = 1 OR SIS_ORIGIN.FORMAT_KBN = 3");
+            }
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
             sb.append(")");
             sb.append(" ORDER BY");
             sb.append(" SIS_ORIGIN.EDA_NO DESC");
@@ -153,7 +167,10 @@ public class IkenshoShijishoFieldLoadButton extends ACButton {
             sb.append(" LEFT JOIN");
             sb.append(" SIS_ORIGIN");
             sb.append(" ON");
-            sb.append(" (COMMON_IKN_SIS.DOC_KBN = 2)");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//            sb.append(" (COMMON_IKN_SIS.DOC_KBN = 2)");
+            sb.append(" ((COMMON_IKN_SIS.DOC_KBN = 2) OR (COMMON_IKN_SIS.DOC_KBN = 3)");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
             sb.append("AND(COMMON_IKN_SIS.PATIENT_NO = SIS_ORIGIN.PATIENT_NO)");
             sb.append("AND(COMMON_IKN_SIS.EDA_NO = SIS_ORIGIN.EDA_NO)");
             sb.append(" LEFT JOIN");
@@ -170,6 +187,12 @@ public class IkenshoShijishoFieldLoadButton extends ACButton {
             sb.append(" (COMMON_IKN_SIS.DOC_KBN != 2)");
             sb.append(" OR(SIS_ORIGIN.FORMAT_KBN != 1)");
             sb.append(")");
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+            sb.append("AND(");
+            sb.append(" (COMMON_IKN_SIS.DOC_KBN != 3)");
+            sb.append(" OR(SIS_ORIGIN.FORMAT_KBN != 3)");
+            sb.append(")");            
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
             sb.append(" ORDER BY");
             sb.append(" COALESCE(IKN_ORIGIN.CREATE_DT, SIS_ORIGIN.CREATE_DT) DESC");
         }

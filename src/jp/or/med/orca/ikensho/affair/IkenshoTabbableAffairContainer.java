@@ -624,9 +624,17 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(" (COMMON_IKN_SIS.PATIENT_NO=");
     sb.append(getPatientNo());
     sb.append(")");
-    sb.append("AND(COMMON_IKN_SIS.DOC_KBN=");
-    sb.append(docType);
-    sb.append(")");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//    sb.append("AND(COMMON_IKN_SIS.DOC_KBN=");
+//    sb.append(docType);
+//    sb.append(")");
+    if (docType.equals(IkenshoConstants.DOC_KBN_IKENSHO)) {
+        sb.append("AND(COMMON_IKN_SIS.DOC_KBN = " + docType + ")");
+    }
+    else {
+        sb.append("AND((COMMON_IKN_SIS.DOC_KBN = 2) OR (COMMON_IKN_SIS.DOC_KBN = 3))");
+    }
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
     sb.append(" ORDER BY");
     sb.append(" EDA_NO DESC");
     array = (VRArrayList) dbm.executeQuery(sb.toString());
@@ -665,8 +673,12 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(getPatientNo());
     sb.append(")");
     if("SIS_ORIGIN".equals(getCustomDocumentTableName())){
-        //指示書の場合は特別訪問看護指示書(FORMAT_KBN=1)を除外する
-        sb.append("AND(FORMAT_KBN != 1)");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//        //指示書の場合は特別訪問看護指示書(FORMAT_KBN=1)を除外する
+//        sb.append("AND(FORMAT_KBN != 1)");
+        // 指示書の場合は特別訪問看護指示書、精神科特別訪問看護指示書を除外する
+        sb.append("AND((FORMAT_KBN != 1) AND (FORMAT_KBN != 3))");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
     }
     array = (VRArrayList) dbm.executeQuery(sb.toString());
     if (array.getDataSize() > 0) {
@@ -685,8 +697,12 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(getPatientNo());
     sb.append(")");
     if("SIS_ORIGIN".equals(getAnotherDocumentTableName())){
-        //指示書の場合は特別訪問看護指示書(FORMAT_KBN=1)を除外する
-        sb.append("AND(FORMAT_KBN != 1)");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//        //指示書の場合は特別訪問看護指示書(FORMAT_KBN=1)を除外する
+//        sb.append("AND(FORMAT_KBN != 1)");
+        // 指示書の場合は特別訪問看護指示書、精神科特別訪問看護指示書を除外する
+        sb.append("AND((FORMAT_KBN != 1) AND (FORMAT_KBN != 3))");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
     }
     array = (VRArrayList) dbm.executeQuery(sb.toString());
     if (array.getDataSize() > 0) {
@@ -712,10 +728,16 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
       docType = getCustomDocumentType();
     }        
     
-    String joinTable = getCustomDocumentTableName();
-    if(docType.equals(getAnotherDocumentType())){
-        joinTable = getAnotherDocumentTableName();
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//    String joinTable = getCustomDocumentTableName();
+//    if(docType.equals(getAnotherDocumentType())){
+//        joinTable = getAnotherDocumentTableName();
+//    }
+    String joinTable = "IKN_ORIGIN";
+    if (!docType.equals(IkenshoConstants.DOC_KBN_IKENSHO)) {
+        joinTable = "SIS_ORIGIN";
     }
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
     
     sb = new StringBuffer();
     sb.append("SELECT");
@@ -737,9 +759,12 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append("OR");
     sb.append("(");
     sb.append("(COMMON_IKN_SIS.DOC_KBN = 2)");
-    sb.append("AND(");
-    sb.append(joinTable);
-    sb.append(".FORMAT_KBN != 1)");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//    sb.append("AND(");
+//    sb.append(joinTable);
+//    sb.append(".FORMAT_KBN != 1)");
+    sb.append("AND((" + joinTable + ".FORMAT_KBN != 1) AND (" + joinTable + ".FORMAT_KBN != 3))");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
     sb.append(")");
     sb.append(")");
     
@@ -747,9 +772,17 @@ public class IkenshoTabbableAffairContainer extends IkenshoAffairContainer
     sb.append(" (COMMON_IKN_SIS.PATIENT_NO=");
     sb.append(getPatientNo());
     sb.append(")");
-    sb.append("AND(COMMON_IKN_SIS.DOC_KBN=");
-    sb.append(docType);
-    sb.append(")");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//    sb.append("AND(COMMON_IKN_SIS.DOC_KBN=");
+//    sb.append(docType);
+//    sb.append(")");
+  if (docType.equals(IkenshoConstants.DOC_KBN_IKENSHO)) {
+      sb.append("AND(COMMON_IKN_SIS.DOC_KBN = " + docType + ")");
+  }
+  else {
+      sb.append("AND((COMMON_IKN_SIS.DOC_KBN = 2) OR (COMMON_IKN_SIS.DOC_KBN = 3))");
+  }
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
     sb.append(" ORDER BY");
     sb.append(" COMMON_IKN_SIS.EDA_NO DESC");
     array = (VRArrayList) dbm.executeQuery(sb.toString());

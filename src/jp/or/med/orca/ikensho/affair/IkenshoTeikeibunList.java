@@ -417,6 +417,23 @@ public class IkenshoTeikeibunList extends IkenshoAffairContainer implements ACAf
         data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_SONOTA, 50, "", "●", "", "留意事項及び指示事項", "その他"));
         data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_TOKKI, 50, "", "●", "", "留意事項及び指示事項", "特記すべき留意事項"));
         data.add(createRow(IkenshoCommon.TEIKEI_HOUMON_TENTEKI_CHUSHA, 50, "", "●", "", "在宅患者訪問点滴注射に関する指示", "在宅訪問点滴注射"));
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+        data.add(createRow(IkenshoCommon.TEIKEI_FACILITY_NAME, 30, "", "●", "", "患者", "施設名"));
+        data.add(createRow(IkenshoCommon.TEIKEI_CARE_RECEIVING, 30, "", "●", "", "現在の状況", "治療の受け入れ"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SEIKATU_RIZUMU, 50, "", "●", "", "精神訪問看護に関する留意事項及び指示事項", "生活リズムの確立"));
+        data.add(createRow(IkenshoCommon.TEIKEI_KAJI_NOURYOKU, 50, "", "●", "", "精神訪問看護に関する留意事項及び指示事項", "家事能力、社会技能等の獲得"));
+        data.add(createRow(IkenshoCommon.TEIKEI_TAIJIN_KANKEI, 50, "", "●", "", "精神訪問看護に関する留意事項及び指示事項", "対人関係の改善（家族含む）"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SYAKAI_SHIGEN, 50, "", "●", "", "精神訪問看護に関する留意事項及び指示事項", "社会資源活用の支援"));
+        data.add(createRow(IkenshoCommon.TEIKEI_YAKUBUTU_RYOUHOU, 50, "", "●", "", "精神訪問看護に関する留意事項及び指示事項", "薬物療法継続への援助"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SHINTAI_GAPPEISYO, 50, "", "●", "", "精神訪問看護に関する留意事項及び指示事項", "身体合併症の発症・悪化の防止"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SEISHIN_OTHER, 50, "", "●", "", "精神訪問看護に関する留意事項及び指示事項", "その他"));
+        data.add(createRow(IkenshoCommon.TEIKEI_JYOUHOU_SYUDAN, 40, "", "●", "", "医療機関", "情報交換の手段"));
+        data.add(createRow(IkenshoCommon.TEIKEI_PLURAL_VISIT_REASON, 25, "", "●", "", "留意事項及び指示事項", "複数名訪問の必要性：理由"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SHROT_VISIT_REASON, 25, "", "●", "", "留意事項及び指示事項", "短時間訪問の必要性：理由"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SEISHIN_KANSATU, 30, "", "●", "", "留意事項及び指示事項", "精神症状（観察が必要な項目）"));
+        data.add(createRow(IkenshoCommon.TEIKEI_SHINTAI_KANSATU, 30, "", "●", "", "留意事項及び指示事項", "身体症状（観察が必要な項目）"));
+        data.add(createRow(IkenshoCommon.TEIKEI_KANSATU_OTHER, 40, "", "●", "", "留意事項及び指示事項", "その他"));
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
     }
     //[ID:0000688][Shin Fujihara] 2012/03/12 Addition - end
     

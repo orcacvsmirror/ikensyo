@@ -369,9 +369,55 @@ public class IkenshoCommon {
     
     /** 医師意見書 留意事項 - 精神症状 */
     public static final int TEIKEI_CARE_SERVICE_MIND_NAME = 72;
-    
-    
-    
+
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-Start 精神科訪問看護指示書の追加対応
+    /** 精神科訪問看護指示書 患者 - 施設名 */
+    public static final int TEIKEI_FACILITY_NAME = 73;
+
+    /** 精神科訪問看護指示書 現在の状況 - 治療の受け入れ */
+    public static final int TEIKEI_CARE_RECEIVING = 74;
+
+    /** 精神科訪問看護指示書 精神訪問看護に関する留意事項及び指示事項 - 生活リズムの確立 */
+    public static final int TEIKEI_SEIKATU_RIZUMU = 75;
+
+    /** 精神科訪問看護指示書 精神訪問看護に関する留意事項及び指示事項 - 家事能力、社会技能等の獲得 */
+    public static final int TEIKEI_KAJI_NOURYOKU = 76;
+
+    /** 精神科訪問看護指示書 精神訪問看護に関する留意事項及び指示事項 - 対人関係の改善（家族含む） */
+    public static final int TEIKEI_TAIJIN_KANKEI = 77;
+
+    /** 精神科訪問看護指示書 精神訪問看護に関する留意事項及び指示事項 - 社会資源活用の支援 */
+    public static final int TEIKEI_SYAKAI_SHIGEN = 78;
+
+    /** 精神科訪問看護指示書 精神訪問看護に関する留意事項及び指示事項 - 薬物療法継続への援助 */
+    public static final int TEIKEI_YAKUBUTU_RYOUHOU = 79;
+
+    /** 精神科訪問看護指示書 精神訪問看護に関する留意事項及び指示事項 - 身体合併症の発症・悪化の防止 */
+    public static final int TEIKEI_SHINTAI_GAPPEISYO = 80;
+
+    /** 精神科訪問看護指示書 精神訪問看護に関する留意事項及び指示事項 - その他 */
+    public static final int TEIKEI_SEISHIN_OTHER = 81;
+
+    /** 精神科訪問看護指示書 医療機関 - 情報交換の手段 */
+    public static final int TEIKEI_JYOUHOU_SYUDAN = 82;
+
+    /** 精神科特別訪問看護指示書 留意事項・指示事項 - 複数名訪問の必要性：理由 */
+    public static final int TEIKEI_PLURAL_VISIT_REASON = 83;
+
+    /** 精神科特別訪問看護指示書 留意事項・指示事項 - 短時間訪問の必要性：理由 */
+    public static final int TEIKEI_SHROT_VISIT_REASON = 84;
+
+    /** 精神科特別訪問看護指示書 留意事項・指示事項 - 精神症状（観察が必要な項目） */
+    public static final int TEIKEI_SEISHIN_KANSATU = 85;
+
+    /** 精神科特別訪問看護指示書 留意事項・指示事項 - 身体症状（観察が必要な項目） */
+    public static final int TEIKEI_SHINTAI_KANSATU = 86;
+
+    /** 精神科特別訪問看護指示書 留意事項・指示事項 - その他 */
+    public static final int TEIKEI_KANSATU_OTHER = 87;
+// [ID:0000798][Satoshi Tokusari] 2015/11 add-End
+
+
     /**
      * 最新文書該当なし
      */

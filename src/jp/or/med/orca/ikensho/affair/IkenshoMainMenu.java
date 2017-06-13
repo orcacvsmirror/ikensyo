@@ -90,8 +90,12 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
 //  [ID:0000514][Tozo TANAKA] 2009/09/16 replace begin 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
 //    private ACMainMenuButton ikenshoShijisho = new ACMainMenuButton(
 //            "「主治医意見書・医師意見書・訪問看護指示書」"+ACConstants.LINE_SEPARATOR+"　作成／編集(K)");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//    private ACMainMenuButton ikenshoShijisho = new ACMainMenuButton(
+//            "「主治医意見書・医師意見書・（特別）訪問看護指示書」"+ACConstants.LINE_SEPARATOR+"　作成／編集(K)");
     private ACMainMenuButton ikenshoShijisho = new ACMainMenuButton(
-            "「主治医意見書・医師意見書・（特別）訪問看護指示書」"+ACConstants.LINE_SEPARATOR+"　作成／編集(K)");
+            "「主治医意見書・医師意見書・各種指示書等」作成／編集(K)");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
 //  [ID:0000514][Tozo TANAKA] 2009/09/16 replace end 【2009年度対応：訪問看護指示書】特別指示書の管理機能  
     private ACMainMenuButton seikyuusho = new ACMainMenuButton("「請求書」発行(V)");
     private ACMainMenuButton basic = new ACMainMenuButton("基礎データ登録(B)");
@@ -257,7 +261,10 @@ public class IkenshoMainMenu extends VRPanel implements ACAffairable {
         menus.add(editor,VRLayout.CLIENT);
         // 2007/10/22 [Masahiko Higuchi] Replace - end
         // 意見書・指示書
-        ikenshoShijisho.setToolTipText("「主治医意見書・医師意見書・訪問看護指示書」の作成および編集を行います。");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-Start 精神科訪問看護指示書の追加対応
+//        ikenshoShijisho.setToolTipText("「主治医意見書・医師意見書・訪問看護指示書」の作成および編集を行います。");
+        ikenshoShijisho.setToolTipText("「主治医意見書・医師意見書・各種指示書等」の作成および編集を行います。");
+// [ID:0000798][Satoshi Tokusari] 2015/11 edit-End
         ikenshoShijisho.setMnemonic('K');
         // ikenshoShijisho.setBackground(new java.awt.Color(102, 102, 255));
         // ikenshoShijisho.setFont(new java.awt.Font("Dialog",
