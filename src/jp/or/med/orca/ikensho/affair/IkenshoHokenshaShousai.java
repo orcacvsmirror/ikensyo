@@ -966,9 +966,12 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         rollBackPnl.setLayout(new VRLayout());
         rollBackPnl.add(rollBack, VRLayout.EAST);
         insurerNmContainer.add(insurerNmField, java.awt.BorderLayout.CENTER);
-        // [ID:0000800][Ryosuke Koinuma] 2016/03 edit-Start f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
-        rollBack.setText("H28”Nf—Ã•ñV’P‰¿(D)");
-        // [ID:0000800][Ryosuke Koinuma] 2016/03 edit-End
+        // [ID:0000802][Ryosuke Koinuma] 2018/03 edit-Start f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+//        // [ID:0000800][Ryosuke Koinuma] 2016/03 edit-Start f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+//        rollBack.setText("H28”Nf—Ã•ñV’P‰¿(D)");
+//        // [ID:0000800][Ryosuke Koinuma] 2016/03 edit-End
+        rollBack.setText("H30”Nf—Ã•ñV’P‰¿(D)");
+        // [ID:0000802][Ryosuke Koinuma] 2018/03 edit-End
         rollBack.setMnemonic('D');
 
     }
@@ -1098,12 +1101,18 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
         // ‰Šúf—Ã•ñV’P‰¿‚É–ß‚·
         rollBack.addActionListener(new ActionListener() {
             public void actionPerformed(ActionEvent e) {
-                // [ID:0000800][Ryosuke Koinuma] 2016/03 edit-Start f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+                // [ID:0000802][Ryosuke Koinuma] 2018/03 edit-Start f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+//                // [ID:0000800][Ryosuke Koinuma] 2016/03 edit-Start f—Ã•ñV’P‰¿‚Ì•ÏX‘Î‰
+//                int result = ACMessageBox.show(
+//                        "ˆÓŒ©‘ì¬—¿^f@EŒŸ¸”ï—p“_”‚É"+ ACConstants.LINE_SEPARATOR + "H28”Nf—Ã•ñV’P‰¿‚ğİ’è‚µ‚Ü‚·B‚æ‚ë‚µ‚¢‚Å‚·‚©H",
+//                        ACMessageBox.BUTTON_OKCANCEL,
+//                        ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
+//                // [ID:0000800][Ryosuke Koinuma] 2016/03 edit-End
                 int result = ACMessageBox.show(
-                        "ˆÓŒ©‘ì¬—¿^f@EŒŸ¸”ï—p“_”‚É"+ ACConstants.LINE_SEPARATOR + "H28”Nf—Ã•ñV’P‰¿‚ğİ’è‚µ‚Ü‚·B‚æ‚ë‚µ‚¢‚Å‚·‚©H",
+                        "ˆÓŒ©‘ì¬—¿^f@EŒŸ¸”ï—p“_”‚É"+ ACConstants.LINE_SEPARATOR + "H30”Nf—Ã•ñV’P‰¿‚ğİ’è‚µ‚Ü‚·B‚æ‚ë‚µ‚¢‚Å‚·‚©H",
                         ACMessageBox.BUTTON_OKCANCEL,
                         ACMessageBox.ICON_QUESTION, ACMessageBox.FOCUS_OK);
-                // [ID:0000800][Ryosuke Koinuma] 2016/03 edit-End
+                // [ID:0000802][Ryosuke Koinuma] 2018/03 edit-End
                 if (result == ACMessageBox.RESULT_OK) {
                     try {
                         loadMKingakuTensu();
@@ -1493,11 +1502,30 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
 //            // [ID:0000775][Masahiko Higuchi] 2014/03 add-End
             // [ID:0000800][Ryosuke Koinuma] 2016/03 del-End
             
-            // [ID:0000800][Ryosuke Koinuma] 2016/03 add-Start •½¬28”Nf—Ã•ñV‰ü’è
-            kingakuTensuData.put("EXP_KS",new Double(25.0)); // ŒŒ‰tÌæ(Ã–¬)
+            // [ID:0000802][Ryosuke Koinuma] 2018/03 del-Start •½¬30”Nf—Ã•ñV‰ü’è       
+//            // [ID:0000800][Ryosuke Koinuma] 2016/03 add-Start •½¬28”Nf—Ã•ñV‰ü’è
+//            kingakuTensuData.put("EXP_KS",new Double(25.0)); // ŒŒ‰tÌæ(Ã–¬)
+//            kingakuTensuData.put("EXP_KIK_MKI",new Double(21.0)); // ––½ŒŒ‰tˆê”ÊŒŸ¸
+//            kingakuTensuData.put("EXP_KIK_KEKK",new Double(125.0)); // ŒŒ‰tŠw“IŒŸ¸”»’f—¿
+//            kingakuTensuData.put("EXP_KKK_KKK",new Double(115.0)); // ŒŒ‰t‰»ŠwŒŸ¸(10€–ÚˆÈã)
+//            kingakuTensuData.put("EXP_KKK_SKK",new Double(144.0)); // ¶‰»Šw“IŒŸ¸(I)”»’f—¿
+//            kingakuTensuData.put("EXP_NITK",new Double(26.0)); // ”A’†ˆê”Ê•¨¿’è«”»’è—ÊŒŸ¸
+//            kingakuTensuData.put("EXP_XRAY_TS",new Double(60.0)); // ’PƒB‰eiƒAƒiƒƒOj
+//            kingakuTensuData.put("EXP_XRAY_TS_DIGITAL", new Double(68.0)); // ’PƒB‰eiƒfƒWƒ^ƒ‹j
+//            kingakuTensuData.put("EXP_XRAY_SS",new Double(85.0)); // Ê^f’f(‹¹•”)
+//            kingakuTensuData.put("EXP_XRAY_FILM",new Double(12.0));// ƒtƒBƒ‹ƒ€(‘åŠp)
+//            kingakuTensuData.put("EXP_XRAY_DIGITAL_MANAGEMENT",new Double(57.0));// “dq‰æ‘œŠÇ—‰ÁZ
+//            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(21));// ‰æ‘œ‹L˜^—pƒtƒBƒ‹ƒ€(‘åŠp)
+//            kingakuTensuData.put("SHOSIN_SINRYOUJO", new Double(282.0)); // ‰f—¿(f—ÃŠ)
+//            kingakuTensuData.put("SHOSIN_HOSPITAL", new Double(282.0)); // ‰f—¿(•a‰@)
+//            // [ID:0000800][Ryosuke Koinuma] 2016/03 add-End
+            // [ID:0000802][Ryosuke Koinuma] 2018/03 del-End
+
+            // [ID:0000802][Ryosuke Koinuma] 2018/03 add-Start •½¬30”Nf—Ã•ñV‰ü’è
+            kingakuTensuData.put("EXP_KS",new Double(30.0)); // ŒŒ‰tÌæ(Ã–¬)
             kingakuTensuData.put("EXP_KIK_MKI",new Double(21.0)); // ––½ŒŒ‰tˆê”ÊŒŸ¸
             kingakuTensuData.put("EXP_KIK_KEKK",new Double(125.0)); // ŒŒ‰tŠw“IŒŸ¸”»’f—¿
-            kingakuTensuData.put("EXP_KKK_KKK",new Double(115.0)); // ŒŒ‰t‰»ŠwŒŸ¸(10€–ÚˆÈã)
+            kingakuTensuData.put("EXP_KKK_KKK",new Double(112.0)); // ŒŒ‰t‰»ŠwŒŸ¸(10€–ÚˆÈã)
             kingakuTensuData.put("EXP_KKK_SKK",new Double(144.0)); // ¶‰»Šw“IŒŸ¸(I)”»’f—¿
             kingakuTensuData.put("EXP_NITK",new Double(26.0)); // ”A’†ˆê”Ê•¨¿’è«”»’è—ÊŒŸ¸
             kingakuTensuData.put("EXP_XRAY_TS",new Double(60.0)); // ’PƒB‰eiƒAƒiƒƒOj
@@ -1505,10 +1533,10 @@ public class IkenshoHokenshaShousai extends IkenshoAffairContainer implements
             kingakuTensuData.put("EXP_XRAY_SS",new Double(85.0)); // Ê^f’f(‹¹•”)
             kingakuTensuData.put("EXP_XRAY_FILM",new Double(12.0));// ƒtƒBƒ‹ƒ€(‘åŠp)
             kingakuTensuData.put("EXP_XRAY_DIGITAL_MANAGEMENT",new Double(57.0));// “dq‰æ‘œŠÇ—‰ÁZ
-            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(21));// ‰æ‘œ‹L˜^—pƒtƒBƒ‹ƒ€(‘åŠp)
+            kingakuTensuData.put("EXP_XRAY_DIGITAL_FILM",new Double(19));// ‰æ‘œ‹L˜^—pƒtƒBƒ‹ƒ€(‘åŠp)
             kingakuTensuData.put("SHOSIN_SINRYOUJO", new Double(282.0)); // ‰f—¿(f—ÃŠ)
             kingakuTensuData.put("SHOSIN_HOSPITAL", new Double(282.0)); // ‰f—¿(•a‰@)
-            // [ID:0000800][Ryosuke Koinuma] 2016/03 add-End
+            // [ID:0000802][Ryosuke Koinuma] 2018/03 add-End
             
             // íœ€–Ú ’l‚Í0‚Åİ’è
             kingakuTensuData.put("EXP_XRAY_DIGITAL_IMAGING",new Double(0.0));// ƒfƒWƒ^ƒ‹‰f‘œ‰»ˆ—‰ÁZ

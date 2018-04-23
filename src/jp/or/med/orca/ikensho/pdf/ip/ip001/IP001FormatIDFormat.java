@@ -298,8 +298,12 @@ public class IP001FormatIDFormat extends Format {
         else if ("Grid11.h1.w1".equals(code)) obj = "日常生活の自立度等について　「(１) 日常生活の自立度等について」";
         else if ("Grid11.h2.w1".equals(code)) obj = "日常生活の自立度等について　「・障害高齢者の日常生活自立度（寝たきり度）」";
         else if ("Grid11.h3.w1".equals(code)) obj = "日常生活の自立度等について　「・認知症高齢者の日常生活自立度」";
-        else if ("Label1".equals(code)) obj = "認知症の周辺症状　「(３) 認知症の周辺症状 （該当する項目全てチェック：」";
-        else if ("Label2".equals(code)) obj = "認知症の周辺症状　「認知症以外の疾患で同様の症状を認める場合を含む」";
+// [ID:0000803][Ryosuke Koinuma] 2018/03 edit-Start 主治医意見書様式変更対応
+//        else if ("Label1".equals(code)) obj = "認知症の周辺症状　「(３) 認知症の周辺症状 （該当する項目全てチェック：」";
+//        else if ("Label2".equals(code)) obj = "認知症の周辺症状　「認知症以外の疾患で同様の症状を認める場合を含む」";
+        else if ("Label1".equals(code)) obj = "認知症の行動・心理症状(BPSD)　「(３) 認知症の行動・心理症状(BPSD) （該当する項目全てチェック：」";
+        else if ("Label2".equals(code)) obj = "認知症の行動・心理症状(BPSD)　「認知症以外の疾患で同様の症状を認める場合を含む」";
+// [ID:0000803][Ryosuke Koinuma] 2018/03 edit-End
         else if ("Label5".equals(code)) obj = "認知症の中核症状　「(２) 認知症の中核症状」";
         else if ("Label17".equals(code)) obj = "認知症の中核症状　「（認知症以外の疾患で同様の症状を認める場合を含む）」";
         else if ("Grid12.h4.w1".equals(code)) obj = "認知症の中核症状　「・自分の意思の伝達能力」";
@@ -312,7 +316,10 @@ public class IP001FormatIDFormat extends Format {
         else if ("CORNER_BLOCK".equals(code)) obj = "「■」";
         else if ("FD_OUTPUT_TIME".equals(code)) obj = "タイムスタンプ";
         else if ("Grid11".equals(code)) obj = "日常生活の自立度等情報";
-        else if ("Grid14".equals(code)) obj = "認知症の周辺症状情報";
+// [ID:0000803][Ryosuke Koinuma] 2018/03 edit-Start 主治医意見書様式変更対応
+//        else if ("Grid14".equals(code)) obj = "認知症の周辺症状情報";
+        else if ("Grid14".equals(code)) obj = "認知症の行動・心理症状(BPSD)情報";
+// [ID:0000803][Ryosuke Koinuma] 2018/03 edit-End
         else if ("Grid7".equals(code)) obj = "傷病に関する意見情報";
         else if ("Grid13".equals(code)) obj = "その他の精神・神経症状情報";
         else if ("Grid3".equals(code)) obj = "同意情報";

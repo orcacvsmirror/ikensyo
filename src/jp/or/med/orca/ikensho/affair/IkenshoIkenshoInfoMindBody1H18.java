@@ -30,7 +30,10 @@ public class IkenshoIkenshoInfoMindBody1H18 extends IkenshoIkenshoInfoMindBody1 
                                      "（寝たきり度）");
    getChihouRoujinJiritsu().setText("認知症高齢者の日常生活自立度");
    getRikaiKiokuGroup().setText("認知症の中核症状（認知症以外の疾患で同様の症状を認める場合を含む）");
-   getMondaiGroup().setText("認知症の周辺症状（認知症以外の疾患で同様の症状を認める場合を含む）");
+// [ID:0000803][Ryosuke Koinuma] 2018/03 edit-Start 主治医意見書様式変更対応
+//   getMondaiGroup().setText("認知症の周辺症状（認知症以外の疾患で同様の症状を認める場合を含む）");
+   getMondaiGroup().setText("認知症の行動・心理症状(BPSD)（認知症以外の疾患で同様の症状を認める場合を含む）");
+// [ID:0000803][Ryosuke Koinuma] 2018/03 edit-End
    getShinkeiGroup().setText("その他の精神・神経症状");
    getMindBody1SyougaiJiritsu().setModel(new VRListModelAdapter(new
            VRArrayList(Arrays.asList(new
@@ -55,7 +58,10 @@ public class IkenshoIkenshoInfoMindBody1H18 extends IkenshoIkenshoInfoMindBody1 
  }
 
  protected String getProblemActionCaption() {
-   return "認知症の周辺症状";
+// [ID:0000803][Ryosuke Koinuma] 2018/03 edit-Start 主治医意見書様式変更対応
+//   return "認知症の周辺症状";
+   return "認知症の行動・心理症状(BPSD)";
+// [ID:0000803][Ryosuke Koinuma] 2018/03 edit-End
  }
 
  protected int getFomratKubun(){
